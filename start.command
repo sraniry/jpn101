@@ -12,7 +12,7 @@ URL="http://localhost:${PORT}/index.html"
 if lsof -ti:${PORT} >/dev/null 2>&1; then
   echo "Un serveur tourne déjà sur le port ${PORT} — on le relance proprement…"
   lsof -ti:${PORT} | xargs kill -9 2>/dev/null
-  sleep 1
+  sleep 2
 fi
 
 # Ouvre l'app dans Safari après un court délai (le temps que le serveur démarre)
