@@ -1,0 +1,1530 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>話そう — Kyoto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F1E7; --paper:#FBF8F1; --ink:#222a35;
+    --indigo:#2c3e5c; --indigo-deep:#1c2840;
+    --vermillion:#b8401f; --vermillion-deep:#8f2f15;
+    --matcha:#7c8a6e; --gold:#b58a3c;
+    --green:#5c7a4f; --amber:#b07a28;
+    --line: rgba(34,42,53,0.14); --line-soft: rgba(34,42,53,0.07);
+    --shadow: 0 1px 0 rgba(34,42,53,0.05);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Work Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+  .app{ max-width:780px;margin:0 auto;padding:0 18px 80px;
+    background-image:
+      radial-gradient(circle at 10% 5%, rgba(184,64,31,0.05), transparent 40%),
+      radial-gradient(circle at 90% 0%, rgba(44,62,92,0.06), transparent 45%); }
+
+  .noren{ position:relative; padding-top:34px; margin-bottom:6px; display:flex; justify-content:center; }
+  .noren-strip{ background:var(--indigo); color:#F6F1E7; width:64px; height:118px; margin:0 3px;
+    border-bottom-left-radius:6px; border-bottom-right-radius:6px;
+    display:flex; align-items:flex-start; justify-content:center; padding-top:14px;
+    box-shadow: inset 0 -14px 18px -10px rgba(0,0,0,0.25); }
+  .noren-strip span{font-family:'Shippori Mincho',serif; font-size:22px; font-weight:700; writing-mode:vertical-rl; letter-spacing:2px;}
+  .noren-strip.accent{background:var(--vermillion-deep);}
+  .noren-rod{position:absolute; top:24px; left:50%; transform:translateX(-50%); width:min(420px,90%); height:6px; background:var(--ink); border-radius:3px;}
+
+  header.title{ text-align:center; margin: 18px 0 10px; }
+  header.title h1{ font-family:'Shippori Mincho',serif; font-size:15px; letter-spacing:3px; text-transform:uppercase; color:var(--indigo-deep); margin:0 0 2px;}
+  header.title p{ margin:0; font-size:13px; color:#6b6358;}
+  .streak-badge{ display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line);
+    border-radius:999px; padding:6px 14px; font-size:12.5px; font-weight:600; color:var(--vermillion-deep); margin-top:12px; }
+
+  nav.tabs{ display:flex; gap:6px; justify-content:center; margin:22px 0 22px; flex-wrap:wrap; }
+  nav.tabs button{ border:1px solid var(--line); background:var(--paper); color:var(--ink);
+    padding:9px 15px; border-radius:999px; font-size:13px; font-weight:600;
+    cursor:pointer; transition:all .15s ease; font-family:'Work Sans',sans-serif; }
+  nav.tabs button .count{ display:inline-block; margin-left:6px; background:var(--vermillion); color:#fff;
+    font-size:11px; padding:1px 6px; border-radius:999px; font-weight:700; }
+  nav.tabs button.active{ background:var(--indigo-deep); color:#fff; border-color:var(--indigo-deep);}
+  nav.tabs button:focus-visible{ outline:2px solid var(--vermillion); outline-offset:2px;}
+
+  section.view{ display:none; }
+  section.view.active{ display:block; animation:fadeUp .35s ease; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  @media (prefers-reduced-motion: reduce){ section.view.active{animation:none;} }
+
+  .panel{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow); }
+  .empty{ text-align:center; padding:50px 20px; color:#7a7268; }
+  .empty .stamp{ margin:0 auto 14px; }
+  .empty h3{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); margin:0 0 6px;}
+  .empty p{ margin:0; font-size:13.5px; line-height:1.5;}
+
+  /* sound diagnostic */
+  .sound-bar{ display:flex; align-items:center; gap:10px; justify-content:space-between;
+    background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:8px 12px; margin-bottom:16px; font-size:12px; color:#6b6358; flex-wrap:wrap;}
+  .sound-bar button{ border:1px solid var(--indigo); background:transparent; color:var(--indigo); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600; cursor:pointer;}
+  .sound-bar button:hover{ background:var(--indigo); color:#fff;}
+  .sound-bar .dot{ width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:#bbb;}
+  .sound-bar .dot.ok{ background:var(--green);} .sound-bar .dot.bad{ background:var(--vermillion);}
+  .sound-help{ font-size:11.5px; line-height:1.5; color:#7a7268; background:rgba(176,122,40,0.08); border:1px solid rgba(176,122,40,0.25); border-radius:10px; padding:10px 12px; margin-bottom:16px; display:none;}
+  .sound-help.show{ display:block; }
+  .sound-help b{ color:var(--amber); }
+
+  .import-banner{ background:linear-gradient(135deg, var(--indigo-deep), var(--indigo)); color:#fff; border-radius:14px;
+    padding:20px 22px; margin-bottom:22px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .import-banner .ib-text{ flex:1; min-width:200px; }
+  .import-banner h3{ margin:0 0 4px; font-family:'Shippori Mincho',serif; font-size:16px; }
+  .import-banner p{ margin:0; font-size:12.5px; opacity:.85; }
+  .import-banner button{ background:var(--vermillion); color:#fff; border:none; padding:11px 18px; border-radius:999px; font-weight:700; font-size:13px; cursor:pointer; white-space:nowrap; }
+  .import-banner button:hover{ background:var(--vermillion-deep); }
+  .import-banner button:disabled{ opacity:.6; cursor:default; }
+  .import-banner.done{ background:linear-gradient(135deg, #5c6b52, var(--matcha)); }
+  .level-pick{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .level-pick label{ font-size:11.5px; background:rgba(255,255,255,.15); padding:5px 10px; border-radius:999px; cursor:pointer; display:flex; align-items:center; gap:5px;}
+  .level-pick input{ accent-color:var(--vermillion); }
+
+  .review-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .progress-row{ width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:#7a7268;}
+  .progress-bar{ flex:1; height:4px; background:var(--line-soft); border-radius:2px; margin:0 12px; overflow:hidden;}
+  .progress-bar i{ display:block; height:100%; background:var(--vermillion); border-radius:2px; transition:width .3s ease;}
+
+  .mode-row{ display:flex; gap:8px; width:100%; justify-content:center; flex-wrap:wrap; }
+  .mode-chip{ border:1px solid var(--line); background:var(--bg); padding:6px 12px; border-radius:999px; font-size:11.5px; font-weight:600; cursor:pointer; color:#6b6358; }
+  .mode-chip.active{ background:var(--indigo); color:#fff; border-color:var(--indigo); }
+
+  .flashcard{ width:100%; min-height:230px; border-radius:16px;
+    background:linear-gradient(180deg, var(--paper), #f3eee2);
+    border:1px solid var(--line); position:relative; overflow:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:32px 20px; cursor:pointer; }
+  .flashcard::before{ content:""; position:absolute; inset:10px; border:1px dashed var(--line); border-radius:10px; pointer-events:none; }
+  .flashcard .jp-text{ font-size:33px; font-weight:700; color:var(--indigo-deep); margin-bottom:10px; line-height:1.3;}
+  .flashcard .romaji{ font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--matcha); margin-bottom:4px;}
+  .flashcard .hint{ font-size:12px; color:#9a9184; margin-top:14px;}
+  .flashcard .fr-text{ font-size:19px; color:var(--ink); margin-top:6px; max-width:520px;}
+  .flashcard .tag-pill{ position:absolute; top:14px; left:14px; font-size:10.5px; background:var(--matcha); color:#fff; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.4px; }
+  .flashcard .level-pill{ position:absolute; top:14px; right:14px; font-size:10.5px; background:var(--indigo); color:#fff; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.4px; }
+  .flashcard .listen-btn{ width:64px;height:64px;border-radius:50%;background:var(--vermillion);color:#fff;border:none;font-size:22px; display:flex;align-items:center;justify-content:center;cursor:pointer; }
+  .flashcard .audio-mini{ position:absolute; bottom:14px; right:14px; width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--vermillion);font-size:15px;cursor:pointer;}
+
+  .recall-input{ width:100%; }
+  .recall-input textarea{ width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 13px;
+    font-family:'Work Sans',sans-serif; font-size:14px; background:var(--bg); color:var(--ink); resize:none; min-height:46px; }
+  .recall-input label{ font-size:11.5px; color:#9a9184; text-transform:uppercase; letter-spacing:.4px; font-weight:600; display:block; margin-bottom:5px;}
+
+  .verdict{ width:100%; border-radius:10px; padding:10px 13px; font-size:13px; font-weight:600; }
+  .verdict.good{ background:rgba(92,122,79,0.12); border:1px solid rgba(92,122,79,0.4); color:var(--green); }
+  .verdict.close{ background:rgba(176,122,40,0.12); border:1px solid rgba(176,122,40,0.4); color:var(--amber); }
+  .verdict.off{ background:rgba(184,64,31,0.1); border:1px solid rgba(184,64,31,0.35); color:var(--vermillion-deep); }
+  .verdict .ans{ font-weight:400; color:#6b6358; display:block; margin-top:3px; }
+
+  .explain-box{ width:100%; background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px; padding:12px 14px; font-size:13px; line-height:1.6; color:#4f4a40;}
+  .explain-box .eb-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--gold); font-weight:700; display:block; margin-bottom:5px;}
+  .explain-box b.jpchunk{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); font-weight:700;}
+
+  .rate-row{ display:flex; gap:10px; width:100%; }
+  .rate-row button{ flex:1; border:none; border-radius:10px; padding:13px 8px; font-size:13.5px; font-weight:700;
+    cursor:pointer; color:#fff; transition:transform .12s ease, filter .12s ease; font-family:'Work Sans',sans-serif; }
+  .rate-row button:hover{ filter:brightness(1.08); } .rate-row button:active{ transform:scale(.97); }
+  .rate-again{ background:#8c4a3a; } .rate-hard{ background:var(--matcha); } .rate-good{ background:var(--indigo); } .rate-easy{ background:var(--vermillion); }
+
+  .reveal-btn{ border:1px solid var(--indigo-deep); background:transparent; color:var(--indigo-deep);
+    padding:11px 22px; border-radius:999px; font-weight:700; cursor:pointer; font-size:13.5px; }
+  .reveal-btn:hover{ background:var(--indigo-deep); color:#fff; }
+
+  .stamp{ width:56px; height:56px; border:3px solid var(--vermillion); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; color:var(--vermillion);
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:18px; transform:rotate(-8deg); opacity:.85; }
+
+  .interleave-card{ text-align:center; padding:10px; }
+  .interleave-card .jp-big{ font-size:30px; font-weight:700; color:var(--indigo-deep); margin:14px 0 6px; font-family:'Shippori Mincho',serif;}
+  .interleave-card p{ color:#7a7268; font-size:13.5px; margin-bottom:18px;}
+  .interleave-card .play-mini{ width:60px;height:60px;border-radius:50%;border:none;background:var(--vermillion);color:#fff;font-size:22px;cursor:pointer;margin-bottom:18px;}
+  .interleave-card .rep-track{ display:flex; gap:8px; justify-content:center; margin-bottom:20px;}
+  .interleave-card .rep-dot{ width:14px;height:14px;border-radius:50%; border:2px solid var(--matcha); }
+  .interleave-card .rep-dot.filled{ background:var(--matcha); }
+  .continue-btn{ background:var(--indigo-deep); color:#fff; border:none; padding:12px 26px; border-radius:999px; font-weight:700; cursor:pointer; }
+
+  .shadow-card{ text-align:center; }
+  .shadow-jp{ font-size:38px; font-weight:700; color:var(--indigo-deep); margin-bottom:8px;}
+  .shadow-romaji{ font-family:'JetBrains Mono',monospace; color:var(--matcha); font-size:15px; margin-bottom:4px;}
+  .shadow-fr{ color:#7a7268; font-size:14px; margin-bottom:14px;}
+  .shadow-explain{ text-align:left; margin:0 auto 18px; max-width:540px; }
+  .speed-row{ display:flex; justify-content:center; gap:8px; margin-bottom:20px;}
+  .speed-row button{ border:1px solid var(--line); background:var(--paper); padding:7px 14px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer; color:var(--ink); }
+  .speed-row button.active{ background:var(--indigo); color:#fff; border-color:var(--indigo);}
+  .play-btn{ width:84px; height:84px; border-radius:50%; border:none; background:var(--vermillion); color:#fff;
+    font-size:28px; cursor:pointer; margin:0 auto 22px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 0 var(--vermillion-deep); transition:transform .1s ease; }
+  .play-btn:active{ transform:translateY(4px); box-shadow:0 2px 0 var(--vermillion-deep); }
+  .rep-row{ display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:18px;}
+  .rep-row .rep-count{ font-family:'JetBrains Mono',monospace; font-size:22px; color:var(--indigo-deep); font-weight:600; min-width:34px; text-align:center;}
+  .rep-btn{ border:1px solid var(--indigo); background:transparent; color:var(--indigo); width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; font-weight:700; }
+  .rep-btn:hover{ background:var(--indigo); color:#fff;}
+  .shadow-nav{ display:flex; justify-content:space-between; margin-top:10px;}
+  .shadow-nav button{ border:none; background:var(--paper); border:1px solid var(--line); padding:9px 16px; border-radius:10px; font-size:13px; cursor:pointer; color:var(--ink); font-weight:600; }
+  .shadow-filter{ display:flex; gap:6px; justify-content:center; margin-bottom:18px; flex-wrap:wrap;}
+
+  /* reading / signs */
+  .read-intro{ font-size:13px; color:#6b6358; line-height:1.6; margin-bottom:18px;}
+  .read-group{ margin-bottom:26px; }
+  .read-group h3{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); font-size:16px; margin:0 0 4px; display:flex; align-items:center; gap:8px;}
+  .read-group .rg-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;}
+  .read-group .rg-add{ border:1px solid var(--matcha); background:transparent; color:var(--matcha); font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:999px; cursor:pointer;}
+  .read-group .rg-add:hover{ background:var(--matcha); color:#fff;}
+  .sign-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .sign-card{ background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:14px 12px; text-align:center; cursor:pointer; transition:transform .1s ease;}
+  .sign-card:hover{ transform:translateY(-2px); }
+  .sign-card .sc-jp{ font-family:'Shippori Mincho',serif; font-size:30px; font-weight:800; color:var(--indigo-deep); line-height:1.1; margin-bottom:6px;}
+  .sign-card .sc-romaji{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--matcha);}
+  .sign-card .sc-fr{ font-size:13.5px; font-weight:600; color:var(--ink); margin-top:2px;}
+  .sign-card .sc-note{ font-size:10.5px; color:#9a9184; margin-top:5px; line-height:1.4;}
+
+  /* grammar reference */
+  .gram-section{ margin-bottom:26px; }
+  .gram-section h3{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); font-size:16px; margin:0 0 10px; }
+  .gram-section p{ font-size:13.5px; line-height:1.65; color:#4f4a40; margin:0 0 10px; }
+  .gram-callout{ background:rgba(44,62,92,0.06); border-left:3px solid var(--indigo); border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; color:#3a4350; margin-bottom:12px;}
+  .gram-callout .jp{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); font-weight:700;}
+  table.gram{ width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:12px; }
+  table.gram th{ text-align:left; background:var(--indigo-deep); color:#fff; padding:8px 10px; font-weight:600; }
+  table.gram th:first-child{ border-top-left-radius:8px;} table.gram th:last-child{ border-top-right-radius:8px;}
+  table.gram td{ padding:8px 10px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+  table.gram td.jpc{ font-family:'Shippori Mincho',serif; font-weight:700; color:var(--indigo-deep); white-space:nowrap;}
+  table.gram tr:nth-child(even) td{ background:rgba(34,42,53,0.025);}
+  .romaji-sm{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--matcha); font-weight:500; }
+  .romaji-line{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--matcha); }
+  .jp-say{ cursor:pointer; } .jp-say:hover{ text-decoration:underline; }
+
+  .record-block{ margin-top:6px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .record-btn{ border:1px solid var(--vermillion); background:transparent; color:var(--vermillion-deep); padding:9px 18px; border-radius:999px; font-weight:700; font-size:13px; cursor:pointer; }
+  .record-btn:hover{ background:var(--vermillion); color:#fff; }
+  .record-play-btn{ border:1px solid var(--indigo); background:transparent; color:var(--indigo); padding:8px 16px; border-radius:999px; font-weight:600; font-size:12.5px; cursor:pointer; }
+  .record-play-btn:hover{ background:var(--indigo); color:#fff; }
+  .record-hint{ font-size:11px; color:#9a9184; text-align:center; max-width:340px; margin:4px 0 0; line-height:1.5;}
+  .archive-btn{ width:100%; border:1px dashed var(--matcha); background:transparent; color:var(--matcha); padding:9px; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; margin-top:6px;}
+  .archive-btn:hover{ background:var(--matcha); color:#fff; border-style:solid;}
+  .pi-archived{ opacity:.55; }
+  .pi-restore{ border:none; background:transparent; cursor:pointer; font-size:12px; color:var(--matcha); font-weight:600; white-space:nowrap;}
+
+  .add-form{ display:grid; gap:10px; margin-bottom:24px; }
+  .add-form input{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:9px; font-family:'Work Sans',sans-serif; font-size:14px; background:var(--bg); color:var(--ink); }
+  .add-form input.jpf{ font-family:'Shippori Mincho',serif; font-size:17px;}
+  .add-form label{ font-size:12px; color:#7a7268; font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-bottom:-4px;}
+  .add-form .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .add-btn{ background:var(--indigo-deep); color:#fff; border:none; padding:12px; border-radius:9px; font-weight:700; font-size:14px; cursor:pointer; margin-top:4px; }
+  .add-btn:hover{ background:var(--indigo);}
+
+  .tag-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px;}
+  .tag-chip{ border:1px solid var(--line); background:var(--paper); padding:6px 13px; border-radius:999px; font-size:12px; font-weight:600; cursor:pointer; color:#6b6358; }
+  .tag-chip.active{ background:var(--vermillion); color:#fff; border-color:var(--vermillion);}
+
+  .phrase-list{ display:flex; flex-direction:column; gap:8px; }
+  .phrase-item{ display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--paper); flex-wrap:wrap; }
+  .phrase-item .pi-jp{ font-family:'Shippori Mincho',serif; font-size:17px; color:var(--indigo-deep); min-width:110px;}
+  .phrase-item .pi-mid{ flex:1; min-width:140px;}
+  .phrase-item .pi-romaji{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--matcha);}
+  .phrase-item .pi-fr{ font-size:13px; color:#5b554c;}
+  .phrase-item .pi-tag{ font-size:10px; background:var(--line-soft); color:#7a7268; padding:2px 8px; border-radius:999px; text-transform:uppercase;}
+  .phrase-item .pi-level{ font-size:10px; background:var(--indigo); color:#fff; padding:2px 8px; border-radius:999px; text-transform:uppercase;}
+  .phrase-item .pi-due{ font-size:11px; color:#9a9184; white-space:nowrap;}
+  .phrase-item .pi-del{ border:none; background:transparent; cursor:pointer; font-size:16px; color:#b85d4a; }
+
+  .section-label{ font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#9a9184; font-weight:700; margin:0 0 12px; }
+  .stat-row{ display:flex; gap:10px; margin-bottom:22px; }
+  .stat{ flex:1; text-align:center; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:14px 8px; }
+  .stat b{ display:block; font-size:22px; color:var(--indigo-deep); font-family:'Shippori Mincho',serif;}
+  .stat span{ font-size:11px; color:#9a9184; text-transform:uppercase; letter-spacing:.5px;}
+
+  .settings-row{ display:flex; align-items:center; justify-content:space-between; background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-bottom:20px; font-size:12.5px; color:#6b6358;}
+  .settings-row input[type=number]{ width:54px; padding:5px 7px; border:1px solid var(--line); border-radius:6px; text-align:center;}
+
+  footer.note{ text-align:center; font-size:11.5px; color:#a39a8d; margin-top:34px;}
+
+  /* ---- skills dashboard ---- */
+  .skills-intro{ font-size:13px; color:#6b6358; line-height:1.6; margin-bottom:18px;}
+  .pareto-banner{ background:rgba(184,64,31,0.08); border:1px solid rgba(184,64,31,0.25); border-radius:10px; padding:12px 14px; font-size:12.5px; color:#7a3a25; margin-bottom:18px; line-height:1.55;}
+  .pareto-banner b{ color:var(--vermillion-deep); }
+  .skill-grid{ display:grid; gap:12px; }
+  .skill-card{ background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:16px 18px; cursor:pointer; transition:transform .1s ease;}
+  .skill-card:hover{ transform:translateY(-1px); }
+  .skill-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .skill-head h4{ margin:0; font-family:'Shippori Mincho',serif; font-size:15.5px; color:var(--indigo-deep); display:flex; align-items:center; gap:7px;}
+  .skill-level{ font-size:11px; font-weight:700; background:var(--indigo); color:#fff; padding:3px 10px; border-radius:999px; }
+  .skill-bar-track{ height:8px; background:var(--line-soft); border-radius:5px; overflow:hidden; margin-bottom:6px;}
+  .skill-bar-fill{ height:100%; background:linear-gradient(90deg, var(--matcha), var(--green)); border-radius:5px; transition:width .4s ease;}
+  .skill-meta{ font-size:11.5px; color:#9a9184; display:flex; justify-content:space-between;}
+  .skill-challenge{ margin-top:10px; font-size:11.5px; background:rgba(176,122,40,0.12); color:var(--amber); padding:6px 10px; border-radius:8px; display:inline-block;}
+  .star-pill{ font-size:10px; background:var(--gold); color:#fff; padding:2px 7px; border-radius:999px; margin-left:6px; }
+
+  /* ---- production / particle drill ---- */
+  .drill-box{ width:100%; text-align:center; }
+  .drill-jp{ font-size:26px; font-family:'Shippori Mincho',serif; color:var(--indigo-deep); margin-bottom:8px; line-height:1.5;}
+  .drill-jp .blank{ display:inline-block; min-width:34px; border-bottom:3px solid var(--vermillion); color:var(--vermillion); }
+  .drill-label{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--amber); font-weight:700; margin-bottom:10px; display:block;}
+  .drill-choices{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:14px 0;}
+  .drill-choices button{ border:2px solid var(--line); background:var(--paper); padding:10px 18px; border-radius:10px; font-family:'Shippori Mincho',serif; font-size:18px; font-weight:700; color:var(--indigo-deep); cursor:pointer; }
+  .drill-choices button:hover{ border-color:var(--indigo); }
+  .drill-choices button.correct{ background:rgba(92,122,79,0.15); border-color:var(--green); color:var(--green); }
+  .drill-choices button.wrong{ background:rgba(184,64,31,0.12); border-color:var(--vermillion); color:var(--vermillion-deep); }
+  .drill-fr{ font-size:13.5px; color:#7a7268; margin-bottom:6px;}
+
+  /* ---- conversation simulator ---- */
+  .conv-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
+  .conv-pick{ background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:14px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+  .conv-pick:hover{ border-color:var(--indigo); }
+  .conv-pick h4{ margin:0 0 3px; font-family:'Shippori Mincho',serif; color:var(--indigo-deep); font-size:15px;}
+  .conv-pick p{ margin:0; font-size:12px; color:#9a9184;}
+  .conv-pick .conv-badge{ font-size:11px; background:var(--matcha); color:#fff; padding:3px 10px; border-radius:999px; white-space:nowrap;}
+  .conv-stage{ display:flex; flex-direction:column; gap:10px; max-width:560px; margin:0 auto; }
+  .bubble{ max-width:80%; padding:11px 15px; border-radius:14px; font-size:14.5px; line-height:1.5; }
+  .bubble.npc{ background:var(--bg); border:1px solid var(--line); align-self:flex-start; border-bottom-left-radius:3px;}
+  .bubble.user{ background:var(--indigo); color:#fff; align-self:flex-end; border-bottom-right-radius:3px;}
+  .bubble .b-romaji{ font-family:'JetBrains Mono',monospace; font-size:11px; opacity:.7; margin-top:3px; display:block;}
+  .bubble .b-fr{ font-size:11.5px; opacity:.75; margin-top:3px; display:block; font-style:italic;}
+  .bubble-audio{ border:none; background:transparent; cursor:pointer; font-size:13px; vertical-align:middle; margin-left:6px;}
+  .conv-choices{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+  .conv-choice-btn{ text-align:left; border:1px solid var(--line); background:var(--paper); border-radius:10px; padding:11px 14px; cursor:pointer; font-size:13.5px; color:var(--ink); }
+  .conv-choice-btn:hover{ border-color:var(--indigo); background:var(--bg); }
+  .conv-choice-btn .cc-jp{ font-family:'Shippori Mincho',serif; font-size:15px; color:var(--indigo-deep); display:block; margin-bottom:2px;}
+  .conv-feedback{ font-size:12px; padding:8px 12px; border-radius:8px; margin-top:6px; }
+  .conv-feedback.best{ background:rgba(92,122,79,0.12); color:var(--green);}
+  .conv-feedback.ok{ background:rgba(176,122,40,0.12); color:var(--amber);}
+  .conv-feedback.weak{ background:rgba(184,64,31,0.1); color:var(--vermillion-deep);}
+  .conv-nav-row{ display:flex; justify-content:space-between; margin-top:16px; }
+  .conv-back{ border:1px solid var(--line); background:transparent; color:#6b6358; padding:9px 16px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer;}
+  .conv-done{ text-align:center; padding:30px 10px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="noren">
+    <div class="noren-rod"></div>
+    <div class="noren-strip"><span>話</span></div>
+    <div class="noren-strip accent"><span>そ</span></div>
+    <div class="noren-strip"><span>う</span></div>
+  </div>
+
+  <header class="title">
+    <h1>Nihongo no Eki · 京都</h1>
+    <p>Réviser · Ombrage · Lire les panneaux · Grammaire — guidé de A0 à B1</p>
+    <div class="streak-badge" id="streakBadge">🔥 0 jour</div>
+  </header>
+
+  <nav class="tabs">
+    <button data-view="skills" class="active">Compétences</button>
+    <button data-view="review">Réviser <span class="count" id="dueCount">0</span></button>
+    <button data-view="shadow">Ombrage</button>
+    <button data-view="conversation">Conversation</button>
+    <button data-view="reading">Lire</button>
+    <button data-view="grammar">Grammaire</button>
+    <button data-view="add">Mes phrases</button>
+  </nav>
+
+  <section class="view active" id="view-skills"><div class="panel"><div id="skillsArea"></div></div></section>
+  <section class="view" id="view-review"><div class="panel"><div id="soundBarReview"></div><div id="reviewArea"></div></div></section>
+  <section class="view" id="view-shadow"><div class="panel"><div id="soundBarShadow"></div><div id="shadowArea"></div></div></section>
+  <section class="view" id="view-conversation"><div class="panel"><div id="soundBarConv"></div><div id="conversationArea"></div></div></section>
+  <section class="view" id="view-reading"><div class="panel"><div id="readingArea"></div></div></section>
+  <section class="view" id="view-grammar"><div class="panel"><div id="grammarArea"></div></div></section>
+
+  <section class="view" id="view-add">
+    <div class="panel">
+      <div class="import-banner" id="importBanner">
+        <div class="ib-text">
+          <h3>Pack complet A0 → B1</h3>
+          <p id="importStatusText">Voyage, travail, étude, relation — avec explications grammaticales.</p>
+          <div class="level-pick" id="levelPick">
+            <label><input type="checkbox" value="A0" checked> A0</label>
+            <label><input type="checkbox" value="A1" checked> A1</label>
+            <label><input type="checkbox" value="A2" checked> A2</label>
+            <label><input type="checkbox" value="B1" checked> B1</label>
+          </div>
+        </div>
+        <button id="importBtn">Importer la sélection</button>
+      </div>
+
+      <div class="settings-row">
+        <span>Nouvelles phrases max / jour (évite la surcharge)</span>
+        <input type="number" id="dailyLimit" min="1" max="50" value="8" />
+      </div>
+
+      <p class="section-label">Ajouter une phrase manuellement</p>
+      <div class="add-form">
+        <div><label>Japonais</label><input class="jpf" id="f-jp" placeholder="一人です" /></div>
+        <div class="row2">
+          <div><label>Prononciation (romaji)</label><input id="f-romaji" placeholder="Hitori desu" /></div>
+          <div><label>Traduction</label><input id="f-fr" placeholder="Je suis seul(e)" /></div>
+        </div>
+        <div class="row2">
+          <div><label>Catégorie</label><input id="f-tag" placeholder="restaurant…" /></div>
+          <div><label>Explication (optionnel)</label><input id="f-note" placeholder="structure / particules" /></div>
+        </div>
+        <button class="add-btn" id="addPhraseBtn">Ajouter à mes révisions</button>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat"><b id="statTotal">0</b><span>Phrases</span></div>
+        <div class="stat"><b id="statDue">0</b><span>À revoir</span></div>
+        <div class="stat"><b id="statMastered">0</b><span>Maîtrisées</span></div>
+      </div>
+
+      <p class="section-label">Toutes mes phrases</p>
+      <div class="tag-chips" id="tagChips"></div>
+      <div class="phrase-list" id="phraseList"></div>
+    </div>
+  </section>
+
+  <footer class="note">頑張ってね — les données restent uniquement sur ton compte.</footer>
+</div>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'phrases-v2';
+  const META_KEY = 'meta-v2';
+  let phrases = [];
+  let meta = { streak:0, lastStudyDate:null, newIntroducedDate:null, newIntroducedCount:0, dailyLimit:8 };
+
+  let reviewQueue = [], currentReview = null, revealed = false;
+  let drillMode = false, drillInfo = null, drillAnswered = false;
+  let reviewedSinceBreak = 0, listenMode = false;
+  let interleaveActive = false, interleaveCard = null, interleaveReps = 0;
+  let lastTyped = '';
+  let shadowIdx = 0, shadowRate = 0.75, shadowFilterTag = 'all';
+  let recState = { recording:false, url:null, chunks:[] };
+  let mediaRecorder = null, mediaStream = null;
+  async function toggleRecording(){
+    if(recState.recording){
+      if(mediaRecorder) mediaRecorder.stop();
+      return;
+    }
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      alert("Ton navigateur ne permet pas l'enregistrement micro ici. Essaie dans Chrome.");
+      return;
+    }
+    try{
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+      recState.chunks = [];
+      mediaRecorder = new MediaRecorder(mediaStream);
+      mediaRecorder.ondataavailable = e => { if(e.data.size>0) recState.chunks.push(e.data); };
+      mediaRecorder.onstop = ()=>{
+        const blob = new Blob(recState.chunks, { type:'audio/webm' });
+        if(recState.url) URL.revokeObjectURL(recState.url);
+        recState.url = URL.createObjectURL(blob);
+        recState.recording = false;
+        mediaStream.getTracks().forEach(t=>t.stop());
+        renderShadow();
+      };
+      mediaRecorder.start();
+      recState.recording = true;
+      renderShadow();
+    }catch(e){
+      alert("Micro refusé ou indisponible. Autorise l'accès au micro dans les réglages du site (icône 🔒 ou caméra dans la barre d'adresse).");
+    }
+  }
+
+  // ---------- Embedded A0->B1 pack with grammar explanations ----------
+  const SEED_PACK = [
+    {jp:`こんにちは`,romaji:`Konnichiwa`,fr:`Bonjour (journée)`,tag:`général`,level:`A0`,ex:`Bloc figé, ne s'analyse pas. Vient de « 今日は… » (quant à aujourd'hui…), une phrase laissée en suspens. S'emploie ≈ de midi à 17h.`},
+    {jp:`おはようございます`,romaji:`Ohayou gozaimasu`,fr:`Bonjour (matin)`,tag:`général`,level:`A0`,ex:`De 早い (hayai = tôt) + ございます (forme ultra-polie). Entre proches, on garde juste おはよう.`},
+    {jp:`こんばんは`,romaji:`Konbanwa`,fr:`Bonsoir`,tag:`général`,level:`A0`,ex:`Même logique que こんにちは : « 今晩は… » (quant à ce soir…), phrase tronquée figée.`},
+    {jp:`さようなら`,romaji:`Sayounara`,fr:`Au revoir`,tag:`général`,level:`A0`,ex:`Adieu plutôt solennel / pour une longue séparation. Entre amis c'est trop fort — préfère またね.`},
+    {jp:`またね`,romaji:`Mata ne`,fr:`À plus`,tag:`général`,level:`A0`,ex:`また (encore) + ね (particule de connivence). « à se revoir, hein ».`},
+    {jp:`ありがとうございます`,romaji:`Arigatou gozaimasu`,fr:`Merci beaucoup`,tag:`général`,level:`A0`,ex:`ありがとう vient de 有り難い (« difficile à obtenir » = précieux). + ございます = politesse. On enlève ございます entre proches.`},
+    {jp:`すみません`,romaji:`Sumimasen`,fr:`Excusez-moi / Pardon`,tag:`général`,level:`A0`,ex:`Couteau suisse : s'excuser, remercier, ET appeler quelqu'un. Forme de 済む (« ne pas être réglé »).`},
+    {jp:`ごめんなさい`,romaji:`Gomen nasai`,fr:`Désolé(e)`,tag:`général`,level:`A0`,ex:`Excuse plus personnelle/sincère que すみません. Entre proches : juste ごめん.`},
+    {jp:`お願いします`,romaji:`Onegaishimasu`,fr:`S'il vous plaît`,tag:`général`,level:`A0`,ex:`お (préfixe poli) + 願い (souhait) + します (faire). Formule magique pour demander n'importe quoi.`},
+    {jp:`はい`,romaji:`Hai`,fr:`Oui`,tag:`général`,level:`A0`,ex:`Sert aussi de « je t'écoute / présent ». Familier : うん.`},
+    {jp:`いいえ`,romaji:`Iie`,fr:`Non`,tag:`général`,level:`A0`,ex:`Non poli. À l'oral on entend souvent ううん (familier).`},
+    {jp:`わかりました`,romaji:`Wakarimashita`,fr:`J'ai compris / OK`,tag:`général`,level:`A0`,ex:`Passé poli de わかる (comprendre). Le passé -ました marque ici « c'est compris, c'est acté ».`},
+    {jp:`わかりません`,romaji:`Wakarimasen`,fr:`Je ne comprends pas`,tag:`général`,level:`A0`,ex:`Négatif poli de わかる : -ます → -ません. À ne pas confondre avec できません (je ne peux pas).`},
+    {jp:`いただきます`,romaji:`Itadakimasu`,fr:`(avant de manger)`,tag:`général`,level:`A0`,ex:`Forme humble de « recevoir/manger ». Se dit avant le repas, mains jointes : « je reçois (cette nourriture) ».`},
+    {jp:`ごちそうさまでした`,romaji:`Gochisousama deshita`,fr:`(après le repas)`,tag:`général`,level:`A0`,ex:`ご馳走 (festin) + さま (respect) + でした (passé poli). Remercie pour le repas terminé.`},
+    {jp:`いち、に、さん`,romaji:`Ichi, ni, san`,fr:`1, 2, 3`,tag:`général`,level:`A0`,ex:`Lecture sino-japonaise, celle des prix et des comptes.`},
+    {jp:`し / よん、ご`,romaji:`Shi / yon, go`,fr:`4, 5`,tag:`général`,level:`A0`,ex:`4 a deux lectures : し (évitée car homophone de 死 = mort) et よん (préférée).`},
+    {jp:`ろく、なな / しち`,romaji:`Roku, nana / shichi`,fr:`6, 7`,tag:`général`,level:`A0`,ex:`7 = なな (clair à l'oral) ou しち.`},
+    {jp:`はち、きゅう、じゅう`,romaji:`Hachi, kyuu, juu`,fr:`8, 9, 10`,tag:`général`,level:`A0`,ex:`11 = じゅういち (10+1), 20 = にじゅう (2×10). Le système est régulier ensuite.`},
+    {jp:`ひゃく`,romaji:`Hyaku`,fr:`100`,tag:`général`,level:`A0`,ex:`300 = さんびゃく, 600/800 changent de son (irréguliers). 100 = juste ひゃく.`},
+    {jp:`せん`,romaji:`Sen`,fr:`1000`,tag:`général`,level:`A0`,ex:`3000 = さんぜん. Les prix courants au Japon : 千円 (sen-en) = 1000 yens.`},
+    {jp:`まん`,romaji:`Man`,fr:`10 000`,tag:`général`,level:`A0`,ex:`Attention : le japonais compte par tranches de 10 000, pas de 1000. 一万円 = 10 000 yens (le gros billet).`},
+    {jp:`いくらですか？`,romaji:`Ikura desu ka?`,fr:`Combien ça coûte ?`,tag:`général`,level:`A0`,ex:`いくら (combien, pour l'argent) + です + か (marqueur de question). か à l'oral remplace le point d'interrogation.`},
+    {jp:`円`,romaji:`En`,fr:`Yen`,tag:`général`,level:`A0`,ex:`Se place APRÈS le nombre : 500円 = gohyaku-en. Prononcé « en », pas « yen ».`},
+    {jp:`今何時ですか？`,romaji:`Ima nanji desu ka?`,fr:`Il est quelle heure ?`,tag:`général`,level:`A0`,ex:`今 (ima = maintenant) + 何時 (nanji = quelle heure) + ですか. 何 (nani/nan) = « quoi/combien ».`},
+    {jp:`〜はどこですか？`,romaji:`~ wa doko desu ka?`,fr:`Où est ~ ?`,tag:`voyage`,level:`A0`,ex:`Squelette réutilisable : [thème] + は (wa) + どこ (où) + ですか. Remplace le ~ par n'importe quel lieu.`},
+    {jp:`トイレはどこですか？`,romaji:`Toire wa doko desu ka?`,fr:`Où sont les toilettes ?`,tag:`voyage`,level:`A0`,ex:`トイレ (katakana, de l'anglais « toilet ») + le squelette ci-dessus. La phrase de survie nº1.`},
+    {jp:`ここに行きたいです`,romaji:`Koko ni ikitai desu`,fr:`Je veux aller ici`,tag:`voyage`,level:`A0`,ex:`ここ (ici) + に (direction) + 行きたい (vouloir aller : 行く + たい) + です. Montre l'adresse sur ton téléphone en le disant.`},
+    {jp:`駅`,romaji:`Eki`,fr:`La gare`,tag:`voyage`,level:`A0`,ex:`Kanji partout sur les panneaux : 京都駅 = gare de Kyoto. À reconnaître absolument.`},
+    {jp:`一人です`,romaji:`Hitori desu`,fr:`Je suis seul(e)`,tag:`voyage`,level:`A0`,ex:`一人 (hitori, compteur de personnes, irrégulier) + です. Pas de « je » : le contexte suffit.`},
+    {jp:`二人です`,romaji:`Futari desu`,fr:`On est deux`,tag:`voyage`,level:`A0`,ex:`二人 (futari, irrégulier comme hitori). À partir de 3 c'est régulier : 三人 (san-nin).`},
+    {jp:`パスポート`,romaji:`Pasupooto`,fr:`Passeport`,tag:`voyage`,level:`A0`,ex:`Emprunt anglais → katakana. Les ー allongent la voyelle (pa-su-pôô-to).`},
+    {jp:`助けてください`,romaji:`Tasukete kudasai`,fr:`Aidez-moi`,tag:`voyage`,level:`A0`,ex:`助けて (forme -て de 助ける = aider) + ください. Structure clé : [verbe en -て] + ください = « fais X, s'il te plaît ».`},
+    {jp:`私は〜です`,romaji:`Watashi wa ~ desu`,fr:`Je suis ~`,tag:`relation`,level:`A0`,ex:`私 (watashi = je) + は (thème) + [nom] + です. Le squelette de toute auto-présentation.`},
+    {jp:`フランスから来ました`,romaji:`Furansu kara kimashita`,fr:`Je viens de France`,tag:`relation`,level:`A0`,ex:`フランス + から (depuis) + 来ました (passé poli de 来る = venir). Ordre : lieu + depuis + verbe (toujours en dernier).`},
+    {jp:`〜歳です`,romaji:`~ sai desu`,fr:`J'ai ~ ans`,tag:`relation`,level:`A0`,ex:`歳 (sai = compteur d'âge). Exception célèbre : 20 ans = はたち (hatachi), pas にじゅっさい.`},
+    {jp:`よろしくお願いします`,romaji:`Yoroshiku onegaishimasu`,fr:`Ravi de te connaître`,tag:`relation`,level:`A0`,ex:`Rituel intraduisible : « comptez sur moi / soyons bien ensemble ». TOUJOURS après s'être présenté, sinon ça paraît froid.`},
+    {jp:`お名前は何ですか？`,romaji:`Onamae wa nan desu ka?`,fr:`Quel est votre nom ?`,tag:`relation`,level:`A0`,ex:`お (préfixe poli) + 名前 (nom) + は + 何 (nan = quoi) + ですか. Entre jeunes, plus relax : 名前は？`},
+
+    {jp:`学生です`,romaji:`Gakusei desu`,fr:`Je suis étudiant(e)`,tag:`étude`,level:`A1`,ex:`学生 (étudiant) + です. です = « c'est / je suis », invariable en genre et nombre.`},
+    {jp:`交換留学生です`,romaji:`Koukan ryuugakusei desu`,fr:`Je suis en échange`,tag:`étude`,level:`A1`,ex:`交換 (échange) + 留学生 (étudiant à l'étranger). Deux mots collés = un seul concept.`},
+    {jp:`大学`,romaji:`Daigaku`,fr:`Université`,tag:`étude`,level:`A1`,ex:`大 (grand) + 学 (étude). 高校 = lycée, 中学 = collège. Le 学 (étude) revient partout.`},
+    {jp:`〜を専攻しています`,romaji:`~ wo senkou shite imasu`,fr:`Je me spécialise en ~`,tag:`étude`,level:`A1`,ex:`を (particule d'objet) + 専攻 (spécialité) + しています (forme -te iru = état/action en cours).`},
+    {jp:`授業`,romaji:`Jugyou`,fr:`Cours`,tag:`étude`,level:`A1`,ex:`授業に出る = assister au cours. 授業中 = pendant le cours.`},
+    {jp:`先生`,romaji:`Sensei`,fr:`Professeur`,tag:`étude`,level:`A1`,ex:`Litt. « né avant ». Désigne aussi médecins, maîtres, mentors. Jamais pour parler de soi.`},
+    {jp:`宿題`,romaji:`Shukudai`,fr:`Devoirs`,tag:`étude`,level:`A1`,ex:`宿題をする = faire ses devoirs.`},
+    {jp:`もう一度説明してもらえますか？`,romaji:`Mou ichido setsumei shite moraemasu ka?`,fr:`Pouvez-vous ré-expliquer ?`,tag:`étude`,level:`A1`,ex:`もう一度 (encore une fois) + 説明して (forme -て) + もらえますか (potentiel de もらう). Structure [-て]+もらえますか = « puis-je recevoir que vous… ? » = demande polie d'un service.`},
+    {jp:`〜はどういう意味ですか？`,romaji:`~ wa dou iu imi desu ka?`,fr:`Que signifie ~ ?`,tag:`étude`,level:`A1`,ex:`どういう (quel genre de) + 意味 (sens) + ですか. La phrase pour apprendre en immersion.`},
+    {jp:`試験`,romaji:`Shiken`,fr:`Examen`,tag:`étude`,level:`A1`,ex:`テスト (de l'anglais « test ») est aussi courant pour les petits contrôles.`},
+    {jp:`会社`,romaji:`Kaisha`,fr:`Entreprise`,tag:`travail`,level:`A1`,ex:`会社員 (kaishain) = employé de bureau, salarié.`},
+    {jp:`仕事`,romaji:`Shigoto`,fr:`Travail / Boulot`,tag:`travail`,level:`A1`,ex:`仕事をする = travailler. お仕事 (avec お poli) pour parler du travail d'autrui.`},
+    {jp:`〜で働いています`,romaji:`~ de hataraite imasu`,fr:`Je travaille chez/à ~`,tag:`travail`,level:`A1`,ex:`で (lieu de l'action) + 働く (travailler) + ています (état durable). で = « là où se passe l'action ».`},
+    {jp:`会議`,romaji:`Kaigi`,fr:`Réunion`,tag:`travail`,level:`A1`,ex:`会議室 = salle de réunion (室 = pièce).`},
+    {jp:`名刺`,romaji:`Meishi`,fr:`Carte de visite`,tag:`travail`,level:`A1`,ex:`Rituel d'échange codifié : on la reçoit à deux mains, on la regarde, on ne la range pas tout de suite.`},
+    {jp:`上司`,romaji:`Joushi`,fr:`Supérieur hiérarchique`,tag:`travail`,level:`A1`,ex:`上 (haut). À l'inverse, 部下 (buka) = subordonné.`},
+    {jp:`同僚`,romaji:`Douryou`,fr:`Collègue`,tag:`travail`,level:`A1`,ex:`同 (même) + 僚 (compagnon).`},
+    {jp:`何時に始まりますか？`,romaji:`Nanji ni hajimarimasu ka?`,fr:`Ça commence à quelle heure ?`,tag:`travail`,level:`A1`,ex:`何時 (quelle heure) + に (moment précis) + 始まる (commencer, intransitif) + ますか. に marque l'heure exacte.`},
+    {jp:`お疲れ様です`,romaji:`Otsukaresama desu`,fr:`(salut collègue / merci du travail)`,tag:`travail`,level:`A1`,ex:`Litt. « tu as dû être fatigué (par l'effort) ». Sert de bonjour, d'au revoir et de merci entre collègues.`},
+    {jp:`このバスは〜に止まりますか？`,romaji:`Kono basu wa ~ ni tomarimasu ka?`,fr:`Ce bus s'arrête à ~ ?`,tag:`voyage`,level:`A1`,ex:`この (ce) + は (thème) + に (point d'arrêt) + 止まる (s'arrêter) + ますか.`},
+    {jp:`〜まで行きたいんですが`,romaji:`~ made ikitain desu ga`,fr:`Je voudrais aller à ~`,tag:`voyage`,level:`A1`,ex:`まで (jusqu'à) + 行きたい + んです (nuance explicative) + が. Le が final laisse la phrase ouverte = « …et donc, pouvez-vous m'aider ? ». Très poli.`},
+    {jp:`予約しています`,romaji:`Yoyaku shite imasu`,fr:`J'ai une réservation`,tag:`voyage`,level:`A1`,ex:`予約 (réservation) + しています. La forme -te iru exprime ici l'état résultant : « c'est réservé ».`},
+    {jp:`ホテル`,romaji:`Hoteru`,fr:`Hôtel`,tag:`voyage`,level:`A1`,ex:`Emprunt. 旅館 (ryokan) = auberge traditionnelle japonaise.`},
+    {jp:`何泊ですか？`,romaji:`Nanpaku desu ka?`,fr:`Combien de nuits ?`,tag:`voyage`,level:`A1`,ex:`何 (combien) + 泊 (compteur de nuitées) + ですか. 一泊 = 1 nuit, 二泊 = 2 nuits.`},
+    {jp:`チェックインお願いします`,romaji:`Chekku-in onegaishimasu`,fr:`L'enregistrement svp`,tag:`voyage`,level:`A1`,ex:`Emprunt « check-in » + お願いします. Pour partir : チェックアウト.`},
+    {jp:`Wi-Fiはありますか？`,romaji:`Wi-Fi wa arimasu ka?`,fr:`Il y a du Wi-Fi ?`,tag:`voyage`,level:`A1`,ex:`は + あります (il y a, pour choses inanimées) + か. Pour les êtres vivants, on utiliserait います.`},
+    {jp:`趣味は何ですか？`,romaji:`Shumi wa nan desu ka?`,fr:`Quel est ton hobby ?`,tag:`relation`,level:`A1`,ex:`趣味 (hobby) + は + 何 + ですか. Question d'ouverture sociale classique.`},
+    {jp:`〜が好きです`,romaji:`~ ga suki desu`,fr:`J'aime ~`,tag:`relation`,level:`A1`,ex:`が (sujet de l'émotion) + 好き (« aimé ») + です. Attention : 好き est un adjectif, pas un verbe — d'où です et non un verbe « aimer ».`},
+    {jp:`〜が苦手です`,romaji:`~ ga nigate desu`,fr:`Je n'aime pas trop ~`,tag:`relation`,level:`A1`,ex:`苦手 = « pas doué / peu friand ». Plus doux et poli que 嫌い (détester) — préféré socialement.`},
+    {jp:`LINE交換しよう`,romaji:`LINE koukan shiyou`,fr:`On échange nos LINE ?`,tag:`relation`,level:`A1`,ex:`交換 (échange) + しよう (forme volitive familière de する = « faisons-le »). LINE se prononce « rain ».`},
+    {jp:`一緒に行きませんか？`,romaji:`Issho ni ikimasen ka?`,fr:`On y va ensemble ?`,tag:`relation`,level:`A1`,ex:`一緒に (ensemble) + 行きませんか (négatif interrogatif). Inviter par la négation = forme polie typiquement japonaise.`},
+    {jp:`元気ですか？`,romaji:`Genki desu ka?`,fr:`Tu vas bien ?`,tag:`relation`,level:`A1`,ex:`元気 (en forme, plein d'énergie) + ですか. Note : moins automatique qu'en France, on ne le dit pas à chaque rencontre.`},
+    {jp:`元気です`,romaji:`Genki desu`,fr:`Je vais bien`,tag:`relation`,level:`A1`,ex:`Réponse simple. Variante modeste : まあまあ (couci-couça).`},
+
+    {jp:`道に迷いました`,romaji:`Michi ni mayoimashita`,fr:`Je me suis perdu(e)`,tag:`voyage`,level:`A2`,ex:`道 (chemin) + に + 迷う (se perdre) au passé poli. に marque ici le « dans quoi » on se perd.`},
+    {jp:`〜行きの電車はどれですか？`,romaji:`~ iki no densha wa dore desu ka?`,fr:`Quel train va à ~ ?`,tag:`voyage`,level:`A2`,ex:`〜行き (à destination de) + の (lien) + 電車 + は + どれ (lequel, parmi plusieurs) + ですか.`},
+    {jp:`乗り換えが必要ですか？`,romaji:`Norikae ga hitsuyou desu ka?`,fr:`Faut-il changer ?`,tag:`voyage`,level:`A2`,ex:`乗り換え (correspondance) + が + 必要 (nécessaire) + ですか. 必要 est un adjectif-な.`},
+    {jp:`忘れ物をしました`,romaji:`Wasuremono wo shimashita`,fr:`J'ai oublié quelque chose`,tag:`voyage`,level:`A2`,ex:`忘れ物 (objet oublié) + を + しました. Litt. « j'ai fait un oubli ».`},
+    {jp:`返金できますか？`,romaji:`Henkin dekimasu ka?`,fr:`Puis-je être remboursé ?`,tag:`voyage`,level:`A2`,ex:`返金 (remboursement) + できますか (potentiel de する = « est-ce faisable ? »).`},
+    {jp:`故障しています`,romaji:`Koshou shite imasu`,fr:`C'est en panne`,tag:`voyage`,level:`A2`,ex:`故障 (panne) + しています. -te iru décrit l'état actuel résultant.`},
+    {jp:`具合が悪いです`,romaji:`Guai ga warui desu`,fr:`Je ne me sens pas bien`,tag:`voyage`,level:`A2`,ex:`具合 (état de santé) + が + 悪い (mauvais, adjectif-i) + です.`},
+    {jp:`病院はどこですか？`,romaji:`Byouin wa doko desu ka?`,fr:`Où est l'hôpital ?`,tag:`voyage`,level:`A2`,ex:`Piège : 病院 (byouin = hôpital) vs 美容院 (biyouin = salon de coiffure). Une voyelle change tout !`},
+    {jp:`〜アレルギーがあります`,romaji:`~ arerugii ga arimasu`,fr:`J'ai une allergie à ~`,tag:`voyage`,level:`A2`,ex:`アレルギー (emprunt) + が + あります. Ex : ナッツアレルギー = allergie aux noix. Vital au restaurant.`},
+    {jp:`〜さんはいらっしゃいますか？`,romaji:`~ san wa irasshaimasu ka?`,fr:`M./Mme ~ est là ?`,tag:`travail`,level:`A2`,ex:`いらっしゃる = forme honorifique de いる (être présent). Pour parler d'autrui avec respect, ex. au téléphone.`},
+    {jp:`後で電話します`,romaji:`Atode denwa shimasu`,fr:`Je rappelle plus tard`,tag:`travail`,level:`A2`,ex:`後で (plus tard) + 電話 (téléphone) + します. 電話する = téléphoner.`},
+    {jp:`来週まで待てますか？`,romaji:`Raishuu made matemasu ka?`,fr:`Pouvez-vous attendre la semaine prochaine ?`,tag:`travail`,level:`A2`,ex:`来週 (semaine prochaine) + まで (jusqu'à) + 待てます (potentiel de 待つ = pouvoir attendre) + か.`},
+    {jp:`確認させてください`,romaji:`Kakunin sasete kudasai`,fr:`Laissez-moi vérifier`,tag:`travail`,level:`A2`,ex:`確認 (vérification) + させて (causatif-て de する) + ください. させてください = « permettez que je fasse ».`},
+    {jp:`〜について相談したいです`,romaji:`~ ni tsuite soudan shitai desu`,fr:`Je voudrais discuter de ~`,tag:`travail`,level:`A2`,ex:`について (au sujet de) + 相談 (consultation) + したい (vouloir faire). について s'accroche à un thème.`},
+    {jp:`締め切り`,romaji:`Shimekiri`,fr:`Date limite`,tag:`travail`,level:`A2`,ex:`Litt. « fermer-couper ». Plus formel : 期限 (kigen).`},
+    {jp:`休みを取りたいです`,romaji:`Yasumi wo toritai desu`,fr:`Je voudrais un congé`,tag:`travail`,level:`A2`,ex:`休み (repos/congé) + を + 取りたい (vouloir prendre : 取る + たい).`},
+    {jp:`出張`,romaji:`Shucchou`,fr:`Déplacement pro`,tag:`travail`,level:`A2`,ex:`出 (sortir) + 張 (étendre). 出張する = partir en déplacement.`},
+    {jp:`サークルに入りたいんですが`,romaji:`Saakuru ni hairitain desu ga`,fr:`Je voudrais rejoindre un club`,tag:`étude`,level:`A2`,ex:`サークル (club étudiant) + に + 入りたい (vouloir entrer) + んですが (ouverture polie). LA phrase pour se faire des amis à la fac.`},
+    {jp:`一緒に勉強しない？`,romaji:`Issho ni benkyou shinai?`,fr:`On révise ensemble ?`,tag:`étude`,level:`A2`,ex:`勉強しない ? = négatif familier de 勉強する. La négation interrogative = invitation douce.`},
+    {jp:`課題いつまでですか？`,romaji:`Kadai itsu made desu ka?`,fr:`Le devoir est pour quand ?`,tag:`étude`,level:`A2`,ex:`課題 (devoir/tâche) + いつまで (jusqu'à quand) + ですか.`},
+    {jp:`出席を取ります`,romaji:`Shusseki wo torimasu`,fr:`On fait l'appel`,tag:`étude`,level:`A2`,ex:`出席 (présence) + を + 取ります (prendre). 欠席 = absence.`},
+    {jp:`奨学金`,romaji:`Shougakukin`,fr:`Bourse d'études`,tag:`étude`,level:`A2`,ex:`奨学 (encouragement à l'étude) + 金 (argent).`},
+    {jp:`レポートを書かなければなりません`,romaji:`Repooto wo kakanakereba narimasen`,fr:`Je dois écrire un rapport`,tag:`étude`,level:`A2`,ex:`Structure clé de l'obligation : 書く → 書かなければなりません, litt. « si je n'écris pas, ça ne va pas » = je dois écrire.`},
+    {jp:`図書館で勉強します`,romaji:`Toshokan de benkyou shimasu`,fr:`J'étudie à la bibliothèque`,tag:`étude`,level:`A2`,ex:`図書館 (bibliothèque) + で (lieu de l'action) + 勉強します.`},
+    {jp:`今週末、一緒に出かけない？`,romaji:`Konshuumatsu, issho ni dekakenai?`,fr:`Ce week-end, on sort ?`,tag:`relation`,level:`A2`,ex:`今週末 (ce week-end) + 一緒に + 出かけない ? (négatif familier de 出かける = sortir). Encore l'invitation par la négation.`},
+    {jp:`めっちゃ楽しい！`,romaji:`Meccha tanoshii!`,fr:`C'est trop fun !`,tag:`relation`,level:`A2`,ex:`めっちゃ (argot Kansai = « trop », au lieu du standard すごく) + 楽しい (amusant, adjectif-i). À Kyoto, めっちゃ te fait passer pour un local.`},
+    {jp:`そろそろ帰ります`,romaji:`Sorosoro kaerimasu`,fr:`Je vais bientôt rentrer`,tag:`relation`,level:`A2`,ex:`そろそろ (« il commence à être l'heure de… ») + 帰ります (rentrer chez soi). Façon douce d'annoncer son départ.`},
+    {jp:`また今度ね`,romaji:`Mata kondo ne`,fr:`À une prochaine`,tag:`relation`,level:`A2`,ex:`また (encore) + 今度 (la prochaine fois) + ね. Moins formel que さようなら.`},
+    {jp:`何て呼べばいい？`,romaji:`Nante yobeba ii?`,fr:`Comment je t'appelle ?`,tag:`relation`,level:`A2`,ex:`何て (comment) + 呼べば (conditionnel -ば de 呼ぶ = appeler) + いい (bien). Litt. « si j'appelle comment, c'est bien ? ». Plus naturel que お名前は ? entre jeunes.`},
+    {jp:`マジで！？`,romaji:`Maji de!?`,fr:`Sérieux !?`,tag:`relation`,level:`A2`,ex:`マジ (argot, de 真面目 majime = sérieux) + で. Expression de surprise. L'émotion compte autant que le mot.`},
+    {jp:`彼女はいますか？`,romaji:`Kanojo wa imasu ka?`,fr:`Tu as une copine ?`,tag:`relation`,level:`A2`,ex:`彼女 (elle / petite amie selon contexte) + は + います (verbe d'existence pour personnes) + か.`},
+    {jp:`彼氏はいますか？`,romaji:`Kareshi wa imasu ka?`,fr:`Tu as un copain ?`,tag:`relation`,level:`A2`,ex:`彼氏 (petit ami) + は + います + か. いる/います = exister, pour les êtres animés.`},
+    {jp:`友達になりましょう`,romaji:`Tomodachi ni narimashou`,fr:`Devenons amis`,tag:`relation`,level:`A2`,ex:`友達 (ami) + に + なりましょう (なる = devenir, au volitif poli « -ましょう » = proposons-nous de).`},
+
+    {jp:`予定が変わったので、変更できますか？`,romaji:`Yotei ga kawatta node, henkou dekimasu ka?`,fr:`Mes plans ont changé, je peux modifier ?`,tag:`voyage`,level:`B1`,ex:`予定 (plan) + が + 変わった (passé de 変わる, changer) + ので (« parce que », lien causal soutenu) + 変更できますか (potentiel). ので relie deux propositions par la cause.`},
+    {jp:`もう少し安いプランはありますか？`,romaji:`Mou sukoshi yasui puran wa arimasu ka?`,fr:`Une option moins chère ?`,tag:`voyage`,level:`B1`,ex:`もう少し (un peu plus) + 安い (bon marché) + プラン + は + ありますか. もう少し + adjectif = « un peu plus ~ ».`},
+    {jp:`〜の場合はどうすればいいですか？`,romaji:`~ no baai wa dou sureba ii desu ka?`,fr:`Que faire dans le cas de ~ ?`,tag:`voyage`,level:`B1`,ex:`場合 (cas) + どうすれば (conditionnel de する) + いい. どうすればいい = « comment faire pour que ce soit bien » = « que dois-je faire ? ».`},
+    {jp:`個人的な事情で予定を変更したいです`,romaji:`Kojinteki na jijou de yotei wo henkou shitai desu`,fr:`Changer mes plans pour raisons perso`,tag:`voyage`,level:`B1`,ex:`個人的な (personnel, adjectif-な → な devant un nom) + 事情 (circonstances) + で (cause) + 変更したい.`},
+    {jp:`旅行保険に入っています`,romaji:`Ryokou hoken ni haitte imasu`,fr:`J'ai une assurance voyage`,tag:`voyage`,level:`B1`,ex:`保険に入る = litt. « entrer dans une assurance » = être assuré. に marque ce dans quoi on entre.`},
+    {jp:`私の意見では〜と思います`,romaji:`Watashi no iken de wa ~ to omoimasu`,fr:`À mon avis, je pense que ~`,tag:`travail`,level:`B1`,ex:`意見では (du point de vue de l'opinion) + [contenu] + と (guillemet de citation/pensée) + 思います. と思う = la structure nº1 pour donner un avis.`},
+    {jp:`〜という点に賛成です`,romaji:`~ to iu ten ni sansei desu`,fr:`Je suis d'accord sur ce point`,tag:`travail`,level:`B1`,ex:`という (« le fait que / qu'on appelle ») + 点 (point) + に + 賛成 (accord). という transforme une idée en groupe nominal.`},
+    {jp:`〜という点に反対です`,romaji:`~ to iu ten ni hantai desu`,fr:`Je ne suis pas d'accord sur ce point`,tag:`travail`,level:`B1`,ex:`Même structure que ci-dessus avec 反対 (opposition). Désaccord poli et précis.`},
+    {jp:`もう少し詳しく説明していただけますか？`,romaji:`Mou sukoshi kuwashiku setsumei shite itadakemasu ka?`,fr:`Plus en détail svp ?`,tag:`travail`,level:`B1`,ex:`詳しく (adverbe de 詳しい = détaillé) + 説明して + いただけますか (potentiel de いただく = encore plus poli que もらえますか). Registre soigné pour un supérieur.`},
+    {jp:`期限内に終わらせるのは難しいかもしれません`,romaji:`Kigen-nai ni owaraseru no wa muzukashii kamoshiremasen`,fr:`Difficile de finir à temps`,tag:`travail`,level:`B1`,ex:`終わらせる (causatif de 終わる = faire finir) + のは (の nominalise le verbe : « le fait de finir ») + 難しい + かもしれません (« il se peut que »). Annonce un problème en douceur.`},
+    {jp:`〜という提案をしたいです`,romaji:`~ to iu teian wo shitai desu`,fr:`Je voudrais proposer ~`,tag:`travail`,level:`B1`,ex:`という + 提案 (proposition) + を + したい. 提案をする = faire une proposition.`},
+    {jp:`キャリアアップを考えています`,romaji:`Kyaria appu wo kangaete imasu`,fr:`J'envisage une évolution`,tag:`travail`,level:`B1`,ex:`キャリアアップ (« career up », wasei-eigo = anglais inventé au Japon) + を + 考えています (réfléchir, état en cours).`},
+    {jp:`〜と比べてどう思いますか？`,romaji:`~ to kurabete dou omoimasu ka?`,fr:`Qu'en pensez-vous par rapport à ~ ?`,tag:`travail`,level:`B1`,ex:`と (avec) + 比べて (forme -て de 比べる = comparer) + どう思いますか (qu'en pensez-vous). [X]と比べて = « comparé à X ».`},
+    {jp:`この研究テーマに興味があります`,romaji:`Kono kenkyuu teema ni kyoumi ga arimasu`,fr:`Ce sujet de recherche m'intéresse`,tag:`étude`,level:`B1`,ex:`興味がある = avoir de l'intérêt. に marque l'objet de l'intérêt : « j'ai de l'intérêt envers ce thème ».`},
+    {jp:`〜という観点から考えると`,romaji:`~ to iu kanten kara kangaeru to`,fr:`Du point de vue de ~`,tag:`étude`,level:`B1`,ex:`観点 (point de vue) + から (depuis) + 考えると (と ici = « quand/si on considère »). Sert à introduire une analyse.`},
+    {jp:`データによると〜ということがわかります`,romaji:`Deeta ni yoru to ~ to iu koto ga wakarimasu`,fr:`Selon les données, on voit que ~`,tag:`étude`,level:`B1`,ex:`によると (« selon, d'après ») + ということ (« le fait que », nominalise une phrase entière) + わかります. Registre académique.`},
+    {jp:`もし〜だったら、どうなりますか？`,romaji:`Moshi ~ dattara, dou narimasu ka?`,fr:`Et si ~, qu'arriverait-il ?`,tag:`étude`,level:`B1`,ex:`もし (« si », renforce le conditionnel) + だったら (conditionnel de です) + どうなりますか (なる = devenir : « ça devient comment ? »).`},
+    {jp:`卒業後の進路について考えています`,romaji:`Sotsugyou-go no shinro ni tsuite kangaete imasu`,fr:`Je réfléchis à mon après-diplôme`,tag:`étude`,level:`B1`,ex:`卒業後 (après le diplôme : 後 = après) + 進路 (orientation/voie) + について + 考えています.`},
+    {jp:`〜に対してどう対応すればいいですか？`,romaji:`~ ni taishite dou taiou sureba ii desu ka?`,fr:`Comment réagir face à ~ ?`,tag:`étude`,level:`B1`,ex:`に対して (envers, face à) + 対応すれば (conditionnel de 対応する = réagir/gérer) + いい.`},
+    {jp:`最近どう？`,romaji:`Saikin dou?`,fr:`Ça va en ce moment ?`,tag:`relation`,level:`B1`,ex:`最近 (récemment) + どう (comment). Familier, sans です ni か — ton décontracté entre amis.`},
+    {jp:`実は〜について悩んでいます`,romaji:`Jitsu wa ~ ni tsuite nayande imasu`,fr:`En fait, je m'inquiète au sujet de ~`,tag:`relation`,level:`B1`,ex:`実は (à vrai dire — introduit une confidence) + について + 悩んでいる (être tourmenté, état en cours).`},
+    {jp:`あなたのおかげで助かりました`,romaji:`Anata no okage de tasukarimashita`,fr:`Grâce à toi, ça m'a aidé`,tag:`relation`,level:`B1`,ex:`おかげで (« grâce à ») + 助かりました (passé de 助かる = être sauvé/soulagé, intransitif). Note : 助かる ≠ 助ける (aider quelqu'un).`},
+    {jp:`もっと仲良くなりたいです`,romaji:`Motto nakayoku naritai desu`,fr:`J'aimerais qu'on soit plus proches`,tag:`relation`,level:`B1`,ex:`もっと (plus) + 仲良く (adverbe de 仲良い = être proche) + なりたい (vouloir devenir : なる + たい).`},
+    {jp:`将来について話したいことがあります`,romaji:`Shourai ni tsuite hanashitai koto ga arimasu`,fr:`J'ai des choses à dire sur l'avenir`,tag:`relation`,level:`B1`,ex:`将来 (avenir) + について + 話したいこと (こと nominalise : « des choses que je veux dire ») + があります.`},
+    {jp:`誤解しないでほしいんですが`,romaji:`Gokai shinaide hoshiin desu ga`,fr:`Ne te méprends pas, mais…`,tag:`relation`,level:`B1`,ex:`誤解しないで (forme -て négative = « ne fais pas ») + ほしい (vouloir que l'AUTRE fasse) + んですが. [-ないで]+ほしい = « j'aimerais que tu ne… ».`},
+    {jp:`〜には感謝しています`,romaji:`~ ni wa kansha shite imasu`,fr:`Je suis reconnaissant pour ~`,tag:`relation`,level:`B1`,ex:`には (に + は pour insister sur la cible) + 感謝しています (être reconnaissant, état durable).`},
+    {jp:`距離を置きたいわけじゃないんです`,romaji:`Kyori wo okitai wake janain desu`,fr:`Ce n'est pas que je veux prendre mes distances`,tag:`relation`,level:`B1`,ex:`距離を置く (prendre ses distances) + たい + わけじゃない (« ce n'est pas comme si / pas que… ») + んです. わけじゃない nuance et adoucit une affirmation.`}
+  ];
+
+  // ---------- Pareto 20% — les phrases qui couvrent ~80% des situations réelles ----------
+  const CORE_SET = new Set([
+    `こんにちは`,`すみません`,`ありがとうございます`,`お願いします`,`はい`,`いいえ`,
+    `わかりません`,`いくらですか？`,`〜はどこですか？`,`トイレはどこですか？`,
+    `一人です`,`私は〜です`,`よろしくお願いします`,`〜が好きです`,
+    `これをください`,`〜まで行きたいんですが`,`もう一度お願いします`,
+    `〜を専攻しています`,`一緒に行きませんか？`,`元気ですか？`,`フランスから来ました`
+  ]);
+
+  // ---------- Détection automatique des patterns grammaticaux (pattern recognition) ----------
+  function detectGrammarTags(jp){
+    const tags = [];
+    if(/たい/.test(jp)) tags.push('vouloir -たい');
+    if(/ました/.test(jp)) tags.push('passé -ました');
+    if(/ません/.test(jp)) tags.push('négation -ません');
+    if(/ましょう/.test(jp)) tags.push('proposition -ましょう');
+    if(/てください/.test(jp)) tags.push('demande -てください');
+    if(/ています|ています/.test(jp)) tags.push('en cours -ています');
+    if(/ませんか/.test(jp)) tags.push('invitation -ませんか');
+    if(/は/.test(jp)) tags.push('は thème');
+    if(/が/.test(jp)) tags.push('が sujet');
+    if(/を/.test(jp)) tags.push('を objet');
+    if(/に/.test(jp) && !/たい/.test(jp)) tags.push('に direction/moment');
+    if(/で/.test(jp)) tags.push('で lieu/moyen');
+    return tags.slice(0,3);
+  }
+  const PARTICLE_SET = ['は','が','を','に','で','の'];
+  function findParticleForDrill(jp){
+    for(const p of PARTICLE_SET){
+      const idx = jp.indexOf(p);
+      if(idx > 0) return {particle:p, idx};
+    }
+    return null;
+  }
+
+  // ---------- Conversations simulées (output guidé) ----------
+  const CONVERSATIONS = [
+    { id:'resto', icon:'🍜', title:'Entrer dans un izakaya', skill:'voyage', level:'A0-A1', turns:[
+      { speaker:'npc', jp:'いらっしゃいませ！何名様ですか？', romaji:'Irasshaimase! Nanmeisama desu ka?', fr:'Bienvenue ! Combien de personnes ?' },
+      { speaker:'user', choices:[
+        { jp:'一人です', romaji:'Hitori desu', fr:'Je suis seul(e)', quality:'best', feedback:'Parfait — simple, clair, exactement ce qu\'il faut dire.' },
+        { jp:'私は一人の人間です', romaji:'Watashi wa hitori no ningen desu', fr:'Je suis un être humain seul', quality:'weak', feedback:'Grammaticalement correct mais personne ne dit ça — trop littéral, sonne étrange.' },
+        { jp:'一人', romaji:'Hitori', fr:'Un (sans rien d\'autre)', quality:'ok', feedback:'Compris, mais ajouter です rend ta phrase plus complète et polie.' }
+      ]},
+      { speaker:'npc', jp:'かしこまりました。こちらへどうぞ。', romaji:'Kashikomarimashita. Kochira e douzo.', fr:'Bien compris. Par ici, je vous prie.' },
+      { speaker:'npc', jp:'お決まりになりましたら、お呼びください。', romaji:'Okimari ni narimashitara, oyobi kudasai.', fr:'Quand vous aurez choisi, appelez-moi.' },
+      { speaker:'user', choices:[
+        { jp:'すみません！注文お願いします', romaji:'Sumimasen! Chuumon onegaishimasu', fr:'Excusez-moi ! Je voudrais commander', quality:'best', feedback:'Exactement la formule attendue dans un izakaya.' },
+        { jp:'ヘイ！', romaji:'Hei!', fr:'Hé !', quality:'weak', feedback:'Trop familier/abrupt — すみません reste la formule universelle pour appeler.' },
+        { jp:'お願いします', romaji:'Onegaishimasu', fr:'S\'il vous plaît', quality:'ok', feedback:'Ça marche mais sans すみません avant, le serveur doit déjà te regarder.' }
+      ]}
+    ]},
+    { id:'direction', icon:'🚏', title:'Demander son chemin', skill:'voyage', level:'A1-A2', turns:[
+      { speaker:'user', choices:[
+        { jp:'すみません、京都駅はどこですか？', romaji:'Sumimasen, Kyouto-eki wa doko desu ka?', fr:'Excusez-moi, où est la gare de Kyoto ?', quality:'best', feedback:'Structure parfaite : すみません + lieu + はどこですか.' },
+        { jp:'京都駅！', romaji:'Kyouto-eki!', fr:'Gare de Kyoto !', quality:'weak', feedback:'Ça se comprend à la limite mais ce n\'est pas une question — risque de réponse confuse.' },
+        { jp:'京都駅はどこ？', romaji:'Kyouto-eki wa doko?', fr:'Où est la gare de Kyoto ?', quality:'ok', feedback:'Correct mais familier — avec un inconnu dans la rue, ですか est plus sûr.' }
+      ]},
+      { speaker:'npc', jp:'この道をまっすぐ行ってください。', romaji:'Kono michi wo massugu itte kudasai.', fr:'Allez tout droit sur cette route.' },
+      { speaker:'npc', jp:'わかりましたか？', romaji:'Wakarimashita ka?', fr:'Vous avez compris ?' },
+      { speaker:'user', choices:[
+        { jp:'はい、わかりました。ありがとうございます', romaji:'Hai, wakarimashita. Arigatou gozaimasu', fr:'Oui, j\'ai compris. Merci beaucoup', quality:'best', feedback:'Clair et poli — clôture idéale de l\'échange.' },
+        { jp:'もう一度お願いします', romaji:'Mou ichido onegaishimasu', fr:'Encore une fois s\'il vous plaît', quality:'ok', feedback:'Très bien si tu n\'as vraiment pas compris — utile à connaître par cœur.' },
+        { jp:'たぶん', romaji:'Tabun', fr:'Peut-être', quality:'weak', feedback:'Vague — ton interlocuteur ne saura pas s\'il doit ré-expliquer.' }
+      ]}
+    ]},
+    { id:'rencontre', icon:'👋', title:'Rencontrer quelqu\'un au club étudiant', skill:'relation', level:'A1-A2', turns:[
+      { speaker:'npc', jp:'こんにちは！はじめまして。', romaji:'Konnichiwa! Hajimemashite.', fr:'Bonjour ! Enchanté(e).' },
+      { speaker:'user', choices:[
+        { jp:'はじめまして。フランスから来ました。よろしくお願いします', romaji:'Hajimemashite. Furansu kara kimashita. Yoroshiku onegaishimasu', fr:'Enchanté(e). Je viens de France. Ravi(e) de te connaître', quality:'best', feedback:'Présentation complète et naturelle — exactement le rituel attendu.' },
+        { jp:'こんにちは', romaji:'Konnichiwa', fr:'Bonjour', quality:'weak', feedback:'Poli mais tu rates l\'occasion de te présenter — よろしくお願いします est attendu ici.' },
+        { jp:'私はフランス人です', romaji:'Watashi wa furansu-jin desu', fr:'Je suis français(e)', quality:'ok', feedback:'Correct, mais ajoute よろしくお願いします pour clore proprement la présentation.' }
+      ]},
+      { speaker:'npc', jp:'サークルに興味がありますか？', romaji:'Saakuru ni kyoumi ga arimasu ka?', fr:'Tu es intéressé(e) par le club ?' },
+      { speaker:'user', choices:[
+        { jp:'はい、サークルに入りたいです', romaji:'Hai, saakuru ni hairitai desu', fr:'Oui, je voudrais rejoindre le club', quality:'best', feedback:'Direct, naturel — utilise exactement le vocabulaire du club étudiant.' },
+        { jp:'たぶん、わかりません', romaji:'Tabun, wakarimasen', fr:'Peut-être, je ne sais pas', quality:'weak', feedback:'Compris mais peu engageant — pas idéal si tu veux vraiment te faire des amis.' },
+        { jp:'興味があります', romaji:'Kyoumi ga arimasu', fr:'Je suis intéressé(e)', quality:'ok', feedback:'Bien, mais 入りたいです est plus concret et montre une vraie intention.' }
+      ]}
+    ]},
+    { id:'travail', icon:'💼', title:'Au bureau : un service', skill:'travail', level:'A2-B1', turns:[
+      { speaker:'npc', jp:'すみません、今ちょっといいですか？', romaji:'Sumimasen, ima chotto ii desu ka?', fr:'Excusez-moi, vous avez un instant ?' },
+      { speaker:'user', choices:[
+        { jp:'はい、大丈夫です。どうしましたか？', romaji:'Hai, daijoubu desu. Dou shimashita ka?', fr:'Oui, ça va. Qu\'est-ce qu\'il y a ?', quality:'best', feedback:'Réponse naturelle et professionnelle, ouvre la conversation correctement.' },
+        { jp:'何？', romaji:'Nani?', fr:'Quoi ?', quality:'weak', feedback:'Beaucoup trop direct/familier pour un contexte professionnel.' },
+        { jp:'はい', romaji:'Hai', fr:'Oui', quality:'ok', feedback:'Correct mais minimal — une petite relance montre que tu es engagé(e).' }
+      ]},
+      { speaker:'npc', jp:'もう一度説明してもらえますか？', romaji:'Mou ichido setsumei shite moraemasu ka?', fr:'(reformule la même demande pour toi) Pouvez-vous m\'expliquer encore une fois ?' },
+      { speaker:'user', choices:[
+        { jp:'もちろんです。詳しく説明します', romaji:'Mochiron desu. Kuwashiku setsumei shimasu', fr:'Bien sûr. Je vais expliquer en détail', quality:'best', feedback:'Ton professionnel et serviable parfait.' },
+        { jp:'えーと…', romaji:'Eeto…', fr:'Euh…', quality:'ok', feedback:'Naturel comme hésitation, mais essaie d\'enchaîner avec une vraie réponse ensuite.' },
+        { jp:'無理です', romaji:'Muri desu', fr:'C\'est impossible', quality:'weak', feedback:'Trop abrupt pour une simple demande de clarification.' }
+      ]}
+    ]}
+  ];
+
+  // ---------- Reading / survival signs ----------
+  const READING_GROUPS = [
+    { title:`Toilettes & directions`, icon:`🚻`, items:[
+      {jp:`トイレ`,romaji:`Toire`,fr:`Toilettes`,note:`Le plus courant, en katakana`},
+      {jp:`お手洗い`,romaji:`Otearai`,fr:`Toilettes (poli)`,note:`Litt. « lavage des mains »`},
+      {jp:`男`,romaji:`Otoko`,fr:`Hommes`,note:`Sur les portes (souvent en bleu)`},
+      {jp:`女`,romaji:`Onna`,fr:`Femmes`,note:`Sur les portes (souvent en rouge)`},
+      {jp:`右`,romaji:`Migi`,fr:`Droite`,note:`Sens / direction`},
+      {jp:`左`,romaji:`Hidari`,fr:`Gauche`,note:`Sens / direction`},
+      {jp:`入口`,romaji:`Iriguchi`,fr:`Entrée`,note:`入 = entrer, 口 = ouverture`},
+      {jp:`出口`,romaji:`Deguchi`,fr:`Sortie`,note:`出 = sortir`},
+      {jp:`非常口`,romaji:`Hijouguchi`,fr:`Sortie de secours`,note:`Panneau vert lumineux`},
+      {jp:`押す`,romaji:`Osu`,fr:`Pousser`,note:`Sur les portes`},
+      {jp:`引く`,romaji:`Hiku`,fr:`Tirer`,note:`Sur les portes`}
+    ]},
+    { title:`Interdictions & dangers`, icon:`⚠️`, items:[
+      {jp:`禁止`,romaji:`Kinshi`,fr:`Interdit`,note:`Revient dans plein de panneaux composés`},
+      {jp:`立入禁止`,romaji:`Tachiiri kinshi`,fr:`Accès interdit`,note:`Ne pas entrer`},
+      {jp:`駐車禁止`,romaji:`Chuusha kinshi`,fr:`Stationnement interdit`,note:``},
+      {jp:`撮影禁止`,romaji:`Satsuei kinshi`,fr:`Photos interdites`,note:`Temples, musées`},
+      {jp:`危険`,romaji:`Kiken`,fr:`Danger`,note:``},
+      {jp:`注意`,romaji:`Chuui`,fr:`Attention`,note:`足元注意 = attention à la marche`},
+      {jp:`止まれ`,romaji:`Tomare`,fr:`Stop / Arrêtez-vous`,note:`Panneau routier rouge`}
+    ]},
+    { title:`Gare & transports`, icon:`🚉`, items:[
+      {jp:`駅`,romaji:`Eki`,fr:`Gare`,note:`京都駅 = gare de Kyoto`},
+      {jp:`切符`,romaji:`Kippu`,fr:`Billet`,note:``},
+      {jp:`改札`,romaji:`Kaisatsu`,fr:`Portiques`,note:`Le contrôle d'entrée/sortie`},
+      {jp:`北口`,romaji:`Kitaguchi`,fr:`Sortie nord`,note:`北 = nord`},
+      {jp:`南口`,romaji:`Minamiguchi`,fr:`Sortie sud`,note:`南 = sud`},
+      {jp:`各駅停車`,romaji:`Kakueki teisha`,fr:`Omnibus (tous arrêts)`,note:`Le train le plus lent`},
+      {jp:`急行`,romaji:`Kyuukou`,fr:`Express`,note:`Saute des arrêts`},
+      {jp:`普通`,romaji:`Futsuu`,fr:`Train normal`,note:``}
+    ]},
+    { title:`Boutiques & argent`, icon:`🏪`, items:[
+      {jp:`営業中`,romaji:`Eigyouchuu`,fr:`Ouvert`,note:`中 = en cours`},
+      {jp:`準備中`,romaji:`Junbichuu`,fr:`Fermé (préparation)`,note:`Pas encore ouvert`},
+      {jp:`会計`,romaji:`Kaikei`,fr:`Caisse / Addition`,note:`Où l'on paie`},
+      {jp:`円`,romaji:`En`,fr:`Yen`,note:`Après le prix : 500円`},
+      {jp:`無料`,romaji:`Muryou`,fr:`Gratuit`,note:`無 = sans`},
+      {jp:`割引`,romaji:`Waribiki`,fr:`Réduction`,note:`半額 = moitié prix`}
+    ]}
+  ];
+
+  // ---------- Grammar reference (static HTML) ----------
+  const GRAMMAR_HTML = `
+    <div class="gram-section">
+      <h3>La règle d'or : le verbe à la fin</h3>
+      <p>En français : Sujet–Verbe–Complément. En japonais : Sujet–Complément–Verbe. Le verbe (ou です) ferme toujours la phrase.</p>
+      <div class="gram-callout">FR : « Je mange du ramen au restaurant. »<br>JP : <span class="jp jp-say" data-jp="私はレストランでラーメンを食べます">私は レストランで ラーメンを 食べます 🔊</span><br><span class="romaji-line">Watashi wa resutoran de raamen wo tabemasu</span><br>(moi / restaurant-au / ramen / mange). Si tu ne comprends pas le début d'une phrase, <b>attends la fin</b> : c'est là qu'est l'action.</div>
+    </div>
+
+    <div class="gram-section">
+      <h3>Les particules — le ciment de la phrase</h3>
+      <p>Ces petits mots indiquent le rôle de chaque mot. Tu n'as pas à les « apprendre » : il suffit de les reconnaître.</p>
+      <table class="gram">
+        <tr><th>Particule</th><th>Rôle</th><th>Exemple</th></tr>
+        <tr><td class="jpc">は <span class="romaji-sm">(wa)</span></td><td>Le thème : « quant à… »</td><td>私は学生です <span class="romaji-sm">Watashi wa gakusei desu</span><br>— Moi, je suis étudiant</td></tr>
+        <tr><td class="jpc">が <span class="romaji-sm">(ga)</span></td><td>Sujet grammatical, emphase</td><td>日本語がわかります <span class="romaji-sm">Nihongo ga wakarimasu</span><br>— Je comprends le japonais</td></tr>
+        <tr><td class="jpc">を <span class="romaji-sm">(o)</span></td><td>Objet direct (ce qu'on manipule)</td><td>ビールを飲む <span class="romaji-sm">Biiru wo nomu</span><br>— Boire de la bière</td></tr>
+        <tr><td class="jpc">に <span class="romaji-sm">(ni)</span></td><td>Destination, moment précis</td><td>京都に行く <span class="romaji-sm">Kyouto ni iku</span><br>— Aller à Kyoto</td></tr>
+        <tr><td class="jpc">で <span class="romaji-sm">(de)</span></td><td>Lieu de l'action, moyen</td><td>バスで行く <span class="romaji-sm">Basu de iku</span><br>— Y aller en bus</td></tr>
+        <tr><td class="jpc">の <span class="romaji-sm">(no)</span></td><td>Possession (≈ « de »)</td><td>私の友達 <span class="romaji-sm">Watashi no tomodachi</span><br>— Mon ami</td></tr>
+        <tr><td class="jpc">から / まで <span class="romaji-sm">(kara / made)</span></td><td>De… / Jusqu'à…</td><td>駅から大学まで <span class="romaji-sm">Eki kara daigaku made</span><br>— De la gare à la fac</td></tr>
+        <tr><td class="jpc">か <span class="romaji-sm">(ka)</span></td><td>Point d'interrogation oral</td><td>本ですか？ <span class="romaji-sm">Hon desu ka?</span><br>— C'est un livre ?</td></tr>
+        <tr><td class="jpc">ね / よ <span class="romaji-sm">(ne / yo)</span></td><td>Cherche l'accord / Affirme</td><td>いいですね <span class="romaji-sm">Ii desu ne</span><br>— C'est bien, non ?</td></tr>
+      </table>
+    </div>
+
+    <div class="gram-section">
+      <h3>Conjugaison : tout part du verbe poli en -ます <span class="romaji-sm">(-masu)</span></h3>
+      <p>Pour l'oral, la forme polie -ます (-masu) suffit à 90 % des situations. Voici les transformations à reconnaître :</p>
+      <table class="gram">
+        <tr><th>Forme</th><th>Sens</th><th>Exemple (行く iku = aller)</th></tr>
+        <tr><td class="jpc">-ます <span class="romaji-sm">(-masu)</span></td><td>Présent/futur poli</td><td>行きます <span class="romaji-sm">ikimasu</span> — je vais / j'irai</td></tr>
+        <tr><td class="jpc">-ません <span class="romaji-sm">(-masen)</span></td><td>Négatif poli</td><td>行きません <span class="romaji-sm">ikimasen</span> — je ne vais pas</td></tr>
+        <tr><td class="jpc">-ました <span class="romaji-sm">(-mashita)</span></td><td>Passé poli</td><td>行きました <span class="romaji-sm">ikimashita</span> — je suis allé</td></tr>
+        <tr><td class="jpc">-たいです <span class="romaji-sm">(-tai desu)</span></td><td>« Je veux ~ »</td><td>行きたいです <span class="romaji-sm">ikitai desu</span> — je veux y aller</td></tr>
+        <tr><td class="jpc">-て + ください <span class="romaji-sm">(-te kudasai)</span></td><td>« Fais ~ stp »</td><td>行ってください <span class="romaji-sm">itte kudasai</span> — allez-y stp</td></tr>
+        <tr><td class="jpc">-ませんか <span class="romaji-sm">(-masen ka)</span></td><td>Invitation polie</td><td>行きませんか <span class="romaji-sm">ikimasen ka</span> — on y va ?</td></tr>
+        <tr><td class="jpc">-ましょう <span class="romaji-sm">(-mashou)</span></td><td>« Faisons ~ »</td><td>行きましょう <span class="romaji-sm">ikimashou</span> — allons-y</td></tr>
+        <tr><td class="jpc">-ことができます <span class="romaji-sm">(-koto ga dekimasu)</span></td><td>« Je peux / sais ~ »</td><td>行くことができます <span class="romaji-sm">iku koto ga dekimasu</span> — je peux y aller</td></tr>
+        <tr><td class="jpc">-なければなりません <span class="romaji-sm">(-nakereba narimasen)</span></td><td>« Je dois ~ »</td><td>行かなければなりません <span class="romaji-sm">ikanakereba narimasen</span> — je dois y aller</td></tr>
+      </table>
+      <div class="gram-callout"><b>Astuce de francophone :</b> le japonais n'a pas de futur distinct du présent, ni de genre, ni de pluriel sur le verbe. 行きます <span class="romaji-sm">(ikimasu)</span> peut vouloir dire « je vais », « il va », « ils iront ». Le contexte tranche.</div>
+    </div>
+
+    <div class="gram-section">
+      <h3>Les deux familles d'adjectifs</h3>
+      <table class="gram">
+        <tr><th>Type</th><th>Caractéristique</th><th>Exemple</th></tr>
+        <tr><td class="jpc">adjectif-い <span class="romaji-sm">(-i)</span></td><td>Finit par い, se conjugue seul</td><td>おいしい <span class="romaji-sm">oishii</span> → おいしかった <span class="romaji-sm">oishikatta</span> (c'était bon)</td></tr>
+        <tr><td class="jpc">adjectif-な <span class="romaji-sm">(-na)</span></td><td>Prend な devant un nom, sinon です</td><td>きれいな花 <span class="romaji-sm">kirei na hana</span> (une belle fleur) / きれいです <span class="romaji-sm">kirei desu</span></td></tr>
+      </table>
+      <p>好き <span class="romaji-sm">(suki)</span> = aimé, 嫌い <span class="romaji-sm">(kirai)</span> = détesté, 元気 <span class="romaji-sm">(genki)</span> = en forme sont des adjectifs-な — d'où « 〜が好きです » et pas un verbe « aimer ».</p>
+    </div>
+
+    <div class="gram-section">
+      <h3>です vs ます — les deux confondues, mais différentes</h3>
+      <p>Les deux sont polies, mais elles ne se mettent jamais sur le même type de mot. C'est la confusion la plus fréquente chez les francophones débutants.</p>
+      <table class="gram">
+        <tr><th>Forme</th><th>S'utilise avec</th><th>Exemple</th></tr>
+        <tr><td class="jpc">です <span class="romaji-sm">(desu)</span></td><td>Noms et adjectifs (jamais un verbe)</td><td>学生です <span class="romaji-sm">gakusei desu</span> — je suis étudiant<br>おいしいです <span class="romaji-sm">oishii desu</span> — c'est bon</td></tr>
+        <tr><td class="jpc">ます <span class="romaji-sm">(masu)</span></td><td>Verbes uniquement, à la fin du radical poli</td><td>食べます <span class="romaji-sm">tabemasu</span> — je mange<br>行きます <span class="romaji-sm">ikimasu</span> — je vais</td></tr>
+      </table>
+      <div class="gram-callout">Astuce : si le mot juste avant pourrait recevoir un « être » en français (je suis étudiant, c'est bon), c'est です. Si c'est une action (manger, aller, faire), c'est ます. On ne dit jamais 食べだ or 学生ます — chacun reste dans sa famille.</div>
+    </div>
+
+    <div class="gram-section">
+      <h3>あります vs います — les deux « il y a »</h3>
+      <p>Le japonais a deux verbes d'existence différents selon que le sujet est animé ou non. Le français n'a qu'« il y a » pour tout — d'où la confusion.</p>
+      <table class="gram">
+        <tr><th>Verbe</th><th>Pour</th><th>Exemple</th></tr>
+        <tr><td class="jpc">あります <span class="romaji-sm">(arimasu)</span></td><td>Choses, objets inanimés</td><td>Wi-Fiはありますか？ <span class="romaji-sm">Wi-Fi wa arimasu ka?</span> — Il y a du Wi-Fi ?<br>本があります <span class="romaji-sm">hon ga arimasu</span> — il y a un livre</td></tr>
+        <tr><td class="jpc">います <span class="romaji-sm">(imasu)</span></td><td>Personnes, animaux (êtres vivants)</td><td>彼女はいますか？ <span class="romaji-sm">kanojo wa imasu ka?</span> — Tu as une copine ?<br>猫がいます <span class="romaji-sm">neko ga imasu</span> — il y a un chat</td></tr>
+      </table>
+      <div class="gram-callout">Piège classique : 彼女はあります ✗ (faux, elle n'est pas un objet !) → 彼女はいます ✓. À l'inverse, Wi-Fiはいます ✗ → Wi-Fiはあります ✓.</div>
+    </div>
+
+    <div class="gram-section">
+      <h3>Phrases-modèles à retenir par cœur</h3>
+      <p>Ces squelettes reviennent partout — change juste le mot entre crochets et la phrase fonctionne dans des dizaines de situations.</p>
+      <table class="gram">
+        <tr><th>Squelette</th><th>Exemple concret</th></tr>
+        <tr><td class="jpc">[lieu]はどこですか？</td><td>駅はどこですか？ <span class="romaji-sm">Eki wa doko desu ka?</span> — Où est la gare ?</td></tr>
+        <tr><td class="jpc">[chose]はありますか？</td><td>メニューはありますか？ <span class="romaji-sm">Menyuu wa arimasu ka?</span> — Vous avez un menu ?</td></tr>
+        <tr><td class="jpc">[nom]が好きです</td><td>寿司が好きです <span class="romaji-sm">Sushi ga suki desu</span> — J'aime les sushis</td></tr>
+        <tr><td class="jpc">[verbe-たい]です</td><td>休みたいです <span class="romaji-sm">Yasumitai desu</span> — Je veux me reposer</td></tr>
+        <tr><td class="jpc">[verbe-て]ください</td><td>待ってください <span class="romaji-sm">Matte kudasai</span> — Attendez s'il vous plaît</td></tr>
+        <tr><td class="jpc">[lieu]に行きたいです</td><td>大阪に行きたいです <span class="romaji-sm">Oosaka ni ikitai desu</span> — Je veux aller à Osaka</td></tr>
+        <tr><td class="jpc">[action]ませんか？</td><td>食べませんか？ <span class="romaji-sm">Tabemasen ka?</span> — On mange (ensemble) ?</td></tr>
+        <tr><td class="jpc">[chose]をください</td><td>水をください <span class="romaji-sm">Mizu wo kudasai</span> — De l'eau, s'il vous plaît</td></tr>
+      </table>
+    </div>
+
+    <div class="gram-section">
+      <h3>Expressions idiomatiques à ne pas traduire mot à mot</h3>
+      <div class="gram-callout"><span class="jp jp-say" data-jp="よろしくお願いします">よろしくお願いします 🔊</span> <span class="romaji-sm">(Yoroshiku onegaishimasu)</span> — pas de traduction littérale. Clôt toute présentation : « comptez sur moi / soyons bien ensemble ».</div>
+      <div class="gram-callout"><span class="jp jp-say" data-jp="お疲れ様です">お疲れ様です 🔊</span> <span class="romaji-sm">(Otsukaresama desu)</span> — « tu as dû être fatigué » = salut/merci entre collègues, à toute heure.</div>
+      <div class="gram-callout"><span class="jp jp-say" data-jp="～んですが">〜んですが… 🔊</span> <span class="romaji-sm">(~n desu ga)</span> — laisse la phrase ouverte sur が. Adoucit une demande : « voilà la situation… (pouvez-vous m'aider ?) ».</div>
+      <div class="gram-callout"><span class="jp jp-say" data-jp="～てもらえますか">〜てもらえますか 🔊</span> <span class="romaji-sm">(~te moraemasu ka)</span> — « puis-je recevoir que vous fassiez ~ ? » = la façon polie de demander un service.</div>
+      <div class="gram-callout"><b>La négation = politesse.</b> 一緒に行きませんか <span class="romaji-sm">(Issho ni ikimasen ka)</span> (« vous ne venez pas ? ») est plus poli que 行きますか <span class="romaji-sm">(ikimasu ka)</span>. Inviter par la forme négative laisse à l'autre la liberté de refuser.</div>
+    </div>
+
+    <div class="gram-section">
+      <h3>Prononciation : les pièges du francophone</h3>
+      <table class="gram">
+        <tr><th>Son</th><th>Comment faire</th></tr>
+        <tr><td class="jpc">u final</td><td>Presque muet : です <span class="romaji-sm">(desu)</span> se dit « dess », pas « dessou »</td></tr>
+        <tr><td class="jpc">r</td><td>Entre L et R, la langue rebondit. Jamais roulé</td></tr>
+        <tr><td class="jpc">tsu (つ)</td><td>« ts » soufflé + u court, pas « tsou »</td></tr>
+        <tr><td class="jpc">double consonne</td><td>きって <span class="romaji-sm">(kitte)</span> : petite pause sur le t</td></tr>
+        <tr><td class="jpc">voyelle longue</td><td>おばさん <span class="romaji-sm">(obasan)</span> tante ≠ おばあさん <span class="romaji-sm">(obaasan)</span> grand-mère : la longueur change le sens</td></tr>
+        <tr><td class="jpc">voyelles</td><td>A-I-U-E-O toujours pures et courtes, jamais nasalisées</td></tr>
+      </table>
+    </div>
+  `;
+
+  // ---------- persistence ----------
+  // ---------- storage abstraction : localStorage en priorité (fonctionne en fichier local Chrome),
+  // window.storage utilisé seulement si présent (aperçu Claude). Corrige le bug de ré-import permanent.
+  async function storageGet(key){
+    try{ const v = localStorage.getItem(key); if(v !== null) return v; }catch(e){}
+    if(typeof window.storage !== 'undefined'){
+      try{ const r = await window.storage.get(key, false); return r ? r.value : null; }catch(e){}
+    }
+    return null;
+  }
+  async function storageSet(key, value){
+    let ok = false;
+    try{ localStorage.setItem(key, value); ok = true; }catch(e){}
+    if(typeof window.storage !== 'undefined'){
+      try{ await window.storage.set(key, value, false); ok = true; }catch(e){}
+    }
+    if(!ok) console.error('Sauvegarde impossible (localStorage bloqué).');
+  }
+  async function loadAll(){
+    try{ const v = await storageGet(STORAGE_KEY); phrases = v ? JSON.parse(v) : []; }catch(e){ phrases = []; }
+    try{ const v2 = await storageGet(META_KEY); if(v2) meta = Object.assign(meta, JSON.parse(v2)); }catch(e){}
+    document.getElementById('dailyLimit').value = meta.dailyLimit || 8;
+    updateImportBanner(); updateStreak(); render();
+  }
+  async function savePhrases(){ await storageSet(STORAGE_KEY, JSON.stringify(phrases)); }
+  async function saveMeta(){ await storageSet(META_KEY, JSON.stringify(meta)); }
+
+  function nowTs(){ return Date.now(); }
+  function todayStr(){ return new Date().toISOString().slice(0,10); }
+  function daysToMs(d){ return d*24*60*60*1000; }
+
+  function updateStreak(){
+    const today = todayStr();
+    if(meta.lastStudyDate && meta.lastStudyDate !== today){
+      const diff = (new Date(today) - new Date(meta.lastStudyDate)) / 86400000;
+      if(diff > 1.5) meta.streak = 0;
+    }
+    document.getElementById('streakBadge').textContent = '🔥 ' + (meta.streak||0) + ' jour' + (meta.streak===1?'':'s');
+  }
+  function registerStudyActivity(){
+    const today = todayStr();
+    if(meta.lastStudyDate !== today){
+      meta.streak = (meta.lastStudyDate && (new Date(today)-new Date(meta.lastStudyDate))/86400000 <= 1.5) ? (meta.streak||0)+1 : 1;
+      meta.lastStudyDate = today; saveMeta();
+      document.getElementById('streakBadge').textContent = '🔥 ' + meta.streak + ' jour' + (meta.streak===1?'':'s');
+    }
+  }
+
+  function newCard(jp, romaji, fr, note, tag, level){
+    return { id:'c'+Math.random().toString(36).slice(2,10), jp, romaji, fr, note:note||'', tag:(tag||'général').toLowerCase(), level:level||'',
+      interval:0, ease:2.5, reps:0, due:nowTs(), shadowReps:0, created:nowTs(), archived:false };
+  }
+
+  function rate(card, grade){
+    if(grade === 0){ card.interval = 0; card.ease = Math.max(1.3, card.ease-0.2); card.due = nowTs()+1000*60*10; }
+    else if(grade === 1){ card.interval = Math.max(1, Math.round(card.interval*1.2)||1); card.due = nowTs()+daysToMs(card.interval); }
+    else if(grade === 2){ card.interval = card.reps===0?1:(card.reps===1?3:Math.round(card.interval*card.ease)); card.due = nowTs()+daysToMs(card.interval); }
+    else if(grade === 3){ card.ease = Math.min(3, card.ease+0.15); card.interval = card.reps===0?4:Math.round(card.interval*card.ease*1.3); card.due = nowTs()+daysToMs(card.interval); }
+    card.reps += 1;
+  }
+  function archiveCard(card, archived){
+    card.archived = archived;
+    if(archived){ card.due = nowTs() + daysToMs(36500); } // ~100 ans : sort des révisions sans supprimer la donnée
+    else { card.due = nowTs(); }
+  }
+
+  function getDueAll(){ return phrases.filter(p => p.due <= nowTs() && !p.archived); }
+
+  function buildQueue(){
+    const today = todayStr();
+    if(meta.newIntroducedDate !== today){ meta.newIntroducedDate = today; meta.newIntroducedCount = 0; saveMeta(); }
+    const limit = meta.dailyLimit || 8;
+    const due = getDueAll();
+    const seen = due.filter(p => p.reps > 0);
+    const fresh = due.filter(p => p.reps === 0);
+    const remainingNewSlots = Math.max(0, limit - meta.newIntroducedCount);
+    const queue = seen.concat(fresh.slice(0, remainingNewSlots));
+    for(let i=queue.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [queue[i],queue[j]]=[queue[j],queue[i]]; }
+    return queue;
+  }
+
+  // ---------- robust TTS ----------
+  let jaVoiceFound = null, voiceProbed = false, speakStatus = null; // null | 'speaking' | 'failed'
+  function probeVoices(){
+    if(!('speechSynthesis' in window)) return;
+    const voices = speechSynthesis.getVoices();
+    if(voices.length){
+      jaVoiceFound = voices.find(v => v.lang && v.lang.toLowerCase().replace('_','-').startsWith('ja')) || null;
+      voiceProbed = true;
+      renderSoundBars();
+    }
+  }
+  if('speechSynthesis' in window){
+    speechSynthesis.onvoiceschanged = probeVoices;
+    probeVoices();
+    setTimeout(probeVoices, 300);
+    setTimeout(probeVoices, 1200);
+  }
+  let ttsWarmed = false;
+  function warmUpTTS(){
+    if(ttsWarmed || !('speechSynthesis' in window)) return;
+    try{ const u = new SpeechSynthesisUtterance('\u3042'); u.volume = 0; speechSynthesis.speak(u); ttsWarmed = true; }catch(e){}
+  }
+  function resetTTS(){
+    try{ speechSynthesis.cancel(); }catch(e){}
+    ttsWarmed = false; speakStatus = null;
+    setTimeout(()=>{ probeVoices(); renderSoundBars(); }, 150);
+  }
+  function speak(text, rate){
+    if(!('speechSynthesis' in window)) return;
+    warmUpTTS();
+    const go = ()=>{
+      const voices = speechSynthesis.getVoices();
+      const ja = voices.find(v => v.lang && v.lang.toLowerCase().replace('_','-').startsWith('ja')) || null;
+      jaVoiceFound = ja; voiceProbed = true;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ja-JP'; u.rate = rate || 1;
+      if(ja) u.voice = ja;
+      let started = false;
+      u.onstart = ()=>{ started = true; speakStatus = 'speaking'; renderSoundBars(); };
+      u.onend = ()=>{ speakStatus = null; renderSoundBars(); };
+      u.onerror = ()=>{ speakStatus = 'failed'; renderSoundBars(); };
+      try{
+        speechSynthesis.cancel(); // toujours vider la file, même si l'état "speaking" semble faux (bug connu de Chrome après inactivité)
+        setTimeout(()=>{
+          try{ speechSynthesis.speak(u); }catch(e){ speakStatus='failed'; renderSoundBars(); }
+          setTimeout(()=>{ if(!started){ speakStatus = 'failed'; renderSoundBars(); } }, 1200);
+        }, 30);
+      }catch(e){ console.error(e); speakStatus = 'failed'; renderSoundBars(); }
+    };
+    if(speechSynthesis.getVoices().length === 0){ speechSynthesis.onvoiceschanged = go; setTimeout(go, 250); }
+    else go();
+  }
+
+  function soundBarHTML(){
+    let statusDot, statusText;
+    if(!('speechSynthesis' in window)){ statusDot='bad'; statusText='Synthèse vocale non disponible sur ce navigateur'; }
+    else if(speakStatus === 'failed'){ statusDot='bad'; statusText="Le son s'est bloqué — touche Réinitialiser ⟳"; }
+    else if(voiceProbed && !jaVoiceFound){ statusDot='bad'; statusText='Aucune voix japonaise détectée'; }
+    else if(jaVoiceFound){ statusDot='ok'; statusText='Voix japonaise prête'; }
+    else { statusDot=''; statusText='Touche pour tester le son'; }
+    return `<div class="sound-bar">
+      <span><span class="dot ${statusDot}"></span>${statusText}</span>
+      <span style="display:flex;gap:6px;">
+        <button data-act="reset" title="Si le son se bloque après un moment d'inactivité">⟳ Réinitialiser</button>
+        <button data-act="test">🔊 Tester (こんにちは)</button>
+      </span>
+    </div>
+    <div class="sound-help ${(voiceProbed && !jaVoiceFound) || speakStatus==='failed' ?'show':''}">
+      <b>Pas de son ?</b> 1) Touche d'abord ⟳ Réinitialiser (Chrome bloque parfois la voix après quelques minutes d'inactivité de l'onglet). 2) Si ça persiste : la voix japonaise est une donnée de ton <b>appareil</b>, pas de l'appli.
+      <b>iPhone :</b> Réglages → Accessibilité → Contenu énoncé → Voix → ajouter une voix japonaise.
+      <b>Android :</b> installe « Synthèse vocale Google » + le pack de langue japonaise.
+      <b>Ordinateur :</b> ouvre l'appli dans Chrome ou Edge, et vérifie que l'onglet n'est pas en mode silencieux (clic droit sur l'onglet).
+    </div>`;
+  }
+  function wireSoundBar(el){
+    if(!el) return;
+    el.querySelectorAll('button[data-act=test]').forEach(b=> b.addEventListener('click', ()=> speak('こんにちは', 0.9)));
+    el.querySelectorAll('button[data-act=reset]').forEach(b=> b.addEventListener('click', resetTTS));
+  }
+  function renderSoundBars(){
+    const r = document.getElementById('soundBarReview');
+    const s = document.getElementById('soundBarShadow');
+    const c = document.getElementById('soundBarConv');
+    if(r){ r.innerHTML = soundBarHTML(); wireSoundBar(r); }
+    if(s){ s.innerHTML = soundBarHTML(); wireSoundBar(s); }
+    if(c){ c.innerHTML = soundBarHTML(); wireSoundBar(c); }
+  }
+
+  // ---------- answer checking ----------
+  function normalize(s){
+    return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+  }
+  // Synonymes français acceptés comme équivalents (ex: désolé = pardon = excusez-moi)
+  const SYN_CANON = [
+    ['desole','pardon','excusez moi','excuse moi','excuses moi'],
+    ['veux','voudrais','aimerais','souhaite','souhaiterais'],
+    ['comprends','saisis','pige','vois'],
+    ['petit ami','copain'],
+    ['petite amie','copine'],
+    ['travail','boulot','job','taf'],
+    ['content','heureux','ravi','enchante','content e'],
+    ['vite','rapide','rapidement'],
+    ['bonjour','salut','coucou'],
+    ['au revoir','a plus','a bientot','salut'],
+    ['tres','vraiment','trop'],
+    ['bon marche','pas cher','abordable'],
+    ['fatigue','epuise','crève']
+  ];
+  function canonicalize(s){
+    let out = ' ' + s + ' ';
+    SYN_CANON.forEach(group=>{
+      const canon = ' ' + group[0] + ' ';
+      for(let i=1;i<group.length;i++){ out = out.split(' '+group[i]+' ').join(canon); }
+    });
+    return out.trim();
+  }
+  function checkAnswer(typed, correct){
+    const a = canonicalize(normalize(typed)), b = canonicalize(normalize(correct));
+    if(!a) return null;
+    if(a === b) return 'good';
+    const at = a.split(' ').filter(w=>w.length>2);
+    const bt = b.split(' ').filter(w=>w.length>2);
+    if(bt.length){
+      const overlap = at.filter(w=>bt.includes(w)).length;
+      if(overlap / bt.length >= 0.5) return 'good';
+    }
+    if(b.includes(a) || a.includes(b)) return 'close';
+    const someShared = at.some(w=>bt.includes(w));
+    return someShared ? 'close' : 'off';
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll('nav.tabs button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('section.view').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('view-'+btn.dataset.view).classList.add('active');
+      if(btn.dataset.view === 'skills') renderSkills();
+      if(btn.dataset.view === 'review'){ renderSoundBars(); startReviewSession(); }
+      if(btn.dataset.view === 'shadow'){ renderSoundBars(); renderShadow(); }
+      if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
+      if(btn.dataset.view === 'reading') renderReading();
+      if(btn.dataset.view === 'grammar') renderGrammar();
+    });
+  });
+
+  // ---------- skills dashboard ----------
+  const SKILL_META = {
+    'général': {icon:'🗣️', label:'Bases & politesse'},
+    'voyage': {icon:'✈️', label:'Voyage & transports'},
+    'travail': {icon:'💼', label:'Travail'},
+    'étude': {icon:'📚', label:'Université'},
+    'relation': {icon:'🤝', label:'Vie sociale'},
+    'panneaux': {icon:'🪧', label:'Lecture des panneaux'}
+  };
+  function skillLevel(pct){ if(pct>=100) return 5; if(pct>=75) return 4; if(pct>=50) return 3; if(pct>=25) return 2; return pct>0?1:0; }
+  function renderSkills(){
+    const area = document.getElementById('skillsArea');
+    if(phrases.length === 0){
+      area.innerHTML = `<div class="skills-intro">Importe le pack A0 → B1 dans « Mes phrases » pour voir tes compétences se remplir ici.</div>` + emptyState('Aucune compétence encore', 'Va dans « Mes phrases » et importe au moins le niveau A0.');
+      return;
+    }
+    const byTag = {};
+    phrases.forEach(p=>{ (byTag[p.tag] = byTag[p.tag] || []).push(p); });
+    let html = `<div class="skills-intro">Chaque compétence regroupe des phrases par situation réelle. Une carte est « maîtrisée » dès qu'elle a un intervalle de révision ≥ 7 jours. Avec 30 min/jour, vise 1 compétence au niveau 5 par semaine.</div>`;
+    html += `<div class="pareto-banner">⭐ <b>Pareto 20/80 :</b> les phrases marquées ⭐ sont les ~20% qui couvrent ~80% des situations réelles. Si tu es limité(e) en temps, maîtrise-les en priorité — elles se retrouvent dans presque toutes les compétences ci-dessous.</div>`;
+    html += `<div class="skill-grid">`;
+    Object.keys(byTag).sort((a,b)=> byTag[b].length - byTag[a].length).forEach(tag=>{
+      const list = byTag[tag];
+      const mastered = list.filter(p=>p.interval >= 7).length;
+      const pct = Math.round((mastered/list.length)*100);
+      const lvl = skillLevel(pct);
+      const meta = SKILL_META[tag] || {icon:'📁', label:tag};
+      const coreCount = list.filter(p=>CORE_SET.has(p.jp)).length;
+      html += `<div class="skill-card" data-tag="${tag}">
+        <div class="skill-head"><h4>${meta.icon} ${escapeHtml(meta.label)}${coreCount?`<span class="star-pill">⭐ ${coreCount}</span>`:''}</h4><span class="skill-level">Niveau ${lvl}/5</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${pct}%"></div></div>
+        <div class="skill-meta"><span>${mastered}/${list.length} maîtrisées</span><span>${pct}%</span></div>
+        ${lvl===3 ? `<div class="skill-challenge">🎯 Mini-défi débloqué : tente une conversation simulée sur ce thème</div>` : ''}
+        ${lvl>=5 ? `<div class="skill-challenge">🏆 Compétence maîtrisée !</div>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+    area.innerHTML = html;
+    area.querySelectorAll('.skill-card').forEach(c=>{
+      c.addEventListener('click', ()=>{
+        shadowFilterTag = c.dataset.tag; listFilterTag = c.dataset.tag;
+        document.querySelector('nav.tabs button[data-view="review"]').click();
+      });
+    });
+  }
+
+  // ---------- conversation simulator ----------
+  let convState = null; // {convId, turnIdx}
+  function renderConversationList(){
+    const area = document.getElementById('conversationArea');
+    let html = `<div class="skills-intro">Mini-dialogues guidés : choisis la réponse la plus naturelle à chaque tour. C'est de la <b>production active</b> — la façon la plus efficace de préparer une vraie conversation.</div>`;
+    html += `<div class="conv-list">`;
+    CONVERSATIONS.forEach(c=>{
+      html += `<div class="conv-pick" data-id="${c.id}">
+        <div><h4>${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
+        <span class="conv-badge">Commencer</span>
+      </div>`;
+    });
+    html += `</div>`;
+    area.innerHTML = html;
+    area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{ convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage(); }));
+  }
+  function renderConversationStage(){
+    const area = document.getElementById('conversationArea');
+    const conv = CONVERSATIONS.find(c=>c.id === convState.convId);
+    const turn = conv.turns[convState.turnIdx];
+    if(!turn){
+      area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">Dialogue terminé !</h3><p style="color:#7a7268;font-size:13.5px;">Rejoue-le pour essayer d'autres réponses, ou choisis un autre dialogue.</p><button class="continue-btn" id="convBackBtn" style="margin-top:16px;">← Tous les dialogues</button></div>`;
+      document.getElementById('convBackBtn').addEventListener('click', renderConversationList);
+      return;
+    }
+    let html = `<div class="conv-stage">`;
+    // show prior turns as resolved bubbles
+    for(let i=0;i<convState.turnIdx;i++){
+      html += renderResolvedTurn(conv.turns[i], conv._chosen ? conv._chosen[i] : null);
+    }
+    if(turn.speaker === 'npc'){
+      html += bubbleHtml('npc', turn.jp, turn.romaji, turn.fr);
+      html += `</div><div class="conv-nav-row"><button class="conv-back" id="convExit">← Quitter</button><button class="continue-btn" id="convNext">Continuer</button></div>`;
+      area.innerHTML = html;
+      document.getElementById('convNext').addEventListener('click', ()=>{ speak(turn.jp,0.85); convState.turnIdx++; renderConversationStage(); });
+      document.getElementById('convExit').addEventListener('click', renderConversationList);
+      setTimeout(()=> speak(turn.jp, 0.85), 150);
+    } else {
+      html += `<div class="conv-choices" id="convChoices">`;
+      turn.choices.forEach((ch, idx)=>{
+        html += `<button class="conv-choice-btn" data-idx="${idx}"><span class="cc-jp">${escapeHtml(ch.jp)}</span>${escapeHtml(ch.romaji)} — ${escapeHtml(ch.fr)}</button>`;
+      });
+      html += `</div></div><div class="conv-nav-row"><button class="conv-back" id="convExit">← Quitter</button><div></div></div>`;
+      area.innerHTML = html;
+      document.getElementById('convExit').addEventListener('click', renderConversationList);
+      area.querySelectorAll('.conv-choice-btn').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const ch = turn.choices[parseInt(b.dataset.idx,10)];
+          speak(ch.jp, 0.85);
+          const cls = ch.quality === 'best' ? 'best' : (ch.quality === 'ok' ? 'ok' : 'weak');
+          const label = ch.quality === 'best' ? '✓ Le plus naturel' : (ch.quality === 'ok' ? '≈ Ça marche' : '○ Trop littéral / pas idéal');
+          const fb = document.createElement('div'); fb.className = 'conv-feedback '+cls; fb.innerHTML = `<b>${label}</b><br>${escapeHtml(ch.feedback)}`;
+          document.getElementById('convChoices').appendChild(fb);
+          area.querySelectorAll('.conv-choice-btn').forEach(x=>x.disabled = true);
+          conv._chosen = conv._chosen || {}; conv._chosen[convState.turnIdx] = ch;
+          const nextBtn = document.createElement('button'); nextBtn.className='continue-btn'; nextBtn.style.marginTop='14px'; nextBtn.textContent='Continuer';
+          nextBtn.addEventListener('click', ()=>{ convState.turnIdx++; renderConversationStage(); });
+          document.getElementById('convChoices').appendChild(nextBtn);
+        });
+      });
+    }
+  }
+  function bubbleHtml(who, jp, romaji, fr){
+    return `<div class="bubble ${who}">${escapeHtml(jp)} <button class="bubble-audio" data-jp="${escapeHtml(jp)}">🔊</button><span class="b-romaji">${escapeHtml(romaji)}</span><span class="b-fr">${escapeHtml(fr)}</span></div>`;
+  }
+  function renderResolvedTurn(turn, chosen){
+    if(turn.speaker === 'npc') return bubbleHtml('npc', turn.jp, turn.romaji, turn.fr);
+    if(chosen) return bubbleHtml('user', chosen.jp, chosen.romaji, chosen.fr);
+    return '';
+  }
+  // delegate audio clicks inside conversation bubbles & grammar reference
+  document.addEventListener('click', (e)=>{
+    if(e.target && e.target.classList && e.target.classList.contains('bubble-audio')){
+      speak(e.target.dataset.jp, 0.85);
+    }
+    if(e.target && e.target.classList && e.target.classList.contains('jp-say')){
+      speak(e.target.dataset.jp, 0.85);
+    }
+  });
+
+  // ---------- import ----------
+  function existingKeySet(){ return new Set(phrases.map(p => (p.jp+'|'+p.romaji).toLowerCase())); }
+  function updateImportBanner(){
+    const existing = existingKeySet();
+    const remaining = SEED_PACK.filter(row => !existing.has((row.jp+'|'+row.romaji).toLowerCase())).length;
+    const banner = document.getElementById('importBanner');
+    const text = document.getElementById('importStatusText');
+    const btn = document.getElementById('importBtn');
+    if(remaining === 0){
+      banner.classList.add('done');
+      text.textContent = 'Pack complet déjà importé (' + SEED_PACK.length + ' phrases avec explications).';
+      btn.textContent = 'Tout est importé ✓'; btn.disabled = true;
+    } else {
+      banner.classList.remove('done');
+      text.textContent = remaining + ' phrase' + (remaining===1?'':'s') + ' disponible' + (remaining===1?'':'s') + ' selon les niveaux cochés.';
+      btn.textContent = 'Importer la sélection'; btn.disabled = false;
+    }
+  }
+  document.getElementById('importBtn').addEventListener('click', async ()=>{
+    const levels = Array.from(document.querySelectorAll('#levelPick input:checked')).map(i=>i.value);
+    const existing = existingKeySet(); let added = 0;
+    SEED_PACK.forEach(row=>{
+      if(!levels.includes(row.level)) return;
+      const key = (row.jp+'|'+row.romaji).toLowerCase();
+      if(existing.has(key)) return;
+      phrases.push(newCard(row.jp, row.romaji, row.fr, row.ex, row.tag, row.level));
+      existing.add(key); added++;
+    });
+    if(added > 0) await savePhrases();
+    updateImportBanner(); render();
+    if(added > 0){ document.getElementById('importStatusText').textContent = added + ' phrase' + (added===1?'':'s') + ' importée' + (added===1?'':'s') + ' ✓'; setTimeout(updateImportBanner, 2200); }
+  });
+  document.querySelectorAll('#levelPick input').forEach(cb=> cb.addEventListener('change', updateImportBanner));
+
+  // ---------- review ----------
+  function startReviewSession(){
+    reviewQueue = buildQueue(); reviewQueue._startCount = reviewQueue.length;
+    reviewedSinceBreak = 0; interleaveActive = false; nextReviewCard();
+  }
+  function nextReviewCard(){
+    revealed = false; listenMode = false; lastTyped = ''; drillMode = false; drillAnswered = false;
+    if(reviewQueue.length === 0){ currentReview = null; renderReview(); return; }
+    currentReview = reviewQueue[0];
+    if(currentReview.reps === 0) meta.newIntroducedCount = (meta.newIntroducedCount||0)+1;
+    const candidate = currentReview.reps > 0 ? findParticleForDrill(currentReview.jp) : null;
+    if(candidate && Math.random() < 0.5){ drillMode = true; drillInfo = candidate; }
+    renderReview();
+  }
+  function renderReview(){
+    const area = document.getElementById('reviewArea');
+    if(phrases.length === 0){ area.innerHTML = emptyState('まだ何もない', 'Va dans « Mes phrases » et importe le pack A0 → B1, ou ajoute tes propres phrases.'); return; }
+    if(interleaveActive){ renderInterleaveBreak(area); return; }
+    if(!currentReview){ area.innerHTML = emptyState('Tout est à jour !', "Aucune carte à revoir (ou limite de nouvelles cartes atteinte aujourd'hui). Reviens plus tard."); return; }
+    if(drillMode){ renderParticleDrill(area); return; }
+    const total = reviewQueue._startCount || 1;
+    const doneToday = Math.max(0, total - reviewQueue.length);
+
+    let html = '<div class="review-wrap">';
+    html += `<div class="progress-row"><span>${doneToday} fait${doneToday===1?'':'s'}</span><div class="progress-bar"><i style="width:${Math.min(100,(doneToday/total)*100)}%"></i></div><span>${reviewQueue.length} restante${reviewQueue.length===1?'':'s'}</span></div>`;
+    html += `<div class="mode-row"><button class="mode-chip ${listenMode?'active':''}" id="toggleListen">🎧 Mode écoute (texte caché)</button></div>`;
+
+    html += `<div class="flashcard" id="flashcardEl">`;
+    html += `<div class="tag-pill">${escapeHtml(currentReview.tag)}${CORE_SET.has(currentReview.jp)?' ⭐':''}</div>`;
+    if(currentReview.level) html += `<div class="level-pill">${escapeHtml(currentReview.level)}</div>`;
+    if(listenMode && !revealed){
+      html += `<button class="listen-btn" id="listenPlayBtn">▶</button><div class="hint" style="margin-top:14px;">Écoute, devine le sens, puis touche pour révéler</div>`;
+    } else {
+      html += `<div class="jp-text">${escapeHtml(currentReview.jp)}</div>`;
+      html += `<div class="romaji">${escapeHtml(currentReview.romaji||'')}</div>`;
+      if(!revealed) html += `<div class="hint">Dis le sens à voix haute, écris ta réponse, puis touche la carte</div>`;
+    }
+    if(revealed){ html += `<div class="fr-text">${escapeHtml(currentReview.fr||'')}</div>`; html += `<button class="audio-mini" id="audioMini">▶</button>`; }
+    html += `</div>`;
+
+    if(!revealed){
+      html += `<div class="recall-input"><label>Ta réponse (effort de rappel, même incertain — la casse n'a aucune importance)</label><textarea id="recallBox" rows="1" placeholder="Ça veut dire…" autocapitalize="off" autocorrect="off" spellcheck="false">${escapeHtml(lastTyped)}</textarea></div>`;
+      html += `<button class="reveal-btn" id="revealBtn">Vérifier / Révéler</button>`;
+    } else {
+      const verdict = checkAnswer(lastTyped, currentReview.fr);
+      if(verdict){
+        const map = { good:['good','✓ Bonne réponse'], close:['close','≈ Tu y es presque'], off:['off','✗ Pas tout à fait'] };
+        const v = map[verdict];
+        html += `<div class="verdict ${v[0]}">${v[1]}<span class="ans">Réponse attendue : ${escapeHtml(currentReview.fr)}</span><span class="ans">Ta réponse : ${escapeHtml(lastTyped)}</span></div>`;
+      }
+      if(currentReview.note){ html += `<div class="explain-box"><span class="eb-label">Structure & grammaire</span>${formatExplain(currentReview.note)}${grammarChipsHtml(currentReview.jp)}</div>`; }
+      html += `<div class="rate-row">
+        <button class="rate-again" data-grade="0">Galère</button>
+        <button class="rate-hard" data-grade="1">Difficile</button>
+        <button class="rate-good" data-grade="2">Bien</button>
+        <button class="rate-easy" data-grade="3">Facile</button></div>`;
+      html += `<button class="archive-btn" id="archiveBtn">🎓 Je connais déjà — ne plus revoir</button>`;
+    }
+    html += '</div>';
+    area.innerHTML = html;
+
+    const tl = document.getElementById('toggleListen'); if(tl) tl.addEventListener('click', ()=>{ captureTyped(); listenMode=!listenMode; renderReview(); });
+    const lpb = document.getElementById('listenPlayBtn'); if(lpb) lpb.addEventListener('click', e=>{ e.stopPropagation(); speak(currentReview.jp, 0.85); });
+    const am = document.getElementById('audioMini'); if(am) am.addEventListener('click', e=>{ e.stopPropagation(); speak(currentReview.jp, 0.85); });
+
+    const card = document.getElementById('flashcardEl');
+    if(card) card.addEventListener('click', ()=>{ if(!listenMode) speak(currentReview.jp, 0.85); if(!revealed){ captureTyped(); revealed=true; renderReview(); } });
+    const rb = document.getElementById('revealBtn'); if(rb) rb.addEventListener('click', e=>{ e.stopPropagation(); captureTyped(); revealed=true; renderReview(); });
+    const ab = document.getElementById('archiveBtn');
+    if(ab) ab.addEventListener('click', ()=>{
+      archiveCard(currentReview, true); savePhrases();
+      reviewQueue.shift(); renderHeader(); nextReviewCard();
+    });
+
+    area.querySelectorAll('.rate-row button').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const grade = parseInt(b.dataset.grade,10);
+        rate(currentReview, grade); savePhrases(); registerStudyActivity();
+        const justStudied = currentReview;
+        reviewQueue.shift(); reviewedSinceBreak++; renderHeader();
+        if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){
+          reviewedSinceBreak = 0; interleaveActive = true; interleaveCard = justStudied; interleaveReps = 0; renderReview();
+        } else nextReviewCard();
+      });
+    });
+  }
+  function captureTyped(){ const box = document.getElementById('recallBox'); if(box) lastTyped = box.value.trim(); }
+
+  function renderParticleDrill(area){
+    const card = currentReview;
+    const info = drillInfo;
+    const before = card.jp.slice(0, info.idx);
+    const after = card.jp.slice(info.idx + info.particle.length);
+    const distractors = PARTICLE_SET.filter(p=>p!==info.particle);
+    for(let i=distractors.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [distractors[i],distractors[j]]=[distractors[j],distractors[i]]; }
+    const choices = [info.particle, ...distractors.slice(0,2)];
+    for(let i=choices.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [choices[i],choices[j]]=[choices[j],choices[i]]; }
+
+    let html = `<div class="review-wrap"><div class="drill-box">
+      <span class="drill-label">🎯 Production guidée — complète la particule</span>
+      <div class="drill-jp">${escapeHtml(before)}<span class="blank">${drillAnswered ? escapeHtml(info.particle) : '＿'}</span>${escapeHtml(after)}</div>
+      <div class="drill-fr">${escapeHtml(card.fr||'')}</div>
+      <div class="drill-choices" id="drillChoices">`;
+    choices.forEach(c=> html += `<button data-p="${c}">${c}</button>`);
+    html += `</div>`;
+    if(drillAnswered){
+      html += `<div class="explain-box" style="text-align:left;"><span class="eb-label">Structure & grammaire</span>${formatExplain(card.note||'')}</div>`;
+      html += `<div class="rate-row" style="margin-top:14px;">
+        <button class="rate-again" data-grade="0">Galère</button>
+        <button class="rate-hard" data-grade="1">Difficile</button>
+        <button class="rate-good" data-grade="2">Bien</button>
+        <button class="rate-easy" data-grade="3">Facile</button></div>`;
+    }
+    html += `</div></div>`;
+    area.innerHTML = html;
+
+    if(!drillAnswered){
+      area.querySelectorAll('#drillChoices button').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          drillAnswered = true;
+          const ok = b.dataset.p === info.particle;
+          area.querySelectorAll('#drillChoices button').forEach(x=>{ if(x.dataset.p === info.particle) x.classList.add('correct'); });
+          if(!ok) b.classList.add('wrong');
+          speak(card.jp, 0.85);
+          renderReview();
+        });
+      });
+    } else {
+      area.querySelectorAll('.rate-row button').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const grade = parseInt(b.dataset.grade,10);
+          rate(currentReview, grade); savePhrases(); registerStudyActivity();
+          const justStudied = currentReview;
+          reviewQueue.shift(); reviewedSinceBreak++; renderHeader();
+          if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){
+            reviewedSinceBreak = 0; interleaveActive = true; interleaveCard = justStudied; interleaveReps = 0; renderReview();
+          } else nextReviewCard();
+        });
+      });
+    }
+  }
+
+  function grammarChipsHtml(jp){
+    const tags = detectGrammarTags(jp);
+    if(!tags.length) return '';
+    return `<div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;">${tags.map(t=>`<span style="font-size:10.5px;background:rgba(44,62,92,0.1);color:var(--indigo);padding:3px 9px;border-radius:999px;font-weight:600;">${escapeHtml(t)}</span>`).join('')}</div>`;
+  }
+  function formatExplain(txt){
+    // bold the Japanese chunks so structure reads clearly
+    return escapeHtml(txt).replace(/([\u3040-\u30ff\u4e00-\u9faf〜ー]+)/g, '<b class="jpchunk">$1</b>');
+  }
+
+  function renderInterleaveBreak(area){
+    let dots = ''; for(let i=0;i<3;i++) dots += `<div class="rep-dot ${i<interleaveReps?'filled':''}"></div>`;
+    area.innerHTML = `<div class="interleave-card">
+      <p class="section-label" style="text-align:center;">Pause ombrage — interleaving</p>
+      <p>Répète cette phrase à voix haute 3 fois. Mélanger révision et prononciation ancre la mémoire bien plus que des blocs séparés.</p>
+      <div class="jp-big">${escapeHtml(interleaveCard.jp)}</div>
+      <button class="play-mini" id="interleavePlay">▶</button>
+      <div class="rep-track">${dots}</div>
+      <button class="continue-btn" id="interleaveContinue" ${interleaveReps<3?'style="opacity:.5;pointer-events:none;"':''}>Continuer la révision</button>
+    </div>`;
+    document.getElementById('interleavePlay').addEventListener('click', ()=>{ speak(interleaveCard.jp, 0.8); interleaveReps = Math.min(3, interleaveReps+1); renderReview(); });
+    const cont = document.getElementById('interleaveContinue'); if(cont) cont.addEventListener('click', ()=>{ if(interleaveReps>=3){ interleaveActive=false; nextReviewCard(); } });
+  }
+  function emptyState(title, body){ return `<div class="empty"><div class="stamp">合格</div><h3>${title}</h3><p>${body}</p></div>`; }
+
+  // ---------- shadowing ----------
+  function renderShadow(){
+    const area = document.getElementById('shadowArea');
+    if(phrases.length === 0){ area.innerHTML = emptyState('Rien à répéter encore', 'Importe le pack A0 → B1 dans « Mes phrases », ou ajoute tes phrases.'); return; }
+    const tags = ['all', ...new Set(phrases.map(p=>p.tag))];
+    const filtered = shadowFilterTag === 'all' ? phrases : phrases.filter(p=>p.tag === shadowFilterTag);
+    if(shadowIdx >= filtered.length) shadowIdx = 0;
+    if(filtered.length === 0){ area.innerHTML = emptyState('Catégorie vide', 'Aucune phrase dans cette catégorie.'); return; }
+    const card = filtered[shadowIdx];
+
+    let html = '<div class="shadow-card">';
+    html += `<div class="shadow-filter">${tags.map(t=>`<span class="tag-chip ${t===shadowFilterTag?'active':''}" data-tag="${t}">${t==='all'?'Toutes':t}</span>`).join('')}</div>`;
+    html += `<p class="section-label">Phrase ${shadowIdx+1} / ${filtered.length}${card.level?' · '+card.level:''}</p>`;
+    html += `<div class="shadow-jp">${escapeHtml(card.jp)}</div>`;
+    html += `<div class="shadow-romaji">${escapeHtml(card.romaji||'')}</div>`;
+    html += `<div class="shadow-fr">${escapeHtml(card.fr||'')}</div>`;
+    html += `<div class="speed-row">
+      <button data-rate="0.6" class="${shadowRate===0.6?'active':''}">Très lent</button>
+      <button data-rate="0.75" class="${shadowRate===0.75?'active':''}">Lent</button>
+      <button data-rate="1" class="${shadowRate===1?'active':''}">Normal</button></div>`;
+    html += `<button class="play-btn" id="playBtn">▶</button>`;
+    html += `<div class="rep-row"><button class="rep-btn" id="repMinus">−</button><div><div class="rep-count">${card.shadowReps||0}</div><div style="font-size:10px;color:#9a9184;text-transform:uppercase;letter-spacing:.5px;">répétitions</div></div><button class="rep-btn" id="repPlus">+</button></div>`;
+    html += `<div class="record-block">
+      <button class="record-btn" id="recordBtn">🎙️ ${recState.recording ? 'Arrêter' : `M'enregistrer`}</button>
+      ${recState.url ? `<button class="record-play-btn" id="recordPlayBtn">▶ Réécouter ma voix</button>` : ''}
+      <p class="record-hint">Compare en alternant : 🔊 (modèle) puis ▶ (ta voix). Pas de note automatique — c'est ton oreille qui juge, et c'est très bien comme ça.</p>
+    </div>`;
+    if(card.note){ html += `<div class="explain-box shadow-explain"><span class="eb-label">Structure & grammaire</span>${formatExplain(card.note)}${grammarChipsHtml(card.jp)}</div>`; }
+    html += `<div class="shadow-nav"><button id="prevPhrase">← Précédente</button><button id="nextPhrase">Suivante →</button></div>`;
+    html += '</div>';
+    area.innerHTML = html;
+
+    area.querySelectorAll('.shadow-filter .tag-chip').forEach(c=> c.addEventListener('click', ()=>{ shadowFilterTag = c.dataset.tag; shadowIdx = 0; renderShadow(); }));
+    area.querySelectorAll('.speed-row button').forEach(b=> b.addEventListener('click', ()=>{ shadowRate = parseFloat(b.dataset.rate); renderShadow(); }));
+    document.getElementById('playBtn').addEventListener('click', ()=> speak(card.jp, shadowRate));
+    document.getElementById('repPlus').addEventListener('click', ()=>{ card.shadowReps=(card.shadowReps||0)+1; registerStudyActivity(); savePhrases(); renderShadow(); });
+    document.getElementById('repMinus').addEventListener('click', ()=>{ card.shadowReps=Math.max(0,(card.shadowReps||0)-1); savePhrases(); renderShadow(); });
+    document.getElementById('prevPhrase').addEventListener('click', ()=>{ shadowIdx=(shadowIdx-1+filtered.length)%filtered.length; recState={recording:false,url:null,chunks:[]}; renderShadow(); });
+    const recBtn = document.getElementById('recordBtn');
+    if(recBtn) recBtn.addEventListener('click', toggleRecording);
+    const recPlayBtn = document.getElementById('recordPlayBtn');
+    if(recPlayBtn) recPlayBtn.addEventListener('click', ()=>{ if(recState.url){ const a = new Audio(recState.url); a.play(); } });
+    document.getElementById('nextPhrase').addEventListener('click', ()=>{ shadowIdx=(shadowIdx+1)%filtered.length; recState={recording:false,url:null,chunks:[]}; renderShadow(); });
+  }
+
+  // ---------- reading / signs ----------
+  function renderReading(){
+    const area = document.getElementById('readingArea');
+    let html = `<div class="read-intro">Tu as dit « parler avant lire » — mais certains mots, tu dois les <b>reconnaître</b> sans hésiter pour survivre : toilettes, gauche/droite, entrée/sortie, interdit. Touche un panneau pour l'entendre, ou ajoute un groupe à tes révisions pour les ancrer.</div>`;
+    READING_GROUPS.forEach((g, gi)=>{
+      html += `<div class="read-group">
+        <div class="rg-head"><h3>${g.icon} ${g.title}</h3><button class="rg-add" data-group="${gi}">+ Ajouter à mes révisions</button></div>
+        <div class="sign-grid">`;
+      g.items.forEach(it=>{
+        html += `<div class="sign-card" data-jp="${escapeHtml(it.jp)}">
+          <div class="sc-jp">${escapeHtml(it.jp)}</div>
+          <div class="sc-romaji">${escapeHtml(it.romaji)}</div>
+          <div class="sc-fr">${escapeHtml(it.fr)}</div>
+          ${it.note?`<div class="sc-note">${escapeHtml(it.note)}</div>`:''}
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    area.innerHTML = html;
+    area.querySelectorAll('.sign-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
+    area.querySelectorAll('.rg-add').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        const g = READING_GROUPS[parseInt(b.dataset.group,10)];
+        const existing = existingKeySet(); let added = 0;
+        g.items.forEach(it=>{
+          const key = (it.jp+'|'+it.romaji).toLowerCase();
+          if(existing.has(key)) return;
+          phrases.push(newCard(it.jp, it.romaji, it.fr, it.note||'', 'panneaux', 'lecture'));
+          existing.add(key); added++;
+        });
+        if(added>0){ await savePhrases(); render(); }
+        b.textContent = added>0 ? (added + ' ajouté' + (added===1?'':'s') + ' ✓') : 'Déjà dans tes révisions';
+        setTimeout(()=>{ b.textContent = '+ Ajouter à mes révisions'; }, 2000);
+      });
+    });
+  }
+
+  function renderGrammar(){ document.getElementById('grammarArea').innerHTML = GRAMMAR_HTML; }
+
+  // ---------- add / list ----------
+  document.getElementById('addPhraseBtn').addEventListener('click', async ()=>{
+    const jp = document.getElementById('f-jp').value.trim();
+    const romaji = document.getElementById('f-romaji').value.trim();
+    const fr = document.getElementById('f-fr').value.trim();
+    const note = document.getElementById('f-note').value.trim();
+    const tag = document.getElementById('f-tag').value.trim();
+    if(!jp || !fr){ alert('Au minimum : le japonais et la traduction.'); return; }
+    phrases.push(newCard(jp, romaji, fr, note, tag, ''));
+    await savePhrases();
+    ['f-jp','f-romaji','f-fr','f-note','f-tag'].forEach(id=>document.getElementById(id).value='');
+    updateImportBanner(); render();
+  });
+  document.getElementById('dailyLimit').addEventListener('change', e=>{ meta.dailyLimit = Math.max(1, parseInt(e.target.value,10) || 8); saveMeta(); });
+
+  let listFilterTag = 'all';
+  function renderTagChips(){
+    const chipsEl = document.getElementById('tagChips');
+    const tags = ['all', ...new Set(phrases.map(p=>p.tag)), 'archivées'];
+    chipsEl.innerHTML = tags.map(t=>`<span class="tag-chip ${t===listFilterTag?'active':''}" data-tag="${t}">${t==='all'?'Toutes':(t==='archivées'?'🎓 Déjà sues':t)}</span>`).join('');
+    chipsEl.querySelectorAll('.tag-chip').forEach(c=> c.addEventListener('click', ()=>{ listFilterTag = c.dataset.tag; renderList(); renderTagChips(); }));
+  }
+  function renderList(){
+    const list = document.getElementById('phraseList');
+    let items;
+    if(listFilterTag === 'archivées') items = phrases.filter(p=>p.archived);
+    else if(listFilterTag === 'all') items = phrases.filter(p=>!p.archived);
+    else items = phrases.filter(p=>p.tag===listFilterTag && !p.archived);
+    items = items.slice().sort((a,b)=>a.due-b.due);
+    if(items.length === 0){ list.innerHTML = `<p style="font-size:13px;color:#9a9184;text-align:center;padding:20px;">${listFilterTag==='archivées' ? "Rien d'archivé pour l'instant — marque une phrase « Je connais déjà » pendant une révision, ou avec le bouton 🎓 ci-dessous." : 'Aucune phrase pour le moment.'}</p>`; return; }
+    list.innerHTML = items.map(p=>{
+      const isDue = p.due <= nowTs();
+      const dueLabel = p.archived ? 'archivée' : (isDue ? 'à revoir' : 'dans ' + Math.max(1, Math.ceil((p.due-nowTs())/86400000)) + 'j');
+      return `<div class="phrase-item ${p.archived?'pi-archived':''}">
+        <div class="pi-jp">${escapeHtml(p.jp)}${CORE_SET.has(p.jp)?' ⭐':''}</div>
+        <div class="pi-mid"><div class="pi-romaji">${escapeHtml(p.romaji||'')}</div><div class="pi-fr">${escapeHtml(p.fr||'')}</div></div>
+        ${p.level ? `<div class="pi-level">${escapeHtml(p.level)}</div>` : ''}
+        <div class="pi-tag">${escapeHtml(p.tag)}</div>
+        <div class="pi-due" style="color:${isDue&&!p.archived?'#b8401f':'#9a9184'}">${dueLabel}</div>
+        <button class="pi-restore" data-id="${p.id}">${p.archived?'↩ Remettre':'🎓 Je sais déjà'}</button>
+        <button class="pi-del" data-id="${p.id}" title="Supprimer">✕</button>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('.pi-del').forEach(b=> b.addEventListener('click', async ()=>{ phrases = phrases.filter(p=>p.id !== b.dataset.id); await savePhrases(); updateImportBanner(); render(); }));
+    list.querySelectorAll('.pi-restore').forEach(b=> b.addEventListener('click', async ()=>{
+      const p = phrases.find(x=>x.id===b.dataset.id);
+      if(p){ archiveCard(p, !p.archived); await savePhrases(); render(); }
+    }));
+  }
+  function renderStats(){
+    document.getElementById('statTotal').textContent = phrases.length;
+    document.getElementById('statDue').textContent = getDueAll().length;
+    document.getElementById('statMastered').textContent = phrases.filter(p=>p.interval >= 21).length;
+  }
+  function renderHeader(){ document.getElementById('dueCount').textContent = getDueAll().length; }
+  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function render(){
+    renderHeader(); renderStats(); renderTagChips(); renderList(); renderSoundBars();
+    const activeView = document.querySelector('section.view.active');
+    if(activeView && activeView.id === 'view-skills') renderSkills();
+    if(activeView && activeView.id === 'view-review') startReviewSession();
+    if(activeView && activeView.id === 'view-shadow') renderShadow();
+    if(activeView && activeView.id === 'view-conversation') renderConversationList();
+    if(activeView && activeView.id === 'view-reading') renderReading();
+    if(activeView && activeView.id === 'view-grammar') renderGrammar();
+  }
+
+  loadAll();
+})();
+</script>
+</body>
+</html>
