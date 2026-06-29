@@ -2,6 +2,9 @@ import { renderShadow } from './views/shadow.js';
 
 // ---------- robust TTS ----------
 let jaVoiceFound = null, voiceProbed = false, speakStatus = null; // null | 'speaking' | 'failed'
+// Chrome (hors Edge) souffre d'un bug macOS où speechSynthesis accepte l'utterance
+// mais ne démarre jamais (onstart/onend/onerror muets). Détecté pour orienter vers Safari.
+const IS_CHROME = /Chrome\//.test(navigator.userAgent) && !/Edg\//.test(navigator.userAgent) && !/OPR\//.test(navigator.userAgent);
 
 export function probeVoices(){
   if(!('speechSynthesis' in window)){ console.warn('[TTS] speechSynthesis non disponible sur ce navigateur'); return; }
@@ -52,7 +55,7 @@ export function speak(text, rate){
       speechSynthesis.cancel(); // toujours vider la file, même si l'état "speaking" semble faux (bug connu de Chrome après inactivité)
       setTimeout(()=>{
         try{ speechSynthesis.speak(u); }catch(e){ speakStatus='failed'; renderSoundBars(); }
-        setTimeout(()=>{ if(!started){ speakStatus = 'failed'; renderSoundBars(); } }, 1200);
+        setTimeout(()=>{ if(!started){ speakStatus = 'failed'; renderSoundBars(); } }, 1500);
       }, 30);
     }catch(e){ console.error(e); speakStatus = 'failed'; renderSoundBars(); }
   };
@@ -63,6 +66,7 @@ export function speak(text, rate){
 export function soundBarHTML(){
   let statusDot, statusText;
   if(!('speechSynthesis' in window)){ statusDot='bad'; statusText='Synthèse vocale non disponible sur ce navigateur'; }
+  else if(speakStatus === 'failed' && IS_CHROME){ statusDot='bad'; statusText="🔊 Le son ne fonctionne pas dans Chrome sur ce Mac (bug connu) — ouvre cette page dans Safari pour avoir le son."; }
   else if(speakStatus === 'failed'){ statusDot='bad'; statusText="Le son s'est bloqué — touche Réinitialiser ⟳"; }
   else if(voiceProbed && !jaVoiceFound){ statusDot='bad'; statusText='Aucune voix japonaise détectée'; }
   else if(jaVoiceFound){ statusDot='ok'; statusText='Voix japonaise prête'; }
