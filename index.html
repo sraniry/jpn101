@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>話そう — Kyoto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <div class="noren">
+    <div class="noren-rod"></div>
+    <div class="noren-strip"><span>話</span></div>
+    <div class="noren-strip accent"><span>そ</span></div>
+    <div class="noren-strip"><span>う</span></div>
+  </div>
+
+  <header class="title">
+    <h1>Nihongo no Eki · 京都</h1>
+    <p>Réviser · Ombrage · Lire les panneaux · Grammaire — guidé de A0 à B1</p>
+    <div class="streak-badge" id="streakBadge">🔥 0 jour</div>
+  </header>
+
+  <nav class="tabs">
+    <button data-view="skills" class="active">Compétences</button>
+    <button data-view="review">Réviser <span class="count" id="dueCount">0</span></button>
+    <button data-view="shadow">Ombrage</button>
+    <button data-view="conversation">Conversation</button>
+    <button data-view="reading">Lire</button>
+    <button data-view="grammar">Grammaire</button>
+    <button data-view="add">Mes phrases</button>
+  </nav>
+
+  <section class="view active" id="view-skills"><div class="panel"><div id="skillsArea"></div></div></section>
+  <section class="view" id="view-review"><div class="panel"><div id="soundBarReview"></div><div id="reviewArea"></div></div></section>
+  <section class="view" id="view-shadow"><div class="panel"><div id="soundBarShadow"></div><div id="shadowArea"></div></div></section>
+  <section class="view" id="view-conversation"><div class="panel"><div id="soundBarConv"></div><div id="conversationArea"></div></div></section>
+  <section class="view" id="view-reading"><div class="panel"><div id="readingArea"></div></div></section>
+  <section class="view" id="view-grammar"><div class="panel"><div id="grammarArea"></div></div></section>
+
+  <section class="view" id="view-add">
+    <div class="panel">
+      <div class="import-banner" id="importBanner">
+        <div class="ib-text">
+          <h3>Pack complet A0 → B1</h3>
+          <p id="importStatusText">Voyage, travail, étude, relation — avec explications grammaticales.</p>
+          <div class="level-pick" id="levelPick">
+            <label><input type="checkbox" value="A0" checked> A0</label>
+            <label><input type="checkbox" value="A1" checked> A1</label>
+            <label><input type="checkbox" value="A2" checked> A2</label>
+            <label><input type="checkbox" value="B1" checked> B1</label>
+          </div>
+        </div>
+        <button id="importBtn">Importer la sélection</button>
+      </div>
+
+      <div class="settings-row">
+        <span>Nouvelles phrases max / jour (évite la surcharge)</span>
+        <input type="number" id="dailyLimit" min="1" max="50" value="8" />
+      </div>
+
+      <p class="section-label">Ajouter une phrase manuellement</p>
+      <div class="add-form">
+        <div><label>Japonais</label><input class="jpf" id="f-jp" placeholder="一人です" /></div>
+        <div class="row2">
+          <div><label>Prononciation (romaji)</label><input id="f-romaji" placeholder="Hitori desu" /></div>
+          <div><label>Traduction</label><input id="f-fr" placeholder="Je suis seul(e)" /></div>
+        </div>
+        <div class="row2">
+          <div><label>Catégorie</label><input id="f-tag" placeholder="restaurant…" /></div>
+          <div><label>Explication (optionnel)</label><input id="f-note" placeholder="structure / particules" /></div>
+        </div>
+        <button class="add-btn" id="addPhraseBtn">Ajouter à mes révisions</button>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat"><b id="statTotal">0</b><span>Phrases</span></div>
+        <div class="stat"><b id="statDue">0</b><span>À revoir</span></div>
+        <div class="stat"><b id="statMastered">0</b><span>Maîtrisées</span></div>
+      </div>
+
+      <p class="section-label">Toutes mes phrases</p>
+      <div class="tag-chips" id="tagChips"></div>
+      <div class="phrase-list" id="phraseList"></div>
+    </div>
+  </section>
+
+  <footer class="note">頑張ってね — les données restent uniquement sur ton compte.</footer>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
