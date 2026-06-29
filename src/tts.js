@@ -4,12 +4,16 @@ import { renderShadow } from './views/shadow.js';
 let jaVoiceFound = null, voiceProbed = false, speakStatus = null; // null | 'speaking' | 'failed'
 
 export function probeVoices(){
-  if(!('speechSynthesis' in window)) return;
+  if(!('speechSynthesis' in window)){ console.warn('[TTS] speechSynthesis non disponible sur ce navigateur'); return; }
   const voices = speechSynthesis.getVoices();
   if(voices.length){
     jaVoiceFound = voices.find(v => v.lang && v.lang.toLowerCase().replace('_','-').startsWith('ja')) || null;
     voiceProbed = true;
+    if(jaVoiceFound) console.log(`[TTS] Voice found: ${jaVoiceFound.name} (${jaVoiceFound.lang})`);
+    else console.warn(`[TTS] No Japanese voice detected — ${voices.length} voix disponibles, aucune "ja". Langues: ${[...new Set(voices.map(v=>v.lang))].join(', ')}`);
     renderSoundBars();
+  } else {
+    console.log('[TTS] probeVoices: getVoices() vide pour l\'instant — en attente de onvoiceschanged');
   }
 }
 if('speechSynthesis' in window){
@@ -35,6 +39,8 @@ export function speak(text, rate){
     const voices = speechSynthesis.getVoices();
     const ja = voices.find(v => v.lang && v.lang.toLowerCase().replace('_','-').startsWith('ja')) || null;
     jaVoiceFound = ja; voiceProbed = true;
+    if(ja) console.log(`[TTS] speak("${text}") → Voice found: ${ja.name} (${ja.lang})`);
+    else console.warn(`[TTS] speak("${text}") → No Japanese voice detected (${voices.length} voix), lecture avec lang=ja-JP sans voix explicite`);
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'ja-JP'; u.rate = rate || 1;
     if(ja) u.voice = ja;
