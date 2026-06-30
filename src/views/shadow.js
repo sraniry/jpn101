@@ -3,7 +3,7 @@ import { speak, recState, toggleRecording } from '../tts.js';
 import { escapeHtml, emptyState, formatExplain, grammarChipsHtml } from '../util.js';
 
 // ---------- shadowing ----------
-let shadowIdx = 0, shadowRate = 0.75, shadowFilterTag = 'all';
+let shadowIdx = 0, shadowRate = 1, shadowFilterTag = 'all';
 
 export function setShadowFilterTag(tag){ shadowFilterTag = tag; }
 
@@ -22,10 +22,6 @@ export function renderShadow(){
   html += `<div class="shadow-jp">${escapeHtml(card.jp)}</div>`;
   html += `<div class="shadow-romaji">${escapeHtml(card.romaji||'')}</div>`;
   html += `<div class="shadow-fr">${escapeHtml(card.fr||'')}</div>`;
-  html += `<div class="speed-row">
-    <button data-rate="0.6" class="${shadowRate===0.6?'active':''}">Très lent</button>
-    <button data-rate="0.75" class="${shadowRate===0.75?'active':''}">Lent</button>
-    <button data-rate="1" class="${shadowRate===1?'active':''}">Normal</button></div>`;
   html += `<button class="play-btn" id="playBtn">▶</button>`;
   html += `<div class="rep-row"><button class="rep-btn" id="repMinus">−</button><div><div class="rep-count">${card.shadowReps||0}</div><div style="font-size:10px;color:#9a9184;text-transform:uppercase;letter-spacing:.5px;">répétitions</div></div><button class="rep-btn" id="repPlus">+</button></div>`;
   html += `<div class="record-block">
@@ -39,8 +35,7 @@ export function renderShadow(){
   area.innerHTML = html;
 
   area.querySelectorAll('.shadow-filter .tag-chip').forEach(c=> c.addEventListener('click', ()=>{ shadowFilterTag = c.dataset.tag; shadowIdx = 0; renderShadow(); }));
-  area.querySelectorAll('.speed-row button').forEach(b=> b.addEventListener('click', ()=>{ shadowRate = parseFloat(b.dataset.rate); renderShadow(); }));
-  document.getElementById('playBtn').addEventListener('click', ()=> speak(card.jp, shadowRate));
+  document.getElementById('playBtn').addEventListener('click', ()=> speak(card.jp, 1));
   document.getElementById('repPlus').addEventListener('click', ()=>{ card.shadowReps=(card.shadowReps||0)+1; registerStudyActivity(); savePhrases(); renderShadow(); });
   document.getElementById('repMinus').addEventListener('click', ()=>{ card.shadowReps=Math.max(0,(card.shadowReps||0)-1); savePhrases(); renderShadow(); });
   document.getElementById('prevPhrase').addEventListener('click', ()=>{ shadowIdx=(shadowIdx-1+filtered.length)%filtered.length; recState.recording=false; recState.url=null; recState.chunks=[]; renderShadow(); });
