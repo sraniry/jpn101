@@ -315,6 +315,66 @@ export const READING_GROUPS = [
       {jp:`大使館`,romaji:`Taishikan`,fr:`Ambassade`,note:`フランス大使館 = ambassade de France`},
       {jp:`緊急連絡先`,romaji:`Kinkyuu renrakusaki`,fr:`Contact d'urgence`,note:`À noter avant de partir`},
       {jp:`遺失物センター`,romaji:`Ishitsubutsu sentaa`,fr:`Bureau des objets trouvés`,note:`Au Japon, objets perdus souvent retrouvés !`}
+    ]},
+    { title:`50 kanji du quotidien`, icon:`🈳`, items:[
+      // Directions & lieux
+      {jp:`上`,romaji:`ue / jō`,fr:`Dessus / haut`,note:`上口 = sortie supérieure`},
+      {jp:`下`,romaji:`shita / ka`,fr:`Dessous / bas`,note:`地下 = souterrain`},
+      {jp:`中`,romaji:`naka / chū`,fr:`Intérieur / en cours`,note:`中 dans 準備中, 営業中`},
+      {jp:`外`,romaji:`soto / gai`,fr:`Extérieur / dehors`,note:`外出中 = sorti`},
+      {jp:`前`,romaji:`mae`,fr:`Devant / avant`,note:`駅前 = devant la gare`},
+      {jp:`後`,romaji:`ushiro / go`,fr:`Derrière / après`,note:`後ろ = derrière`},
+      {jp:`東`,romaji:`higashi / tō`,fr:`Est`,note:`東口 = sortie est`},
+      {jp:`西`,romaji:`nishi / sei`,fr:`Ouest`,note:`西口 = sortie ouest`},
+      {jp:`口`,romaji:`kuchi / guchi`,fr:`Bouche / sortie`,note:`Omniprésent : 出口, 入口, 北口…`},
+      {jp:`道`,romaji:`michi / dō`,fr:`Route / chemin`,note:`歩道 = trottoir, 車道 = chaussée`},
+      // Transports
+      {jp:`行`,romaji:`iku / kō`,fr:`Aller / direction`,note:`新宿行 = direction Shinjuku`},
+      {jp:`線`,romaji:`sen`,fr:`Ligne (de train)`,note:`山手線, 京都線…`},
+      {jp:`乗`,romaji:`noru / jō`,fr:`Monter / embarquer`,note:`乗り場 = quai d'embarquement`},
+      {jp:`降`,romaji:`oriru / kō`,fr:`Descendre / sortir`,note:`降り口 = sortie (bus)`},
+      {jp:`発`,romaji:`hatsu`,fr:`Départ`,note:`10時発 = départ à 10h`},
+      {jp:`着`,romaji:`chaku`,fr:`Arrivée`,note:`11時着 = arrivée à 11h`},
+      {jp:`番`,romaji:`ban`,fr:`Numéro`,note:`3番線 = quai 3, 1番 = numéro 1`},
+      {jp:`台`,romaji:`dai`,fr:`Compteur machines/véhicules`,note:`自転車台数 = nb de vélos`},
+      // Nourriture & resto
+      {jp:`食`,romaji:`shoku / tabe`,fr:`Nourriture / manger`,note:`食堂 = cantine, 食事 = repas`},
+      {jp:`飲`,romaji:`nomi`,fr:`Boire`,note:`飲み物 = boisson, 飲み放題 = à volonté`},
+      {jp:`肉`,romaji:`niku`,fr:`Viande`,note:`牛肉 = bœuf, 豚肉 = porc, 鶏肉 = poulet`},
+      {jp:`魚`,romaji:`sakana / gyo`,fr:`Poisson`,note:`魚料理 = plat de poisson`},
+      {jp:`水`,romaji:`mizu / sui`,fr:`Eau`,note:`お水 = eau, 水曜日 = mercredi`},
+      {jp:`米`,romaji:`kome / bei`,fr:`Riz (non cuit)`,note:`ご飯 = riz cuit / repas`},
+      {jp:`麺`,romaji:`men`,fr:`Nouilles`,note:`ラーメン, うどん, そば…`},
+      // Achats & argent
+      {jp:`店`,romaji:`mise / ten`,fr:`Magasin / boutique`,note:`お店 = la boutique`},
+      {jp:`品`,romaji:`shina / hin`,fr:`Article / produit`,note:`商品 = marchandise, 新品 = neuf`},
+      {jp:`価`,romaji:`ka`,fr:`Prix / valeur`,note:`価格 = prix, 半額 = moitié prix`},
+      {jp:`金`,romaji:`kin / kane`,fr:`Argent / or`,note:`現金 = espèces, 料金 = tarif`},
+      {jp:`売`,romaji:`uru / bai`,fr:`Vendre`,note:`売り場 = rayon de vente`},
+      {jp:`買`,romaji:`kau / bai`,fr:`Acheter`,note:`買い物 = shopping`},
+      // Santé & urgences
+      {jp:`薬`,romaji:`kusuri / yaku`,fr:`Médicament`,note:`薬局 = pharmacie`},
+      {jp:`熱`,romaji:`netsu`,fr:`Fièvre / chaleur`,note:`熱がある = avoir de la fièvre`},
+      {jp:`痛`,romaji:`itai / tsū`,fr:`Douleur`,note:`頭痛 = mal de tête, 腹痛 = mal de ventre`},
+      {jp:`急`,romaji:`kyū`,fr:`Urgent / rapide`,note:`救急 = urgences, 急行 = express`},
+      // Hôtel & logement
+      {jp:`泊`,romaji:`haku / tomaru`,fr:`Nuit (d'hôtel) / séjourner`,note:`一泊 = une nuit`},
+      {jp:`部`,romaji:`bu / heya`,fr:`Partie / chambre`,note:`部屋 = chambre`},
+      {jp:`室`,romaji:`shitsu`,fr:`Salle / pièce`,note:`和室 = chambre japonaise, 洋室 = style occidental`},
+      {jp:`階`,romaji:`kai`,fr:`Étage`,note:`1階 = rez-de-chaussée, 2階 = 1er étage`},
+      {jp:`鍵`,romaji:`kagi`,fr:`Clé / serrure`,note:`鍵をなくした = j'ai perdu ma clé`},
+      // Administration & quotidien
+      {jp:`名`,romaji:`na / mei`,fr:`Nom`,note:`お名前 = votre nom, 名前 = prénom/nom`},
+      {jp:`字`,romaji:`ji`,fr:`Caractère / lettre`,note:`漢字 = kanji, 名字 = nom de famille`},
+      {jp:`書`,romaji:`kaku / sho`,fr:`Écrire`,note:`書き方 = façon d'écrire`},
+      {jp:`読`,romaji:`yomu / doku`,fr:`Lire`,note:`読み方 = façon de lire`},
+      {jp:`時`,romaji:`ji / toki`,fr:`Heure / moment`,note:`何時 = quelle heure, 時間 = durée`},
+      {jp:`日`,romaji:`nichi / hi`,fr:`Jour / soleil`,note:`今日 = aujourd'hui, 日曜日 = dimanche`},
+      {jp:`月`,romaji:`tsuki / getsu`,fr:`Mois / lune`,note:`1月 = janvier, 月曜日 = lundi`},
+      {jp:`年`,romaji:`nen / toshi`,fr:`Année`,note:`今年 = cette année`},
+      {jp:`人`,romaji:`hito / jin`,fr:`Personne`,note:`何人 = combien de personnes`},
+      {jp:`大`,romaji:`ōkii / dai`,fr:`Grand / très`,note:`大丈夫 = ça va, 大学 = université`},
+      {jp:`小`,romaji:`chīsai / shō`,fr:`Petit`,note:`小盛り = petite portion`}
     ]}
   ];
 
