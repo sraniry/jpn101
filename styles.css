@@ -284,3 +284,25 @@
   .conv-nav-row{ display:flex; justify-content:space-between; margin-top:16px; }
   .conv-back{ border:1px solid var(--line); background:transparent; color:#6b6358; padding:9px 16px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer;}
   .conv-done{ text-align:center; padding:30px 10px; }
+
+  /* ---- Particules en couleur ---- */
+  .p-wa  { color: #c97a35; font-weight: 700; } /* は topic */
+  .p-ga  { color: #4a7fc1; font-weight: 700; } /* が sujet */
+  .p-wo  { color: #b84040; font-weight: 700; } /* を objet */
+  .p-ni  { color: #3a9a6e; font-weight: 700; } /* に direction */
+  .p-de  { color: #8a60c8; font-weight: 700; } /* で lieu/moyen */
+  .p-e   { color: #2ea8b5; font-weight: 700; } /* へ direction */
+  .p-to  { color: #b07830; font-weight: 700; } /* と avec */
+  .p-mo  { color: #c04f8a; font-weight: 700; } /* も aussi */
+  .p-no  { color: #6a8a6a; font-weight: 600; } /* の possessif */
+  .p-kara,.p-made,.p-yori,.p-node,.p-noni { color: #7a6b5a; font-weight: 600; }
+
+  /* ---- Pitch accent ---- */
+  .pitch-row { display:flex; flex-wrap:wrap; align-items:center; gap:0; margin:6px 0 2px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .mora { padding:2px 4px; line-height:1.6; }
+  .mora.hi { text-decoration: overline 2px; text-decoration-color: var(--indigo); color: var(--indigo-deep); font-weight:600; }
+  .mora.lo { color: #9a9184; }
+  .mora-sep { color: #ccc; font-size: 10px; line-height:1.6; }
+
+  /* ---- Mode dictée ---- */
+  .mode-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }

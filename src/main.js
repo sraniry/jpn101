@@ -1,3 +1,4 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 import { loadAll, meta, getDueAll, updateStreak } from './storage.js';
 import { speak, renderSoundBars } from './tts.js';
 import { renderSkills } from './views/skills.js';

@@ -1,6 +1,6 @@
 import { phrases, registerStudyActivity, savePhrases } from '../storage.js';
 import { speak, recState, toggleRecording } from '../tts.js';
-import { escapeHtml, emptyState, formatExplain, grammarChipsHtml } from '../util.js';
+import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
 
 // ---------- shadowing ----------
 let shadowIdx = 0, shadowRate = 1, shadowFilterTag = 'all';
@@ -19,8 +19,9 @@ export function renderShadow(){
   let html = '<div class="shadow-card">';
   html += `<div class="shadow-filter">${tags.map(t=>`<span class="tag-chip ${t===shadowFilterTag?'active':''}" data-tag="${t}">${t==='all'?'Toutes':t}</span>`).join('')}</div>`;
   html += `<p class="section-label">Phrase ${shadowIdx+1} / ${filtered.length}${card.level?' · '+card.level:''}</p>`;
-  html += `<div class="shadow-jp">${escapeHtml(card.jp)}</div>`;
+  html += `<div class="shadow-jp">${colorizeJp(card.jp)}</div>`;
   html += `<div class="shadow-romaji">${escapeHtml(card.romaji||'')}</div>`;
+  if(card.pitch) html += renderPitch(card.pitch);
   html += `<div class="shadow-fr">${escapeHtml(card.fr||'')}</div>`;
   html += `<button class="play-btn" id="playBtn">▶</button>`;
   html += `<div class="rep-row"><button class="rep-btn" id="repMinus">−</button><div><div class="rep-count">${card.shadowReps||0}</div><div style="font-size:10px;color:#9a9184;text-transform:uppercase;letter-spacing:.5px;">répétitions</div></div><button class="rep-btn" id="repPlus">+</button></div>`;

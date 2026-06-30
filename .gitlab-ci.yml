@@ -2,8 +2,8 @@ pages:
   stage: deploy
   script:
     - mkdir -p public
-    - cp index.html public/
-    - cp styles.css public/
+    - cp index.html styles.css manifest.json sw.js public/
+    - cp icon-192.png icon-512.png icon.svg public/ 2>/dev/null || true
     - cp -r src public/
     - cp -r data public/
   artifacts:

@@ -1,12 +1,12 @@
 import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity } from '../storage.js';
 import { CORE_SET } from '../../data/phrases.js';
 import { speak } from '../tts.js';
-import { escapeHtml, emptyState, formatExplain, grammarChipsHtml } from '../util.js';
+import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
 import { renderHeader } from '../main.js';
 
 let reviewQueue = [], currentReview = null, revealed = false;
 let drillMode = false, drillInfo = null, drillAnswered = false;
-let reviewedSinceBreak = 0, listenMode = false;
+let reviewedSinceBreak = 0, listenMode = false, dicteMode = false;
 let interleaveActive = false, interleaveCard = null, interleaveReps = 0;
 let lastTyped = '';
 
@@ -88,30 +88,57 @@ export function renderReview(){
 
   let html = '<div class="review-wrap">';
   html += `<div class="progress-row"><span>${doneToday} fait${doneToday===1?'':'s'}</span><div class="progress-bar"><i style="width:${Math.min(100,(doneToday/total)*100)}%"></i></div><span>${reviewQueue.length} restante${reviewQueue.length===1?'':'s'}</span></div>`;
-  html += `<div class="mode-row"><button class="mode-chip ${listenMode?'active':''}" id="toggleListen">🎧 Mode écoute (texte caché)</button></div>`;
+  html += `<div class="mode-row">
+    <button class="mode-chip ${listenMode?'active':''}" id="toggleListen">🎧 Écoute</button>
+    <button class="mode-chip ${dicteMode?'active':''}" id="toggleDicte">✏️ Dictée romaji</button>
+  </div>`;
 
   html += `<div class="flashcard" id="flashcardEl">`;
   html += `<div class="tag-pill">${escapeHtml(currentReview.tag)}${CORE_SET.has(currentReview.jp)?' ⭐':''}</div>`;
   if(currentReview.level) html += `<div class="level-pill">${escapeHtml(currentReview.level)}</div>`;
-  if(listenMode && !revealed){
+
+  if(dicteMode && !revealed){
+    // Mode dictée : on entend, on tape le romaji
+    html += `<button class="listen-btn" id="listenPlayBtn">▶ Écouter</button>`;
+    html += `<div class="hint" style="margin-top:14px;">Écoute et tape ce que tu entends en romaji</div>`;
+  } else if(listenMode && !revealed){
     html += `<button class="listen-btn" id="listenPlayBtn">▶</button><div class="hint" style="margin-top:14px;">Écoute, devine le sens, puis touche pour révéler</div>`;
   } else {
-    html += `<div class="jp-text">${escapeHtml(currentReview.jp)}</div>`;
+    html += `<div class="jp-text">${colorizeJp(currentReview.jp)}</div>`;
     html += `<div class="romaji">${escapeHtml(currentReview.romaji||'')}</div>`;
+    if(currentReview.pitch) html += renderPitch(currentReview.pitch);
     if(!revealed) html += `<div class="hint">Dis le sens à voix haute, écris ta réponse, puis touche la carte</div>`;
   }
-  if(revealed){ html += `<div class="fr-text">${escapeHtml(currentReview.fr||'')}</div>`; html += `<button class="audio-mini" id="audioMini">▶</button>`; }
+  if(revealed){
+    html += `<div class="jp-text">${colorizeJp(currentReview.jp)}</div>`;
+    html += `<div class="fr-text">${escapeHtml(currentReview.fr||'')}</div>`;
+    if(currentReview.pitch) html += renderPitch(currentReview.pitch);
+    html += `<button class="audio-mini" id="audioMini">▶</button>`;
+  }
   html += `</div>`;
 
   if(!revealed){
-    html += `<div class="recall-input"><label>Ta réponse (effort de rappel, même incertain — la casse n'a aucune importance)</label><textarea id="recallBox" rows="1" placeholder="Ça veut dire…" autocapitalize="off" autocorrect="off" spellcheck="false">${escapeHtml(lastTyped)}</textarea></div>`;
+    const placeholder = dicteMode ? 'Tape le romaji… ex: Konnichiwa' : 'Ça veut dire…';
+    const label = dicteMode ? 'Tape ce que tu entends en romaji (orthographe approximative OK)' : 'Ta réponse (effort de rappel, même incertain — la casse n\'a aucune importance)';
+    html += `<div class="recall-input"><label>${label}</label><textarea id="recallBox" rows="1" placeholder="${placeholder}" autocapitalize="off" autocorrect="off" spellcheck="false">${escapeHtml(lastTyped)}</textarea></div>`;
     html += `<button class="reveal-btn" id="revealBtn">Vérifier / Révéler</button>`;
   } else {
-    const verdict = checkAnswer(lastTyped, currentReview.fr);
-    if(verdict){
-      const map = { good:['good','✓ Bonne réponse'], close:['close','≈ Tu y es presque'], off:['off','✗ Pas tout à fait'] };
-      const v = map[verdict];
-      html += `<div class="verdict ${v[0]}">${v[1]}<span class="ans">Réponse attendue : ${escapeHtml(currentReview.fr)}</span><span class="ans">Ta réponse : ${escapeHtml(lastTyped)}</span></div>`;
+    if(dicteMode){
+      // En mode dictée, on compare au romaji
+      const romajiCorrect = currentReview.romaji||'';
+      const verdict = checkAnswer(lastTyped, romajiCorrect);
+      if(verdict){
+        const map = { good:['good','✓ Bonne prononciation !'], close:['close','≈ Presque — regarde la diff'], off:['off','✗ Écoute encore'] };
+        const v = map[verdict];
+        html += `<div class="verdict ${v[0]}">${v[1]}<span class="ans">Romaji attendu : ${escapeHtml(romajiCorrect)}</span><span class="ans">Ta réponse : ${escapeHtml(lastTyped)}</span></div>`;
+      }
+    } else {
+      const verdict = checkAnswer(lastTyped, currentReview.fr);
+      if(verdict){
+        const map = { good:['good','✓ Bonne réponse'], close:['close','≈ Tu y es presque'], off:['off','✗ Pas tout à fait'] };
+        const v = map[verdict];
+        html += `<div class="verdict ${v[0]}">${v[1]}<span class="ans">Réponse attendue : ${escapeHtml(currentReview.fr)}</span><span class="ans">Ta réponse : ${escapeHtml(lastTyped)}</span></div>`;
+      }
     }
     if(currentReview.note){ html += `<div class="explain-box"><span class="eb-label">Structure & grammaire</span>${formatExplain(currentReview.note)}${grammarChipsHtml(currentReview.jp)}</div>`; }
     html += `<div class="rate-row">
@@ -124,12 +151,13 @@ export function renderReview(){
   html += '</div>';
   area.innerHTML = html;
 
-  const tl = document.getElementById('toggleListen'); if(tl) tl.addEventListener('click', ()=>{ captureTyped(); listenMode=!listenMode; renderReview(); });
+  const tl = document.getElementById('toggleListen'); if(tl) tl.addEventListener('click', ()=>{ captureTyped(); listenMode=!listenMode; dicteMode=false; renderReview(); });
+  const td = document.getElementById('toggleDicte'); if(td) td.addEventListener('click', ()=>{ captureTyped(); dicteMode=!dicteMode; listenMode=false; revealed=false; lastTyped=''; renderReview(); if(dicteMode) speak(currentReview.jp, 0.85); });
   const lpb = document.getElementById('listenPlayBtn'); if(lpb) lpb.addEventListener('click', e=>{ e.stopPropagation(); speak(currentReview.jp, 0.85); });
   const am = document.getElementById('audioMini'); if(am) am.addEventListener('click', e=>{ e.stopPropagation(); speak(currentReview.jp, 0.85); });
 
   const card = document.getElementById('flashcardEl');
-  if(card) card.addEventListener('click', ()=>{ if(!listenMode) speak(currentReview.jp, 0.85); if(!revealed){ captureTyped(); revealed=true; renderReview(); } });
+  if(card) card.addEventListener('click', ()=>{ if(!listenMode && !dicteMode) speak(currentReview.jp, 0.85); if(!revealed && !dicteMode){ captureTyped(); revealed=true; renderReview(); } });
   const rb = document.getElementById('revealBtn'); if(rb) rb.addEventListener('click', e=>{ e.stopPropagation(); captureTyped(); revealed=true; renderReview(); });
   const ab = document.getElementById('archiveBtn');
   if(ab) ab.addEventListener('click', ()=>{

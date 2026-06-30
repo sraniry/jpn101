@@ -2,6 +2,35 @@ export function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&a
 
 export function emptyState(title, body){ return `<div class="empty"><div class="stamp">合格</div><h3>${title}</h3><p>${body}</p></div>`; }
 
+// ---------- Particules en couleur ----------
+const PARTICLE_MAP = {
+  'から':'p-kara','まで':'p-made','より':'p-yori','ので':'p-node','のに':'p-noni',
+  'は':'p-wa','が':'p-ga','を':'p-wo','に':'p-ni','で':'p-de',
+  'へ':'p-e','と':'p-to','も':'p-mo','の':'p-no',
+};
+const PARTICLE_RE = /(から|まで|より|ので|のに|は|が|を|に|で|へ|と|も|の)/g;
+export function colorizeJp(text){
+  if(!text) return '';
+  return text.split(PARTICLE_RE).map(part =>
+    PARTICLE_MAP[part]
+      ? `<span class="${PARTICLE_MAP[part]}">${escapeHtml(part)}</span>`
+      : escapeHtml(part)
+  ).join('');
+}
+
+// ---------- Pitch accent ----------
+// Format du champ pitch : morae séparés par "-", MAJUSCULE = ton haut, minuscule = ton bas
+// Ex: おはよう → "o-HA-YO-u"  /  はい → "HA-i"
+export function renderPitch(pitchStr){
+  if(!pitchStr) return '';
+  const morae = pitchStr.split('-');
+  const spans = morae.map(m => {
+    const isHigh = /[A-Z]/.test(m);
+    return `<span class="mora ${isHigh?'hi':'lo'}">${escapeHtml(m.toLowerCase())}</span>`;
+  }).join('<span class="mora-sep">·</span>');
+  return `<div class="pitch-row" title="Hauteur tonale : soulignement = ton haut, gris = ton bas">${spans}</div>`;
+}
+
 // ---------- Détection automatique des patterns grammaticaux (pattern recognition) ----------
 export function detectGrammarTags(jp){
   const tags = [];
