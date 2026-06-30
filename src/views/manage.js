@@ -1,4 +1,4 @@
-import { phrases, meta, existingKeySet, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase } from '../storage.js';
+import { phrases, meta, existingKeySet, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll } from '../storage.js';
 import { SEED_PACK, CORE_SET } from '../../data/phrases.js';
 import { escapeHtml } from '../util.js';
 import { render } from '../main.js';
@@ -63,6 +63,34 @@ export function renderStats(){
   document.getElementById('statMastered').textContent = phrases.filter(p=>p.interval >= 21).length;
 }
 
+// ---------- Partage de progression via URL ----------
+export function exportToURL(){
+  try {
+    const data = {
+      phrases: JSON.parse(localStorage.getItem('phrases-v2') || '[]'),
+      meta: JSON.parse(localStorage.getItem('meta-v2') || '{}'),
+      exportedAt: new Date().toISOString()
+    };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const url = location.origin + location.pathname + '#sync=' + encoded;
+    return url;
+  } catch(e) { return null; }
+}
+
+export async function importFromURL(){
+  const hash = location.hash;
+  if(!hash.startsWith('#sync=')) return false;
+  try {
+    const encoded = hash.slice(6);
+    const data = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+    if(data.phrases) localStorage.setItem('phrases-v2', JSON.stringify(data.phrases));
+    if(data.meta) localStorage.setItem('meta-v2', JSON.stringify(data.meta));
+    history.replaceState(null, '', location.pathname); // nettoie l'URL
+    await loadAll();
+    return true;
+  } catch(e) { return false; }
+}
+
 export function initManage(){
   document.getElementById('importBtn').addEventListener('click', async ()=>{
     const levels = Array.from(document.querySelectorAll('#levelPick input:checked')).map(i=>i.value);
@@ -93,4 +121,17 @@ export function initManage(){
     updateImportBanner(); render();
   });
   document.getElementById('dailyLimit').addEventListener('change', e=>{ meta.dailyLimit = Math.max(1, parseInt(e.target.value,10) || 8); saveMeta(); });
+
+  document.getElementById('exportUrlBtn').addEventListener('click', ()=>{
+    const url = exportToURL();
+    if(!url){ document.getElementById('exportUrlStatus').textContent = '⚠️ Erreur — aucune donnée à exporter.'; return; }
+    const result = document.getElementById('exportUrlResult');
+    document.getElementById('exportUrlText').value = url;
+    result.style.display = 'block';
+    navigator.clipboard.writeText(url).then(()=>{
+      document.getElementById('exportUrlStatus').textContent = '✓ Copié dans le presse-papier !';
+    }).catch(()=>{
+      document.getElementById('exportUrlStatus').textContent = 'Sélectionne et copie le lien ci-dessous.';
+    });
+  });
 }

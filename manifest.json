@@ -1,7 +1,7 @@
 {
-  "name": "Nihongo no Eki · 京都",
-  "short_name": "話そう",
-  "description": "Apprendre le japonais — révision SRS, ombrage, grammaire A0→B1",
+  "name": "日本語を学ぼう · Nihongo wo Manabou",
+  "short_name": "日本語",
+  "description": "Apprendre le japonais — révision SRS, conversations, grammaire A0→B1",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#f5f2ec",

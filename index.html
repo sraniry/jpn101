@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>話そう — Kyoto</title>
+<title>日本語を学ぼう · Nihongo wo Manabou</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#3d4a5c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="話そう">
+<meta name="apple-mobile-web-app-title" content="日本語を学ぼう">
 <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
@@ -25,15 +25,14 @@
   </div>
 
   <header class="title">
-    <h1>Nihongo no Eki · 京都</h1>
-    <p>Réviser · Ombrage · Lire les panneaux · Grammaire — guidé de A0 à B1</p>
+    <h1>日本語を学ぼう · Nihongo wo Manabou</h1>
+    <p>Réviser · Converser · Lire les panneaux · Grammaire — guidé de A0 à B1</p>
     <div class="streak-badge" id="streakBadge">🔥 0 jour</div>
   </header>
 
   <nav class="tabs">
     <button data-view="skills" class="active">Compétences</button>
     <button data-view="review">Réviser <span class="count" id="dueCount">0</span></button>
-    <button data-view="shadow">Ombrage</button>
     <button data-view="conversation">Conversation</button>
     <button data-view="reading">Lire</button>
     <button data-view="grammar">Grammaire</button>
@@ -41,8 +40,19 @@
   </nav>
 
   <section class="view active" id="view-skills"><div class="panel"><div id="skillsArea"></div></div></section>
-  <section class="view" id="view-review"><div class="panel"><div id="soundBarReview"></div><div id="reviewArea"></div></div></section>
-  <section class="view" id="view-shadow"><div class="panel"><div id="soundBarShadow"></div><div id="shadowArea"></div></div></section>
+  <section class="view" id="view-review"><div class="panel"><div id="soundBarReview"></div>
+    <div class="particle-legend" title="Légende des particules japonaises">
+      <div class="pl-item"><span class="pl-jp p-wa">は</span><span class="pl-label">thème</span></div>
+      <div class="pl-item"><span class="pl-jp p-ga">が</span><span class="pl-label">sujet</span></div>
+      <div class="pl-item"><span class="pl-jp p-wo">を</span><span class="pl-label">objet direct</span></div>
+      <div class="pl-item"><span class="pl-jp p-ni">に</span><span class="pl-label">direction / but</span></div>
+      <div class="pl-item"><span class="pl-jp p-de">で</span><span class="pl-label">lieu / moyen</span></div>
+      <div class="pl-item"><span class="pl-jp p-e">へ</span><span class="pl-label">vers</span></div>
+      <div class="pl-item"><span class="pl-jp p-to">と</span><span class="pl-label">avec / et</span></div>
+      <div class="pl-item"><span class="pl-jp p-mo">も</span><span class="pl-label">aussi</span></div>
+      <div class="pl-item"><span class="pl-jp p-no">の</span><span class="pl-label">possession</span></div>
+    </div>
+    <div id="reviewArea"></div></div></section>
   <section class="view" id="view-conversation"><div class="panel"><div id="soundBarConv"></div><div id="conversationArea"></div></div></section>
   <section class="view" id="view-reading"><div class="panel"><div id="readingArea"></div></div></section>
   <section class="view" id="view-grammar"><div class="panel"><div id="grammarArea"></div></div></section>
@@ -61,6 +71,19 @@
           </div>
         </div>
         <button id="importBtn">Importer la sélection</button>
+      </div>
+
+      <div class="sync-box">
+        <h3>🔗 Partager ma progression (téléphone ↔ ordinateur)</h3>
+        <p>Génère un lien contenant toute ta progression. Ouvre-le sur l'autre appareil pour tout synchroniser.</p>
+        <div class="sync-row">
+          <button id="exportUrlBtn">📤 Générer le lien de partage</button>
+          <span id="exportUrlStatus"></span>
+        </div>
+        <div id="exportUrlResult" style="display:none;">
+          <textarea id="exportUrlText" rows="3" readonly style="width:100%;font-size:11px;margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);resize:none;"></textarea>
+          <p style="font-size:12px;color:#9a9184;margin-top:4px;">👆 Copie ce lien et ouvre-le sur l'autre appareil. Tous tes progrès seront chargés automatiquement.</p>
+        </div>
       </div>
 
       <div class="settings-row">

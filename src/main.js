@@ -3,11 +3,10 @@ import { loadAll, meta, getDueAll, updateStreak } from './storage.js';
 import { speak, renderSoundBars } from './tts.js';
 import { renderSkills } from './views/skills.js';
 import { startReviewSession, renderReview } from './views/review.js';
-import { renderShadow } from './views/shadow.js';
 import { renderConversationList } from './views/conversation.js';
 import { renderReading } from './views/reading.js';
 import { renderGrammar } from './views/grammar.js';
-import { updateImportBanner, renderTagChips, renderList, renderStats, initManage } from './views/manage.js';
+import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
 
 // ---------- tabs ----------
 document.querySelectorAll('nav.tabs button').forEach(btn=>{
@@ -18,7 +17,6 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     document.getElementById('view-'+btn.dataset.view).classList.add('active');
     if(btn.dataset.view === 'skills') renderSkills();
     if(btn.dataset.view === 'review'){ renderSoundBars(); startReviewSession(); }
-    if(btn.dataset.view === 'shadow'){ renderSoundBars(); renderShadow(); }
     if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
     if(btn.dataset.view === 'reading') renderReading();
     if(btn.dataset.view === 'grammar') renderGrammar();
@@ -42,7 +40,6 @@ export function render(){
   const activeView = document.querySelector('section.view.active');
   if(activeView && activeView.id === 'view-skills') renderSkills();
   if(activeView && activeView.id === 'view-review') startReviewSession();
-  if(activeView && activeView.id === 'view-shadow') renderShadow();
   if(activeView && activeView.id === 'view-conversation') renderConversationList();
   if(activeView && activeView.id === 'view-reading') renderReading();
   if(activeView && activeView.id === 'view-grammar') renderGrammar();
@@ -50,8 +47,12 @@ export function render(){
 
 async function init(){
   initManage();
-  await loadAll();
+  const synced = await importFromURL();
+  if(!synced) await loadAll();
   document.getElementById('dailyLimit').value = meta.dailyLimit || 8;
   updateImportBanner(); updateStreak(); render();
+  if(synced){
+    alert('✅ Progression importée depuis le lien ! Tes révisions, archives et stats sont à jour.');
+  }
 }
 init();
