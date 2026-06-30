@@ -1,116 +1,149 @@
-// Hiragana & Katakana — tables complètes avec romaji
+// Hiragana & Katakana — hiragana et katakana toujours appariés (même son, l'un à côté de l'autre)
+// mnemo = moyen mnémotechnique pour le katakana (forme souvent plus anguleuse, plus dure à retenir que le hiragana)
 
-export const HIRAGANA = [
-  // Voyelles
-  { kana:'あ', romaji:'a' }, { kana:'い', romaji:'i' }, { kana:'う', romaji:'u' },
-  { kana:'え', romaji:'e' }, { kana:'お', romaji:'o' },
-  // K
-  { kana:'か', romaji:'ka' }, { kana:'き', romaji:'ki' }, { kana:'く', romaji:'ku' },
-  { kana:'け', romaji:'ke' }, { kana:'こ', romaji:'ko' },
-  // S
-  { kana:'さ', romaji:'sa' }, { kana:'し', romaji:'shi' }, { kana:'す', romaji:'su' },
-  { kana:'せ', romaji:'se' }, { kana:'そ', romaji:'so' },
-  // T
-  { kana:'た', romaji:'ta' }, { kana:'ち', romaji:'chi' }, { kana:'つ', romaji:'tsu' },
-  { kana:'て', romaji:'te' }, { kana:'と', romaji:'to' },
-  // N
-  { kana:'な', romaji:'na' }, { kana:'に', romaji:'ni' }, { kana:'ぬ', romaji:'nu' },
-  { kana:'ね', romaji:'ne' }, { kana:'の', romaji:'no' },
-  // H
-  { kana:'は', romaji:'ha' }, { kana:'ひ', romaji:'hi' }, { kana:'ふ', romaji:'fu' },
-  { kana:'へ', romaji:'he' }, { kana:'ほ', romaji:'ho' },
-  // M
-  { kana:'ま', romaji:'ma' }, { kana:'み', romaji:'mi' }, { kana:'む', romaji:'mu' },
-  { kana:'め', romaji:'me' }, { kana:'も', romaji:'mo' },
-  // Y
-  { kana:'や', romaji:'ya' }, { kana:'ゆ', romaji:'yu' }, { kana:'よ', romaji:'yo' },
-  // R
-  { kana:'ら', romaji:'ra' }, { kana:'り', romaji:'ri' }, { kana:'る', romaji:'ru' },
-  { kana:'れ', romaji:'re' }, { kana:'ろ', romaji:'ro' },
-  // W / N
-  { kana:'わ', romaji:'wa' }, { kana:'を', romaji:'wo' }, { kana:'ん', romaji:'n' },
-  // Dakuten (voiced)
-  { kana:'が', romaji:'ga' }, { kana:'ぎ', romaji:'gi' }, { kana:'ぐ', romaji:'gu' },
-  { kana:'げ', romaji:'ge' }, { kana:'ご', romaji:'go' },
-  { kana:'ざ', romaji:'za' }, { kana:'じ', romaji:'ji' }, { kana:'ず', romaji:'zu' },
-  { kana:'ぜ', romaji:'ze' }, { kana:'ぞ', romaji:'zo' },
-  { kana:'だ', romaji:'da' }, { kana:'ぢ', romaji:'ji' }, { kana:'づ', romaji:'zu' },
-  { kana:'で', romaji:'de' }, { kana:'ど', romaji:'do' },
-  { kana:'ば', romaji:'ba' }, { kana:'び', romaji:'bi' }, { kana:'ぶ', romaji:'bu' },
-  { kana:'べ', romaji:'be' }, { kana:'ぼ', romaji:'bo' },
-  // Handakuten (p-)
-  { kana:'ぱ', romaji:'pa' }, { kana:'ぴ', romaji:'pi' }, { kana:'ぷ', romaji:'pu' },
-  { kana:'ぺ', romaji:'pe' }, { kana:'ぽ', romaji:'po' },
-  // Combinaisons (yōon)
-  { kana:'きゃ', romaji:'kya' }, { kana:'きゅ', romaji:'kyu' }, { kana:'きょ', romaji:'kyo' },
-  { kana:'しゃ', romaji:'sha' }, { kana:'しゅ', romaji:'shu' }, { kana:'しょ', romaji:'sho' },
-  { kana:'ちゃ', romaji:'cha' }, { kana:'ちゅ', romaji:'chu' }, { kana:'ちょ', romaji:'cho' },
-  { kana:'にゃ', romaji:'nya' }, { kana:'にゅ', romaji:'nyu' }, { kana:'にょ', romaji:'nyo' },
-  { kana:'ひゃ', romaji:'hya' }, { kana:'ひゅ', romaji:'hyu' }, { kana:'ひょ', romaji:'hyo' },
-  { kana:'みゃ', romaji:'mya' }, { kana:'みゅ', romaji:'myu' }, { kana:'みょ', romaji:'myo' },
-  { kana:'りゃ', romaji:'rya' }, { kana:'りゅ', romaji:'ryu' }, { kana:'りょ', romaji:'ryo' },
-  { kana:'ぎゃ', romaji:'gya' }, { kana:'ぎゅ', romaji:'gyu' }, { kana:'ぎょ', romaji:'gyo' },
-  { kana:'じゃ', romaji:'ja'  }, { kana:'じゅ', romaji:'ju'  }, { kana:'じょ', romaji:'jo'  },
-  { kana:'びゃ', romaji:'bya' }, { kana:'びゅ', romaji:'byu' }, { kana:'びょ', romaji:'byo' },
-  { kana:'ぴゃ', romaji:'pya' }, { kana:'ぴゅ', romaji:'pyu' }, { kana:'ぴょ', romaji:'pyo' },
+export const KANA_BASE = [
+  { row:'Voyelles', items:[
+    { h:'あ', k:'ア', romaji:'a', mnemo:'ア : la diagonale rappelle un “A” majuscule penché en arrière.' },
+    { h:'い', k:'イ', romaji:'i', mnemo:'イ : deux jambes qui marchent — pense à “il” qui avance.' },
+    { h:'う', k:'ウ', romaji:'u', mnemo:'ウ : un petit toit posé sur un crochet, comme un chapeau sur un “u”.' },
+    { h:'え', k:'エ', romaji:'e', mnemo:'エ : la lettre “E” redressée — comme dans エレベーター (ascenseur).' },
+    { h:'お', k:'オ', romaji:'o', mnemo:'オ : un bonhomme qui lève les bras en criant “Oh !”.' },
+  ]},
+  { row:'K', items:[
+    { h:'か', k:'カ', romaji:'ka', mnemo:'カ : ressemble à une faucille qui “coupe” — comme un couteau.' },
+    { h:'き', k:'キ', romaji:'ki', mnemo:'キ : ressemble à une clé (“key”) avec ses dents.' },
+    { h:'く', k:'ク', romaji:'ku', mnemo:'ク : un bec d\'oiseau qui fait “cou-cou”.' },
+    { h:'け', k:'ケ', romaji:'ke', mnemo:'ケ : comme キ mais avec une jambe qui glisse — une bouilloire qui verse.' },
+    { h:'こ', k:'コ', romaji:'ko', mnemo:'コ : deux traits parallèles comme un coin (“corner”) de boîte.' },
+  ]},
+  { row:'S', items:[
+    { h:'さ', k:'サ', romaji:'sa', mnemo:'サ : ressemble à des ciseaux ouverts.' },
+    { h:'し', k:'シ', romaji:'shi', mnemo:'シ : un sourire “:)” — pense à “shi” = happy face.' },
+    { h:'す', k:'ス', romaji:'su', mnemo:'ス : une mèche de nouille aspirée en spirale.' },
+    { h:'せ', k:'セ', romaji:'se', mnemo:'セ : un zigzag comme un brin de céleri (“celery”).' },
+    { h:'そ', k:'ソ', romaji:'so', mnemo:'ソ : une aiguille à coudre (“sew”) qui pique vers le bas.' },
+  ]},
+  { row:'T', items:[
+    { h:'た', k:'タ', romaji:'ta', mnemo:'タ : une table avec une nappe qui dépasse.' },
+    { h:'ち', k:'チ', romaji:'chi', mnemo:'チ : ressemble au chiffre 7 — pense à des baguettes qui piquent.' },
+    { h:'つ', k:'ツ', romaji:'tsu', mnemo:'ツ : trois vaguelettes — comme un tsunami miniature.' },
+    { h:'て', k:'テ', romaji:'te', mnemo:'テ : une antenne de télévision (“te”levision).' },
+    { h:'と', k:'ト', romaji:'to', mnemo:'ト : une porte (“to”temique) entrouverte.' },
+  ]},
+  { row:'N', items:[
+    { h:'な', k:'ナ', romaji:'na', mnemo:'ナ : une croix simple, comme un clou (“nail”) planté.' },
+    { h:'に', k:'ニ', romaji:'ni', mnemo:'ニ : deux traits horizontaux — comme le chiffre 2, pense à “knee” (genou).' },
+    { h:'ぬ', k:'ヌ', romaji:'nu', mnemo:'ヌ : une nouille (“noodle”) qui se tortille.' },
+    { h:'ね', k:'ネ', romaji:'ne', mnemo:'ネ : un filet (“net”) avec un fil qui dépasse.' },
+    { h:'の', k:'ノ', romaji:'no', mnemo:'ノ : un seul trait simple — le plus facile, une barre qui dit “non”.' },
+  ]},
+  { row:'H', items:[
+    { h:'は', k:'ハ', romaji:'ha', mnemo:'ハ : deux jambes écartées qui rient “ha-ha”.' },
+    { h:'ひ', k:'ヒ', romaji:'hi', mnemo:'ヒ : un sourcil levé et un sourire — “hi !” pour saluer.' },
+    { h:'ふ', k:'フ', romaji:'fu', mnemo:'フ : le silhouette du Mont Fuji (“Fu”ji).' },
+    { h:'へ', k:'ヘ', romaji:'he', mnemo:'ヘ : un simple toit pointu, comme un chapeau pointu.' },
+    { h:'ほ', k:'ホ', romaji:'ho', mnemo:'ホ : une maison (“ho”me) avec un poteau central.' },
+  ]},
+  { row:'M', items:[
+    { h:'ま', k:'マ', romaji:'ma', mnemo:'マ : une baguette magique (“ma”gic) qui tourbillonne.' },
+    { h:'み', k:'ミ', romaji:'mi', mnemo:'ミ : trois traits courts, comme un micro (“mi”crophone) sur pied.' },
+    { h:'む', k:'ム', romaji:'mu', mnemo:'ム : une tête de vache qui fait “meuh” (“mu”).' },
+    { h:'め', k:'メ', romaji:'me', mnemo:'メ : un “X” avec un cil qui dépasse — un œil qui cligne (“me”).' },
+    { h:'も', k:'モ', romaji:'mo', mnemo:'モ : un hameçon à trois traits, “more” compliqué que メ.' },
+  ]},
+  { row:'Y', items:[
+    { h:'や', k:'ヤ', romaji:'ya', mnemo:'ヤ : un lance-pierre (“ya” comme “yah !” en tirant).' },
+    { h:'ゆ', k:'ユ', romaji:'yu', mnemo:'ユ : un hameçon en U — il t\'a “hooké” (“you”).' },
+    { h:'よ', k:'ヨ', romaji:'yo', mnemo:'ヨ : trois barres horizontales, comme un yoyo (“yo-yo”) empilé.' },
+  ]},
+  { row:'R', items:[
+    { h:'ら', k:'ラ', romaji:'ra', mnemo:'ラ : une oreille de lapin (“ra”bbit) dressée.' },
+    { h:'り', k:'リ', romaji:'ri', mnemo:'リ : deux baguettes posées côte à côte pour le riz (“ri”ce).' },
+    { h:'る', k:'ル', romaji:'ru', mnemo:'ル : une boucle qui s\'enroule (“ru”le, “loop”).' },
+    { h:'れ', k:'レ', romaji:'re', mnemo:'レ : une crosse de hockey simple, un seul trait courbé.' },
+    { h:'ろ', k:'ロ', romaji:'ro', mnemo:'ロ : un carré fermé — une pièce (“ro”om).' },
+  ]},
+  { row:'W/N', items:[
+    { h:'わ', k:'ワ', romaji:'wa', mnemo:'ワ : une guêpe (“wasp”) qui vole, ailes ouvertes.' },
+    { h:'を', k:'ヲ', romaji:'wo', mnemo:'ヲ : forme rare (particule uniquement) — un crochet compliqué à reconnaître par sa rareté.' },
+    { h:'ん', k:'ン', romaji:'n', mnemo:'ン : deux petits traits parallèles, le son “n” tout seul, le plus court.' },
+  ]},
 ];
 
+// ---------- Formes dérivées : dakuten (゛) et handakuten (゜) ----------
+// Règle mnémotechnique générale : les deux petits traits (゛) ajoutent de la « voix » à la consonne
+// (k→g, s→z, t→d, h→b) — comme des guillemets qui font vibrer le son.
+// Le petit cercle (゜) n'existe que sur la ligne H et fait « péter » un P, comme une bulle qui pop.
+export const KANA_DAKUTEN = [
+  { row:'G (k+゛)', items:[
+    { h:'が', k:'ガ', romaji:'ga' }, { h:'ぎ', k:'ギ', romaji:'gi' }, { h:'ぐ', k:'グ', romaji:'gu' },
+    { h:'げ', k:'ゲ', romaji:'ge' }, { h:'ご', k:'ゴ', romaji:'go' },
+  ]},
+  { row:'Z (s+゛)', items:[
+    { h:'ざ', k:'ザ', romaji:'za' }, { h:'じ', k:'ジ', romaji:'ji' }, { h:'ず', k:'ズ', romaji:'zu' },
+    { h:'ぜ', k:'ゼ', romaji:'ze' }, { h:'ぞ', k:'ゾ', romaji:'zo' },
+  ]},
+  { row:'D (t+゛)', items:[
+    { h:'だ', k:'ダ', romaji:'da' }, { h:'ぢ', k:'ヂ', romaji:'ji' }, { h:'づ', k:'ヅ', romaji:'zu' },
+    { h:'で', k:'デ', romaji:'de' }, { h:'ど', k:'ド', romaji:'do' },
+  ]},
+  { row:'B (h+゛)', items:[
+    { h:'ば', k:'バ', romaji:'ba' }, { h:'び', k:'ビ', romaji:'bi' }, { h:'ぶ', k:'ブ', romaji:'bu' },
+    { h:'べ', k:'ベ', romaji:'be' }, { h:'ぼ', k:'ボ', romaji:'bo' },
+  ]},
+];
+
+export const KANA_HANDAKUTEN = [
+  { row:'P (h+゜)', items:[
+    { h:'ぱ', k:'パ', romaji:'pa' }, { h:'ぴ', k:'ピ', romaji:'pi' }, { h:'ぷ', k:'プ', romaji:'pu' },
+    { h:'ぺ', k:'ペ', romaji:'pe' }, { h:'ぽ', k:'ポ', romaji:'po' },
+  ]},
+];
+
+// ---------- Combinaisons yōon : consonne -i + petit や/ゆ/よ fusionnés en une seule syllabe ----------
+// Mnémotechnique : le petit や/ゆ/よ « s'écrase » contre le grand caractère pour ne faire qu'un seul son
+// (きゃ se prononce "kya" en une syllabe, jamais "ki-ya" en deux syllabes).
+export const KANA_YOON = [
+  { row:'ky/sh/ch/ny/hy/my/ry', items:[
+    { h:'きゃ', k:'キャ', romaji:'kya' }, { h:'きゅ', k:'キュ', romaji:'kyu' }, { h:'きょ', k:'キョ', romaji:'kyo' },
+    { h:'しゃ', k:'シャ', romaji:'sha' }, { h:'しゅ', k:'シュ', romaji:'shu' }, { h:'しょ', k:'ショ', romaji:'sho' },
+    { h:'ちゃ', k:'チャ', romaji:'cha' }, { h:'ちゅ', k:'チュ', romaji:'chu' }, { h:'ちょ', k:'チョ', romaji:'cho' },
+    { h:'にゃ', k:'ニャ', romaji:'nya' }, { h:'にゅ', k:'ニュ', romaji:'nyu' }, { h:'にょ', k:'ニョ', romaji:'nyo' },
+    { h:'ひゃ', k:'ヒャ', romaji:'hya' }, { h:'ひゅ', k:'ヒュ', romaji:'hyu' }, { h:'ひょ', k:'ヒョ', romaji:'hyo' },
+    { h:'みゃ', k:'ミャ', romaji:'mya' }, { h:'みゅ', k:'ミュ', romaji:'myu' }, { h:'みょ', k:'ミョ', romaji:'myo' },
+    { h:'りゃ', k:'リャ', romaji:'rya' }, { h:'りゅ', k:'リュ', romaji:'ryu' }, { h:'りょ', k:'リョ', romaji:'ryo' },
+  ]},
+  { row:'gy/j/by/py (voisées)', items:[
+    { h:'ぎゃ', k:'ギャ', romaji:'gya' }, { h:'ぎゅ', k:'ギュ', romaji:'gyu' }, { h:'ぎょ', k:'ギョ', romaji:'gyo' },
+    { h:'じゃ', k:'ジャ', romaji:'ja'  }, { h:'じゅ', k:'ジュ', romaji:'ju'  }, { h:'じょ', k:'ジョ', romaji:'jo'  },
+    { h:'びゃ', k:'ビャ', romaji:'bya' }, { h:'びゅ', k:'ビュ', romaji:'byu' }, { h:'びょ', k:'ビョ', romaji:'byo' },
+    { h:'ぴゃ', k:'ピャ', romaji:'pya' }, { h:'ぴゅ', k:'ピュ', romaji:'pyu' }, { h:'ぴょ', k:'ピョ', romaji:'pyo' },
+  ]},
+];
+
+// ---------- Katakana seul : sons spéciaux pour les mots étrangers (pas d'équivalent hiragana) ----------
+export const KATAKANA_ONLY = [
+  { k:'ファ', romaji:'fa' }, { k:'フィ', romaji:'fi' }, { k:'フェ', romaji:'fe' }, { k:'フォ', romaji:'fo' },
+  { k:'ヴァ', romaji:'va' }, { k:'ウィ', romaji:'wi' }, { k:'ウェ', romaji:'we' },
+  { k:'ティ', romaji:'ti' }, { k:'トゥ', romaji:'tu' }, { k:'ディ', romaji:'di' }, { k:'ドゥ', romaji:'du' },
+];
+
+// ---------- Listes plates dérivées (pour le quiz) ----------
+function flatten(groups, keyH='h', keyK='k'){
+  const out = [];
+  groups.forEach(g => g.items.forEach(it => out.push(it)));
+  return out;
+}
+export const HIRAGANA = [
+  ...flatten(KANA_BASE).map(({h,romaji})=>({kana:h, romaji})),
+  ...flatten(KANA_DAKUTEN).map(({h,romaji})=>({kana:h, romaji})),
+  ...flatten(KANA_HANDAKUTEN).map(({h,romaji})=>({kana:h, romaji})),
+  ...flatten(KANA_YOON).map(({h,romaji})=>({kana:h, romaji})),
+];
 export const KATAKANA = [
-  // Voyelles
-  { kana:'ア', romaji:'a' }, { kana:'イ', romaji:'i' }, { kana:'ウ', romaji:'u' },
-  { kana:'エ', romaji:'e' }, { kana:'オ', romaji:'o' },
-  // K
-  { kana:'カ', romaji:'ka' }, { kana:'キ', romaji:'ki' }, { kana:'ク', romaji:'ku' },
-  { kana:'ケ', romaji:'ke' }, { kana:'コ', romaji:'ko' },
-  // S
-  { kana:'サ', romaji:'sa' }, { kana:'シ', romaji:'shi' }, { kana:'ス', romaji:'su' },
-  { kana:'セ', romaji:'se' }, { kana:'ソ', romaji:'so' },
-  // T
-  { kana:'タ', romaji:'ta' }, { kana:'チ', romaji:'chi' }, { kana:'ツ', romaji:'tsu' },
-  { kana:'テ', romaji:'te' }, { kana:'ト', romaji:'to' },
-  // N
-  { kana:'ナ', romaji:'na' }, { kana:'ニ', romaji:'ni' }, { kana:'ヌ', romaji:'nu' },
-  { kana:'ネ', romaji:'ne' }, { kana:'ノ', romaji:'no' },
-  // H
-  { kana:'ハ', romaji:'ha' }, { kana:'ヒ', romaji:'hi' }, { kana:'フ', romaji:'fu' },
-  { kana:'ヘ', romaji:'he' }, { kana:'ホ', romaji:'ho' },
-  // M
-  { kana:'マ', romaji:'ma' }, { kana:'ミ', romaji:'mi' }, { kana:'ム', romaji:'mu' },
-  { kana:'メ', romaji:'me' }, { kana:'モ', romaji:'mo' },
-  // Y
-  { kana:'ヤ', romaji:'ya' }, { kana:'ユ', romaji:'yu' }, { kana:'ヨ', romaji:'yo' },
-  // R
-  { kana:'ラ', romaji:'ra' }, { kana:'リ', romaji:'ri' }, { kana:'ル', romaji:'ru' },
-  { kana:'レ', romaji:'re' }, { kana:'ロ', romaji:'ro' },
-  // W / N
-  { kana:'ワ', romaji:'wa' }, { kana:'ヲ', romaji:'wo' }, { kana:'ン', romaji:'n' },
-  // Dakuten
-  { kana:'ガ', romaji:'ga' }, { kana:'ギ', romaji:'gi' }, { kana:'グ', romaji:'gu' },
-  { kana:'ゲ', romaji:'ge' }, { kana:'ゴ', romaji:'go' },
-  { kana:'ザ', romaji:'za' }, { kana:'ジ', romaji:'ji' }, { kana:'ズ', romaji:'zu' },
-  { kana:'ゼ', romaji:'ze' }, { kana:'ゾ', romaji:'zo' },
-  { kana:'ダ', romaji:'da' }, { kana:'ヂ', romaji:'ji' }, { kana:'ヅ', romaji:'zu' },
-  { kana:'デ', romaji:'de' }, { kana:'ド', romaji:'do' },
-  { kana:'バ', romaji:'ba' }, { kana:'ビ', romaji:'bi' }, { kana:'ブ', romaji:'bu' },
-  { kana:'ベ', romaji:'be' }, { kana:'ボ', romaji:'bo' },
-  // Handakuten
-  { kana:'パ', romaji:'pa' }, { kana:'ピ', romaji:'pi' }, { kana:'プ', romaji:'pu' },
-  { kana:'ペ', romaji:'pe' }, { kana:'ポ', romaji:'po' },
-  // Combinaisons
-  { kana:'キャ', romaji:'kya' }, { kana:'キュ', romaji:'kyu' }, { kana:'キョ', romaji:'kyo' },
-  { kana:'シャ', romaji:'sha' }, { kana:'シュ', romaji:'shu' }, { kana:'ショ', romaji:'sho' },
-  { kana:'チャ', romaji:'cha' }, { kana:'チュ', romaji:'chu' }, { kana:'チョ', romaji:'cho' },
-  { kana:'ニャ', romaji:'nya' }, { kana:'ニュ', romaji:'nyu' }, { kana:'ニョ', romaji:'nyo' },
-  { kana:'ヒャ', romaji:'hya' }, { kana:'ヒュ', romaji:'hyu' }, { kana:'ヒョ', romaji:'hyo' },
-  { kana:'ミャ', romaji:'mya' }, { kana:'ミュ', romaji:'myu' }, { kana:'ミョ', romaji:'myo' },
-  { kana:'リャ', romaji:'rya' }, { kana:'リュ', romaji:'ryu' }, { kana:'リョ', romaji:'ryo' },
-  { kana:'ギャ', romaji:'gya' }, { kana:'ギュ', romaji:'gyu' }, { kana:'ギョ', romaji:'gyo' },
-  { kana:'ジャ', romaji:'ja'  }, { kana:'ジュ', romaji:'ju'  }, { kana:'ジョ', romaji:'jo'  },
-  { kana:'ビャ', romaji:'bya' }, { kana:'ビュ', romaji:'byu' }, { kana:'ビョ', romaji:'byo' },
-  { kana:'ピャ', romaji:'pya' }, { kana:'ピュ', romaji:'pyu' }, { kana:'ピョ', romaji:'pyo' },
-  // Sons spéciaux (mots étrangers)
-  { kana:'ファ', romaji:'fa' }, { kana:'フィ', romaji:'fi' }, { kana:'フェ', romaji:'fe' },
-  { kana:'フォ', romaji:'fo' }, { kana:'ヴァ', romaji:'va' }, { kana:'ウィ', romaji:'wi' },
-  { kana:'ウェ', romaji:'we' }, { kana:'ティ', romaji:'ti' }, { kana:'トゥ', romaji:'tu' },
-  { kana:'ディ', romaji:'di' }, { kana:'ドゥ', romaji:'du' },
+  ...flatten(KANA_BASE).map(({k,romaji})=>({kana:k, romaji})),
+  ...flatten(KANA_DAKUTEN).map(({k,romaji})=>({kana:k, romaji})),
+  ...flatten(KANA_HANDAKUTEN).map(({k,romaji})=>({kana:k, romaji})),
+  ...flatten(KANA_YOON).map(({k,romaji})=>({kana:k, romaji})),
+  ...KATAKANA_ONLY.map(({k,romaji})=>({kana:k, romaji})),
 ];

@@ -69,17 +69,26 @@ export function archiveCard(card, archived){
 
 export function getDueAll(){ return phrases.filter(p => p.due <= nowTs() && !p.archived); }
 
+const LEVEL_ORDER = { 'A0':0, 'A1':1, 'A2':2, 'B1':3 };
+function levelRank(level){ return LEVEL_ORDER.hasOwnProperty(level) ? LEVEL_ORDER[level] : 99; }
+
 export function buildQueue(){
   const today = todayStr();
   if(meta.newIntroducedDate !== today){ meta.newIntroducedDate = today; meta.newIntroducedCount = 0; saveMeta(); }
   const limit = meta.dailyLimit || 8;
   const due = getDueAll();
   const seen = due.filter(p => p.reps > 0);
-  const fresh = due.filter(p => p.reps === 0);
+  // les nouvelles cartes sont introduites par niveau croissant (A0 d'abord, puis A1, A2, B1)
+  // pour ne jamais mélanger du B1 avant d'avoir consolidé les bases
+  const fresh = due.filter(p => p.reps === 0).slice().sort((a,b)=>{
+    const r = levelRank(a.level) - levelRank(b.level);
+    return r !== 0 ? r : a.created - b.created;
+  });
   const remainingNewSlots = Math.max(0, limit - meta.newIntroducedCount);
-  const queue = seen.concat(fresh.slice(0, remainingNewSlots));
-  for(let i=queue.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [queue[i],queue[j]]=[queue[j],queue[i]]; }
-  return queue;
+  const newBatch = fresh.slice(0, remainingNewSlots);
+  // seules les cartes déjà vues sont mélangées entre elles ; les nouvelles gardent leur ordre de niveau
+  for(let i=seen.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [seen[i],seen[j]]=[seen[j],seen[i]]; }
+  return seen.concat(newBatch);
 }
 
 export function existingKeySet(){ return new Set(phrases.map(p => (p.jp+'|'+p.romaji).toLowerCase())); }

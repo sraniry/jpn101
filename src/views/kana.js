@@ -1,32 +1,5 @@
-import { HIRAGANA, KATAKANA } from '../../data/kana.js';
+import { HIRAGANA, KATAKANA, KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON, KATAKANA_ONLY } from '../../data/kana.js';
 import { speak } from '../tts.js';
-
-// GROUPES pour le tableau (5 par rangée, voyelles + consonnes)
-const H_ROWS = [
-  { label:'Voyelles', chars: HIRAGANA.slice(0, 5) },
-  { label:'K', chars: HIRAGANA.slice(5, 10) },
-  { label:'S', chars: HIRAGANA.slice(10, 15) },
-  { label:'T', chars: HIRAGANA.slice(15, 20) },
-  { label:'N', chars: HIRAGANA.slice(20, 25) },
-  { label:'H', chars: HIRAGANA.slice(25, 30) },
-  { label:'M', chars: HIRAGANA.slice(30, 35) },
-  { label:'Y', chars: [HIRAGANA[35], HIRAGANA[36], HIRAGANA[37]] },
-  { label:'R', chars: HIRAGANA.slice(38, 43) },
-  { label:'W/N', chars: [HIRAGANA[43], HIRAGANA[44], HIRAGANA[45]] },
-];
-
-const K_ROWS = [
-  { label:'Voyelles', chars: KATAKANA.slice(0, 5) },
-  { label:'K', chars: KATAKANA.slice(5, 10) },
-  { label:'S', chars: KATAKANA.slice(10, 15) },
-  { label:'T', chars: KATAKANA.slice(15, 20) },
-  { label:'N', chars: KATAKANA.slice(20, 25) },
-  { label:'H', chars: KATAKANA.slice(25, 30) },
-  { label:'M', chars: KATAKANA.slice(30, 35) },
-  { label:'Y', chars: [KATAKANA[35], KATAKANA[36], KATAKANA[37]] },
-  { label:'R', chars: KATAKANA.slice(38, 43) },
-  { label:'W/N', chars: [KATAKANA[43], KATAKANA[44], KATAKANA[45]] },
-];
 
 // État du quiz
 let quizState = null;
@@ -45,19 +18,37 @@ function buildChoices(correct, pool, n = 4) {
   return shuffleArray([correct, ...others]);
 }
 
-function renderTable(rows, title) {
-  let html = `<div class="kana-table-wrap"><h4 class="kana-table-title">${title}</h4><div class="kana-table">`;
-  rows.forEach(row => {
-    html += `<div class="kana-row"><span class="kana-row-label">${row.label}</span>`;
-    row.chars.forEach(c => {
-      html += `<div class="kana-cell" data-jp="${c.kana}">
-        <span class="kc-char">${c.kana}</span>
-        <span class="kc-rom">${c.romaji}</span>
+// Tableau principal : hiragana et katakana appariés côte à côte (même son)
+function renderPairedTable(groups, withMnemo) {
+  let html = `<div class="kana-table-wrap"><div class="kana-pair-table">`;
+  groups.forEach(g => {
+    html += `<div class="kana-pair-row"><span class="kana-row-label">${g.row}</span><div class="kana-pair-cells">`;
+    g.items.forEach(it => {
+      html += `<div class="kana-pair-cell">
+        <div class="kpc-jp"><span class="kpc-h" data-jp="${it.h}">${it.h}</span><span class="kpc-sep">/</span><span class="kpc-k" data-jp="${it.k}">${it.k}</span></div>
+        <span class="kpc-rom">${it.romaji}</span>
+        ${withMnemo && it.mnemo ? `<span class="kpc-mnemo">${it.mnemo}</span>` : ''}
       </div>`;
     });
-    html += `</div>`;
+    html += `</div></div>`;
   });
   html += `</div></div>`;
+  return html;
+}
+
+// Tableau dense pour les formes dérivées/combinaisons (compact, plusieurs par ligne, pas une ligne par caractère)
+function renderCompactTable(groups) {
+  let html = `<div class="kana-compact-table">`;
+  groups.forEach(g => {
+    html += `<div class="kana-compact-group"><span class="kcg-label">${g.row}</span><div class="kcg-cells">`;
+    g.items.forEach(it => {
+      html += `<div class="kana-compact-cell" data-jp="${it.h}">
+        <span class="kcc-h" data-jp="${it.h}">${it.h}</span><span class="kcc-k" data-jp="${it.k}">${it.k}</span><span class="kcc-rom">${it.romaji}</span>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `</div>`;
   return html;
 }
 
@@ -121,37 +112,51 @@ export function renderKana() {
 
   area.innerHTML = `
     <div class="kana-intro">
-      <b>Hiragana</b> : mots japonais natifs, particules, conjugaisons.<br>
-      <b>Katakana</b> : mots étrangers (コーヒー = café, バス = bus).<br>
+      <b>Hiragana</b> (gauche) : mots japonais natifs, particules, conjugaisons.<br>
+      <b>Katakana</b> (droite) : mots étrangers (コーヒー = café, バス = bus).<br>
       Clique sur un caractère pour l'entendre. Entraîne-toi avec le quiz.
     </div>
 
     <div class="kana-tabs">
-      <button class="kana-tab active" data-tab="hiragana">あ Hiragana</button>
-      <button class="kana-tab" data-tab="katakana">ア Katakana</button>
+      <button class="kana-tab active" data-tab="base">あ/ア Base</button>
+      <button class="kana-tab" data-tab="derived">゛゜ Dérivés</button>
       <button class="kana-tab" data-tab="quiz">🎯 Quiz</button>
     </div>
 
-    <div id="kana-tab-hiragana" class="kana-tab-panel active">
-      ${renderTable(H_ROWS, 'Hiragana — 46 caractères de base')}
-      <div class="kana-dakuten-note">+ Les formes avec ゛(voiced, ex: が・じ) et ゜(p-, ex: ぱ) et les combinaisons (きゃ・しゅ…) sont dans le tableau étendu ci-dessous.</div>
-      <details class="kana-extended">
-        <summary>Voir les formes dérivées et combinaisons (゛゜ + yōon)</summary>
-        <div class="kana-table kana-table-small">
-          ${HIRAGANA.slice(46).map(c => `<div class="kana-cell" data-jp="${c.kana}"><span class="kc-char">${c.kana}</span><span class="kc-rom">${c.romaji}</span></div>`).join('')}
-        </div>
-      </details>
+    <div id="kana-tab-base" class="kana-tab-panel active">
+      <h4 class="kana-table-title">46 sons de base — hiragana / katakana</h4>
+      <label class="kana-mnemo-toggle"><input type="checkbox" id="mnemoToggle"> Afficher les moyens mnémotechniques (katakana)</label>
+      ${renderPairedTable(KANA_BASE, false)}
     </div>
 
-    <div id="kana-tab-katakana" class="kana-tab-panel" style="display:none">
-      ${renderTable(K_ROWS, 'Katakana — 46 caractères de base')}
-      <div class="kana-dakuten-note">+ Formes dérivées, combinaisons, et sons spéciaux pour mots étrangers ci-dessous.</div>
-      <details class="kana-extended">
-        <summary>Voir les formes dérivées, combinaisons et sons étrangers (ファ, ヴ…)</summary>
-        <div class="kana-table kana-table-small">
-          ${KATAKANA.slice(46).map(c => `<div class="kana-cell" data-jp="${c.kana}"><span class="kc-char">${c.kana}</span><span class="kc-rom">${c.romaji}</span></div>`).join('')}
-        </div>
-      </details>
+    <div id="kana-tab-derived" class="kana-tab-panel" style="display:none">
+      <div class="kana-rule-note">
+        <b>゛ (dakuten)</b> : les deux petits traits ajoutent de la « voix » à la consonne — k→g, s→z, t→d, h→b. Comme des guillemets qui font vibrer le son.
+      </div>
+      <h4 class="kana-table-title">Sonores ゛ — が・ざ・だ・ば</h4>
+      ${renderCompactTable(KANA_DAKUTEN)}
+
+      <div class="kana-rule-note">
+        <b>゜ (handakuten)</b> : uniquement sur la ligne H, fait « péter » un son P — comme une bulle qui pop.
+      </div>
+      <h4 class="kana-table-title">P ゜ — ぱ行</h4>
+      ${renderCompactTable(KANA_HANDAKUTEN)}
+
+      <div class="kana-rule-note">
+        <b>Combinaisons yōon</b> : un petit や/ゆ/よ collé à une consonne en -i fusionne en une seule syllabe (きゃ = "kya", jamais "ki-ya").
+      </div>
+      <h4 class="kana-table-title">Combinaisons — きゃ・しゃ・ちゃ…</h4>
+      ${renderCompactTable(KANA_YOON)}
+
+      <div class="kana-rule-note">
+        <b>Sons étrangers</b> : katakana seul, sans équivalent hiragana, utilisés pour transcrire des sons absents du japonais natif (ex. ファ pour "fa").
+      </div>
+      <h4 class="kana-table-title">Sons spéciaux katakana — ファ・ヴァ…</h4>
+      <div class="kana-compact-table">
+        <div class="kana-compact-group"><span class="kcg-label">Étrangers</span><div class="kcg-cells">
+          ${KATAKANA_ONLY.map(it => `<div class="kana-compact-cell" data-jp="${it.k}"><span class="kcc-k" data-jp="${it.k}">${it.k}</span><span class="kcc-rom">${it.romaji}</span></div>`).join('')}
+        </div></div>
+      </div>
     </div>
 
     <div id="kana-tab-quiz" class="kana-tab-panel" style="display:none">
@@ -180,10 +185,18 @@ export function renderKana() {
     });
   });
 
-  // Click kana cell → speak
+  // Mnemonics toggle (base table only)
+  const mnemoToggle = area.querySelector('#mnemoToggle');
+  if (mnemoToggle) {
+    mnemoToggle.addEventListener('change', () => {
+      area.querySelector('#kana-tab-base').classList.toggle('show-mnemo', mnemoToggle.checked);
+    });
+  }
+
+  // Click kana char → speak
   area.addEventListener('click', e => {
-    const cell = e.target.closest('.kana-cell');
-    if (cell) speak(cell.dataset.jp, 0.8);
+    const el = e.target.closest('[data-jp]');
+    if (el && el.dataset.jp) speak(el.dataset.jp, 0.8);
   });
 
   // Quiz start buttons

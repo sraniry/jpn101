@@ -315,19 +315,34 @@
 
   .kana-table-wrap { margin-bottom:16px; }
   .kana-table-title { font-size:13px; font-weight:700; color:var(--indigo-deep); margin:0 0 8px; }
-  .kana-table { display:flex; flex-direction:column; gap:4px; }
-  .kana-row { display:flex; align-items:center; gap:4px; }
-  .kana-row-label { font-size:10px; color:#9a9184; width:32px; flex-shrink:0; text-align:right; padding-right:6px; font-weight:600; }
-  .kana-cell { display:flex; flex-direction:column; align-items:center; justify-content:center; width:52px; min-height:52px; background:var(--paper); border:1px solid var(--line); border-radius:8px; cursor:pointer; transition:background .15s; padding:4px; }
-  .kana-cell:hover { background:rgba(44,62,92,0.08); }
-  .kc-char { font-family:'Shippori Mincho',serif; font-size:22px; line-height:1.2; color:var(--ink); }
-  .kc-rom { font-size:9.5px; color:#9a9184; font-family:'JetBrains Mono',monospace; margin-top:2px; }
+  .kana-row-label { font-size:10px; color:#9a9184; width:60px; flex-shrink:0; text-align:right; padding-right:8px; font-weight:600; }
 
-  .kana-table-small { display:flex; flex-wrap:wrap; gap:4px; padding:12px 0; }
+  .kana-mnemo-toggle { display:flex; align-items:center; gap:6px; font-size:12.5px; color:#6b6358; margin-bottom:10px; cursor:pointer; }
 
-  .kana-dakuten-note { font-size:12px; color:#9a9184; margin:8px 0 4px; }
-  .kana-extended summary { font-size:12.5px; color:var(--indigo); cursor:pointer; margin-bottom:8px; font-weight:600; }
-  .kana-extended { margin-bottom:16px; }
+  /* Tableau apparié hiragana/katakana : un seul son par ligne, h et k côte à côte */
+  .kana-pair-table { display:flex; flex-direction:column; gap:6px; }
+  .kana-pair-row { display:flex; align-items:flex-start; gap:4px; }
+  .kana-pair-cells { display:flex; flex-wrap:wrap; gap:4px; flex:1; }
+  .kana-pair-cell { display:flex; flex-direction:column; align-items:center; justify-content:center; width:64px; min-height:54px; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:4px; transition:background .15s; }
+  .kpc-jp { display:flex; align-items:baseline; gap:2px; cursor:pointer; }
+  .kpc-h, .kpc-k { font-family:'Shippori Mincho',serif; font-size:18px; line-height:1.2; color:var(--ink); padding:1px 2px; border-radius:4px; }
+  .kpc-h:hover, .kpc-k:hover { background:rgba(44,62,92,0.12); }
+  .kpc-sep { font-size:11px; color:#c9c0b3; }
+  .kpc-rom { font-size:9.5px; color:#9a9184; font-family:'JetBrains Mono',monospace; margin-top:2px; }
+  .kpc-mnemo { display:none; font-size:10px; color:#6b6358; line-height:1.35; margin-top:4px; text-align:center; max-width:120px; }
+  #kana-tab-base.show-mnemo .kana-pair-cell { width:auto; min-width:64px; max-width:150px; }
+  #kana-tab-base.show-mnemo .kpc-mnemo { display:block; }
+
+  /* Tableau compact pour formes dérivées / combinaisons : plusieurs colonnes, pas une ligne par caractère */
+  .kana-rule-note { font-size:12px; color:#6b6358; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin:14px 0 8px; line-height:1.5; }
+  .kana-compact-table { display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
+  .kana-compact-group { display:flex; align-items:flex-start; gap:6px; }
+  .kcg-label { font-size:9.5px; color:#9a9184; width:60px; flex-shrink:0; text-align:right; padding-right:6px; font-weight:600; padding-top:6px; }
+  .kcg-cells { display:flex; flex-wrap:wrap; gap:3px; flex:1; }
+  .kana-compact-cell { display:flex; align-items:baseline; gap:3px; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px 6px; cursor:pointer; transition:background .15s; }
+  .kana-compact-cell:hover { background:rgba(44,62,92,0.08); }
+  .kcc-h, .kcc-k { font-family:'Shippori Mincho',serif; font-size:13px; color:var(--ink); }
+  .kcc-rom { font-size:9px; color:#9a9184; font-family:'JetBrains Mono',monospace; }
 
   .kana-quiz-setup { margin-bottom:16px; }
   .kqs-label { font-size:13px; font-weight:600; color:var(--indigo-deep); margin:0 0 10px; }
@@ -354,8 +369,9 @@
 
   /* ---- Légende des particules ---- */
   .particle-legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin:12px 0 6px; padding:10px 14px; background:var(--paper); border:1px solid var(--line); border-radius:10px; }
-  .pl-item { display:flex; align-items:center; gap:5px; font-size:12px; }
+  .pl-item { display:flex; align-items:center; gap:4px; font-size:12px; }
   .pl-jp { font-family:'Shippori Mincho',serif; font-size:15px; font-weight:700; min-width:18px; }
+  .pl-romaji { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#9a9184; }
   .pl-label { color:#6b6358; font-size:11.5px; }
 
   /* ---- Sync box (partage URL) ---- */

@@ -98,6 +98,19 @@ export const GRAMMAR_HTML = `
     </div>
 
     <div class="gram-section">
+      <h3>Exemples de la vraie vie — situations à Kyoto</h3>
+      <p>Les mêmes structures vues plus haut, dans des situations concrètes que tu vas vraiment rencontrer en voyage.</p>
+      <div class="gram-callout"><b>Au konbini, tu hésites devant les bentos :</b><br><span class="jp jp-say" data-jp="これは辛いですか">これは辛いですか？ 🔊</span> <span class="romaji-sm">Kore wa karai desu ka?</span> — Est-ce que c'est épicé ? <span class="romaji-sm">(です sur l'adjectif からい)</span></div>
+      <div class="gram-callout"><b>Au restaurant, la serveuse demande où tu manges :</b><br><span class="jp jp-say" data-jp="店内でお召し上がりですか">店内でお召し上がりですか？ 🔊</span> <span class="romaji-sm">Tennai de omeshiagari desu ka?</span> — Vous mangez sur place ?<br>Réponse : <span class="jp jp-say" data-jp="持ち帰りでお願いします">持ち帰りでお願いします 🔊</span> <span class="romaji-sm">Mochikaeri de onegaishimasu</span> — À emporter, s'il vous plaît <span class="romaji-sm">(で = moyen/manière, pas seulement lieu)</span></div>
+      <div class="gram-callout"><b>Tu es perdu près de Fushimi Inari :</b><br><span class="jp jp-say" data-jp="伏見稲荷はどこですか">伏見稲荷はどこですか？ 🔊</span> <span class="romaji-sm">Fushimi Inari wa doko desu ka?</span> — Où est Fushimi Inari ? <span class="romaji-sm">(squelette [lieu]はどこですか)</span></div>
+      <div class="gram-callout"><b>À l'auberge, tu demandes le Wi-Fi (chose, pas personne → あります) :</b><br><span class="jp jp-say" data-jp="Wi-Fiはありますか">Wi-Fiはありますか？ 🔊</span> <span class="romaji-sm">Wi-Fi wa arimasu ka?</span> — Il y a du Wi-Fi ?<br>Réponse possible : <span class="jp jp-say" data-jp="ロビーにあります">ロビーにあります 🔊</span> <span class="romaji-sm">Robii ni arimasu</span> — Il y en a dans le hall <span class="romaji-sm">(に = lieu où ça existe)</span></div>
+      <div class="gram-callout"><b>Au temple, tu demandes si tu peux prendre une photo :</b><br><span class="jp jp-say" data-jp="写真を撮ってもいいですか">写真を撮ってもいいですか？ 🔊</span> <span class="romaji-sm">Shashin wo tottemo ii desu ka?</span> — Je peux prendre une photo ? <span class="romaji-sm">(~てもいいですか = demander la permission, variante de ~てください)</span></div>
+      <div class="gram-callout"><b>Au marché de Nishiki, tu demandes à goûter :</b><br><span class="jp jp-say" data-jp="味見できますか">味見できますか？ 🔊</span> <span class="romaji-sm">Ajimi dekimasu ka?</span> — Je peux goûter ? <span class="romaji-sm">(できます = ことができます raccourci, très courant à l'oral)</span></div>
+      <div class="gram-callout"><b>Tu rates ton bus et veux savoir le suivant :</b><br><span class="jp jp-say" data-jp="次のバスは何時に来ますか">次のバスは何時に来ますか？ 🔊</span> <span class="romaji-sm">Tsugi no basu wa nanji ni kimasu ka?</span> — Le prochain bus arrive à quelle heure ? <span class="romaji-sm">(の = possession/lien : « le bus de la suite », に = moment précis)</span></div>
+      <div class="gram-callout"><b>Au izakaya le soir, proposer de trinquer :</b><br><span class="jp jp-say" data-jp="一緒に飲みませんか">一緒に飲みませんか？ 🔊</span> <span class="romaji-sm">Issho ni nomimasen ka?</span> — On boit un coup ensemble ? <span class="romaji-sm">(forme négative = invitation polie, vu plus haut)</span></div>
+    </div>
+
+    <div class="gram-section">
       <h3>Prononciation : les pièges du francophone</h3>
       <table class="gram">
         <tr><th>Son</th><th>Comment faire</th></tr>
