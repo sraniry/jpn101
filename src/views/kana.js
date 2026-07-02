@@ -127,6 +127,55 @@ export function renderKana() {
       <h4 class="kana-table-title">46 sons de base — hiragana / katakana</h4>
       <label class="kana-mnemo-toggle"><input type="checkbox" id="mnemoToggle"> Afficher les moyens mnémotechniques (katakana)</label>
       ${renderPairedTable(KANA_BASE, true)}
+
+      <div class="kana-vocab-section">
+        <h4 class="kana-table-title">カタカナ — mots étrangers que tu verras partout</h4>
+        <p class="kana-vocab-note">Le katakana sert à écrire les mots d'emprunt (anglais, français…). Si tu reconnais le katakana, tu comprends souvent le mot en le prononçant à voix haute.</p>
+        <div class="kana-vocab-grid">
+          ${[
+            ['コーヒー','kōhī','café ☕'],['ビール','bīru','bière 🍺'],['ジュース','jūsu','jus 🥤'],
+            ['ミルク','miruku','lait 🥛'],['アイス','aisu','glace 🍦'],['ケーキ','kēki','gâteau 🎂'],
+            ['パン','pan','pain 🍞'],['ラーメン','rāmen','ramen 🍜'],['カレー','karē','curry 🍛'],
+            ['ピザ','piza','pizza 🍕'],['バス','basu','bus 🚌'],['タクシー','takushī','taxi 🚕'],
+            ['ホテル','hoteru','hôtel 🏨'],['コンビニ','konbini','konbini 🏪'],['スーパー','sūpā','supermarché'],
+            ['デパート','depāto','grand magasin'],['トイレ','toire','toilettes 🚻'],['エレベーター','erebētā','ascenseur'],
+            ['エスカレーター','esukarētā','escalator'],['スマホ','sumaho','smartphone 📱'],
+            ['パスポート','pasupōto','passeport 🛂'],['カード','kādo','carte bancaire 💳'],
+            ['メニュー','menyū','menu 📋'],['レストラン','resutoran','restaurant'],
+            ['チェックイン','chekkuin','check-in'],['テイクアウト','teiku auto','à emporter'],
+            ['アレルギー','arerugī','allergie ⚠️'],['フリー','furī','gratuit (free)'],
+            ['ポイント','pointo','points fidélité'],['サービス','sābisu','service / offert'],
+          ].map(([jp,rom,fr]) =>
+            `<div class="kana-vocab-card" data-jp="${jp}">
+              <span class="kvc-jp">${jp}</span>
+              <span class="kvc-rom">${rom}</span>
+              <span class="kvc-fr">${fr}</span>
+            </div>`
+          ).join('')}
+        </div>
+
+        <h4 class="kana-table-title" style="margin-top:20px">ひらがな — particules et mots courants</h4>
+        <p class="kana-vocab-note">Le hiragana sert pour les particules grammaticales (invisibles en français mais omniprésentes), et pour des mots courants écrits sans kanji.</p>
+        <div class="kana-vocab-grid">
+          ${[
+            ['は','wa','particule thème'],['が','ga','particule sujet'],['を','wo','particule objet'],
+            ['に','ni','à / vers / dans'],['で','de','lieu / moyen'],['の','no','de / possession'],
+            ['と','to','avec / et'],['も','mo','aussi'],['から','kara','depuis / de'],
+            ['まで','made','jusqu\'à'],['ここ','koko','ici'],['そこ','soko','là'],
+            ['どこ','doko','où ?'],['これ','kore','ceci'],['それ','sore','cela'],
+            ['いくら','ikura','combien ?'],['なに','nani','quoi ?'],['いつ','itsu','quand ?'],
+            ['だれ','dare','qui ?'],['おいしい','oishii','délicieux 😋'],
+            ['ください','kudasai','s\'il vous plaît'],['ありがとう','arigatō','merci'],
+            ['すみません','sumimasen','excusez-moi'],['ごめん','gomen','désolé'],
+          ].map(([jp,rom,fr]) =>
+            `<div class="kana-vocab-card" data-jp="${jp}">
+              <span class="kvc-jp">${jp}</span>
+              <span class="kvc-rom">${rom}</span>
+              <span class="kvc-fr">${fr}</span>
+            </div>`
+          ).join('')}
+        </div>
+      </div>
     </div>
 
     <div id="kana-tab-derived" class="kana-tab-panel" style="display:none">
