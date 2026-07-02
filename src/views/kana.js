@@ -114,7 +114,7 @@ export function renderKana() {
     <div class="kana-intro">
       <b>Hiragana</b> (gauche) : mots japonais natifs, particules, conjugaisons.<br>
       <b>Katakana</b> (droite) : mots étrangers (コーヒー = café, バス = bus).<br>
-      Clique sur un caractère pour l'entendre. Entraîne-toi avec le quiz.
+      Clique sur un caractère pour l'entendre et voir son moyen mnémotechnique. Entraîne-toi avec le quiz.
     </div>
 
     <div class="kana-tabs">
@@ -126,7 +126,7 @@ export function renderKana() {
     <div id="kana-tab-base" class="kana-tab-panel active">
       <h4 class="kana-table-title">46 sons de base — hiragana / katakana</h4>
       <label class="kana-mnemo-toggle"><input type="checkbox" id="mnemoToggle"> Afficher les moyens mnémotechniques (katakana)</label>
-      ${renderPairedTable(KANA_BASE, false)}
+      ${renderPairedTable(KANA_BASE, true)}
     </div>
 
     <div id="kana-tab-derived" class="kana-tab-panel" style="display:none">
@@ -193,10 +193,13 @@ export function renderKana() {
     });
   }
 
-  // Click kana char → speak
+  // Click kana char → speak + toggle mnemonic on the cell
   area.addEventListener('click', e => {
     const el = e.target.closest('[data-jp]');
-    if (el && el.dataset.jp) speak(el.dataset.jp, 0.8);
+    if (!el || !el.dataset.jp) return;
+    speak(el.dataset.jp, 0.8);
+    const cell = e.target.closest('.kana-pair-cell');
+    if (cell) cell.classList.toggle('is-open');
   });
 
   // Quiz start buttons
