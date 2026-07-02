@@ -181,15 +181,60 @@ export const SEED_PACK = [
     {jp:`三ヶ月前から京都にいます`,romaji:`Sankagetsu mae kara Kyouto ni imasu`,fr:`Je suis à Kyoto depuis 3 mois`,tag:`relation`,level:`A2`,ex:`ヶ月 = compteur pour les mois. 前 (avant) + から (depuis) = "il y a ~, depuis".`},
     {jp:`どんな音楽が好きですか？`,romaji:`Donna ongaku ga suki desu ka?`,fr:`Quel genre de musique aimes-tu ?`,tag:`relation`,level:`A2`,ex:`どんな = "quel genre de" devant un nom. 好き reste un adjectif-な, jamais un verbe "aimer".`},
     {jp:`休みの日は何をしますか？`,romaji:`Yasumi no hi wa nani wo shimasu ka?`,fr:`Qu'est-ce que tu fais pendant tes jours de repos ?`,tag:`relation`,level:`A2`,ex:`休みの日 = "jour de repos" (の relie comme un possessif). Excellente question pour relancer une conversation sur les passions.`},
+
+    // ---- 30 verbes essentiels ----
+    {jp:`行く（行きます）`,romaji:`iku (ikimasu)`,fr:`aller`,tag:`verbes`,level:`A0`,ex:`どこに行きますか？(Doko ni ikimasu ka?) = Vous allez où ? に marque la destination.`},
+    {jp:`来る（来ます）`,romaji:`kuru (kimasu)`,fr:`venir`,tag:`verbes`,level:`A0`,ex:`明日来ますか？(Ashita kimasu ka?) = Vous venez demain ? Irrégulier : kuru → kimasu (radical change complet).`},
+    {jp:`買う（買います）`,romaji:`kau (kaimasu)`,fr:`acheter`,tag:`verbes`,level:`A0`,ex:`コンビニで買います (Konbini de kaimasu) = J'achète au konbini. で marque le lieu de l'action.`},
+    {jp:`食べる（食べます）`,romaji:`taberu (tabemasu)`,fr:`manger`,tag:`verbes`,level:`A0`,ex:`寿司を食べます (Sushi wo tabemasu) = Je mange des sushis. を marque l'objet direct.`},
+    {jp:`飲む（飲みます）`,romaji:`nomu (nomimasu)`,fr:`boire`,tag:`verbes`,level:`A0`,ex:`お茶を飲みます (Ocha wo nomimasu) = Je bois du thé. Même structure : objet + を + verbe.`},
+    {jp:`乗る・撮る（乗ります・撮ります）`,romaji:`noru / toru`,fr:`prendre (train / photo)`,tag:`verbes`,level:`A0`,ex:`電車に乗ります = prendre le train (に = monter dans). 写真を撮ります = prendre une photo (を = objet).`},
+    {jp:`わかる（わかります）`,romaji:`wakaru (wakarimasu)`,fr:`comprendre`,tag:`verbes`,level:`A0`,ex:`日本語がわかります (Nihongo ga wakarimasu) = Je comprends le japonais. Attention : が (pas を) — wakaru décrit un état de compréhension.`},
+    {jp:`話す（話します）`,romaji:`hanasu (hanashimasu)`,fr:`parler`,tag:`verbes`,level:`A0`,ex:`日本語を話します (Nihongo wo hanashimasu) = Je parle japonais. Groupe 1 : -su → -shimasu.`},
+    {jp:`聞く（聞きます）`,romaji:`kiku (kikimasu)`,fr:`demander / écouter`,tag:`verbes`,level:`A0`,ex:`道を聞きます (Michi wo kikimasu) = Je demande mon chemin. Même kanji pour écouter : 音楽を聞く = écouter de la musique.`},
+    {jp:`待つ（待ちます）`,romaji:`matsu (machimasu)`,fr:`attendre`,tag:`verbes`,level:`A0`,ex:`ここで待ってください (Koko de matte kudasai) = Attendez ici s'il vous plaît. Forme -て de 待つ = 待って.`},
+    {jp:`探す（探します）`,romaji:`sagasu (sagashimasu)`,fr:`chercher`,tag:`verbes`,level:`A1`,ex:`薬局を探しています (Yakkyoku wo sagashite imasu) = Je cherche une pharmacie. -ています = action en cours.`},
+    {jp:`見つける（見つけます）`,romaji:`mitsukeru (mitsukemasu)`,fr:`trouver`,tag:`verbes`,level:`A1`,ex:`いいお店を見つけました (Ii omise wo mitsukemashita) = J'ai trouvé un bon restaurant. Passé : -ました.`},
+    {jp:`払う（払います）`,romaji:`harau (haraimasu)`,fr:`payer`,tag:`verbes`,level:`A0`,ex:`カードで払えますか？(Kaado de haraemasu ka?) = On peut payer par carte ? 払えます = forme potentielle.`},
+    {jp:`予約する（予約します）`,romaji:`yoyaku suru (yoyaku shimasu)`,fr:`réserver`,tag:`verbes`,level:`A1`,ex:`レストランを予約しました (Resutoran wo yoyaku shimashita) = J'ai réservé un restaurant. する verbs : [mot] + します.`},
+    {jp:`助ける（助けます）`,romaji:`tasukeru (tasukemasu)`,fr:`aider`,tag:`verbes`,level:`A0`,ex:`助けてください！(Tasukete kudasai!) = Aidez-moi ! Forme -て + ください = demande directe.`},
+    {jp:`見せる（見せます）`,romaji:`miseru (misemasu)`,fr:`montrer`,tag:`verbes`,level:`A0`,ex:`地図を見せてください (Chizu wo misete kudasai) = Montrez-moi la carte. Ou : これを見せてください = montrez-moi ça.`},
+    {jp:`書く（書きます）`,romaji:`kaku (kakimasu)`,fr:`écrire`,tag:`verbes`,level:`A0`,ex:`名前を書いてください (Namae wo kaite kudasai) = Écrivez votre nom s'il vous plaît. Forme -て de 書く = 書いて.`},
+    {jp:`読む（読みます）`,romaji:`yomu (yomimasu)`,fr:`lire`,tag:`verbes`,level:`A0`,ex:`漢字が読めません (Kanji ga yomemasen) = Je ne sais pas lire les kanji. 読めます = forme potentielle de 読む.`},
+    {jp:`知る（知っています）`,romaji:`shiru (shitte imasu)`,fr:`savoir / connaître`,tag:`verbes`,level:`A1`,ex:`知っています = je sais (état actuel). 知りません = je ne sais pas. Jamais 知ります pour l'état — toujours 知っています.`},
+    {jp:`できる（できます）`,romaji:`dekiru (dekimasu)`,fr:`pouvoir / savoir faire`,tag:`verbes`,level:`A0`,ex:`英語ができます (Eigo ga dekimasu) = Je parle anglais (je « peux » en anglais). できません = je ne peux pas / je ne sais pas faire.`},
+    {jp:`〜たい・ほしい`,romaji:`~ tai / hoshii`,fr:`vouloir (faire / avoir)`,tag:`verbes`,level:`A0`,ex:`食べたい = vouloir manger (action). 水がほしい = vouloir de l'eau (chose). Le japonais distingue toujours les deux : verbe+たい vs nom+ほしい.`},
+    {jp:`帰る（帰ります）`,romaji:`kaeru (kaerimasu)`,fr:`rentrer (chez soi)`,tag:`verbes`,level:`A0`,ex:`そろそろ帰ります (Sorosoro kaerimasu) = Je vais bientôt rentrer. 帰る = retour vers son « chez soi » — différent de 戻る (retourner quelque part).`},
+    {jp:`出る（出ます）`,romaji:`deru (demasu)`,fr:`sortir / partir de`,tag:`verbes`,level:`A0`,ex:`ホテルを出ます (Hoteru wo demasu) = Je quitte l'hôtel. Aussi : 電話に出る = décrocher le téléphone.`},
+    {jp:`入る（入ります）`,romaji:`hairu (hairimasu)`,fr:`entrer`,tag:`verbes`,level:`A0`,ex:`お店に入ります (Omise ni hairimasu) = J'entre dans le magasin. に marque l'espace dans lequel on entre.`},
+    {jp:`寝る（寝ます）`,romaji:`neru (nemasu)`,fr:`dormir / se coucher`,tag:`verbes`,level:`A0`,ex:`何時に寝ますか？(Nanji ni nemasu ka?) = Tu te couches à quelle heure ? 眠い (nemui) = avoir sommeil.`},
+    {jp:`〜といいます`,romaji:`~ to iimasu`,fr:`s'appeler / se nommer`,tag:`verbes`,level:`A0`,ex:`田中といいます (Tanaka to iimasu) = Je m'appelle Tanaka. と encadre ce qu'on « dit / nomme » — même structure que と思います.`},
+    {jp:`〜が必要です・要る（要ります）`,romaji:`~ ga hitsuyou desu / iru (irimasu)`,fr:`avoir besoin de`,tag:`verbes`,level:`A1`,ex:`助けが必要です (Tasuke ga hitsuyou desu) = J'ai besoin d'aide. お金がいります = j'ai besoin d'argent (oral, moins formel).`},
+    {jp:`あげる（あげます）`,romaji:`ageru (agemasu)`,fr:`donner (vers l'autre)`,tag:`verbes`,level:`A1`,ex:`お土産をあげます (Omiyage wo agemasu) = Je lui donne un souvenir. あげる = sens sortant (moi → autre). Contraire : もらう (sens entrant).`},
+    {jp:`もらう（もらいます）`,romaji:`morau (moraimasu)`,fr:`recevoir (de qqn)`,tag:`verbes`,level:`A1`,ex:`写真を撮ってもらいました = quelqu'un a pris ma photo pour moi. もらう = sens entrant (autre → moi). Base de もらえますか = puis-je recevoir que tu… ?`},
+    {jp:`忘れる（忘れます）`,romaji:`wasureru (wasuremasu)`,fr:`oublier`,tag:`verbes`,level:`A0`,ex:`傘を忘れました (Kasa wo wasuremashita) = J'ai oublié mon parapluie. 忘れ物 (wasuremono) = objet oublié — mot à connaître pour les gares et transports.`},
   ];
 
+// ⭐ CORE_SET : les 50 phrases les plus fréquentes au quotidien au Japon
+// Les jp values doivent correspondre exactement aux champs jp: du SEED_PACK
 export const CORE_SET = new Set([
-    `こんにちは`,`すみません`,`ありがとうございます`,`お願いします`,`はい`,`いいえ`,
-    `わかりません`,`いくらですか？`,`〜はどこですか？`,`トイレはどこですか？`,
-    `一人です`,`私は〜です`,`よろしくお願いします`,`〜が好きです`,
-    `これをください`,`〜まで行きたいんですが`,`もう一度お願いします`,
-    `〜を専攻しています`,`一緒に行きませんか？`,`元気ですか？`,`フランスから来ました`
-  ]);
+  // A0 — survie immédiate (23)
+  `こんにちは`,`おはようございます`,`こんばんは`,`ありがとうございます`,`すみません`,
+  `ごめんなさい`,`お願いします`,`はい`,`いいえ`,`わかりました`,`わかりません`,
+  `いただきます`,`ごちそうさまでした`,`いくらですか？`,`〜はどこですか？`,
+  `トイレはどこですか？`,`一人です`,`私は〜です`,`よろしくお願いします`,
+  `助けてください`,`ここに行きたいです`,`水をください`,`これをお願いします`,
+  // A1 — quotidien courant (17)
+  `お会計お願いします`,`メニューを見せてください`,`これは辛いですか？`,
+  `おすすめは何ですか？`,`とてもおいしかったです`,`お腹がいっぱいです`,
+  `元気ですか？`,`元気です`,`〜が好きです`,`予約しています`,`Wi-Fiはありますか？`,
+  `チェックインお願いします`,`何番線ですか？`,`次の電車は何時ですか？`,
+  `ICカードはありますか？`,`今何時ですか？`,`もう一度説明してもらえますか？`,
+  // A2 — situations pratiques (10)
+  `道に迷いました`,`〜まで行きたいんですが`,`具合が悪いです`,`病院はどこですか？`,
+  `〜アレルギーがあります`,`カードは使えますか？`,`現金しか使えません`,
+  `満席です`,`忘れ物をしました`,`肉が食べられません`,
+]);
 
 export const READING_GROUPS = [
     { title:`Toilettes & directions`, icon:`🚻`, items:[
@@ -972,5 +1017,24 @@ export const CONVERSATIONS = [
       { jp:'日本語でいいです', romaji:'Nihongo de ii desu', fr:'Le japonais ira', quality:'ok', feedback:'Courageux ! Mais seulement si tu peux vraiment lire le japonais.' }
     ]}
   ]}
+
+  ,{ title:`Formulaires & administrations`, icon:`📋`, items:[
+    {jp:`氏名`,romaji:`Shimei`,fr:`Nom complet (nom + prénom)`,note:`Sur les formulaires officiels — plus formel que 名前`},
+    {jp:`名前`,romaji:`Namae`,fr:`Prénom / Nom (usage courant)`,note:`Hôtels, formulaires simples`},
+    {jp:`苗字・姓`,romaji:`Myouji / Sei`,fr:`Nom de famille`,note:`苗字 plus courant à l'oral, 姓 dans les formulaires officiels`},
+    {jp:`生年月日`,romaji:`Seinen gappi`,fr:`Date de naissance`,note:`Ordre japonais : Année(年)月(月)日(日) — inversé par rapport au français`},
+    {jp:`国籍`,romaji:`Kokuseki`,fr:`Nationalité`,note:`Ex : フランス国籍 = nationalité française`},
+    {jp:`住所`,romaji:`Juusho`,fr:`Adresse`,note:`現住所 = adresse actuelle (sur les formulaires d'hôtel)`},
+    {jp:`電話番号`,romaji:`Denwa bangou`,fr:`Numéro de téléphone`,note:`携帯番号 = numéro de portable`},
+    {jp:`性別`,romaji:`Seibetsu`,fr:`Genre / Sexe`,note:`男性 = masculin (dansei), 女性 = féminin (josei)`},
+    {jp:`男・女`,romaji:`Otoko / Onna`,fr:`Homme / Femme`,note:`Sur les portes et formulaires simples. Formes longues : 男性 / 女性`},
+    {jp:`署名・サイン`,romaji:`Shomei / Sain`,fr:`Signature`,note:`署名 = terme officiel, サイン = courant (de l'anglais "sign")`},
+    {jp:`日付`,romaji:`Hizuke`,fr:`Date`,note:`Format japonais : 年/月/日 (Année/Mois/Jour)`},
+    {jp:`職業`,romaji:`Shokugyou`,fr:`Profession / Métier`,note:`Sur les formulaires médicaux, douane, assurance`},
+    {jp:`パスポート番号`,romaji:`Pasupooto bangou`,fr:`Numéro de passeport`,note:`À l'hôtel (obligatoire pour les étrangers) et aux douanes`},
+    {jp:`記入例`,romaji:`Kinyuu rei`,fr:`Exemple de remplissage`,note:`Notice fournie avec le formulaire pour montrer comment remplir`},
+    {jp:`必須`,romaji:`Hisshu`,fr:`Obligatoire`,note:`Champs marqués ★ ou 必須 = à remplir absolument`},
+    {jp:`任意`,romaji:`Nin'i`,fr:`Facultatif`,note:`Opposé de 必須 — pas obligatoire`},
+  ]},
 
 ];

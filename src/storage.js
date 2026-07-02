@@ -94,3 +94,52 @@ export function buildQueue(){
 export function existingKeySet(){ return new Set(phrases.map(p => (p.jp+'|'+p.romaji).toLowerCase())); }
 
 export function removePhrase(id){ phrases = phrases.filter(p => p.id !== id); }
+
+// ---------- Export / Import JSON (sauvegarde locale manuelle) ----------
+// Exporte toute la progression dans un fichier .json téléchargeable.
+export function exportProgressionJSON(){
+  const data = { phrases, meta, exportedAt: new Date().toISOString(), version: 2 };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'nihongo-progression-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Importe un fichier .json exporté et restaure toute la progression.
+export async function importProgressionJSON(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if(!data.phrases || !Array.isArray(data.phrases)) throw new Error('Format invalide.');
+        await storageSet(STORAGE_KEY, JSON.stringify(data.phrases));
+        if(data.meta) await storageSet(META_KEY, JSON.stringify(data.meta));
+        await loadAll();
+        resolve(data.phrases.length);
+      } catch(err) { reject(err); }
+    };
+    reader.onerror = () => reject(new Error('Erreur de lecture du fichier.'));
+    reader.readAsText(file);
+  });
+}
+
+// ---------- Pour aller plus loin : sync multi-appareils en temps réel ----------
+// L'export/import JSON est manuel mais 100 % fiable sans backend.
+// Pour une vraie sync automatique Mac ↔ iPhone, deux options simples :
+//
+// Option A — Supabase (PostgreSQL managé, free tier généreux) :
+//   1. Créer un projet sur supabase.com (gratuit)
+//   2. Table `progressions` : colonnes user_id (text), phrases (jsonb), meta (jsonb)
+//   3. Remplacer storageGet/storageSet par des appels fetch() vers l'API REST Supabase
+//   4. Auth minimale : magic link email ou OAuth Google (SDK Supabase JS)
+//
+// Option B — PocketBase (SQLite embarqué, auto-hébergé) :
+//   1. Binaire unique (~15 MB), déployable sur Fly.io (free tier) ou VPS
+//   2. API REST et SDK JS fournis d'office, même schéma de données
+//
+// Dans les deux cas, le schéma est déjà propre (phrases-v2 + meta-v2 en JSON plat).
+// Il suffit de brancher storageGet/storageSet sur un endpoint distant au lieu de localStorage.

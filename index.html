@@ -76,6 +76,17 @@
       </div>
 
       <div class="sync-box">
+        <h3>💾 Sauvegarder / Restaurer ma progression</h3>
+        <p>Exporte toutes tes phrases, intervalles SRS et ton streak dans un fichier .json. Importe-le sur n'importe quel appareil ou navigateur pour retrouver exactement où tu en étais.</p>
+        <div class="sync-row">
+          <button id="exportJsonBtn">⬇ Exporter (.json)</button>
+          <label class="import-json-label" for="importJsonInput">⬆ Importer (.json)</label>
+          <input type="file" id="importJsonInput" accept=".json" style="display:none">
+          <span id="importJsonStatus"></span>
+        </div>
+      </div>
+
+      <div class="sync-box">
         <h3>🔗 Partager ma progression (téléphone ↔ ordinateur)</h3>
         <p>Génère un lien contenant toute ta progression. Ouvre-le sur l'autre appareil pour tout synchroniser.</p>
         <div class="sync-row">

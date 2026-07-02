@@ -1,4 +1,4 @@
-import { phrases, meta, existingKeySet, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll } from '../storage.js';
+import { phrases, meta, existingKeySet, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll, exportProgressionJSON, importProgressionJSON } from '../storage.js';
 import { SEED_PACK, CORE_SET } from '../../data/phrases.js';
 import { escapeHtml } from '../util.js';
 import { render } from '../main.js';
@@ -121,6 +121,27 @@ export function initManage(){
     updateImportBanner(); render();
   });
   document.getElementById('dailyLimit').addEventListener('change', e=>{ meta.dailyLimit = Math.max(1, parseInt(e.target.value,10) || 8); saveMeta(); });
+
+  document.getElementById('exportJsonBtn').addEventListener('click', ()=>{
+    exportProgressionJSON();
+  });
+
+  document.getElementById('importJsonInput').addEventListener('change', async (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const status = document.getElementById('importJsonStatus');
+    if(!confirm('⚠️ Ceci remplacera ta progression actuelle (phrases, intervalles SRS, streak).\nContinuer ?')){
+      e.target.value = ''; return;
+    }
+    try {
+      const count = await importProgressionJSON(file);
+      status.textContent = '✅ ' + count + ' phrase' + (count===1?'':'s') + ' restaurée' + (count===1?'':'s') + ' !';
+      render();
+    } catch(err) {
+      status.textContent = '❌ Erreur : ' + err.message;
+    }
+    e.target.value = '';
+  });
 
   document.getElementById('exportUrlBtn').addEventListener('click', ()=>{
     const url = exportToURL();
