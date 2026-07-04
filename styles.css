@@ -111,6 +111,13 @@
   .explain-box{ width:100%; background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px; padding:12px 14px; font-size:13px; line-height:1.6; color:#4f4a40;}
   .explain-box .eb-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--gold); font-weight:700; display:block; margin-bottom:5px;}
   .explain-box b.jpchunk{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); font-weight:700;}
+  .verb-conj-box{ border-left-color:var(--indigo); }
+  .verb-conj-row{ display:grid; grid-template-columns:60px 110px 1fr; align-items:baseline; gap:6px 10px; padding:5px 0; border-bottom:1px solid var(--line); }
+  .verb-conj-row:last-child{ border-bottom:none; }
+  .vcr-form{ font-family:'Shippori Mincho',serif; font-size:13px; color:var(--indigo-deep); font-weight:700; }
+  .vcr-name{ font-size:11px; font-weight:700; color:var(--indigo); text-transform:uppercase; letter-spacing:.5px; }
+  .vcr-jp{ font-family:'Shippori Mincho',serif; font-size:18px; color:var(--indigo-deep); }
+  .vcr-hint{ font-size:11.5px; color:#7a7268; grid-column:2 / -1; margin-top:-2px; }
 
   .rate-row{ display:flex; gap:10px; width:100%; }
   .rate-row button{ flex:1; border:none; border-radius:10px; padding:13px 8px; font-size:13.5px; font-weight:700;

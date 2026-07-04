@@ -7,17 +7,27 @@ let convState = null; // {convId, turnIdx}
 
 export function renderConversationList(){
   const area = document.getElementById('conversationArea');
-  let html = `<div class="skills-intro">Mini-dialogues guidés : choisis la réponse la plus naturelle à chaque tour. C'est de la <b>production active</b> — la façon la plus efficace de préparer une vraie conversation.</div>`;
-  html += `<div class="conv-list">`;
-  CONVERSATIONS.forEach(c=>{
-    html += `<div class="conv-pick" data-id="${c.id}">
-      <div><h4>${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
-      <span class="conv-badge">Commencer</span>
-    </div>`;
-  });
-  html += `</div>`;
-  area.innerHTML = html;
-  area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{ convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage(); }));
+  try {
+    const valid = CONVERSATIONS.filter(c => c.id && Array.isArray(c.turns));
+    if(valid.length === 0){
+      area.innerHTML = `<div class="skills-intro" style="color:#c0392b;">⚠️ Aucun dialogue chargé (CONVERSATIONS vide ou corrompu). Fais Cmd+Shift+R pour vider le cache.</div>`;
+      return;
+    }
+    let html = `<div class="skills-intro">Mini-dialogues guidés : choisis la réponse la plus naturelle à chaque tour. C'est de la <b>production active</b> — la façon la plus efficace de préparer une vraie conversation.</div>`;
+    html += `<div class="conv-list">`;
+    valid.forEach(c=>{
+      html += `<div class="conv-pick" data-id="${c.id}">
+        <div><h4>${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
+        <span class="conv-badge">Commencer</span>
+      </div>`;
+    });
+    html += `</div>`;
+    area.innerHTML = html;
+    area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{ convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage(); }));
+  } catch(err) {
+    area.innerHTML = `<div class="skills-intro" style="color:#c0392b;">⚠️ Erreur : ${err.message}. Fais Cmd+Shift+R pour vider le cache.</div>`;
+    console.error('renderConversationList:', err);
+  }
 }
 function renderConversationStage(){
   const area = document.getElementById('conversationArea');

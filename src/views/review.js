@@ -140,6 +140,16 @@ export function renderReview(){
         html += `<div class="verdict ${v[0]}">${v[1]}<span class="ans">Réponse attendue : ${escapeHtml(currentReview.fr)}</span><span class="ans">Ta réponse : ${escapeHtml(lastTyped)}</span></div>`;
       }
     }
+    if(currentReview.tag === 'verbes'){
+      const m = currentReview.jp.match(/^(.+?)（(.+?)）/);
+      if(m){
+        html += `<div class="explain-box verb-conj-box">
+          <span class="eb-label">Conjugaison</span>
+          <div class="verb-conj-row"><span class="vcr-form">辞書形</span><span class="vcr-name">Forme dictionnaire</span><span class="vcr-jp">${escapeHtml(m[1])}</span><span class="vcr-hint">Forme de base — registre familier, chercher dans le dictionnaire</span></div>
+          <div class="verb-conj-row"><span class="vcr-form">ます形</span><span class="vcr-name">Forme polie</span><span class="vcr-jp">${escapeHtml(m[2])}</span><span class="vcr-hint">À utiliser en conversation avec des inconnus ou en situation formelle</span></div>
+        </div>`;
+      }
+    }
     if(currentReview.note){ html += `<div class="explain-box"><span class="eb-label">Structure & grammaire</span>${formatExplain(currentReview.note)}${grammarChipsHtml(currentReview.jp)}</div>`; }
     html += `<div class="rate-row">
       <button class="rate-again" data-grade="0">Galère</button>
