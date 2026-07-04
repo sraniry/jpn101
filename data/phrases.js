@@ -442,6 +442,24 @@ export const READING_GROUPS = [
       {jp:`大`,romaji:`ōkii / dai`,fr:`Grand / très`,note:`大丈夫 = ça va, 大学 = université`},
       {jp:`小`,romaji:`chīsai / shō`,fr:`Petit`,note:`小盛り = petite portion`}
     ]}
+  ,{ title:`Formulaires & administrations`, icon:`📋`, items:[
+    {jp:`氏名`,romaji:`Shimei`,fr:`Nom complet (nom + prénom)`,note:`Sur les formulaires officiels — plus formel que 名前`},
+    {jp:`名前`,romaji:`Namae`,fr:`Prénom / Nom (usage courant)`,note:`Hôtels, formulaires simples`},
+    {jp:`苗字・姓`,romaji:`Myouji / Sei`,fr:`Nom de famille`,note:`苗字 plus courant à l'oral, 姓 dans les formulaires officiels`},
+    {jp:`生年月日`,romaji:`Seinen gappi`,fr:`Date de naissance`,note:`Ordre japonais : Année(年)月(月)日(日) — inversé par rapport au français`},
+    {jp:`国籍`,romaji:`Kokuseki`,fr:`Nationalité`,note:`Ex : フランス国籍 = nationalité française`},
+    {jp:`住所`,romaji:`Juusho`,fr:`Adresse`,note:`現住所 = adresse actuelle (sur les formulaires d'hôtel)`},
+    {jp:`電話番号`,romaji:`Denwa bangou`,fr:`Numéro de téléphone`,note:`携帯番号 = numéro de portable`},
+    {jp:`性別`,romaji:`Seibetsu`,fr:`Genre / Sexe`,note:`男性 = masculin (dansei), 女性 = féminin (josei)`},
+    {jp:`男・女`,romaji:`Otoko / Onna`,fr:`Homme / Femme`,note:`Sur les portes et formulaires simples. Formes longues : 男性 / 女性`},
+    {jp:`署名・サイン`,romaji:`Shomei / Sain`,fr:`Signature`,note:`署名 = terme officiel, サイン = courant (de l'anglais "sign")`},
+    {jp:`日付`,romaji:`Hizuke`,fr:`Date`,note:`Format japonais : 年/月/日 (Année/Mois/Jour)`},
+    {jp:`職業`,romaji:`Shokugyou`,fr:`Profession / Métier`,note:`Sur les formulaires médicaux, douane, assurance`},
+    {jp:`パスポート番号`,romaji:`Pasupooto bangou`,fr:`Numéro de passeport`,note:`À l'hôtel (obligatoire pour les étrangers) et aux douanes`},
+    {jp:`記入例`,romaji:`Kinyuu rei`,fr:`Exemple de remplissage`,note:`Notice fournie avec le formulaire pour montrer comment remplir`},
+    {jp:`必須`,romaji:`Hisshu`,fr:`Obligatoire`,note:`Champs marqués ★ ou 必須 = à remplir absolument`},
+    {jp:`任意`,romaji:`Nin'i`,fr:`Facultatif`,note:`Opposé de 必須 — pas obligatoire`},
+  ]}
   ];
 
 export const CONVERSATIONS = [
@@ -1018,23 +1036,5 @@ export const CONVERSATIONS = [
     ]}
   ]}
 
-  ,{ title:`Formulaires & administrations`, icon:`📋`, items:[
-    {jp:`氏名`,romaji:`Shimei`,fr:`Nom complet (nom + prénom)`,note:`Sur les formulaires officiels — plus formel que 名前`},
-    {jp:`名前`,romaji:`Namae`,fr:`Prénom / Nom (usage courant)`,note:`Hôtels, formulaires simples`},
-    {jp:`苗字・姓`,romaji:`Myouji / Sei`,fr:`Nom de famille`,note:`苗字 plus courant à l'oral, 姓 dans les formulaires officiels`},
-    {jp:`生年月日`,romaji:`Seinen gappi`,fr:`Date de naissance`,note:`Ordre japonais : Année(年)月(月)日(日) — inversé par rapport au français`},
-    {jp:`国籍`,romaji:`Kokuseki`,fr:`Nationalité`,note:`Ex : フランス国籍 = nationalité française`},
-    {jp:`住所`,romaji:`Juusho`,fr:`Adresse`,note:`現住所 = adresse actuelle (sur les formulaires d'hôtel)`},
-    {jp:`電話番号`,romaji:`Denwa bangou`,fr:`Numéro de téléphone`,note:`携帯番号 = numéro de portable`},
-    {jp:`性別`,romaji:`Seibetsu`,fr:`Genre / Sexe`,note:`男性 = masculin (dansei), 女性 = féminin (josei)`},
-    {jp:`男・女`,romaji:`Otoko / Onna`,fr:`Homme / Femme`,note:`Sur les portes et formulaires simples. Formes longues : 男性 / 女性`},
-    {jp:`署名・サイン`,romaji:`Shomei / Sain`,fr:`Signature`,note:`署名 = terme officiel, サイン = courant (de l'anglais "sign")`},
-    {jp:`日付`,romaji:`Hizuke`,fr:`Date`,note:`Format japonais : 年/月/日 (Année/Mois/Jour)`},
-    {jp:`職業`,romaji:`Shokugyou`,fr:`Profession / Métier`,note:`Sur les formulaires médicaux, douane, assurance`},
-    {jp:`パスポート番号`,romaji:`Pasupooto bangou`,fr:`Numéro de passeport`,note:`À l'hôtel (obligatoire pour les étrangers) et aux douanes`},
-    {jp:`記入例`,romaji:`Kinyuu rei`,fr:`Exemple de remplissage`,note:`Notice fournie avec le formulaire pour montrer comment remplir`},
-    {jp:`必須`,romaji:`Hisshu`,fr:`Obligatoire`,note:`Champs marqués ★ ou 必須 = à remplir absolument`},
-    {jp:`任意`,romaji:`Nin'i`,fr:`Facultatif`,note:`Opposé de 必須 — pas obligatoire`},
-  ]},
 
 ];
