@@ -31,7 +31,8 @@
   </header>
 
   <nav class="tabs">
-    <button data-view="skills" class="active">Compétences</button>
+    <button data-view="today" class="active">Aujourd'hui</button>
+    <button data-view="skills">Compétences</button>
     <button data-view="review">Réviser <span class="count" id="dueCount">0</span></button>
     <button data-view="conversation">Conversation</button>
     <button data-view="reading">Lire</button>
@@ -40,7 +41,8 @@
     <button data-view="add">Mes phrases</button>
   </nav>
 
-  <section class="view active" id="view-skills"><div class="panel"><div id="skillsArea"></div></div></section>
+  <section class="view active" id="view-today"><div class="panel"><div id="todayArea"></div></div></section>
+  <section class="view" id="view-skills"><div class="panel"><div id="skillsArea"></div></div></section>
   <section class="view" id="view-review"><div class="panel"><div id="soundBarReview"></div>
     <div class="particle-legend" title="Légende des particules japonaises">
       <div class="pl-item"><span class="pl-jp p-wa">は</span><span class="pl-romaji">wa</span><span class="pl-label">thème</span></div>

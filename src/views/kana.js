@@ -1,8 +1,40 @@
 import { HIRAGANA, KATAKANA, KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON, KATAKANA_ONLY } from '../../data/kana.js';
+import { KANJI_GROUPS, KANJI_ALL } from '../../data/kanji.js';
 import { speak } from '../tts.js';
+import { planMark } from '../storage.js';
 
 // État du quiz
 let quizState = null;
+
+// ---------- Parcours kana : leçons ordonnées, validées par quiz (≥ 80 %) ----------
+// Une leçon par ligne de base, puis les formes dérivées regroupées.
+const flatItems = groups => groups.flatMap(g => g.items);
+export const KANA_LESSONS = [
+  ...KANA_BASE.map(g => ({ row:g.row, items:g.items })),
+  { row:'Sonores ゛ (g/z/d/b)', items: flatItems(KANA_DAKUTEN) },
+  { row:'P ゜ + combinaisons', items: [...flatItems(KANA_HANDAKUTEN), ...flatItems(KANA_YOON)] },
+];
+
+const KANA_PATH_KEY = 'kanaPath-v1';
+function loadKanaPath(){
+  try { return JSON.parse(localStorage.getItem(KANA_PATH_KEY)) || { done:[] }; }
+  catch(e){ return { done:[] }; }
+}
+function saveKanaPath(p){ try { localStorage.setItem(KANA_PATH_KEY, JSON.stringify(p)); } catch(e){} }
+
+export function kanaPathState(){
+  const p = loadKanaPath();
+  const nextIdx = KANA_LESSONS.findIndex((_, i) => !p.done.includes(i));
+  return {
+    done: p.done.length,
+    total: KANA_LESSONS.length,
+    next: nextIdx === -1 ? KANA_LESSONS[KANA_LESSONS.length-1] : KANA_LESSONS[nextIdx],
+    nextIdx: nextIdx === -1 ? KANA_LESSONS.length-1 : nextIdx,
+  };
+}
+
+// État de la leçon en cours dans l'onglet Parcours
+let lessonState = null; // {lessonIdx, quiz:null | {deck, idx, correct}}
 
 function shuffleArray(arr) {
   const a = [...arr];
@@ -107,6 +139,165 @@ function renderQuizCard() {
   });
 }
 
+// ---------- Onglet Parcours ----------
+function renderPath(){
+  const panel = document.getElementById('kana-tab-path');
+  if(!panel) return;
+  if(lessonState){ renderLesson(panel); return; }
+  const p = loadKanaPath();
+  const state = kanaPathState();
+  let html = `<div class="kana-path-head">
+    <p>Une leçon par jour (~10 min) : découvre la ligne, écoute chaque son, puis valide avec le quiz (80 % minimum). Chaque leçon débloque la suivante.</p>
+    <div class="today-track"><div class="today-track-fill" style="width:${(state.done/state.total)*100}%"></div></div>
+    <p class="kana-path-count">${state.done}/${state.total} leçons validées</p>
+  </div><div class="kana-path-list">`;
+  KANA_LESSONS.forEach((lesson, i)=>{
+    const done = p.done.includes(i);
+    const unlocked = done || i === state.nextIdx;
+    const preview = lesson.items.slice(0,5).map(it=>it.h).join(' ');
+    html += `<div class="kana-path-item ${done?'is-done':unlocked?'is-next':'is-locked'}" data-idx="${i}">
+      <span class="kpi-status">${done?'✓':unlocked?'▶':'🔒'}</span>
+      <div class="kpi-body"><b>Leçon ${i+1} — ${lesson.row}</b><span class="kpi-preview">${preview}${lesson.items.length>5?' …':''}</span></div>
+      ${unlocked?`<span class="kpi-go">${done?'Revoir':'Commencer'}</span>`:''}
+    </div>`;
+  });
+  html += `</div>`;
+  panel.innerHTML = html;
+  panel.querySelectorAll('.kana-path-item.is-done, .kana-path-item.is-next').forEach(el=>{
+    el.addEventListener('click', ()=>{ lessonState = { lessonIdx: parseInt(el.dataset.idx,10), quiz:null }; renderPath(); });
+  });
+}
+
+function renderLesson(panel){
+  const lesson = KANA_LESSONS[lessonState.lessonIdx];
+  if(lessonState.quiz){ renderLessonQuiz(panel, lesson); return; }
+  let html = `<button class="conv-back" id="lessonBack">← Parcours</button>
+    <h4 class="kana-table-title">Leçon ${lessonState.lessonIdx+1} — ${lesson.row}</h4>
+    <p class="kana-vocab-note">Touche chaque caractère pour l'entendre. Répète à voix haute, puis lance le quiz.</p>
+    <div class="kana-lesson-grid">`;
+  lesson.items.forEach(it=>{
+    html += `<div class="kana-lesson-cell" data-jp="${it.h}">
+      <span class="klc-pair"><span class="kpc-h" data-jp="${it.h}">${it.h}</span><span class="kpc-sep">/</span><span class="kpc-k" data-jp="${it.k}">${it.k}</span></span>
+      <span class="kcc-rom">${it.romaji}</span>
+      ${it.mnemo?`<span class="klc-mnemo">${it.mnemo}</span>`:''}
+    </div>`;
+  });
+  html += `</div><button class="continue-btn" id="lessonQuizBtn" style="margin-top:16px;">🎯 Quiz de validation (${Math.min(10, lesson.items.length*2)} questions)</button>`;
+  panel.innerHTML = html;
+  document.getElementById('lessonBack').addEventListener('click', ()=>{ lessonState = null; renderPath(); });
+  document.getElementById('lessonQuizBtn').addEventListener('click', ()=>{
+    // moitié hiragana → romaji, moitié katakana → romaji, mélangés
+    const qs = shuffleArray([
+      ...lesson.items.map(it=>({ jp:it.h, romaji:it.romaji })),
+      ...lesson.items.map(it=>({ jp:it.k, romaji:it.romaji })),
+    ]).slice(0, Math.min(10, lesson.items.length*2));
+    lessonState.quiz = { deck: qs, idx:0, correct:0 };
+    renderPath();
+  });
+}
+
+function renderLessonQuiz(panel, lesson){
+  const q = lessonState.quiz;
+  if(q.idx >= q.deck.length){
+    const pct = Math.round((q.correct / q.deck.length) * 100);
+    const passed = pct >= 80;
+    if(passed){
+      const p = loadKanaPath();
+      if(!p.done.includes(lessonState.lessonIdx)){ p.done.push(lessonState.lessonIdx); saveKanaPath(p); }
+      planMark('kana');
+    }
+    panel.innerHTML = `<div class="kana-quiz-done">
+      <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      <div class="kqd-msg">${passed ? '🎉 Leçon validée ! La suivante est débloquée.' : '💪 Il faut 80 % — relis la ligne et retente.'}</div>
+      <button class="kana-quiz-restart" id="lessonQuizEnd">${passed ? '→ Retour au parcours' : '🔄 Retenter'}</button>
+    </div>`;
+    document.getElementById('lessonQuizEnd').addEventListener('click', ()=>{
+      if(passed) lessonState = null; else lessonState.quiz = null;
+      renderPath();
+    });
+    return;
+  }
+  const card = q.deck[q.idx];
+  const pool = lesson.items.map(it=>it.romaji);
+  const others = shuffleArray([...new Set(pool.filter(r=>r!==card.romaji))]).slice(0,3);
+  const choices = shuffleArray([card.romaji, ...others]);
+  panel.innerHTML = `<div class="kana-quiz-card">
+    <div class="kqc-progress">${q.idx+1} / ${q.deck.length}</div>
+    <div class="kqc-question is-kana">${card.jp}</div>
+    <div class="kqc-choices">${choices.map(c=>`<button class="kqc-btn" data-correct="${c===card.romaji}">${c}</button>`).join('')}</div>
+  </div>`;
+  panel.querySelectorAll('.kqc-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const ok = btn.dataset.correct === 'true';
+      if(ok){ btn.classList.add('correct'); q.correct++; }
+      else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
+      panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
+      speak(card.jp, 0.8);
+      setTimeout(()=>{ q.idx++; renderPath(); }, 900);
+    });
+  });
+}
+
+// ---------- Onglet Kanji ----------
+let kanjiQuizState = null;
+function renderKanjiTab(){
+  const panel = document.getElementById('kana-tab-kanji');
+  if(!panel) return;
+  if(kanjiQuizState){ renderKanjiQuiz(panel); return; }
+  let html = `<div class="kana-rule-note"><b>~80 kanji N5 essentiels</b>, groupés par thème. Objectif : les <b>reconnaître</b> (prix, panneaux, menus, horaires) — pas les écrire. Touche un kanji pour l'entendre dans son mot d'exemple.</div>
+    <button class="continue-btn" id="kanjiQuizStart" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
+  KANJI_GROUPS.forEach(g=>{
+    html += `<h4 class="kana-table-title">${g.icon} ${g.title}</h4><div class="kanji-grid">`;
+    g.items.forEach(it=>{
+      html += `<div class="kanji-card" data-jp="${it.k}">
+        <span class="kj-k">${it.k}</span>
+        <span class="kj-rom">${it.romaji}</span>
+        <span class="kj-fr">${it.fr}</span>
+        <span class="kj-ex">${it.ex}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  panel.innerHTML = html;
+  panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
+  document.getElementById('kanjiQuizStart').addEventListener('click', ()=>{
+    kanjiQuizState = { deck: shuffleArray(KANJI_ALL).slice(0,20), idx:0, correct:0 };
+    renderKanjiTab();
+  });
+}
+
+function renderKanjiQuiz(panel){
+  const q = kanjiQuizState;
+  if(q.idx >= q.deck.length){
+    const pct = Math.round((q.correct/q.deck.length)*100);
+    panel.innerHTML = `<div class="kana-quiz-done">
+      <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      <div class="kqd-msg">${pct>=90?'🎉 Excellent !':pct>=70?'👍 Bien !':'💪 Continue !'}</div>
+      <button class="kana-quiz-restart" id="kanjiQuizEnd">← Retour aux kanji</button>
+    </div>`;
+    document.getElementById('kanjiQuizEnd').addEventListener('click', ()=>{ kanjiQuizState = null; renderKanjiTab(); });
+    return;
+  }
+  const card = q.deck[q.idx];
+  const others = shuffleArray(KANJI_ALL.filter(k=>k.k!==card.k)).slice(0,3);
+  const choices = shuffleArray([card, ...others]);
+  panel.innerHTML = `<div class="kana-quiz-card">
+    <div class="kqc-progress">${q.idx+1} / ${q.deck.length}</div>
+    <div class="kqc-question is-kana">${card.k}</div>
+    <div class="kqc-choices">${choices.map(c=>`<button class="kqc-btn" data-correct="${c.k===card.k}">${c.fr}</button>`).join('')}</div>
+  </div>`;
+  panel.querySelectorAll('.kqc-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const ok = btn.dataset.correct === 'true';
+      if(ok){ btn.classList.add('correct'); q.correct++; }
+      else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
+      panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
+      speak(card.k, 0.8);
+      setTimeout(()=>{ q.idx++; renderKanjiTab(); }, 900);
+    });
+  });
+}
+
 export function renderKana() {
   const area = document.getElementById('kanaArea');
 
@@ -118,12 +309,16 @@ export function renderKana() {
     </div>
 
     <div class="kana-tabs">
-      <button class="kana-tab active" data-tab="base">あ/ア Base</button>
+      <button class="kana-tab active" data-tab="path">📅 Parcours</button>
+      <button class="kana-tab" data-tab="base">あ/ア Base</button>
       <button class="kana-tab" data-tab="derived">゛゜ Dérivés</button>
+      <button class="kana-tab" data-tab="kanji">漢字 Kanji</button>
       <button class="kana-tab" data-tab="quiz">🎯 Quiz</button>
     </div>
 
-    <div id="kana-tab-base" class="kana-tab-panel active">
+    <div id="kana-tab-path" class="kana-tab-panel active"></div>
+
+    <div id="kana-tab-base" class="kana-tab-panel" style="display:none">
       <h4 class="kana-table-title">46 sons de base — hiragana / katakana</h4>
       <label class="kana-mnemo-toggle"><input type="checkbox" id="mnemoToggle"> Afficher les moyens mnémotechniques (katakana)</label>
       ${renderPairedTable(KANA_BASE, true)}
@@ -208,6 +403,8 @@ export function renderKana() {
       </div>
     </div>
 
+    <div id="kana-tab-kanji" class="kana-tab-panel" style="display:none"></div>
+
     <div id="kana-tab-quiz" class="kana-tab-panel" style="display:none">
       <div class="kana-quiz-setup">
         <p class="kqs-label">Choisir le quiz :</p>
@@ -231,8 +428,13 @@ export function renderKana() {
       tab.classList.add('active');
       const panel = area.querySelector(`#kana-tab-${tab.dataset.tab}`);
       if (panel) panel.style.display = '';
+      if (tab.dataset.tab === 'path') renderPath();
+      if (tab.dataset.tab === 'kanji') renderKanjiTab();
     });
   });
+
+  // Onglet parcours affiché par défaut
+  renderPath();
 
   // Mnemonics toggle (base table only)
   const mnemoToggle = area.querySelector('#mnemoToggle');

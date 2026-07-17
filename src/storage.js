@@ -91,6 +91,20 @@ export function buildQueue(){
   return seen.concat(newBatch);
 }
 
+// ---------- Plan quotidien (onglet Aujourd'hui) ----------
+// meta.plan = {date, kana:bool, reviews:int, conv:bool} — remis à zéro chaque jour
+export function planToday(){
+  const today = todayStr();
+  if(!meta.plan || meta.plan.date !== today){ meta.plan = { date:today, kana:false, reviews:0, conv:false }; saveMeta(); }
+  return meta.plan;
+}
+export function planMark(field, inc){
+  const p = planToday();
+  if(typeof inc === 'number') p[field] = (p[field]||0) + inc;
+  else p[field] = true;
+  saveMeta();
+}
+
 export function existingKeySet(){ return new Set(phrases.map(p => (p.jp+'|'+p.romaji).toLowerCase())); }
 
 export function removePhrase(id){ phrases = phrases.filter(p => p.id !== id); }

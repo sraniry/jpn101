@@ -1,4 +1,4 @@
-import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity } from '../storage.js';
+import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity, planMark } from '../storage.js';
 import { CORE_SET } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
@@ -178,7 +178,7 @@ export function renderReview(){
   area.querySelectorAll('.rate-row button').forEach(b=>{
     b.addEventListener('click', ()=>{
       const grade = parseInt(b.dataset.grade,10);
-      rate(currentReview, grade); savePhrases(); registerStudyActivity();
+      rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
       const justStudied = currentReview;
       reviewQueue.shift(); reviewedSinceBreak++; renderHeader();
       if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){
@@ -232,7 +232,7 @@ function renderParticleDrill(area){
     area.querySelectorAll('.rate-row button').forEach(b=>{
       b.addEventListener('click', ()=>{
         const grade = parseInt(b.dataset.grade,10);
-        rate(currentReview, grade); savePhrases(); registerStudyActivity();
+        rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
         const justStudied = currentReview;
         reviewQueue.shift(); reviewedSinceBreak++; renderHeader();
         if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){

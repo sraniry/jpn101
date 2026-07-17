@@ -1,6 +1,20 @@
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
+import { planMark } from '../storage.js';
+
+// Lecture audio d'un dialogue entier (entraînement de l'oreille) :
+// les utterances TTS se mettent en file d'attente naturellement dans speechSynthesis.
+let listeningId = null;
+function playFullDialogue(conv){
+  window.speechSynthesis.cancel();
+  if(listeningId === conv.id){ listeningId = null; return; }
+  listeningId = conv.id;
+  conv.turns.forEach(t=>{
+    if(t.speaker === 'npc') speak(t.jp, 0.85);
+    else if(t.choices){ const best = t.choices.find(c=>c.quality==='best') || t.choices[0]; speak(best.jp, 0.85); }
+  });
+}
 
 // ---------- conversation simulator ----------
 let convState = null; // {convId, turnIdx}
@@ -18,12 +32,17 @@ export function renderConversationList(){
     valid.forEach(c=>{
       html += `<div class="conv-pick" data-id="${c.id}">
         <div><h4>${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
-        <span class="conv-badge">Commencer</span>
+        <div class="conv-actions"><button class="conv-listen" data-id="${c.id}" title="Écouter le dialogue en entier">🎧</button><span class="conv-badge">Commencer</span></div>
       </div>`;
     });
     html += `</div>`;
     area.innerHTML = html;
     area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{ convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage(); }));
+    area.querySelectorAll('.conv-listen').forEach(b=> b.addEventListener('click', e=>{
+      e.stopPropagation();
+      const conv = valid.find(c=>c.id === b.dataset.id);
+      if(conv) playFullDialogue(conv);
+    }));
   } catch(err) {
     area.innerHTML = `<div class="skills-intro" style="color:#c0392b;">⚠️ Erreur : ${err.message}. Fais Cmd+Shift+R pour vider le cache.</div>`;
     console.error('renderConversationList:', err);
@@ -34,6 +53,7 @@ function renderConversationStage(){
   const conv = CONVERSATIONS.find(c=>c.id === convState.convId);
   const turn = conv.turns[convState.turnIdx];
   if(!turn){
+    planMark('conv');
     area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">Dialogue terminé !</h3><p style="color:#7a7268;font-size:13.5px;">Rejoue-le pour essayer d'autres réponses, ou choisis un autre dialogue.</p><button class="continue-btn" id="convBackBtn" style="margin-top:16px;">← Tous les dialogues</button></div>`;
     document.getElementById('convBackBtn').addEventListener('click', renderConversationList);
     return;

@@ -7,6 +7,7 @@ import { renderConversationList } from './views/conversation.js';
 import { renderReading } from './views/reading.js';
 import { renderGrammar } from './views/grammar.js';
 import { renderKana } from './views/kana.js';
+import { renderToday } from './views/today.js';
 import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
 
 // ---------- tabs ----------
@@ -16,6 +17,7 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     document.querySelectorAll('section.view').forEach(s=>s.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    if(btn.dataset.view === 'today') renderToday();
     if(btn.dataset.view === 'skills') renderSkills();
     if(btn.dataset.view === 'review'){ renderSoundBars(); startReviewSession(); }
     if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
@@ -40,6 +42,7 @@ export function renderHeader(){ document.getElementById('dueCount').textContent 
 export function render(){
   renderHeader(); renderStats(); renderTagChips(); renderList(); renderSoundBars();
   const activeView = document.querySelector('section.view.active');
+  if(activeView && activeView.id === 'view-today') renderToday();
   if(activeView && activeView.id === 'view-skills') renderSkills();
   if(activeView && activeView.id === 'view-review') startReviewSession();
   if(activeView && activeView.id === 'view-conversation') renderConversationList();
