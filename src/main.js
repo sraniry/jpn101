@@ -8,6 +8,7 @@ import { renderReading } from './views/reading.js';
 import { renderGrammar } from './views/grammar.js';
 import { renderKana } from './views/kana.js';
 import { renderToday } from './views/today.js';
+import { renderListening } from './views/listening.js';
 import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
 
 // ---------- tabs ----------
@@ -21,6 +22,7 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'skills') renderSkills();
     if(btn.dataset.view === 'review'){ renderSoundBars(); startReviewSession(); }
     if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
+    if(btn.dataset.view === 'listening') renderListening();
     if(btn.dataset.view === 'reading') renderReading();
     if(btn.dataset.view === 'kana') renderKana();
     if(btn.dataset.view === 'grammar') renderGrammar();
@@ -46,6 +48,7 @@ export function render(){
   if(activeView && activeView.id === 'view-skills') renderSkills();
   if(activeView && activeView.id === 'view-review') startReviewSession();
   if(activeView && activeView.id === 'view-conversation') renderConversationList();
+  if(activeView && activeView.id === 'view-listening') renderListening();
   if(activeView && activeView.id === 'view-reading') renderReading();
   if(activeView && activeView.id === 'view-kana') renderKana();
   if(activeView && activeView.id === 'view-grammar') renderGrammar();

@@ -460,3 +460,9 @@
   .conv-actions{ display:flex; align-items:center; gap:8px; }
   .conv-listen{ background:var(--paper); border:1px solid var(--line); border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:14px; }
   .conv-listen:hover{ border-color:var(--indigo); }
+
+  /* ---------- Module Écoute ---------- */
+  .listen-choices{ display:flex; flex-direction:column; gap:8px; max-width:420px; margin:0 auto; }
+  .listen-choices .kqc-btn{ width:100%; font-size:14.5px; padding:12px 14px; }
+  .listen-reveal{ margin-top:14px; background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px; padding:10px 14px; font-size:14px; color:#4f4a40; display:inline-block; }
+  .listen-reveal b{ font-family:'Shippori Mincho',serif; font-size:18px; color:var(--indigo-deep); }

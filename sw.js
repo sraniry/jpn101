@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v5';
+const CACHE = 'nihongo-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -16,10 +16,14 @@ const ASSETS = [
   './src/views/manage.js',
   './src/views/kana.js',
   './src/views/today.js',
+  './src/views/listening.js',
   './data/phrases.js',
   './data/grammar.js',
   './data/kana.js',
   './data/kanji.js',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
 ];
 
 self.addEventListener('install', e => {

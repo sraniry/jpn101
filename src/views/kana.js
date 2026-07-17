@@ -1,7 +1,7 @@
 import { HIRAGANA, KATAKANA, KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON, KATAKANA_ONLY } from '../../data/kana.js';
 import { KANJI_GROUPS, KANJI_ALL } from '../../data/kanji.js';
 import { speak } from '../tts.js';
-import { planMark } from '../storage.js';
+import { planMark, phrases, newCard, savePhrases, existingKeySet } from '../storage.js';
 
 // État du quiz
 let quizState = null;
@@ -246,8 +246,8 @@ function renderKanjiTab(){
   if(kanjiQuizState){ renderKanjiQuiz(panel); return; }
   let html = `<div class="kana-rule-note"><b>~80 kanji N5 essentiels</b>, groupés par thème. Objectif : les <b>reconnaître</b> (prix, panneaux, menus, horaires) — pas les écrire. Touche un kanji pour l'entendre dans son mot d'exemple.</div>
     <button class="continue-btn" id="kanjiQuizStart" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
-  KANJI_GROUPS.forEach(g=>{
-    html += `<h4 class="kana-table-title">${g.icon} ${g.title}</h4><div class="kanji-grid">`;
+  KANJI_GROUPS.forEach((g, gi)=>{
+    html += `<div class="rg-head" style="margin-top:10px;"><h4 class="kana-table-title" style="margin:0;">${g.icon} ${g.title}</h4><button class="rg-add kanji-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kanji-grid">`;
     g.items.forEach(it=>{
       html += `<div class="kanji-card" data-jp="${it.k}">
         <span class="kj-k">${it.k}</span>
@@ -260,6 +260,23 @@ function renderKanjiTab(){
   });
   panel.innerHTML = html;
   panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
+  // Ajout d'un groupe de kanji aux révisions SRS (mêmes cartes que les phrases, tag "kanji")
+  panel.querySelectorAll('.kanji-add').forEach(b=>{
+    b.addEventListener('click', async e=>{
+      e.stopPropagation();
+      const g = KANJI_GROUPS[parseInt(b.dataset.group,10)];
+      const existing = existingKeySet(); let added = 0;
+      g.items.forEach(it=>{
+        const key = (it.k+'|'+it.romaji).toLowerCase();
+        if(existing.has(key)) return;
+        phrases.push(newCard(it.k, it.romaji, it.fr, it.ex, 'kanji', 'N5'));
+        existing.add(key); added++;
+      });
+      if(added>0) await savePhrases();
+      b.textContent = added>0 ? added+' ajouté'+(added===1?'':'s')+' ✓' : 'Déjà dans tes révisions';
+      setTimeout(()=>{ b.textContent = '+ Ajouter à mes révisions'; }, 2000);
+    });
+  });
   document.getElementById('kanjiQuizStart').addEventListener('click', ()=>{
     kanjiQuizState = { deck: shuffleArray(KANJI_ALL).slice(0,20), idx:0, correct:0 };
     renderKanjiTab();
