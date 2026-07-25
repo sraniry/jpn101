@@ -26,7 +26,7 @@
 
   <header class="title">
     <h1>日本語を学ぼう · Nihongo wo Manabou</h1>
-    <p>Réviser · Converser · Lire les panneaux · Grammaire — guidé de A0 à B1</p>
+    <p>Réviser · Converser · Lire les panneaux · Grammaire — guidé de A0 à A2</p>
     <div class="streak-badge" id="streakBadge">🔥 0 jour</div>
   </header>
 
@@ -39,6 +39,7 @@
     <button data-view="reading">Lire</button>
     <button data-view="kana">Alphabet</button>
     <button data-view="grammar">Grammaire</button>
+    <button data-view="jlpt">JLPT N5</button>
     <button data-view="add">Mes phrases</button>
   </nav>
 
@@ -62,18 +63,18 @@
   <section class="view" id="view-reading"><div class="panel"><div id="readingArea"></div></div></section>
   <section class="view" id="view-kana"><div class="panel"><div id="kanaArea"></div></div></section>
   <section class="view" id="view-grammar"><div class="panel"><div id="grammarArea"></div></div></section>
+  <section class="view" id="view-jlpt"><div class="panel"><div id="jlptArea"></div></div></section>
 
   <section class="view" id="view-add">
     <div class="panel">
       <div class="import-banner" id="importBanner">
         <div class="ib-text">
-          <h3>Pack complet A0 → B1</h3>
+          <h3>Pack complet A0 → A2</h3>
           <p id="importStatusText">Voyage, travail, étude, relation — avec explications grammaticales.</p>
           <div class="level-pick" id="levelPick">
             <label><input type="checkbox" value="A0" checked> A0</label>
             <label><input type="checkbox" value="A1" checked> A1</label>
             <label><input type="checkbox" value="A2" checked> A2</label>
-            <label><input type="checkbox" value="B1" checked> B1</label>
           </div>
         </div>
         <button id="importBtn">Importer la sélection</button>
@@ -105,7 +106,7 @@
 
       <div class="settings-row">
         <span>Nouvelles phrases max / jour (évite la surcharge)</span>
-        <input type="number" id="dailyLimit" min="1" max="50" value="8" />
+        <input type="number" id="dailyLimit" min="1" max="50" value="25" />
       </div>
 
       <p class="section-label">Ajouter une phrase manuellement</p>

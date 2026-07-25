@@ -19,6 +19,14 @@ function playFullDialogue(conv){
 // ---------- conversation simulator ----------
 let convState = null; // {convId, turnIdx}
 
+// Routing direct : ouvre un dialogue précis par son id (utilisé par l'onglet Aujourd'hui)
+export function openConversation(id){
+  const conv = CONVERSATIONS.find(c=>c.id === id && Array.isArray(c.turns));
+  if(!conv){ renderConversationList(); return; }
+  convState = { convId:id, turnIdx:0 };
+  renderConversationStage();
+}
+
 export function renderConversationList(){
   const area = document.getElementById('conversationArea');
   try {

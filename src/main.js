@@ -9,6 +9,7 @@ import { renderGrammar } from './views/grammar.js';
 import { renderKana } from './views/kana.js';
 import { renderToday } from './views/today.js';
 import { renderListening } from './views/listening.js';
+import { renderJlpt } from './views/jlpt.js';
 import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
 
 // ---------- tabs ----------
@@ -26,6 +27,7 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'reading') renderReading();
     if(btn.dataset.view === 'kana') renderKana();
     if(btn.dataset.view === 'grammar') renderGrammar();
+    if(btn.dataset.view === 'jlpt') renderJlpt();
   });
 });
 
@@ -58,7 +60,7 @@ async function init(){
   initManage();
   const synced = await importFromURL();
   if(!synced) await loadAll();
-  document.getElementById('dailyLimit').value = meta.dailyLimit || 8;
+  document.getElementById('dailyLimit').value = meta.dailyLimit || 25;
   updateImportBanner(); updateStreak(); render();
   if(synced){
     alert('✅ Progression importée depuis le lien ! Tes révisions, archives et stats sont à jour.');

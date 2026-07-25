@@ -79,7 +79,7 @@ function nextReviewCard(){
 }
 export function renderReview(){
   const area = document.getElementById('reviewArea');
-  if(phrases.length === 0){ area.innerHTML = emptyState('まだ何もない', 'Va dans « Mes phrases » et importe le pack A0 → B1, ou ajoute tes propres phrases.'); return; }
+  if(phrases.length === 0){ area.innerHTML = emptyState('まだ何もない', 'Va dans « Mes phrases » et importe le pack A0 → A2, ou ajoute tes propres phrases.'); return; }
   if(interleaveActive){ renderInterleaveBreak(area); return; }
   if(!currentReview){ area.innerHTML = emptyState('Tout est à jour !', "Aucune carte à revoir (ou limite de nouvelles cartes atteinte aujourd'hui). Reviens plus tard."); return; }
   if(drillMode){ renderParticleDrill(area); return; }
@@ -111,6 +111,7 @@ export function renderReview(){
   }
   if(revealed){
     html += `<div class="jp-text">${colorizeJp(currentReview.jp)}</div>`;
+    html += `<div class="romaji">${escapeHtml(currentReview.romaji||'')}</div>`;
     html += `<div class="fr-text">${escapeHtml(currentReview.fr||'')}</div>`;
     if(currentReview.pitch) html += renderPitch(currentReview.pitch);
     html += `<button class="audio-mini" id="audioMini">▶</button>`;
@@ -150,7 +151,9 @@ export function renderReview(){
         </div>`;
       }
     }
-    if(currentReview.note){ html += `<div class="explain-box"><span class="eb-label">Structure & grammaire</span>${formatExplain(currentReview.note)}${grammarChipsHtml(currentReview.jp)}</div>`; }
+    // Le champ "ex" du pack est stocké dans note à l'import ; certaines cartes ont un ex distinct
+    const usage = currentReview.ex || currentReview.note;
+    if(usage){ html += `<div class="explain-box"><span class="eb-label">Exemple d'usage & grammaire</span>${formatExplain(usage)}${grammarChipsHtml(currentReview.jp)}</div>`; }
     html += `<div class="rate-row">
       <button class="rate-again" data-grade="0">Galère</button>
       <button class="rate-hard" data-grade="1">Difficile</button>

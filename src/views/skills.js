@@ -18,7 +18,7 @@ function skillLevel(pct){ if(pct>=100) return 5; if(pct>=75) return 4; if(pct>=5
 export function renderSkills(){
   const area = document.getElementById('skillsArea');
   if(phrases.length === 0){
-    area.innerHTML = `<div class="skills-intro">Importe le pack A0 → B1 dans « Mes phrases » pour voir tes compétences se remplir ici.</div>` + emptyState('Aucune compétence encore', 'Va dans « Mes phrases » et importe au moins le niveau A0.');
+    area.innerHTML = `<div class="skills-intro">Importe le pack A0 → A2 dans « Mes phrases » pour voir tes compétences se remplir ici.</div>` + emptyState('Aucune compétence encore', 'Va dans « Mes phrases » et importe au moins le niveau A0.');
     return;
   }
   const byTag = {};

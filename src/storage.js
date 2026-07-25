@@ -2,7 +2,7 @@ const STORAGE_KEY = 'phrases-v2';
 const META_KEY = 'meta-v2';
 
 export let phrases = [];
-export let meta = { streak:0, lastStudyDate:null, newIntroducedDate:null, newIntroducedCount:0, dailyLimit:8 };
+export let meta = { streak:0, lastStudyDate:null, newIntroducedDate:null, newIntroducedCount:0, dailyLimit:25 };
 
 // ---------- storage abstraction : localStorage en priorité (fonctionne en fichier local Chrome),
 // window.storage utilisé seulement si présent (aperçu Claude). Corrige le bug de ré-import permanent.
@@ -75,7 +75,7 @@ function levelRank(level){ return LEVEL_ORDER.hasOwnProperty(level) ? LEVEL_ORDE
 export function buildQueue(){
   const today = todayStr();
   if(meta.newIntroducedDate !== today){ meta.newIntroducedDate = today; meta.newIntroducedCount = 0; saveMeta(); }
-  const limit = meta.dailyLimit || 8;
+  const limit = meta.dailyLimit || 25;
   const due = getDueAll();
   const seen = due.filter(p => p.reps > 0);
   // les nouvelles cartes sont introduites par niveau croissant (A0 d'abord, puis A1, A2, B1)

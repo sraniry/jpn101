@@ -466,3 +466,21 @@
   .listen-choices .kqc-btn{ width:100%; font-size:14.5px; padding:12px 14px; }
   .listen-reveal{ margin-top:14px; background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px; padding:10px 14px; font-size:14px; color:#4f4a40; display:inline-block; }
   .listen-reveal b{ font-family:'Shippori Mincho',serif; font-size:18px; color:var(--indigo-deep); }
+
+  /* ---------- Section JLPT N5 ---------- */
+  .jlpt-gram{ background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+  .jg-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .jg-s{ font-family:'Shippori Mincho',serif; font-size:18px; font-weight:700; color:var(--indigo-deep); }
+  .jg-covered{ font-size:10.5px; background:var(--matcha); color:#fff; padding:3px 9px; border-radius:999px; }
+  .jg-new{ font-size:10.5px; background:var(--gold); color:#fff; padding:3px 9px; border-radius:999px; }
+  .jg-fr{ font-size:13px; color:#4f4a40; margin:5px 0 8px; }
+  .jg-ex{ font-size:13.5px; padding:7px 10px; border-left:3px solid var(--line); margin-bottom:6px; cursor:pointer; line-height:1.55; }
+  .jg-ex:hover{ border-left-color:var(--indigo); background:rgba(44,62,92,0.04); }
+  .jg-ex b{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); }
+  .jg-rom{ display:block; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--matcha); }
+  .jg-tr{ display:block; font-size:12px; color:#7a7268; }
+  .jq-type{ font-size:10.5px; background:var(--indigo); color:#fff; padding:2px 8px; border-radius:999px; }
+  .jq-question{ font-family:'Shippori Mincho',serif; font-size:22px; color:var(--indigo-deep); margin:14px 0 16px; line-height:1.5; }
+  .jlpt-plan td{ font-size:12px; vertical-align:top; }
+  .jlpt-plan .plan-dates{ font-family:'JetBrains Mono',monospace; font-size:10px; color:#9a9184; }
+  .jlpt-plan tr.plan-now td{ background:rgba(181,138,60,0.12); border-left:3px solid var(--gold); }

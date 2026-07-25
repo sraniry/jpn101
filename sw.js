@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v6';
+const CACHE = 'nihongo-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -17,6 +17,8 @@ const ASSETS = [
   './src/views/kana.js',
   './src/views/today.js',
   './src/views/listening.js',
+  './src/views/jlpt.js',
+  './data/jlpt-n5.js',
   './data/phrases.js',
   './data/grammar.js',
   './data/kana.js',

@@ -9,7 +9,7 @@ export function setShadowFilterTag(tag){ shadowFilterTag = tag; }
 
 export function renderShadow(){
   const area = document.getElementById('shadowArea');
-  if(phrases.length === 0){ area.innerHTML = emptyState('Rien à répéter encore', 'Importe le pack A0 → B1 dans « Mes phrases », ou ajoute tes phrases.'); return; }
+  if(phrases.length === 0){ area.innerHTML = emptyState('Rien à répéter encore', 'Importe le pack A0 → A2 dans « Mes phrases », ou ajoute tes phrases.'); return; }
   const tags = ['all', ...new Set(phrases.map(p=>p.tag))];
   const filtered = shadowFilterTag === 'all' ? phrases : phrases.filter(p=>p.tag === shadowFilterTag);
   if(shadowIdx >= filtered.length) shadowIdx = 0;

@@ -1,6 +1,7 @@
 import { phrases, getDueAll, planToday } from '../storage.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
+import { openConversation } from './conversation.js';
 import { escapeHtml } from '../util.js';
 
 // ---------- Onglet Aujourd'hui : parcours guidé quotidien ----------
@@ -43,13 +44,13 @@ export function renderToday(){
     {
       icon:'🔁', title:'Révisions SRS', time:'~15 min', done:reviewDone, view:'review',
       desc: phrases.length === 0
-        ? 'Importe d\'abord le pack A0 → B1 dans « Mes phrases »'
+        ? 'Importe d\'abord le pack A0 → A2 dans « Mes phrases »'
         : `${plan.reviews}/${reviewGoal} cartes revues aujourd'hui${due>0?` · ${due} en attente`:''}`,
       why:'La répétition espacée au moment optimal, avec rappel actif : tape ta réponse avant de révéler.'
     },
     {
-      icon:'💬', title:'Un dialogue', time:'~10 min', done:convDone, view:'conversation',
-      desc: conv ? `Suggestion du jour : <b>${conv.icon} ${escapeHtml(conv.title)}</b> — écoute-le d'abord (🎧), puis joue-le` : 'Aucun dialogue disponible',
+      icon:'💬', title:'Un dialogue', time:'~10 min', done:convDone, view:'conversation', convId: conv ? conv.id : null,
+      desc: conv ? `Suggestion du jour : <b>${conv.icon} ${escapeHtml(conv.title)}</b> — clique pour le lancer directement` : 'Aucun dialogue disponible',
       why:'Produire des phrases en contexte consolide bien plus que relire — et prépare les vraies situations.'
     },
   ];
@@ -61,7 +62,7 @@ export function renderToday(){
   </div><div class="today-steps">`;
 
   steps.forEach((s, i)=>{
-    html += `<div class="today-step ${s.done?'is-done':''}" data-view="${s.view}">
+    html += `<div class="today-step ${s.done?'is-done':''}" data-view="${s.view}"${s.convId?` data-conv="${s.convId}"`:''}>
       <div class="ts-check">${s.done ? '✓' : i+1}</div>
       <div class="ts-body">
         <div class="ts-title"><span class="ts-icon">${s.icon}</span>${s.title}<span class="ts-time">${s.time}</span></div>
@@ -77,5 +78,9 @@ export function renderToday(){
     html += `<div class="today-bonus">Envie d'aller plus loin ? <b>Bonus :</b> les kanji du quotidien (onglet Alphabet → 漢字) ou les panneaux dans « Lire ».</div>`;
   }
   area.innerHTML = html;
-  area.querySelectorAll('.today-step').forEach(el=> el.addEventListener('click', ()=> gotoTab(el.dataset.view)));
+  area.querySelectorAll('.today-step').forEach(el=> el.addEventListener('click', ()=>{
+    gotoTab(el.dataset.view);
+    // routing direct : lance le dialogue suggéré au lieu de la liste générale
+    if(el.dataset.conv) openConversation(el.dataset.conv);
+  }));
 }

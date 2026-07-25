@@ -21,17 +21,20 @@ export function updateImportBanner(){
   }
 }
 
-let listFilterTag = 'all';
+// « core » par défaut : les ⭐ Essentiels (Pareto 20/80) sont la première chose visible
+let listFilterTag = 'core';
 export function setListFilterTag(tag){ listFilterTag = tag; }
 
 export function renderTagChips(){
   const chipsEl = document.getElementById('tagChips');
-  const tags = ['all', ...new Set(phrases.map(p=>p.tag)), 'archivées'];
-  chipsEl.innerHTML = tags.map(t=>`<span class="tag-chip ${t===listFilterTag?'active':''}" data-tag="${t}">${t==='all'?'Toutes':(t==='archivées'?'🎓 Déjà sues':t)}</span>`).join('');
+  const tags = ['core', 'all', ...new Set(phrases.map(p=>p.tag)), 'archivées'];
+  const label = t => t==='core' ? '⭐ Essentiels' : t==='all' ? 'Toutes' : t==='archivées' ? '🎓 Déjà sues' : t;
+  chipsEl.innerHTML = tags.map(t=>`<span class="tag-chip ${t===listFilterTag?'active':''}" data-tag="${t}">${label(t)}</span>`).join('');
   chipsEl.querySelectorAll('.tag-chip').forEach(c=> c.addEventListener('click', ()=>{ listFilterTag = c.dataset.tag; renderList(); renderTagChips(); }));
 }
 export function renderList(){
   const list = document.getElementById('phraseList');
+  if(listFilterTag === 'core'){ renderCoreList(list); return; }
   let items;
   if(listFilterTag === 'archivées') items = phrases.filter(p=>p.archived);
   else if(listFilterTag === 'all') items = phrases.filter(p=>!p.archived);
@@ -56,6 +59,23 @@ export function renderList(){
     const p = phrases.find(x=>x.id===b.dataset.id);
     if(p){ archiveCard(p, !p.archived); await savePhrases(); render(); }
   }));
+}
+// Liste ⭐ Essentiels : construite depuis le SEED_PACK filtré par CORE_SET (source de vérité),
+// visible même avant l'import du pack. Indique si la carte est déjà dans les révisions.
+function renderCoreList(list){
+  const inSrs = existingKeySet();
+  const core = SEED_PACK.filter(r => CORE_SET.has(r.jp));
+  list.innerHTML = `<p style="font-size:12.5px;color:#7a7268;margin:0 0 10px;">Les <b>${core.length} phrases ⭐</b> qui couvrent ~80 % des situations réelles. Si tu manques de temps, maîtrise-les en priorité.</p>` +
+    core.map(r=>{
+      const added = inSrs.has((r.jp+'|'+r.romaji).toLowerCase());
+      return `<div class="phrase-item">
+        <div class="pi-jp">⭐ ${escapeHtml(r.jp)}</div>
+        <div class="pi-mid"><div class="pi-romaji">${escapeHtml(r.romaji||'')}</div><div class="pi-fr">${escapeHtml(r.fr||'')}</div></div>
+        ${r.level ? `<div class="pi-level">${escapeHtml(r.level)}</div>` : ''}
+        <div class="pi-tag">${escapeHtml(r.tag)}</div>
+        <div class="pi-due" style="color:${added?'#5c7a4f':'#9a9184'}">${added?'dans tes révisions ✓':'pas encore importée'}</div>
+      </div>`;
+    }).join('');
 }
 export function renderStats(){
   document.getElementById('statTotal').textContent = phrases.length;
@@ -120,7 +140,7 @@ export function initManage(){
     ['f-jp','f-romaji','f-fr','f-note','f-tag'].forEach(id=>document.getElementById(id).value='');
     updateImportBanner(); render();
   });
-  document.getElementById('dailyLimit').addEventListener('change', e=>{ meta.dailyLimit = Math.max(1, parseInt(e.target.value,10) || 8); saveMeta(); });
+  document.getElementById('dailyLimit').addEventListener('change', e=>{ meta.dailyLimit = Math.max(1, parseInt(e.target.value,10) || 25); saveMeta(); });
 
   document.getElementById('exportJsonBtn').addEventListener('click', ()=>{
     exportProgressionJSON();
