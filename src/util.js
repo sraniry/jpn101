@@ -1,4 +1,46 @@
+import { KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON, KATAKANA_ONLY } from '../data/kana.js';
+
 export function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ---------- Kana → romaji (dérivé des tables validées de data/kana.js) ----------
+// Utilisé pour garantir un romaji sous CHAQUE caractère japonais dans la section JLPT N5.
+// Convertit hiragana + katakana, gère les combinaisons yōon (きゃ) et le petit tsu (っ, double la consonne suivante).
+// Style doublé (ou, uu) plutôt que macron, pour cohérence avec le reste des données de l'app.
+const KANA_ROMAJI_MAP = (() => {
+  const map = {};
+  [...KANA_BASE, ...KANA_DAKUTEN, ...KANA_HANDAKUTEN, ...KANA_YOON].forEach(g => {
+    g.items.forEach(it => { map[it.h] = it.romaji; map[it.k] = it.romaji; });
+  });
+  KATAKANA_ONLY.forEach(it => { map[it.k] = it.romaji; });
+  return map;
+})();
+const KANA_KEYS_BY_LEN = Object.keys(KANA_ROMAJI_MAP).sort((a, b) => b.length - a.length);
+const SOKUON = new Set(['っ', 'ッ']);
+
+export function kanaToRomaji(str){
+  if(!str) return '';
+  let out = '', i = 0;
+  while(i < str.length){
+    const ch = str[i];
+    if(SOKUON.has(ch)){
+      i++;
+      const matched = KANA_KEYS_BY_LEN.find(k => str.startsWith(k, i));
+      if(matched) out += KANA_ROMAJI_MAP[matched][0]; // double la consonne suivante
+      continue;
+    }
+    if(ch === 'ー'){ out += out.slice(-1); i++; continue; }
+    const matched = KANA_KEYS_BY_LEN.find(k => str.startsWith(k, i));
+    if(matched){ out += KANA_ROMAJI_MAP[matched]; i += matched.length; continue; }
+    out += ch; i++; // caractères non-kana (kanji, ponctuation, parenthèses…) inchangés
+  }
+  return out;
+}
+
+// Ajoute la romanisation entre parenthèses juste après une furigana entre （）, ex: "一つ（ひとつ）" → "一つ（ひとつ / hitotsu）"
+export function annotateFurigana(str){
+  if(!str) return '';
+  return str.replace(/（([^）]+)）/g, (m, kana) => `（${kana} / ${kanaToRomaji(kana)}）`);
+}
 
 export function emptyState(title, body){ return `<div class="empty"><div class="stamp">合格</div><h3>${title}</h3><p>${body}</p></div>`; }
 

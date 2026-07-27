@@ -484,3 +484,37 @@
   .jlpt-plan td{ font-size:12px; vertical-align:top; }
   .jlpt-plan .plan-dates{ font-family:'JetBrains Mono',monospace; font-size:10px; color:#9a9184; }
   .jlpt-plan tr.plan-now td{ background:rgba(181,138,60,0.12); border-left:3px solid var(--gold); }
+
+  /* ---------- JLPT N5 : romaji, quiz, examen blanc, historique, conseils ---------- */
+  .jg-s-romaji{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--matcha); margin:2px 0 6px; }
+  .kqc-btn-rom{ display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#9a9184; margin-top:3px; font-weight:400; }
+  .jq-q-romaji{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--matcha); text-align:center; margin:-10px 0 16px; }
+
+  .tips-list{ margin:0; padding-left:20px; font-size:13.5px; line-height:1.7; color:#4f4a40; }
+  .tips-list li{ margin-bottom:4px; }
+  .weak-point-banner{ background:rgba(181,138,60,0.1); border:1px solid rgba(181,138,60,0.3); border-radius:10px; padding:12px 14px; font-size:13px; color:#4f4a40; margin:10px 0; }
+  .weak-point-empty{ background:var(--bg); border-color:var(--line); color:#7a7268; }
+
+  .exam-section-head{ display:flex; justify-content:space-between; align-items:center; background:var(--indigo-deep); color:#fff; border-radius:10px; padding:10px 14px; font-size:13px; font-weight:600; margin-bottom:10px; }
+  .exam-timer{ font-family:'JetBrains Mono',monospace; font-size:15px; background:rgba(255,255,255,.15); padding:3px 10px; border-radius:999px; }
+  .exam-listen-box{ text-align:center; margin-bottom:14px; }
+  .exam-listen-box .jp-text{ font-size:22px; font-family:'Shippori Mincho',serif; color:var(--indigo-deep); margin-bottom:4px; }
+
+  .exam-report{ text-align:center; }
+  .exam-verdict{ font-family:'Shippori Mincho',serif; font-size:24px; font-weight:800; padding:10px; border-radius:12px; margin-bottom:8px; }
+  .exam-verdict.pass{ background:rgba(92,122,79,0.15); color:var(--green); }
+  .exam-verdict.fail{ background:rgba(184,64,31,0.1); color:var(--vermillion-deep); }
+  .exam-total{ font-family:'JetBrains Mono',monospace; font-size:20px; color:var(--indigo-deep); margin-bottom:14px; }
+  .exam-score-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+  .exam-score-cell{ background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px; font-size:12px; }
+  .exam-score-cell b{ display:block; font-size:11.5px; color:var(--indigo); margin-bottom:3px; }
+  .exam-score-cell.weak{ border-color:var(--vermillion); background:rgba(184,64,31,0.06); }
+  .exam-errors{ text-align:left; margin-top:14px; }
+  .exam-errors .tips-list{ font-size:12.5px; }
+
+  .history-chart{ display:flex; align-items:flex-end; gap:8px; height:140px; padding:10px 0; border-bottom:1px solid var(--line); overflow-x:auto; }
+  .history-bar{ flex:none; width:28px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .history-bar-fill{ width:100%; border-radius:4px 4px 0 0; background:var(--indigo); min-height:4px; }
+  .history-bar-fill.pass{ background:var(--matcha); }
+  .history-bar-fill.fail{ background:var(--vermillion); }
+  .history-bar-label{ font-size:9.5px; font-family:'JetBrains Mono',monospace; color:#9a9184; margin-top:4px; }

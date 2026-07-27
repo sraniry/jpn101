@@ -60,7 +60,7 @@ async function init(){
   initManage();
   const synced = await importFromURL();
   if(!synced) await loadAll();
-  document.getElementById('dailyLimit').value = meta.dailyLimit || 25;
+  document.getElementById('dailyLimit').value = meta.dailyLimit || 40;
   updateImportBanner(); updateStreak(); render();
   if(synced){
     alert('✅ Progression importée depuis le lien ! Tes révisions, archives et stats sont à jour.');

@@ -140,7 +140,7 @@ export function initManage(){
     ['f-jp','f-romaji','f-fr','f-note','f-tag'].forEach(id=>document.getElementById(id).value='');
     updateImportBanner(); render();
   });
-  document.getElementById('dailyLimit').addEventListener('change', e=>{ meta.dailyLimit = Math.max(1, parseInt(e.target.value,10) || 25); saveMeta(); });
+  document.getElementById('dailyLimit').addEventListener('change', e=>{ meta.dailyLimit = Math.max(1, parseInt(e.target.value,10) || 40); saveMeta(); });
 
   document.getElementById('exportJsonBtn').addEventListener('click', ()=>{
     exportProgressionJSON();
