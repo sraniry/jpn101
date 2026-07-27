@@ -179,6 +179,15 @@
   .sign-card .sc-fr{ font-size:13.5px; font-weight:600; color:var(--ink); margin-top:2px;}
   .sign-card .sc-note{ font-size:10.5px; color:#9a9184; margin-top:5px; line-height:1.4;}
 
+  .kanji-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; }
+  .kanji-card{ background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:16px 8px; text-align:center; cursor:pointer; min-height:78px; }
+  .kanji-card .kc-char{ font-family:'Shippori Mincho',serif; font-size:32px; font-weight:800; color:var(--indigo-deep); line-height:1; margin-bottom:6px;}
+  .kanji-card .kc-read{ font-size:10.5px; color:var(--matcha); font-family:'JetBrains Mono',monospace; display:none; }
+  .kanji-card.flipped .kc-read{ display:block; }
+  .kanji-card .kc-fr{ font-size:12px; color:#9a9184; display:none; margin-top:3px;}
+  .kanji-card.flipped .kc-fr{ display:block; color:var(--ink); font-weight:600;}
+  .jlpt-subnav{ display:flex; gap:6px; justify-content:center; margin-bottom:20px; flex-wrap:wrap;}
+
   /* grammar reference */
   .gram-section{ margin-bottom:26px; }
   .gram-section h3{ font-family:'Shippori Mincho',serif; color:var(--indigo-deep); font-size:16px; margin:0 0 10px; }
@@ -318,6 +327,7 @@
     <button data-view="conversation">Conversation</button>
     <button data-view="reading">Lire</button>
     <button data-view="grammar">Grammaire</button>
+    <button data-view="jlpt">JLPT N5</button>
     <button data-view="add">Mes phrases</button>
   </nav>
 
@@ -327,6 +337,7 @@
   <section class="view" id="view-conversation"><div class="panel"><div id="soundBarConv"></div><div id="conversationArea"></div></div></section>
   <section class="view" id="view-reading"><div class="panel"><div id="readingArea"></div></div></section>
   <section class="view" id="view-grammar"><div class="panel"><div id="grammarArea"></div></div></section>
+  <section class="view" id="view-jlpt"><div class="panel"><div id="jlptArea"></div></div></section>
 
   <section class="view" id="view-add">
     <div class="panel">
@@ -701,6 +712,276 @@
     ]}
   ];
 
+  // ---------- JLPT N5 : kanji (79 kanji, liste officielle Kanpai.fr — eBook "Réviser son JLPT N5") ----------
+  const JLPT_N5_KANJI = [
+    {k:`日`,on:`ニチ・ジツ`,kun:`ひ・-び`,fr:`jour, soleil`},{k:`一`,on:`イチ・イツ`,kun:`ひと-`,fr:`un`},{k:`国`,on:`コク`,kun:`くに`,fr:`pays`},
+    {k:`人`,on:`ジン・ニン`,kun:`ひと`,fr:`personne`},{k:`年`,on:`ネン`,kun:`とし`,fr:`année`},{k:`大`,on:`ダイ・タイ`,kun:`おお-・おお.きい`,fr:`grand`},
+    {k:`十`,on:`ジュウ・ジッ`,kun:`とお`,fr:`dix`},{k:`二`,on:`ニ`,kun:`ふた・ふた.つ`,fr:`deux`},{k:`本`,on:`ホン`,kun:`もと`,fr:`livre, origine, vrai`},
+    {k:`中`,on:`チュウ`,kun:`なか・うち`,fr:`dedans, milieu`},{k:`長`,on:`チョウ`,kun:`なが.い`,fr:`long, chef`},{k:`出`,on:`シュツ・スイ`,kun:`で.る・だ.す`,fr:`sortie, sortir`},
+    {k:`三`,on:`サン`,kun:`み・み.つ・みっ.つ`,fr:`trois`},{k:`時`,on:`ジ`,kun:`とき`,fr:`heure`},{k:`行`,on:`コウ・ギョウ・アン`,kun:`い.く・ゆ.く・おこな.う`,fr:`aller`},
+    {k:`見`,on:`ケン`,kun:`み.る・み.える・み.せる`,fr:`regarder, voir`},{k:`月`,on:`ゲツ・ガツ`,kun:`つき`,fr:`mois, lune`},{k:`後`,on:`ゴ・コウ`,kun:`のち・うし.ろ・あと`,fr:`après, derrière, ensuite`},
+    {k:`前`,on:`ゼン`,kun:`まえ`,fr:`devant, avant`},{k:`生`,on:`セイ・ショウ`,kun:`い.きる・う.まれる・なま`,fr:`vie, naissance`},{k:`五`,on:`ゴ`,kun:`いつ・いつ.つ`,fr:`cinq`},
+    {k:`間`,on:`カン・ケン`,kun:`あいだ・ま`,fr:`entre`},{k:`上`,on:`ジョウ`,kun:`うえ・あ.げる・のぼ.る`,fr:`dessus, au-dessus`},{k:`東`,on:`トウ`,kun:`ひがし`,fr:`est`},
+    {k:`四`,on:`シ`,kun:`よ・よ.つ・よっ.つ`,fr:`quatre`},{k:`今`,on:`コン・キン`,kun:`いま`,fr:`maintenant`},{k:`金`,on:`キン・コン`,kun:`かね・かな-`,fr:`or, argent`},
+    {k:`九`,on:`キュウ・ク`,kun:`ここの・ここの.つ`,fr:`neuf`},{k:`入`,on:`ニュウ`,kun:`い.る・はい.る・い.れる`,fr:`entrer, insérer`},{k:`学`,on:`ガク`,kun:`まな.ぶ`,fr:`étude`},
+    {k:`高`,on:`コウ`,kun:`たか.い`,fr:`haut, cher`},{k:`円`,on:`エン`,kun:`まる.い`,fr:`yen, rond`},{k:`子`,on:`シ・ス`,kun:`こ`,fr:`enfant, signe du rat`},
+    {k:`外`,on:`ガイ・ゲ`,kun:`そと・ほか・はず.す`,fr:`dehors`},{k:`八`,on:`ハチ`,kun:`や・や.つ・やっ.つ`,fr:`huit`},{k:`六`,on:`ロク`,kun:`む・む.つ・むっ.つ`,fr:`six`},
+    {k:`下`,on:`カ・ゲ`,kun:`した・しも・さ.げる・くだ.る・お.ろす`,fr:`en-dessous, descendre`},{k:`来`,on:`ライ`,kun:`く.る・きた.る`,fr:`venir, prochain`},{k:`気`,on:`キ・ケ`,kun:``,fr:`esprit, âme`},
+    {k:`小`,on:`ショウ`,kun:`ちい.さい・こ-・お-`,fr:`petit`},{k:`七`,on:`シチ`,kun:`なな・なな.つ`,fr:`sept`},{k:`山`,on:`サン`,kun:`やま`,fr:`montagne`},
+    {k:`話`,on:`ワ`,kun:`はな.す・はなし`,fr:`histoire, parler`},{k:`女`,on:`ジョ・ニョ`,kun:`おんな`,fr:`femme`},{k:`北`,on:`ホク`,kun:`きた`,fr:`nord`},
+    {k:`午`,on:`ゴ`,kun:`うま`,fr:`midi, cheval`},{k:`百`,on:`ヒャク`,kun:``,fr:`cent`},{k:`書`,on:`ショ`,kun:`か.く`,fr:`écrire`},
+    {k:`先`,on:`セン`,kun:`さき`,fr:`avant, précédent`},{k:`名`,on:`メイ・ミョウ`,kun:`な`,fr:`nom, réputation`},{k:`川`,on:`セン`,kun:`かわ`,fr:`rivière, flux`},
+    {k:`千`,on:`セン`,kun:``,fr:`mille`},{k:`水`,on:`スイ`,kun:`みず`,fr:`eau`},{k:`半`,on:`ハン`,kun:`なか.ば`,fr:`moitié, milieu`},
+    {k:`男`,on:`ダン・ナン`,kun:`おとこ`,fr:`homme`},{k:`西`,on:`セイ・サイ`,kun:`にし`,fr:`ouest`},{k:`電`,on:`デン`,kun:``,fr:`électricité`},
+    {k:`校`,on:`コウ`,kun:``,fr:`école`},{k:`語`,on:`ゴ`,kun:`かた.る・かた.らう`,fr:`mot, langue`},{k:`土`,on:`ド・ト`,kun:`つち`,fr:`sol, terre`},
+    {k:`木`,on:`ボク・モク`,kun:`き・こ`,fr:`arbre, bois`},{k:`聞`,on:`ブン・モン`,kun:`き.く・き.こえる`,fr:`entendre, écouter, demander`},{k:`食`,on:`ショク・ジキ`,kun:`く.う・く.らう・た.べる`,fr:`manger, nourriture`},
+    {k:`車`,on:`シャ`,kun:`くるま`,fr:`voiture`},{k:`何`,on:`カ`,kun:`なに・なん`,fr:`quoi`},{k:`南`,on:`ナン・ナ`,kun:`みなみ`,fr:`sud`},
+    {k:`万`,on:`マン・バン`,kun:``,fr:`dix mille`},{k:`毎`,on:`マイ`,kun:``,fr:`chaque`},{k:`白`,on:`ハク・ビャク`,kun:`しろ・しろ.い・しら-`,fr:`blanc`},
+    {k:`天`,on:`テン`,kun:`あめ・あま-`,fr:`ciel, paradis`},{k:`母`,on:`ボ`,kun:`はは`,fr:`maman`},{k:`火`,on:`カ`,kun:`ひ・-び・ほ-`,fr:`feu`},
+    {k:`右`,on:`ウ・ユウ`,kun:`みぎ`,fr:`droite`},{k:`読`,on:`ドク・トク・トウ`,kun:`よ.む`,fr:`lire`},{k:`友`,on:`ユウ`,kun:`とも`,fr:`ami`},
+    {k:`左`,on:`サ`,kun:`ひだり`,fr:`gauche`},{k:`休`,on:`キュウ`,kun:`やす.む`,fr:`repos, sommeil, retraite`},{k:`父`,on:`フ`,kun:`ちち`,fr:`père`},
+    {k:`雨`,on:`ウ`,kun:`あめ・あま-・-さめ`,fr:`pluie`}
+  ];
+
+  // ---------- JLPT N5 : vocabulaire (668 mots, liste officielle Kanpai.fr, classés par rangée hiragana) ----------
+  const JLPT_N5_VOCAB = [
+    { title:`Vocabulaire — rangée あ`, icon:`あ`, items:[
+      {jp:`会う`,romaji:`Au`,fr:`rencontrer`},{jp:`青`,romaji:`Ao`,fr:`bleu`},{jp:`青い`,romaji:`Aoi`,fr:`bleu`},{jp:`赤`,romaji:`Aka`,fr:`rouge`},
+      {jp:`赤い`,romaji:`Akai`,fr:`rouge`},{jp:`明い`,romaji:`Akarui`,fr:`éclairé`},{jp:`秋`,romaji:`Aki`,fr:`automne`},{jp:`開く`,romaji:`Aku`,fr:`ouvrir, être ouvert`},
+      {jp:`開ける`,romaji:`Akeru`,fr:`ouvrir`},{jp:`上げる`,romaji:`Ageru`,fr:`donner`},{jp:`朝`,romaji:`Asa`,fr:`matin`},{jp:`朝御飯`,romaji:`Asagohan`,fr:`petit déjeuner`},
+      {jp:`あさって`,romaji:`Asatte`,fr:`après-demain`},{jp:`足`,romaji:`Ashi`,fr:`pied, jambe`},{jp:`明日`,romaji:`Ashita`,fr:`demain`},{jp:`あそこ`,romaji:`Asoko`,fr:`là-bas`},
+      {jp:`遊ぶ`,romaji:`Asobu`,fr:`jouer`},{jp:`暖かい`,romaji:`Atatakai`,fr:`chaud`},{jp:`頭`,romaji:`Atama`,fr:`tête`},{jp:`新しい`,romaji:`Atarashii`,fr:`nouveau`},
+      {jp:`あちら`,romaji:`Achira`,fr:`là`},{jp:`暑い`,romaji:`Atsui`,fr:`chaud`},{jp:`熱い`,romaji:`Atsui`,fr:`chaud au toucher`},{jp:`厚い`,romaji:`Atsui`,fr:`épais`},
+      {jp:`あっち`,romaji:`Acchi`,fr:`là-bas`},{jp:`後`,romaji:`Ato`,fr:`après`},{jp:`あなた`,romaji:`Anata`,fr:`toi`},{jp:`兄`,romaji:`Ani`,fr:`grand-frère`},
+      {jp:`姉`,romaji:`Ane`,fr:`grande-soeur`},{jp:`あの`,romaji:`Ano`,fr:`cela`},{jp:`あの`,romaji:`Ano`,fr:`euh...`},{jp:`アパート`,romaji:`Apaato`,fr:`appartement`},
+      {jp:`あびる`,romaji:`Abiru`,fr:`se doucher, se baigner`},{jp:`危ない`,romaji:`Abunai`,fr:`dangereux`},{jp:`甘い`,romaji:`Amai`,fr:`sucré`},{jp:`あまり`,romaji:`Amari`,fr:`peu`},
+      {jp:`雨`,romaji:`Ame`,fr:`pluie`},{jp:`飴`,romaji:`Ame`,fr:`bonbon`},{jp:`洗う`,romaji:`Arau`,fr:`laver`},{jp:`ある`,romaji:`Aru`,fr:`il y a`},
+      {jp:`歩く`,romaji:`Aruku`,fr:`marcher`},{jp:`あれ`,romaji:`Are`,fr:`ça`},{jp:`いい/よい`,romaji:`Ii/yoi`,fr:`bon`},{jp:`いいえ`,romaji:`Iie`,fr:`non`},
+      {jp:`言う`,romaji:`Iu`,fr:`dire`},{jp:`家`,romaji:`Ie`,fr:`maison`},{jp:`いかが`,romaji:`Ikaga`,fr:`combien`},{jp:`行く`,romaji:`Iku`,fr:`aller`},
+      {jp:`いくつ`,romaji:`Ikutsu`,fr:`combien ?`},{jp:`いくら`,romaji:`Ikura`,fr:`combien ? (prix)`},{jp:`池`,romaji:`Ike`,fr:`étang`},{jp:`医者`,romaji:`Isha`,fr:`docteur`},
+      {jp:`いす`,romaji:`Isu`,fr:`chaise`},{jp:`忙しい`,romaji:`Isogashii`,fr:`occupé`},{jp:`痛い`,romaji:`Itai`,fr:`douloureux`},{jp:`一`,romaji:`Ichi`,fr:`un`},
+      {jp:`一日`,romaji:`Ichinichi`,fr:`un jour`},{jp:`いちばん`,romaji:`Ichiban`,fr:`premier`},{jp:`いつ`,romaji:`Itsu`,fr:`quand`},{jp:`五日`,romaji:`Itsuka`,fr:`cinquième jour`},
+      {jp:`一緒`,romaji:`Issho`,fr:`ensembe`},{jp:`五つ`,romaji:`Itsutsu`,fr:`cinq`},{jp:`いつも`,romaji:`Itsumo`,fr:`toujours`},{jp:`犬`,romaji:`Inu`,fr:`chien`},
+      {jp:`今`,romaji:`Ima`,fr:`maintenant`},{jp:`意味`,romaji:`Imi`,fr:`sens (définition)`},{jp:`妹`,romaji:`Imouto`,fr:`petite soeur`},{jp:`嫌`,romaji:`Iya`,fr:`désagréable`},
+      {jp:`入口`,romaji:`Iriguchi`,fr:`entrée`},{jp:`居る`,romaji:`Iru`,fr:`être`},{jp:`要る`,romaji:`Iru`,fr:`avoir besoin`},{jp:`入れる`,romaji:`Ireru`,fr:`insérer`},
+      {jp:`色`,romaji:`Iro`,fr:`couleur`},{jp:`いろいろ`,romaji:`Iroiro`,fr:`variés`},{jp:`上`,romaji:`Ue`,fr:`au-dessus`},{jp:`後ろ`,romaji:`Ushiro`,fr:`derrière`},
+      {jp:`薄い`,romaji:`Usui`,fr:`faible`},{jp:`歌`,romaji:`Uta`,fr:`chanson`},{jp:`歌う`,romaji:`Utau`,fr:`chanter`},{jp:`生まれる`,romaji:`Umareru`,fr:`naître`},
+      {jp:`海`,romaji:`Umi`,fr:`mer`},{jp:`売る`,romaji:`Uru`,fr:`vendre`},{jp:`煩い`,romaji:`Urusai`,fr:`bruyant`},{jp:`上着`,romaji:`Uwagi`,fr:`veste`},
+      {jp:`絵`,romaji:`E`,fr:`dessin`},{jp:`映画`,romaji:`Eiga`,fr:`film`},{jp:`映画館`,romaji:`Eigakan`,fr:`cinéma`},{jp:`英語`,romaji:`Eigo`,fr:`langue anglaise`},
+      {jp:`ええ`,romaji:`Ee`,fr:`oui`},{jp:`駅`,romaji:`Eki`,fr:`gare`},{jp:`エレベーター`,romaji:`Erebeetaa`,fr:`escalator`},{jp:`鉛筆`,romaji:`Enpitsu`,fr:`crayon`},
+      {jp:`おいしい`,romaji:`Oishii`,fr:`délicieux`},{jp:`多い`,romaji:`Ooi`,fr:`nombreux`},{jp:`大きい`,romaji:`Ookii`,fr:`grand`},{jp:`大きな`,romaji:`Ookina`,fr:`grand`},
+      {jp:`大勢`,romaji:`Oozei`,fr:`beaucoup de monde`},{jp:`お母さん`,romaji:`Okaasan`,fr:`mère`},{jp:`お菓子`,romaji:`Okashi`,fr:`bonbons`},{jp:`お金`,romaji:`Okane`,fr:`argent`},
+      {jp:`起きる`,romaji:`Okiru`,fr:`se lever`},{jp:`置く`,romaji:`Oku`,fr:`placer`},{jp:`奥さん`,romaji:`Okusan`,fr:`épouse`},{jp:`お酒`,romaji:`Osake`,fr:`alcool`},
+      {jp:`お皿`,romaji:`Osara`,fr:`assiette`},{jp:`おじいさん`,romaji:`Ojiisan`,fr:`grand-père`},{jp:`教える`,romaji:`Oshieru`,fr:`enseigner, dire`},{jp:`伯父/叔父`,romaji:`Ojisan`,fr:`oncle`},
+      {jp:`押す`,romaji:`Osu`,fr:`pousser`},{jp:`遅い`,romaji:`Osoi`,fr:`tard, lent`},{jp:`お茶`,romaji:`Ocha`,fr:`thé vert`},{jp:`お手洗い`,romaji:`Otearai`,fr:`salle de bains`},
+      {jp:`お父さん`,romaji:`Otousan`,fr:`père`},{jp:`弟`,romaji:`Otouto`,fr:`frère cadet`},{jp:`男`,romaji:`Otoko`,fr:`homme`},{jp:`男の子`,romaji:`Otokonoko`,fr:`garçon`},
+      {jp:`一昨日`,romaji:`Ototoi`,fr:`avant-hier`},{jp:`一昨年`,romaji:`Ototoshi`,fr:`l’année avant l’année dernière`},{jp:`大人`,romaji:`Otona`,fr:`adulte`},{jp:`おなか`,romaji:`Onaka`,fr:`estomac`},
+      {jp:`同じ`,romaji:`Onaji`,fr:`identique`},{jp:`お兄さん`,romaji:`Oniisan`,fr:`frère aîné`},{jp:`お姉さん`,romaji:`Oneesan`,fr:`soeur aînée`},{jp:`おばあさん`,romaji:`Obaasan`,fr:`grand-mère`},
+      {jp:`伯母さん/叔母さん`,romaji:`Obasan`,fr:`tante`},{jp:`お風呂`,romaji:`Ofuro`,fr:`bain`},{jp:`お弁当`,romaji:`Obentou`,fr:`boîte à bento`},{jp:`覚える`,romaji:`Oboeru`,fr:`retenir`},
+      {jp:`おまわりさん`,romaji:`Omawarisan`,fr:`policier (familier)`},{jp:`重い`,romaji:`Omoi`,fr:`lourd`},{jp:`おもしろい`,romaji:`Omoshiroi`,fr:`intéressant`},{jp:`泳ぐ`,romaji:`Oyogu`,fr:`nager`},
+      {jp:`降りる`,romaji:`Oriru`,fr:`descendre`},{jp:`終る`,romaji:`Owaru`,fr:`finir`},{jp:`音楽`,romaji:`Ongaku`,fr:`musique`},{jp:`女`,romaji:`Onna`,fr:`femme`},
+      {jp:`女の子`,romaji:`Onnanoko`,fr:`fille`},{jp:`見る`,romaji:`観ru/miru`,fr:`voir, regarder`}
+    ]},
+    { title:`Vocabulaire — rangée か`, icon:`か`, items:[
+      {jp:`外国`,romaji:`Gaikoku`,fr:`pays étranger`},{jp:`外国人`,romaji:`Gaikokujin`,fr:`étranger`},{jp:`会社`,romaji:`Kaisha`,fr:`entreprise`},{jp:`階段`,romaji:`Kaidan`,fr:`escaliers`},
+      {jp:`買い物`,romaji:`Kaimono`,fr:`courses`},{jp:`買う`,romaji:`Kau`,fr:`acheter`},{jp:`返す`,romaji:`Kaesu`,fr:`rendre`},{jp:`帰る`,romaji:`Kaeru`,fr:`revenir`},
+      {jp:`かかる`,romaji:`Kakaru`,fr:`prendre du temps ou de l'argent`},{jp:`かぎ`,romaji:`Kagi`,fr:`clé`},{jp:`書く`,romaji:`Kaku`,fr:`écrire`},{jp:`学生`,romaji:`Gakusei`,fr:`étudiant`},
+      {jp:`かける`,romaji:`Kakeru`,fr:`appeler par téléphone`},{jp:`傘`,romaji:`Kasa`,fr:`parapluie`},{jp:`貸す`,romaji:`Kasu`,fr:`prêter`},{jp:`風`,romaji:`Kaze`,fr:`vent`},
+      {jp:`風邪`,romaji:`Kaze`,fr:`rhume`},{jp:`家族`,romaji:`Kazoku`,fr:`famille`},{jp:`方`,romaji:`Kata`,fr:`personne, façon de faire`},{jp:`学校`,romaji:`Gakkou`,fr:`école`},
+      {jp:`カップ`,romaji:`Kappu`,fr:`tasse`},{jp:`家庭`,romaji:`Katei`,fr:`ménage`},{jp:`角`,romaji:`Kado`,fr:`coin`},{jp:`かばん`,romaji:`Kaban`,fr:`sac`},
+      {jp:`花瓶`,romaji:`Kabin`,fr:`vase`},{jp:`紙`,romaji:`Kami`,fr:`papier`},{jp:`カメラ`,romaji:`Kamera`,fr:`appareil photo`},{jp:`火曜日`,romaji:`Kayoubi`,fr:`mardi`},
+      {jp:`辛い`,romaji:`Karai`,fr:`épicé`},{jp:`体`,romaji:`Karada`,fr:`corps`},{jp:`借りる`,romaji:`Kariru`,fr:`emprunter`},{jp:`軽い`,romaji:`Karui`,fr:`lumière`},
+      {jp:`カレー`,romaji:`Karee`,fr:`curry`},{jp:`カレンダー`,romaji:`Karendaa`,fr:`calendrier`},{jp:`川/河`,romaji:`Kawa`,fr:`rivière`},{jp:`かわいい`,romaji:`Kawaii`,fr:`mignon`},
+      {jp:`漢字`,romaji:`Kanji`,fr:`kanji (caractère)`},{jp:`木`,romaji:`Ki`,fr:`arbre, bois`},{jp:`黄色`,romaji:`Kiiro`,fr:`jaune`},{jp:`黄色い`,romaji:`Kiiroi`,fr:`jaune`},
+      {jp:`消える`,romaji:`Kieru`,fr:`disparaître`},{jp:`聞く`,romaji:`Kiku`,fr:`entendre, écouter`},{jp:`北`,romaji:`Kita`,fr:`nord`},{jp:`ギター`,romaji:`Gitaa`,fr:`guitare`},
+      {jp:`汚い`,romaji:`Kitanai`,fr:`sale`},{jp:`喫茶店`,romaji:`Kissaten`,fr:`salon de thé`},{jp:`切手`,romaji:`Kitte`,fr:`timbre-poste`},{jp:`切符`,romaji:`Kippu`,fr:`billet`},
+      {jp:`昨日`,romaji:`Kinou`,fr:`hier`},{jp:`九`,romaji:`Kyuu/ku`,fr:`neuf`},{jp:`牛肉`,romaji:`Gyuuniku`,fr:`boeuf`},{jp:`牛乳`,romaji:`Gyuunyuu`,fr:`lait`},
+      {jp:`今日`,romaji:`Kyou`,fr:`aujourd'hui`},{jp:`教室`,romaji:`Kyoushitsu`,fr:`salle de classe`},{jp:`兄弟`,romaji:`Kyoudai`,fr:`frères et soeurs`},{jp:`去年`,romaji:`Kyonen`,fr:`année dernière`},
+      {jp:`嫌い`,romaji:`Kirai`,fr:`haine`},{jp:`切る`,romaji:`Kiru`,fr:`couper`},{jp:`着る`,romaji:`Kiru`,fr:`porter (vêtement)`},{jp:`きれい`,romaji:`Kirei`,fr:`joli`},
+      {jp:`キロ/キログラム`,romaji:`Kiro/kiroguramu`,fr:`kilogramme`},{jp:`キロ/キロメートル`,romaji:`Kiro/kiromeetoru`,fr:`kilomètre`},{jp:`銀行`,romaji:`Ginkou`,fr:`banque`},{jp:`金曜日`,romaji:`Kinyoubi`,fr:`vendredi`},
+      {jp:`薬`,romaji:`Kusuri`,fr:`médicament`},{jp:`ください`,romaji:`Kudasai`,fr:`s'il vous plaît`},{jp:`果物`,romaji:`Kudamono`,fr:`fruit`},{jp:`口`,romaji:`Kuchi`,fr:`bouche`},
+      {jp:`靴`,romaji:`Kutsu`,fr:`chaussures`},{jp:`靴下`,romaji:`Kutsushita`,fr:`chaussettes`},{jp:`国`,romaji:`Kuni`,fr:`pays`},{jp:`曇り`,romaji:`Kumori`,fr:`nuageux`},
+      {jp:`曇る`,romaji:`Kumoru`,fr:`devenir trouble`},{jp:`暗い`,romaji:`Kurai`,fr:`sombre`},{jp:`クラス`,romaji:`Kurasu`,fr:`classe`},{jp:`グラム`,romaji:`Guramu`,fr:`gramme`},
+      {jp:`来る`,romaji:`Kuru`,fr:`venir`},{jp:`車`,romaji:`Kuruma`,fr:`voiture`},{jp:`黒`,romaji:`Kuro`,fr:`noir`},{jp:`黒い`,romaji:`Kuroi`,fr:`noir`},
+      {jp:`警官`,romaji:`Keikan`,fr:`policier`},{jp:`今朝`,romaji:`Kesa`,fr:`ce matin`},{jp:`消す`,romaji:`Kesu`,fr:`effacer, éteindre`},{jp:`結構`,romaji:`Kekkou`,fr:`parfait, suffisant`},
+      {jp:`結婚`,romaji:`Kekkon`,fr:`mariage`},{jp:`月曜日`,romaji:`Getsuyoubi`,fr:`lundi`},{jp:`玄関`,romaji:`Genkan`,fr:`hall d'entrée`},{jp:`元気`,romaji:`Genki`,fr:`santé`},
+      {jp:`五`,romaji:`Go`,fr:`cinq`},{jp:`公園`,romaji:`Kouen`,fr:`parc`},{jp:`交差点`,romaji:`Kousaten`,fr:`intersection`},{jp:`紅茶`,romaji:`Koucha`,fr:`thé noir`},
+      {jp:`交番`,romaji:`Kouban`,fr:`commissariat`},{jp:`声`,romaji:`Koe`,fr:`voix`},{jp:`コート`,romaji:`Kooto`,fr:`manteau, court de tennis`},{jp:`コーヒー`,romaji:`Koohii`,fr:`café`},
+      {jp:`ここ`,romaji:`Koko`,fr:`ici`},{jp:`午後`,romaji:`Gogo`,fr:`après-midi`},{jp:`九日`,romaji:`Kokonoka`,fr:`neuf jours, neuvième jour`},{jp:`九つ`,romaji:`Kokonotsu`,fr:`neuf`},
+      {jp:`午前`,romaji:`Gozen`,fr:`matin`},{jp:`答える`,romaji:`Kotaeru`,fr:`répondre`},{jp:`こちら`,romaji:`Kochira`,fr:`comme cela`},{jp:`こっち`,romaji:`Kocchi`,fr:`comme cela`},
+      {jp:`コップ`,romaji:`Koppu`,fr:`verre`},{jp:`今年`,romaji:`Kotoshi`,fr:`cette année`},{jp:`言葉`,romaji:`Kotoba`,fr:`mot, langue`},{jp:`子供`,romaji:`Kodomo`,fr:`enfant`},
+      {jp:`この`,romaji:`Kono`,fr:`ce`},{jp:`御飯`,romaji:`Gohan`,fr:`riz, repas`},{jp:`コピーする`,romaji:`Kopiisuru`,fr:`copier`},{jp:`困る`,romaji:`Komaru`,fr:`être inquiet`},
+      {jp:`これ`,romaji:`Kore`,fr:`ceci`},{jp:`今月`,romaji:`Kongetsu`,fr:`ce mois-ci`},{jp:`今週`,romaji:`Konshuu`,fr:`cette semaine`},{jp:`こんな`,romaji:`Konna`,fr:`tel`},
+      {jp:`今晩`,romaji:`Konban`,fr:`ce soir`},{jp:`カセット`,romaji:`Kasetto`,fr:`radio-cassette`}
+    ]},
+    { title:`Vocabulaire — rangée さ`, icon:`さ`, items:[
+      {jp:`さあ`,romaji:`Saa`,fr:`eh bien...`},{jp:`財布`,romaji:`Saifu`,fr:`portefeuille`},{jp:`魚`,romaji:`Sakana`,fr:`poisson`},{jp:`先`,romaji:`Saki`,fr:`premier, précédent`},
+      {jp:`咲く`,romaji:`Saku`,fr:`fleurir`},{jp:`作文`,romaji:`Sakubun`,fr:`composition, écriture`},{jp:`差す`,romaji:`Sasu`,fr:`tendre la main, ouvrir un parapluie`},{jp:`雑誌`,romaji:`Zasshi`,fr:`magazine`},
+      {jp:`砂糖`,romaji:`Satou`,fr:`sucre`},{jp:`寒い`,romaji:`Samui`,fr:`froid`},{jp:`さ来年`,romaji:`Sarainen`,fr:`l’année après l’année prochaine`},{jp:`三`,romaji:`San`,fr:`trois`},
+      {jp:`散歩`,romaji:`Sanposuru`,fr:`flâner`},{jp:`四`,romaji:`Shi/yon`,fr:`quatre`},{jp:`塩`,romaji:`Shio`,fr:`sel`},{jp:`しかし`,romaji:`Shikashi`,fr:`cependant`},
+      {jp:`時間`,romaji:`Jikan`,fr:`temps`},{jp:`仕事`,romaji:`Shigoto`,fr:`emploi`},{jp:`辞書`,romaji:`Jisho`,fr:`dictionnaire`},{jp:`静か`,romaji:`Shizuka`,fr:`calme`},
+      {jp:`下`,romaji:`Shita`,fr:`au-dessous`},{jp:`七`,romaji:`Shichi/nana`,fr:`sept`},{jp:`質問`,romaji:`Shitsumon`,fr:`question`},{jp:`自転車`,romaji:`Jitensha`,fr:`vélo`},
+      {jp:`自動車`,romaji:`Jidousha`,fr:`automobile`},{jp:`死ぬ`,romaji:`Shinu`,fr:`à mourir`},{jp:`字引`,romaji:`Jibiki`,fr:`dictionnaire`},{jp:`自分`,romaji:`Jibun`,fr:`soi-même`},
+      {jp:`閉まる`,romaji:`Shimaru`,fr:`fermer`},{jp:`閉める`,romaji:`Shimeru`,fr:`fermer`},{jp:`締める`,romaji:`Shimeru`,fr:`lier`},{jp:`じゃ/じゃあ`,romaji:`Ja/jaa`,fr:`eh bien...`},
+      {jp:`写真`,romaji:`Shashin`,fr:`photo`},{jp:`シャツ`,romaji:`Shatsu`,fr:`chemise`},{jp:`シャワー`,romaji:`Shawaa`,fr:`douche`},{jp:`十`,romaji:`Juu/too`,fr:`dix`},
+      {jp:`授業`,romaji:`Jugyou`,fr:`cours`},{jp:`宿題`,romaji:`Shukudai`,fr:`devoirs`},{jp:`上手`,romaji:`Jouzu`,fr:`habile`},{jp:`丈夫`,romaji:`Joubu`,fr:`fort, durable`},
+      {jp:`しょうゆ`,romaji:`Shouyu`,fr:`sauce soja`},{jp:`食堂`,romaji:`Shokudou`,fr:`réfectoire`},{jp:`知る`,romaji:`Shiru`,fr:`savoir`},{jp:`白`,romaji:`Shiro`,fr:`blanc`},
+      {jp:`白い`,romaji:`Shiroi`,fr:`blanc`},{jp:`新聞`,romaji:`Shinbun`,fr:`journal`},{jp:`水曜日`,romaji:`Suiyoubi`,fr:`mercredi`},{jp:`吸う`,romaji:`Suu`,fr:`fumer, sucer`},
+      {jp:`スカート`,romaji:`Sukaato`,fr:`jupe`},{jp:`好き`,romaji:`Suki`,fr:`aimer`},{jp:`少ない`,romaji:`Sukunai`,fr:`peu`},{jp:`すぐに`,romaji:`Suguni`,fr:`immédiatement`},
+      {jp:`少し`,romaji:`Sukoshi`,fr:`un peu`},{jp:`涼しい`,romaji:`Suzushii`,fr:`rafraîchissant`},{jp:`ストーブ`,romaji:`Sutoobu`,fr:`chauffage`},{jp:`スプーン`,romaji:`Supuun`,fr:`cuillère`},
+      {jp:`スポーツ`,romaji:`Supootsu`,fr:`sport`},{jp:`ズボン`,romaji:`Zubon`,fr:`pantalon`},{jp:`住む`,romaji:`Sumu`,fr:`vivre (habiter)`},{jp:`スリッパ`,romaji:`Surippa`,fr:`chaussons`},
+      {jp:`する`,romaji:`Suru`,fr:`faire`},{jp:`座る`,romaji:`Suwaru`,fr:`s'asseoir`},{jp:`背`,romaji:`Se`,fr:`hauteur`},{jp:`生徒`,romaji:`Seito`,fr:`élève`},
+      {jp:`セーター`,romaji:`Seetaa`,fr:`pull`},{jp:`せっけん`,romaji:`Sekken`,fr:`économie`},{jp:`背広`,romaji:`Sebiro`,fr:`costume d'affaires`},{jp:`狭い`,romaji:`Semai`,fr:`étroit`},
+      {jp:`ゼロ`,romaji:`Zero`,fr:`zéro`},{jp:`千`,romaji:`Sen`,fr:`mille`},{jp:`先月`,romaji:`Sengetsu`,fr:`le mois dernier`},{jp:`先週`,romaji:`Senshuu`,fr:`la semaine dernière`},
+      {jp:`先生`,romaji:`Sensei`,fr:`enseignant, médecin`},{jp:`洗濯`,romaji:`Sentaku`,fr:`linge`},{jp:`全部`,romaji:`Zenbu`,fr:`tous`},{jp:`掃除`,romaji:`Soujisuru`,fr:`nettoyer`},
+      {jp:`そうして/そして`,romaji:`Soushite/soshite`,fr:`et`},{jp:`そこ`,romaji:`Soko`,fr:`là`},{jp:`そちら`,romaji:`Sochira`,fr:`là-bas`},{jp:`そっち`,romaji:`Socchi`,fr:`là-bas`},
+      {jp:`外`,romaji:`Soto`,fr:`extérieur`},{jp:`その`,romaji:`Sono`,fr:`ce`},{jp:`そば`,romaji:`Soba`,fr:`près, à côté de`},{jp:`空`,romaji:`Sora`,fr:`ciel`},
+      {jp:`それ`,romaji:`Sore`,fr:`cela`},{jp:`それから`,romaji:`Sorekara`,fr:`après que`},{jp:`それでは`,romaji:`Soredeha`,fr:`dans ce cas`}
+    ]},
+    { title:`Vocabulaire — rangée た`, icon:`た`, items:[
+      {jp:`大学`,romaji:`Daigaku`,fr:`université`},{jp:`大使館`,romaji:`Taishikan`,fr:`ambassade`},{jp:`大丈夫`,romaji:`Daijoubu`,fr:`bien (ça va)`},{jp:`大好き`,romaji:`Daisuki`,fr:`adorer`},
+      {jp:`大切`,romaji:`Taisetsu`,fr:`important`},{jp:`台所`,romaji:`Daidokoro`,fr:`cuisine`},{jp:`たいへん`,romaji:`Taihen`,fr:`très`},{jp:`たいへん`,romaji:`Taihen`,fr:`difficile`},
+      {jp:`高い`,romaji:`Takai`,fr:`grand, cher`},{jp:`たくさん`,romaji:`Takusan`,fr:`beaucoup`},{jp:`タクシー`,romaji:`Takushii`,fr:`taxi`},{jp:`出す`,romaji:`Dasu`,fr:`envoyer`},
+      {jp:`立つ`,romaji:`Tatsu`,fr:`se lever`},{jp:`たて`,romaji:`Tate`,fr:`longueur`},{jp:`建物`,romaji:`Tatemono`,fr:`bâtiment`},{jp:`楽しい`,romaji:`Tanoshii`,fr:`agréable`},
+      {jp:`頼む`,romaji:`Tanomu`,fr:`demander`},{jp:`たばこ`,romaji:`Tabako`,fr:`tabac, cigarettes`},{jp:`たぶん`,romaji:`Tabun`,fr:`probablement`},{jp:`食べ物`,romaji:`Tabemono`,fr:`nourriture`},
+      {jp:`食べる`,romaji:`Taberu`,fr:`manger`},{jp:`卵`,romaji:`Tamago`,fr:`oeuf`},{jp:`誰`,romaji:`Dare`,fr:`qui`},{jp:`誰`,romaji:`Dareka`,fr:`quelqu'un`},
+      {jp:`誕生日`,romaji:`Tanjoubi`,fr:`anniversaire`},{jp:`だんだん`,romaji:`Dandan`,fr:`peu à peu`},{jp:`小さい`,romaji:`Chiisai`,fr:`peu`},{jp:`小さな`,romaji:`Chiisana`,fr:`peu`},
+      {jp:`近い`,romaji:`Chikai`,fr:`près de`},{jp:`違う`,romaji:`Chigau`,fr:`différer`},{jp:`近く`,romaji:`Chikaku`,fr:`près de`},{jp:`地下鉄`,romaji:`Chikatetsu`,fr:`métro`},
+      {jp:`地図`,romaji:`Chizu`,fr:`carte`},{jp:`茶色`,romaji:`Chairo`,fr:`brun`},{jp:`ちゃわん`,romaji:`Chawan`,fr:`bol à riz`},{jp:`ちょうど`,romaji:`Choudo`,fr:`exactement`},
+      {jp:`ちょっと`,romaji:`Chotto`,fr:`un peu`},{jp:`一日`,romaji:`Tsuitachi`,fr:`une journée`},{jp:`使う`,romaji:`Tsukau`,fr:`utiliser`},{jp:`疲れる`,romaji:`Tsukareru`,fr:`se fatiguer`},
+      {jp:`次`,romaji:`Tsugi`,fr:`suivant`},{jp:`着く`,romaji:`Tsuku`,fr:`arriver à`},{jp:`机`,romaji:`Tsukue`,fr:`bureau`},{jp:`作る`,romaji:`Tsukuru`,fr:`fabriquer`},
+      {jp:`つける`,romaji:`Tsukeru`,fr:`activer`},{jp:`勤める`,romaji:`Tsutomeru`,fr:`travailler pour quelqu'un`},{jp:`つまらない`,romaji:`Tsumaranai`,fr:`ennuyeux`},{jp:`冷たい`,romaji:`Tsumetai`,fr:`froid`},
+      {jp:`強い`,romaji:`Tsuyoi`,fr:`puissant`},{jp:`手`,romaji:`Te`,fr:`main`},{jp:`テープ`,romaji:`Teepu`,fr:`ruban`},{jp:`テーブル`,romaji:`Teeburu`,fr:`table`},
+      {jp:`テープレコーダー`,romaji:`Teepurekoodaa`,fr:`magnétophone`},{jp:`出かける`,romaji:`Dekakeru`,fr:`sortir`},{jp:`手紙`,romaji:`Tegami`,fr:`lettre`},{jp:`できる`,romaji:`Dekiru`,fr:`pouvoir`},
+      {jp:`出口`,romaji:`Deguchi`,fr:`sortie`},{jp:`テスト`,romaji:`Tesuto`,fr:`test`},{jp:`では`,romaji:`Deha`,fr:`avec ça...`},{jp:`デパート`,romaji:`Depaato`,fr:`grand magasin`},
+      {jp:`でも`,romaji:`Demo`,fr:`mais`},{jp:`出る`,romaji:`Deru`,fr:`partir`},{jp:`テレビ`,romaji:`Terebi`,fr:`télévision`},{jp:`天気`,romaji:`Tenki`,fr:`temps (météo)`},
+      {jp:`電気`,romaji:`Denki`,fr:`électricité`},{jp:`電車`,romaji:`Densha`,fr:`train`},{jp:`電話`,romaji:`Denwa`,fr:`téléphone`},{jp:`戸`,romaji:`To`,fr:`porte de style japonais`},
+      {jp:`ドア`,romaji:`Doa`,fr:`porte de style occidental`},{jp:`トイレ`,romaji:`Toire`,fr:`toilettes`},{jp:`どう`,romaji:`Dou`,fr:`comment, de quelle manière`},{jp:`どうして`,romaji:`Doushite`,fr:`pour quelle raison`},
+      {jp:`どうぞ`,romaji:`Douzo`,fr:`s'il vous plaît`},{jp:`動物`,romaji:`Doubutsu`,fr:`animal`},{jp:`どうも`,romaji:`Doumo`,fr:`merci`},{jp:`遠い`,romaji:`Tooi`,fr:`loin`},
+      {jp:`十日`,romaji:`Tooka`,fr:`dix jours, le dixième jour`},{jp:`時々`,romaji:`Tokidoki`,fr:`parfois`},{jp:`時計`,romaji:`Tokei`,fr:`montre, horloge`},{jp:`どこ`,romaji:`Doko`,fr:`où`},
+      {jp:`所`,romaji:`Tokoro`,fr:`lieu`},{jp:`年`,romaji:`Toshi`,fr:`année`},{jp:`図書館`,romaji:`Toshokan`,fr:`bibliothèque`},{jp:`どちら`,romaji:`Dochira`,fr:`lequel`},
+      {jp:`どっち`,romaji:`Docchi`,fr:`lequel`},{jp:`とても`,romaji:`Totemo`,fr:`très`},{jp:`どなた`,romaji:`Donata`,fr:`qui`},{jp:`隣`,romaji:`Tonari`,fr:`à côté de`},
+      {jp:`どの`,romaji:`Dono`,fr:`qui`},{jp:`飛ぶ`,romaji:`Tobu`,fr:`voler`},{jp:`止まる`,romaji:`Tomaru`,fr:`stopper`},{jp:`友達`,romaji:`Tomodachi`,fr:`ami`},
+      {jp:`土曜日`,romaji:`Doyoubi`,fr:`samedi`},{jp:`鳥`,romaji:`Tori`,fr:`oiseau`},{jp:`とり肉`,romaji:`Toriniku`,fr:`volaille`},{jp:`取る`,romaji:`Toru`,fr:`prendre`},
+      {jp:`撮る`,romaji:`Toru`,fr:`prendre une photo, filmer`},{jp:`どれ`,romaji:`Dore`,fr:`qui (de trois ou plus)`}
+    ]},
+    { title:`Vocabulaire — rangée な`, icon:`な`, items:[
+      {jp:`ナイフ`,romaji:`Naifu`,fr:`couteau`},{jp:`中`,romaji:`Naka`,fr:`milieu`},{jp:`長い`,romaji:`Nagai`,fr:`long`},{jp:`鳴く`,romaji:`Naku`,fr:`bruit des animaux`},
+      {jp:`無くす`,romaji:`Nakusu`,fr:`perdre quelque chose`},{jp:`なぜ`,romaji:`Naze`,fr:`pourquoi`},{jp:`夏`,romaji:`Natsu`,fr:`été`},{jp:`夏休み`,romaji:`Natsuyasumi`,fr:`vacances d'été`},
+      {jp:`など`,romaji:`Nado`,fr:`etc.`},{jp:`七つ`,romaji:`Nanatsu`,fr:`sept`},{jp:`七日`,romaji:`Nanoka`,fr:`sept jours, le septième jour`},{jp:`名前`,romaji:`Namae`,fr:`nom`},
+      {jp:`習う`,romaji:`Narau`,fr:`apprendre`},{jp:`並ぶ`,romaji:`Narabu`,fr:`aligner`},{jp:`並べる`,romaji:`Naraberu`,fr:`aligner`},{jp:`なる`,romaji:`Naru`,fr:`devenir`},
+      {jp:`何`,romaji:`Nan/nani`,fr:`que, quoi`},{jp:`二`,romaji:`Ni`,fr:`deux`},{jp:`賑やか`,romaji:`Nigiyaka`,fr:`animé`},{jp:`肉`,romaji:`Niku`,fr:`viande`},
+      {jp:`西`,romaji:`Nishi`,fr:`ouest`},{jp:`日曜日`,romaji:`Nichiyoubi`,fr:`dimanche`},{jp:`荷物`,romaji:`Nimotsu`,fr:`bagage`},{jp:`ニュース`,romaji:`Nyuusu`,fr:`nouvelles, informations`},
+      {jp:`庭`,romaji:`Niwa`,fr:`jardin`},{jp:`脱ぐ`,romaji:`Nugu`,fr:`enlever des vêtements`},{jp:`温い`,romaji:`Nurui`,fr:`tiède`},{jp:`ネクタイ`,romaji:`Nekutai`,fr:`cravate`},
+      {jp:`猫`,romaji:`Neko`,fr:`chat`},{jp:`寝る`,romaji:`Neru`,fr:`dormir`},{jp:`ノート`,romaji:`Nooto`,fr:`cahier`},{jp:`登る`,romaji:`Noboru`,fr:`monter, gravir`},
+      {jp:`飲み物`,romaji:`Nomimono`,fr:`boisson`},{jp:`飲む`,romaji:`Nomu`,fr:`boire`},{jp:`乗る`,romaji:`Noru`,fr:`monter`}
+    ]},
+    { title:`Vocabulaire — rangée は`, icon:`は`, items:[
+      {jp:`歯`,romaji:`Ha`,fr:`dent`},{jp:`パーティー`,romaji:`Paateィe`,fr:`fête`},{jp:`はい`,romaji:`Hai`,fr:`oui`},{jp:`灰皿`,romaji:`Haizara`,fr:`cendrier`},
+      {jp:`入る`,romaji:`Hairu`,fr:`entrer`},{jp:`葉書`,romaji:`Hagaki`,fr:`carte postale`},{jp:`はく`,romaji:`Haku`,fr:`mettre un pantalon`},{jp:`箱`,romaji:`Hako`,fr:`boîte`},
+      {jp:`橋`,romaji:`Hashi`,fr:`pont`},{jp:`はし`,romaji:`Hashi`,fr:`baguettes`},{jp:`始まる`,romaji:`Hajimaru`,fr:`commencer`},{jp:`初め/始め`,romaji:`Hajime`,fr:`début`},
+      {jp:`初めて`,romaji:`Hajimete`,fr:`pour la première fois`},{jp:`走る`,romaji:`Hashiru`,fr:`pour exécuter`},{jp:`バス`,romaji:`Basu`,fr:`bus`},{jp:`バター`,romaji:`Bataa`,fr:`beurre`},
+      {jp:`二十歳`,romaji:`Hatachi`,fr:`20 ans`},{jp:`働く`,romaji:`Hataraku`,fr:`travailler`},{jp:`八`,romaji:`Hachi`,fr:`huit`},{jp:`二十日`,romaji:`Hatsuka`,fr:`vingt jours, vingtième jour`},
+      {jp:`花`,romaji:`Hana`,fr:`fleur`},{jp:`鼻`,romaji:`Hana`,fr:`nez`},{jp:`話`,romaji:`Hanashi`,fr:`histoire`},{jp:`話す`,romaji:`Hanasu`,fr:`parler`},
+      {jp:`早い`,romaji:`Hayai`,fr:`tôt`},{jp:`速い`,romaji:`Hayai`,fr:`rapide`},{jp:`春`,romaji:`Haru`,fr:`printemps`},{jp:`貼る`,romaji:`Haru`,fr:`s'en tenir`},
+      {jp:`晴れ`,romaji:`Hare`,fr:`temps clair`},{jp:`晴れる`,romaji:`Hareru`,fr:`ensoleillé`},{jp:`半`,romaji:`Han`,fr:`moitié`},{jp:`晩`,romaji:`Ban`,fr:`soirée`},
+      {jp:`パン`,romaji:`Pan`,fr:`pain`},{jp:`ハンカチ`,romaji:`Hankachi`,fr:`mouchoir`},{jp:`番号`,romaji:`Bangou`,fr:`numéro`},{jp:`晩御飯`,romaji:`Bangohan`,fr:`dîner`},
+      {jp:`半分`,romaji:`Hanbun`,fr:`demi-minute`},{jp:`東`,romaji:`Higashi`,fr:`est`},{jp:`引く`,romaji:`Hiku`,fr:`tirer`},{jp:`弾く`,romaji:`Hiku`,fr:`jouer d’un instrument à cordes / piano`},
+      {jp:`低い`,romaji:`Hikui`,fr:`court, bas`},{jp:`飛行機`,romaji:`Hikouki`,fr:`avion`},{jp:`左`,romaji:`Hidari`,fr:`gauche`},{jp:`人`,romaji:`Hito`,fr:`personne`},
+      {jp:`一つ`,romaji:`Hitotsu`,fr:`un`},{jp:`一月`,romaji:`Hitotsuki`,fr:`un mois`},{jp:`一人`,romaji:`Hitori`,fr:`une personne`},{jp:`暇`,romaji:`Hima`,fr:`temps libre`},
+      {jp:`百`,romaji:`Hyaku`,fr:`cent`},{jp:`病院`,romaji:`Byouin`,fr:`hôpital`},{jp:`病気`,romaji:`Byouki`,fr:`maladie`},{jp:`昼`,romaji:`Hiru`,fr:`midi`},
+      {jp:`昼御飯`,romaji:`Hirugohan`,fr:`déjeuner`},{jp:`広い`,romaji:`Hiroi`,fr:`spacieux, large`},{jp:`フィルム`,romaji:`Fuィrumu`,fr:`film`},{jp:`封筒`,romaji:`Fuutou`,fr:`enveloppe`},
+      {jp:`プール`,romaji:`Puuru`,fr:`piscine`},{jp:`フォーク`,romaji:`Fuォuku`,fr:`fourchette`},{jp:`吹く`,romaji:`Fuku`,fr:`sauter`},{jp:`服`,romaji:`Fuku`,fr:`vêtements`},
+      {jp:`二つ`,romaji:`Futatsu`,fr:`deux`},{jp:`豚肉`,romaji:`Butaniku`,fr:`porc`},{jp:`二人`,romaji:`Futari`,fr:`deux personnes`},{jp:`二日`,romaji:`Futsuka`,fr:`deux jours, deuxième jour`},
+      {jp:`太い`,romaji:`Futoi`,fr:`gras`},{jp:`冬`,romaji:`Fuyu`,fr:`hiver`},{jp:`降る`,romaji:`Furu`,fr:`tomber (pluie ou neige)`},{jp:`古い`,romaji:`Furui`,fr:`ancien`},
+      {jp:`ふろ`,romaji:`Furo`,fr:`bain`},{jp:`文章`,romaji:`Bunshou`,fr:`texte`},{jp:`ページ`,romaji:`Peeji`,fr:`page`},{jp:`下手`,romaji:`Heta`,fr:`maladroit`},
+      {jp:`ベッド`,romaji:`Beddo`,fr:`lit`},{jp:`ペット`,romaji:`Petto`,fr:`animal de compagnie`},{jp:`部屋`,romaji:`Heya`,fr:`chambre`},{jp:`辺`,romaji:`Hen`,fr:`zone`},
+      {jp:`ペン`,romaji:`Pen`,fr:`stylo`},{jp:`勉強`,romaji:`Benkyousuru`,fr:`étudier`},{jp:`便利`,romaji:`Benri`,fr:`utile, pratique`},{jp:`帽子`,romaji:`Boushi`,fr:`chapeau`},
+      {jp:`ボールペン`,romaji:`Boorupen`,fr:`stylo à bille`},{jp:`ほか`,romaji:`Hoka`,fr:`autre, reste`},{jp:`ポケット`,romaji:`Poketto`,fr:`poche`},{jp:`欲しい`,romaji:`Hoshii`,fr:`vouloir`},
+      {jp:`ポスト`,romaji:`Posuto`,fr:`poste`},{jp:`細い`,romaji:`Hosoi`,fr:`mince`},{jp:`ボタン`,romaji:`Botan`,fr:`bouton`},{jp:`ホテル`,romaji:`Hoteru`,fr:`hôtel`},
+      {jp:`本`,romaji:`Hon`,fr:`livre`},{jp:`本棚`,romaji:`Hondana`,fr:`étagères`},{jp:`ほんとう`,romaji:`Hontou`,fr:`vérité`}
+    ]},
+    { title:`Vocabulaire — rangée ま`, icon:`ま`, items:[
+      {jp:`毎朝`,romaji:`Maiasa`,fr:`tous les matins`},{jp:`毎月`,romaji:`Maigetsu/maitsuki`,fr:`chaque mois`},{jp:`毎週`,romaji:`Maishuu`,fr:`chaque semaine`},{jp:`毎日`,romaji:`Mainichi`,fr:`quotidiennement`},
+      {jp:`毎年`,romaji:`Mainen/maitoshi`,fr:`chaque année`},{jp:`毎晩`,romaji:`Maiban`,fr:`tous les soirs`},{jp:`前`,romaji:`Mae`,fr:`avant, devant`},{jp:`曲る`,romaji:`Magaru`,fr:`tourner, plier`},
+      {jp:`まずい`,romaji:`Mazui`,fr:`désagréable`},{jp:`また`,romaji:`Mata`,fr:`à nouveau`},{jp:`まだ`,romaji:`Mada`,fr:`encore`},{jp:`町`,romaji:`Machi`,fr:`ville`},
+      {jp:`待つ`,romaji:`Matsu`,fr:`attendre`},{jp:`まっすぐ`,romaji:`Massugu`,fr:`tout droit`},{jp:`マッチ`,romaji:`Macchi`,fr:`match`},{jp:`窓`,romaji:`Mado`,fr:`fenêtre`},
+      {jp:`丸い/円い`,romaji:`Marui`,fr:`rond, circulaire`},{jp:`万`,romaji:`Man`,fr:`dix mille`},{jp:`万年筆`,romaji:`Mannenhitsu`,fr:`stylo à encre`},{jp:`磨く`,romaji:`Migaku`,fr:`se brosser les dents, polir`},
+      {jp:`右`,romaji:`Migi`,fr:`droite`},{jp:`短い`,romaji:`Mijikai`,fr:`court`},{jp:`水`,romaji:`Mizu`,fr:`eau`},{jp:`店`,romaji:`Mise`,fr:`magasin`},
+      {jp:`見せる`,romaji:`Miseru`,fr:`montrer`},{jp:`道`,romaji:`Michi`,fr:`rue`},{jp:`三日`,romaji:`Mikka`,fr:`trois jours, troisième jour du mois`},{jp:`三つ`,romaji:`Mittsu`,fr:`trois`},
+      {jp:`緑`,romaji:`Midori`,fr:`vert`},{jp:`皆さん`,romaji:`Minasan`,fr:`tout le monde`},{jp:`南`,romaji:`Minami`,fr:`sud`},{jp:`耳`,romaji:`Mimi`,fr:`oreille`},
+      {jp:`みんな`,romaji:`Minna`,fr:`tout le monde`},{jp:`六日`,romaji:`Muika`,fr:`six jours, sixième jour du mois`},{jp:`向こう`,romaji:`Mukou`,fr:`là-bas`},{jp:`難しい`,romaji:`Muzukashii`,fr:`difficile`},
+      {jp:`六つ`,romaji:`Muttsu`,fr:`six`},{jp:`村`,romaji:`Mura`,fr:`village`},{jp:`目`,romaji:`Me`,fr:`oeil`},{jp:`メートル`,romaji:`Meetoru`,fr:`mètre`},
+      {jp:`眼鏡`,romaji:`Megane`,fr:`lunettes`},{jp:`もう`,romaji:`Mou`,fr:`déjà`},{jp:`もう一度`,romaji:`Mouichido`,fr:`encore une fois`},{jp:`木曜日`,romaji:`Mokuyoubi`,fr:`Jeudi`},
+      {jp:`持つ`,romaji:`Motsu`,fr:`tenir`},{jp:`もっと`,romaji:`Motto`,fr:`plus`},{jp:`物`,romaji:`Mono`,fr:`chose`},{jp:`門`,romaji:`Mon`,fr:`porte`},
+      {jp:`問題`,romaji:`Mondai`,fr:`problème`}
+    ]},
+    { title:`Vocabulaire — rangée や`, icon:`や`, items:[
+      {jp:`八百屋`,romaji:`Yaoya`,fr:`marchand de légumes`},{jp:`野菜`,romaji:`Yasai`,fr:`légume`},{jp:`易しい`,romaji:`Yasashii`,fr:`facile, simple`},{jp:`安い`,romaji:`Yasui`,fr:`pas cher`},
+      {jp:`休み`,romaji:`Yasumi`,fr:`repos, vacances`},{jp:`休む`,romaji:`Yasumu`,fr:`reposer`},{jp:`八つ`,romaji:`Yattsu`,fr:`huit`},{jp:`山`,romaji:`Yama`,fr:`montagne`},
+      {jp:`やる`,romaji:`Yaru`,fr:`faire`},{jp:`夕方`,romaji:`Yuugata`,fr:`soirée`},{jp:`夕飯`,romaji:`Yuuhan`,fr:`dîner`},{jp:`郵便局`,romaji:`Yuubinkyoku`,fr:`bureau de poste`},
+      {jp:`昨夜`,romaji:`Yuube`,fr:`hier soir`},{jp:`有名`,romaji:`Yuumei`,fr:`célèbre`},{jp:`雪`,romaji:`Yuki`,fr:`neige`},{jp:`行く`,romaji:`Yuku`,fr:`aller`},
+      {jp:`ゆっくりと`,romaji:`Yukkurito`,fr:`lentement`},{jp:`八日`,romaji:`Youka`,fr:`huit jours, huitième jour du mois`},{jp:`洋服`,romaji:`Youfuku`,fr:`vêtements de style occidental`},{jp:`よく`,romaji:`Yoku`,fr:`souvent, bien`},
+      {jp:`横`,romaji:`Yoko`,fr:`côté, largeur`},{jp:`四日`,romaji:`Yokka`,fr:`quatre jours, quatrième jour du mois`},{jp:`四つ`,romaji:`Yottsu`,fr:`quatre`},{jp:`呼ぶ`,romaji:`Yobu`,fr:`appeler, inviter`},
+      {jp:`読む`,romaji:`Yomu`,fr:`lire`},{jp:`夜`,romaji:`Yoru`,fr:`soir, nuit`},{jp:`弱い`,romaji:`Yowai`,fr:`faible`}
+    ]},
+    { title:`Vocabulaire — rangée ら`, icon:`ら`, items:[
+      {jp:`来月`,romaji:`Raigetsu`,fr:`mois prochain`},{jp:`来週`,romaji:`Raishuu`,fr:`semaine prochaine`},{jp:`来年`,romaji:`Rainen`,fr:`l'année prochaine`},{jp:`ラジオ`,romaji:`Rajio`,fr:`radio`},
+      {jp:`りっぱ`,romaji:`Rippa`,fr:`magnifique`},{jp:`留学生`,romaji:`Ryuugakusei`,fr:`étudiant à l'étranger`},{jp:`両親`,romaji:`Ryoushin`,fr:`parents`},{jp:`料理`,romaji:`Ryouri`,fr:`cuisine`},
+      {jp:`旅行`,romaji:`Ryokou`,fr:`voyage`},{jp:`零`,romaji:`Rei`,fr:`zéro`},{jp:`冷蔵庫`,romaji:`Reizouko`,fr:`réfrigérateur`},{jp:`レコード`,romaji:`Rekoodo`,fr:`disque`},
+      {jp:`レストラン`,romaji:`Resutoran`,fr:`restaurant`},{jp:`練習`,romaji:`Renshuusuru`,fr:`s’entraîner`},{jp:`廊下`,romaji:`Rouka`,fr:`couloir`},{jp:`六`,romaji:`Roku`,fr:`six`}
+    ]},
+    { title:`Vocabulaire — rangée わ`, icon:`わ`, items:[
+      {jp:`ワイシャツ`,romaji:`Waishatsu`,fr:`chemise d'affaires`},{jp:`若い`,romaji:`Wakai`,fr:`jeune`},{jp:`分かる`,romaji:`Wakaru`,fr:`comprendre`},{jp:`忘れる`,romaji:`Wasureru`,fr:`oublier`},
+      {jp:`私`,romaji:`Watakushi`,fr:`moi (poli)`},{jp:`私`,romaji:`Watashi`,fr:`moi`},{jp:`渡す`,romaji:`Watasu`,fr:`remettre`},{jp:`渡る`,romaji:`Wataru`,fr:`traverser`},
+      {jp:`悪い`,romaji:`Warui`,fr:`mauvais`}
+    ]},
+  ];
+
+  // ---------- JLPT N5 : grammaire (40 structures, liste officielle Kanpai.fr) ----------
+  const JLPT_N5_GRAMMAR = [
+    {pattern:`です`,meaning:`« être » : identité / qualité`,example:{jp:`学生です`,romaji:`Gakusei desu`,fr:`Je suis étudiant`}},
+    {pattern:`も`,meaning:`Aussi / également`,example:{jp:`私も学生です`,romaji:`Watashi mo gakusei desu`,fr:`Moi aussi je suis étudiant`}},
+    {pattern:`で`,meaning:`Lieu de l'action / moyen`,example:{jp:`電車で行きます`,romaji:`Densha de ikimasu`,fr:`J'y vais en train`}},
+    {pattern:`に / へ`,meaning:`Direction (vers)`,example:{jp:`学校へ行きます`,romaji:`Gakkou e ikimasu`,fr:`Je vais à l'école`}},
+    {pattern:`に`,meaning:`Moment précis / destination`,example:{jp:`三時に来ます`,romaji:`Sanji ni kimasu`,fr:`Je viens à 3h`}},
+    {pattern:`を`,meaning:`Objet direct`,example:{jp:`水を飲みます`,romaji:`Mizu wo nomimasu`,fr:`Je bois de l'eau`}},
+    {pattern:`～ませんか`,meaning:`Invitation polie`,example:{jp:`行きませんか`,romaji:`Ikimasen ka`,fr:`On y va ?`}},
+    {pattern:`は`,meaning:`Thème de la phrase`,example:{jp:`これは本です`,romaji:`Kore wa hon desu`,fr:`Ceci est un livre`}},
+    {pattern:`～があります`,meaning:`Il y a (inanimé)`,example:{jp:`本があります`,romaji:`Hon ga arimasu`,fr:`Il y a un livre`}},
+    {pattern:`～がいます`,meaning:`Il y a (animé)`,example:{jp:`猫がいます`,romaji:`Neko ga imasu`,fr:`Il y a un chat`}},
+    {pattern:`と`,meaning:`Avec / et (liste fermée)`,example:{jp:`友達と行きます`,romaji:`Tomodachi to ikimasu`,fr:`J'y vais avec un ami`}},
+    {pattern:`～ましょう`,meaning:`Proposition`,example:{jp:`行きましょう`,romaji:`Ikimashou`,fr:`Allons-y`}},
+    {pattern:`～ましょうか`,meaning:`Offre / proposition interrogative`,example:{jp:`手伝いましょうか`,romaji:`Tetsudaimashou ka`,fr:`Je vous aide ?`}},
+    {pattern:`～てください`,meaning:`Demande polie`,example:{jp:`待ってください`,romaji:`Matte kudasai`,fr:`Attendez s'il vous plaît`}},
+    {pattern:`～てもいいです`,meaning:`Permission`,example:{jp:`食べてもいいです`,romaji:`Tabete mo ii desu`,fr:`Vous pouvez manger`}},
+    {pattern:`～てはいけません`,meaning:`Interdiction`,example:{jp:`入ってはいけません`,romaji:`Haitte wa ikemasen`,fr:`Il est interdit d'entrer`}},
+    {pattern:`～から`,meaning:`Parce que / depuis`,example:{jp:`疲れたから休みます`,romaji:`Tsukareta kara yasumimasu`,fr:`Je me repose parce que je suis fatigué`}},
+    {pattern:`～ている`,meaning:`Action en cours / état`,example:{jp:`読んでいる`,romaji:`Yonde iru`,fr:`Je suis en train de lire`}},
+    {pattern:`～にいく`,meaning:`Aller faire quelque chose`,example:{jp:`泳ぎに行きます`,romaji:`Oyogi ni ikimasu`,fr:`Je vais nager`}},
+    {pattern:`ないでください`,meaning:`Demande négative`,example:{jp:`行かないでください`,romaji:`Ikanaide kudasai`,fr:`N'y allez pas s'il vous plaît`}},
+    {pattern:`～のがすきです`,meaning:`Aimer faire quelque chose`,example:{jp:`泳ぐのが好きです`,romaji:`Oyogu no ga suki desu`,fr:`J'aime nager`}},
+    {pattern:`～のがじょうずです`,meaning:`Être doué pour faire quelque chose`,example:{jp:`歌うのが上手です`,romaji:`Utau no ga jouzu desu`,fr:`Il/elle chante bien`}},
+    {pattern:`～のがへたです`,meaning:`Être maladroit pour faire quelque chose`,example:{jp:`泳ぐのが下手です`,romaji:`Oyogu no ga heta desu`,fr:`Je nage mal`}},
+    {pattern:`まだ～ていません`,meaning:`Pas encore fait`,example:{jp:`まだ食べていません`,romaji:`Mada tabete imasen`,fr:`Je n'ai pas encore mangé`}},
+    {pattern:`～のほうが～より`,meaning:`Comparaison (préférence)`,example:{jp:`犬のほうが猫より好きです`,romaji:`Inu no hou ga neko yori suki desu`,fr:`Je préfère les chiens aux chats`}},
+    {pattern:`～のなかで～がいちばん～`,meaning:`Superlatif`,example:{jp:`クラスの中で彼が一番背が高い`,romaji:`Kurasu no naka de kare ga ichiban se ga takai`,fr:`Il est le plus grand de la classe`}},
+    {pattern:`つもりです`,meaning:`Intention`,example:{jp:`行くつもりです`,romaji:`Iku tsumori desu`,fr:`J'ai l'intention d'y aller`}},
+    {pattern:`～く / ～になる`,meaning:`Devenir (adjectif -i / -na)`,example:{jp:`寒くなる`,romaji:`Samuku naru`,fr:`Il devient froid`}},
+    {pattern:`～たいです`,meaning:`Vouloir faire`,example:{jp:`行きたいです`,romaji:`Ikitai desu`,fr:`Je veux y aller`}},
+    {pattern:`～たり…たりする`,meaning:`Énumération d'actions`,example:{jp:`読んだり書いたりします`,romaji:`Yondari kaitari shimasu`,fr:`Je lis et j'écris (entre autres)`}},
+    {pattern:`～たことがある`,meaning:`Expérience passée`,example:{jp:`行ったことがあります`,romaji:`Itta koto ga arimasu`,fr:`J'y suis déjà allé`}},
+    {pattern:`や`,meaning:`Énumération partielle (et autres)`,example:{jp:`りんごやバナナ`,romaji:`Ringo ya banana`,fr:`Des pommes, des bananes (entre autres)`}},
+    {pattern:`～んです`,meaning:`Explication / nuance`,example:{jp:`頭が痛いんです`,romaji:`Atama ga itain desu`,fr:`(C'est que) j'ai mal à la tête`}},
+    {pattern:`～すぎる`,meaning:`Excès`,example:{jp:`食べすぎる`,romaji:`Tabesugiru`,fr:`Manger trop`}},
+    {pattern:`～ほうがいい`,meaning:`Conseil`,example:{jp:`休んだほうがいい`,romaji:`Yasunda hou ga ii`,fr:`Mieux vaut se reposer`}},
+    {pattern:`ので`,meaning:`Parce que (cause, plus doux que から)`,example:{jp:`忙しいので休めません`,romaji:`Isogashii node yasumemasen`,fr:`Comme je suis occupé, je ne peux pas me reposer`}},
+    {pattern:`～なくちゃいけない`,meaning:`Obligation (familier)`,example:{jp:`行かなくちゃいけない`,romaji:`Ikanakucha ikenai`,fr:`Il faut que j'y aille`}},
+    {pattern:`でしょう`,meaning:`Probablement`,example:{jp:`雨でしょう`,romaji:`Ame deshou`,fr:`Il va probablement pleuvoir`}},
+    {pattern:`～まえに`,meaning:`Avant de`,example:{jp:`寝るまえに`,romaji:`Neru mae ni`,fr:`Avant de dormir`}},
+    {pattern:`～てから`,meaning:`Après avoir fait`,example:{jp:`食べてから出かけます`,romaji:`Tabete kara dekakemasu`,fr:`Je sors après avoir mangé`}}
+  ];
+
   // ---------- Grammar reference (static HTML) ----------
   const GRAMMAR_HTML = `
     <div class="gram-section">
@@ -1041,6 +1322,7 @@
       if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
       if(btn.dataset.view === 'reading') renderReading();
       if(btn.dataset.view === 'grammar') renderGrammar();
+      if(btn.dataset.view === 'jlpt') renderJlpt();
     });
   });
 
@@ -1051,7 +1333,9 @@
     'travail': {icon:'💼', label:'Travail'},
     'étude': {icon:'📚', label:'Université'},
     'relation': {icon:'🤝', label:'Vie sociale'},
-    'panneaux': {icon:'🪧', label:'Lecture des panneaux'}
+    'panneaux': {icon:'🪧', label:'Lecture des panneaux'},
+    'kanji-n5': {icon:'🈷️', label:'Kanji JLPT N5'},
+    'vocab-n5': {icon:'📖', label:'Vocabulaire JLPT N5'}
   };
   function skillLevel(pct){ if(pct>=100) return 5; if(pct>=75) return 4; if(pct>=50) return 3; if(pct>=25) return 2; return pct>0?1:0; }
   function renderSkills(){
@@ -1455,6 +1739,113 @@
 
   function renderGrammar(){ document.getElementById('grammarArea').innerHTML = GRAMMAR_HTML; }
 
+  // ---------- JLPT N5 dedicated section ----------
+  let jlptSubView = 'kanji';
+  function jlptVocabCount(){ let n=0; JLPT_N5_VOCAB.forEach(g=>n+=g.items.length); return n; }
+  function renderJlpt(){
+    const area = document.getElementById('jlptArea');
+    let html = `<div class="skills-intro">Liste officielle Kanpai.fr (eBook « Réviser son JLPT N5 ») : ${JLPT_N5_KANJI.length} kanji, ${jlptVocabCount()} mots de vocabulaire (classés par rangée hiragana) et ${JLPT_N5_GRAMMAR.length} structures grammaticales. Ajoute ce dont tu as besoin à tes révisions : ça rejoint le même système SRS et l'onglet Ombrage que le reste de l'appli.</div>`;
+    html += `<div class="jlpt-subnav">
+      <span class="tag-chip ${jlptSubView==='kanji'?'active':''}" data-sub="kanji">🈷️ Kanji (${JLPT_N5_KANJI.length})</span>
+      <span class="tag-chip ${jlptSubView==='vocab'?'active':''}" data-sub="vocab">📖 Vocabulaire (${jlptVocabCount()})</span>
+      <span class="tag-chip ${jlptSubView==='grammar'?'active':''}" data-sub="grammar">🧩 Grammaire (${JLPT_N5_GRAMMAR.length})</span>
+      <span class="tag-chip ${jlptSubView==='progress'?'active':''}" data-sub="progress">📊 Progression</span>
+    </div><div id="jlptSubArea"></div>`;
+    area.innerHTML = html;
+    area.querySelectorAll('.jlpt-subnav .tag-chip').forEach(c=> c.addEventListener('click', ()=>{ jlptSubView = c.dataset.sub; renderJlpt(); }));
+    const sub = document.getElementById('jlptSubArea');
+    if(jlptSubView==='kanji') renderJlptKanji(sub);
+    else if(jlptSubView==='vocab') renderJlptVocab(sub);
+    else if(jlptSubView==='grammar') renderJlptGrammar(sub);
+    else renderJlptProgress(sub);
+  }
+  function renderJlptKanji(sub){
+    let html = `<div class="rg-head" style="margin-bottom:14px;"><span style="font-size:12.5px;color:#6b6358;">Touche un kanji pour voir ses lectures et son sens, puis ajoute-le à tes révisions.</span><button class="rg-add" id="jlptKanjiAddAll">+ Tout ajouter (${JLPT_N5_KANJI.length})</button></div>`;
+    html += `<div class="kanji-grid">`;
+    JLPT_N5_KANJI.forEach((it,i)=>{
+      html += `<div class="kanji-card" data-i="${i}"><div class="kc-char">${it.k}</div><div class="kc-read">${escapeHtml(it.on)}${it.kun?(' / '+escapeHtml(it.kun)):''}</div><div class="kc-fr">${escapeHtml(it.fr)}</div></div>`;
+    });
+    html += `</div>`;
+    sub.innerHTML = html;
+    sub.querySelectorAll('.kanji-card').forEach(c=>{
+      c.addEventListener('click', ()=>{ c.classList.toggle('flipped'); speak(JLPT_N5_KANJI[parseInt(c.dataset.i,10)].k, 0.8); });
+    });
+    document.getElementById('jlptKanjiAddAll').addEventListener('click', async ()=>{
+      const existing = existingKeySet(); let added=0;
+      JLPT_N5_KANJI.forEach(it=>{
+        const romaji = it.on + (it.kun?(' / '+it.kun):'');
+        const key = (it.k+'|'+romaji).toLowerCase();
+        if(existing.has(key)) return;
+        phrases.push(newCard(it.k, romaji, it.fr, '', 'kanji-n5', 'N5'));
+        existing.add(key); added++;
+      });
+      if(added>0){ await savePhrases(); render(); }
+    });
+  }
+  function renderJlptVocab(sub){
+    let html = `<div class="skills-intro">${jlptVocabCount()} mots classés par rangée hiragana (ordre du dictionnaire) — la base lexicale officielle du N5.</div>`;
+    html += `<div class="rg-head" style="margin-bottom:16px;"><span style="font-size:12.5px;color:#6b6358;">Un groupe à la fois, ou tout d'un coup.</span><button class="rg-add" id="jlptVocabAddAll">+ Tout ajouter (${jlptVocabCount()})</button></div>`;
+    JLPT_N5_VOCAB.forEach((g,gi)=>{
+      html += `<div class="read-group"><div class="rg-head"><h3>${g.icon} ${escapeHtml(g.title)}</h3><button class="rg-add" data-group="${gi}">+ Ajouter (${g.items.length})</button></div><div class="sign-grid">`;
+      g.items.forEach(it=>{
+        html += `<div class="sign-card" data-jp="${escapeHtml(it.jp)}"><div class="sc-jp">${escapeHtml(it.jp)}</div><div class="sc-romaji">${escapeHtml(it.romaji)}</div><div class="sc-fr">${escapeHtml(it.fr)}</div></div>`;
+      });
+      html += `</div></div>`;
+    });
+    sub.innerHTML = html;
+    sub.querySelectorAll('.sign-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.85)));
+    sub.querySelectorAll('.rg-add[data-group]').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        const g = JLPT_N5_VOCAB[parseInt(b.dataset.group,10)];
+        const existing = existingKeySet(); let added=0;
+        g.items.forEach(it=>{
+          const key = (it.jp+'|'+it.romaji).toLowerCase();
+          if(existing.has(key)) return;
+          phrases.push(newCard(it.jp, it.romaji, it.fr, '', 'vocab-n5', 'N5'));
+          existing.add(key); added++;
+        });
+        if(added>0){ await savePhrases(); render(); }
+        b.textContent = added>0 ? (added + ' ajouté' + (added===1?'':'s') + ' ✓') : 'Déjà dans tes révisions';
+        setTimeout(()=>{ b.textContent = '+ Ajouter (' + g.items.length + ')'; }, 2000);
+      });
+    });
+    const vocabAddAll = document.getElementById('jlptVocabAddAll');
+    if(vocabAddAll) vocabAddAll.addEventListener('click', async ()=>{
+      const existing = existingKeySet(); let added=0;
+      JLPT_N5_VOCAB.forEach(g=>{
+        g.items.forEach(it=>{
+          const key = (it.jp+'|'+it.romaji).toLowerCase();
+          if(existing.has(key)) return;
+          phrases.push(newCard(it.jp, it.romaji, it.fr, '', 'vocab-n5', 'N5'));
+          existing.add(key); added++;
+        });
+      });
+      if(added>0){ await savePhrases(); render(); }
+      vocabAddAll.textContent = added>0 ? (added + ' mot' + (added===1?'':'s') + ' ajouté' + (added===1?'':'s') + ' ✓') : 'Déjà tout ajouté';
+      setTimeout(()=>{ vocabAddAll.textContent = '+ Tout ajouter (' + jlptVocabCount() + ')'; }, 2500);
+    });
+  }
+  function renderJlptGrammar(sub){
+    let html = `<div class="skills-intro">${JLPT_N5_GRAMMAR.length} structures grammaticales couvrant l'essentiel testé au N5 — touche une phrase pour l'entendre.</div><table class="gram"><tr><th>Structure</th><th>Sens</th><th>Exemple</th></tr>`;
+    JLPT_N5_GRAMMAR.forEach(g=>{
+      html += `<tr><td class="jpc">${escapeHtml(g.pattern)}</td><td>${escapeHtml(g.meaning)}</td><td><span class="jp jp-say" data-jp="${escapeHtml(g.example.jp)}">${escapeHtml(g.example.jp)} 🔊</span><br><span class="romaji-sm">${escapeHtml(g.example.romaji)}</span><br>${escapeHtml(g.example.fr)}</td></tr>`;
+    });
+    html += `</table>`;
+    sub.innerHTML = html;
+  }
+  function renderJlptProgress(sub){
+    const kanjiInDeck = phrases.filter(p=>p.tag==='kanji-n5');
+    const vocabInDeck = phrases.filter(p=>p.tag==='vocab-n5');
+    const kanjiMastered = kanjiInDeck.filter(p=>p.interval>=7).length;
+    const vocabMastered = vocabInDeck.filter(p=>p.interval>=7).length;
+    sub.innerHTML = `<div class="stat-row">
+      <div class="stat"><b>${kanjiInDeck.length}/${JLPT_N5_KANJI.length}</b><span>Kanji ajoutés</span></div>
+      <div class="stat"><b>${kanjiMastered}</b><span>Kanji maîtrisés</span></div>
+      <div class="stat"><b>${vocabInDeck.length}/${jlptVocabCount()}</b><span>Vocab ajouté</span></div>
+      <div class="stat"><b>${vocabMastered}</b><span>Vocab maîtrisé</span></div>
+    </div><p style="font-size:13px;color:#6b6358;line-height:1.6;">Les kanji et le vocabulaire que tu ajoutes rejoignent tes révisions normales (SRS) et l'onglet Ombrage. Ils apparaissent aussi comme compétences séparées « Kanji JLPT N5 » et « Vocabulaire JLPT N5 » dans l'onglet Compétences. La grammaire N5 reste en référence libre — reviens la consulter avant l'examen.</p>`;
+  }
+
   // ---------- add / list ----------
   document.getElementById('addPhraseBtn').addEventListener('click', async ()=>{
     const jp = document.getElementById('f-jp').value.trim();
@@ -1521,6 +1912,7 @@
     if(activeView && activeView.id === 'view-conversation') renderConversationList();
     if(activeView && activeView.id === 'view-reading') renderReading();
     if(activeView && activeView.id === 'view-grammar') renderGrammar();
+    if(activeView && activeView.id === 'view-jlpt') renderJlpt();
   }
 
   loadAll();
