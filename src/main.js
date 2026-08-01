@@ -11,6 +11,7 @@ import { renderToday } from './views/today.js';
 import { renderListening } from './views/listening.js';
 import { renderJlpt } from './views/jlpt.js';
 import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
+import { initCloudSync, initCloudSyncUI } from './cloudsync.js';
 
 // ---------- tabs ----------
 document.querySelectorAll('nav.tabs button').forEach(btn=>{
@@ -58,8 +59,10 @@ export function render(){
 
 async function init(){
   initManage();
+  initCloudSyncUI();
   const synced = await importFromURL();
   if(!synced) await loadAll();
+  await initCloudSync(); // fusionne avec le cloud (si un code personnel est configuré) avant le premier rendu
   document.getElementById('dailyLimit').value = meta.dailyLimit || 40;
   updateImportBanner(); updateStreak(); render();
   if(synced){

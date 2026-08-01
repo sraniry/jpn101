@@ -92,6 +92,17 @@
       </div>
 
       <div class="sync-box">
+        <h3>☁️ Synchronisation cloud automatique</h3>
+        <p>Tape un code personnel (invente-le, garde-le pour toi comme un mot de passe) sur chacun de tes appareils : ta progression restera automatiquement synchronisée entre eux, sans rien faire ensuite.</p>
+        <div class="sync-row">
+          <input type="text" id="syncCodeInput" placeholder="mon-code-secret" style="flex:1;min-width:160px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:var(--bg);color:var(--ink);">
+          <button id="syncCodeSaveBtn">Enregistrer</button>
+          <span id="cloudSyncIndicator" class="cloud-sync-indicator cs-warn">⚠️ Pas encore configuré</span>
+        </div>
+        <p id="syncCodeStatus" style="margin-top:8px;font-size:12px;color:#9a9184;"></p>
+      </div>
+
+      <div class="sync-box">
         <h3>🔗 Partager ma progression (téléphone ↔ ordinateur)</h3>
         <p>Génère un lien contenant toute ta progression. Ouvre-le sur l'autre appareil pour tout synchroniser.</p>
         <div class="sync-row">

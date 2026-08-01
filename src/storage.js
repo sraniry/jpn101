@@ -25,8 +25,17 @@ export async function loadAll(){
   try{ const v = await storageGet(STORAGE_KEY); phrases = v ? JSON.parse(v) : []; }catch(e){ phrases = []; }
   try{ const v2 = await storageGet(META_KEY); if(v2) meta = Object.assign(meta, JSON.parse(v2)); }catch(e){}
 }
-export async function savePhrases(){ await storageSet(STORAGE_KEY, JSON.stringify(phrases)); }
-export async function saveMeta(){ await storageSet(META_KEY, JSON.stringify(meta)); }
+export async function savePhrases(){
+  meta.lastModified = nowTs();
+  await storageSet(STORAGE_KEY, JSON.stringify(phrases));
+  await storageSet(META_KEY, JSON.stringify(meta));
+  window.dispatchEvent(new CustomEvent('nihongo:changed'));
+}
+export async function saveMeta(){
+  meta.lastModified = nowTs();
+  await storageSet(META_KEY, JSON.stringify(meta));
+  window.dispatchEvent(new CustomEvent('nihongo:changed'));
+}
 
 export function nowTs(){ return Date.now(); }
 export function todayStr(){ return new Date().toISOString().slice(0,10); }
