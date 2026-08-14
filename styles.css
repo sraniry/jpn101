@@ -353,6 +353,11 @@
   .kvc-jp { font-family:'Shippori Mincho',serif; font-size:15px; color:var(--ink); line-height:1.2; }
   .kvc-rom { font-family:'JetBrains Mono',monospace; font-size:9px; color:#9a9184; margin-top:1px; }
   .kvc-fr { font-size:10px; color:#6b6358; margin-top:2px; text-align:center; }
+  .kana-vocab-card.has-note { position:relative; }
+  .kana-vocab-card.has-note::after { content:'💡'; position:absolute; top:2px; right:4px; font-size:8px; opacity:.6; }
+  .kvc-note { display:none; font-size:10px; color:var(--amber); line-height:1.4; text-align:left; margin-top:5px; padding-top:5px; border-top:1px dashed var(--line); font-style:italic; }
+  .kana-vocab-card.expanded { align-items:stretch; min-width:180px; }
+  .kana-vocab-card.expanded .kvc-note { display:block; }
 
   .kana-rule-note { font-size:12px; color:#6b6358; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin:14px 0 8px; line-height:1.5; }
   .kana-compact-table { display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
@@ -461,6 +466,8 @@
   .kj-rom{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#9a9184; }
   .kj-fr{ font-size:13px; font-weight:600; color:#4f4a40; }
   .kj-ex{ font-size:11px; color:#7a7268; line-height:1.45; }
+  .kj-mnemo{ font-size:11px; color:var(--amber); line-height:1.45; padding-top:4px; margin-top:4px; border-top:1px dashed var(--line); font-style:italic; }
+  .kj-radicals{ font-size:10.5px; color:#9a9184; line-height:1.4; }
 
   /* ---------- Bouton écoute dialogue ---------- */
   .conv-actions{ display:flex; align-items:center; gap:8px; }

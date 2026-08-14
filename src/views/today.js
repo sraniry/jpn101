@@ -46,7 +46,7 @@ export function renderToday(){
       desc: phrases.length === 0
         ? 'Importe d\'abord le pack A0 → A2 dans « Mes phrases »'
         : `${plan.reviews}/${reviewGoal} cartes revues aujourd'hui${due>0?` · ${due} en attente`:''}`,
-      why:'La répétition espacée au moment optimal, avec rappel actif : tape ta réponse avant de révéler.'
+      why:'SRS = « Spaced Repetition System », répétition espacée : chaque carte revient pile au moment où tu commences à l\'oublier. Rappel actif : tape ta réponse avant de révéler.'
     },
     {
       icon:'💬', title:'Un dialogue', time:'~10 min', done:convDone, view:'conversation', convId: conv ? conv.id : null,

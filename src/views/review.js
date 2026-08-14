@@ -249,7 +249,7 @@ function renderParticleDrill(area){
 function renderInterleaveBreak(area){
   let dots = ''; for(let i=0;i<3;i++) dots += `<div class="rep-dot ${i<interleaveReps?'filled':''}"></div>`;
   area.innerHTML = `<div class="interleave-card">
-    <p class="section-label" style="text-align:center;">Pause ombrage — interleaving</p>
+    <p class="section-label" style="text-align:center;">Pause ombrage (répétition mêlée)</p>
     <p>Répète cette phrase à voix haute 3 fois. Mélanger révision et prononciation ancre la mémoire bien plus que des blocs séparés.</p>
     <div class="jp-big">${escapeHtml(interleaveCard.jp)}</div>
     <button class="play-mini" id="interleavePlay">▶</button>

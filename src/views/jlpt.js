@@ -120,7 +120,7 @@ function wireAddButtons(panel, groups, makeCard){
 
 // ---------- 6a. Kanji ----------
 function renderKanjiPanel(panel){
-  let html = `<div class="kana-rule-note"><b>${N5_KANJI_ALL.length} kanji officiels N5.</b> Lecture <b>on'yomi</b> (katakana, d'origine chinoise — dans les mots composés) et <b>kun'yomi</b> (hiragana, japonaise — mot seul), romaji entre parenthèses. Touche un kanji pour l'entendre.</div>`;
+  let html = `<div class="kana-rule-note"><b>${N5_KANJI_ALL.length} kanji officiels N5.</b> Lecture <b>on'yomi</b> (katakana, d'origine chinoise — dans les mots composés) et <b>kun'yomi</b> (hiragana, japonaise — mot seul), romaji entre parenthèses. Touche un kanji pour l'entendre. 💡 = astuce mnémotechnique, 🧩 = décomposition en radicaux (les briques qui composent le kanji).</div>`;
   N5_KANJI.forEach((g, gi)=>{
     html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kanji-grid">`;
     g.items.forEach(it=>{
@@ -131,32 +131,38 @@ function renderKanjiPanel(panel){
         <span class="kj-rom">音 ${escapeHtml(onR)}<br>訓 ${escapeHtml(kunR)}</span>
         <span class="kj-fr">${escapeHtml(it.fr)}</span>
         <span class="kj-ex">${escapeHtml(annotateFurigana(it.ex))}</span>
+        ${it.mnemo ? `<span class="kj-mnemo">💡 ${escapeHtml(it.mnemo)}</span>` : ''}
+        ${it.radicals ? `<span class="kj-radicals">🧩 ${escapeHtml(it.radicals)}</span>` : ''}
       </div>`;
     });
     html += `</div>`;
   });
   panel.innerHTML = html;
   panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
-  wireAddButtons(panel, N5_KANJI, it => newCard(it.k, it.on+' / '+it.kun, it.fr, it.ex, 'kanji', 'N5'));
+  wireAddButtons(panel, N5_KANJI, it => newCard(it.k, it.on+' / '+it.kun, it.fr, it.ex + (it.mnemo ? ' · 💡 '+it.mnemo : ''), 'kanji', 'N5'));
 }
 
 // ---------- 6b. Vocabulaire ----------
 function renderVocabPanel(panel){
-  let html = `<div class="kana-rule-note"><b>~${N5_VOCAB_ALL.length} mots N5 essentiels</b> qui ne sont pas déjà dans le pack de phrases. Touche un mot pour l'entendre, ajoute un thème entier à tes révisions.</div>`;
+  let html = `<div class="kana-rule-note"><b>~${N5_VOCAB_ALL.length} mots N5 essentiels</b> qui ne sont pas déjà dans le pack de phrases. Touche un mot pour l'entendre ; s'il a un 💡, retouche-le pour voir l'astuce. Ajoute un thème entier à tes révisions.</div>`;
   N5_VOCAB.forEach((g, gi)=>{
     html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.icon} ${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kana-vocab-grid">`;
     g.items.forEach(it=>{
-      html += `<div class="kana-vocab-card" data-jp="${escapeHtml(it.jp)}">
+      html += `<div class="kana-vocab-card${it.note?' has-note':''}" data-jp="${escapeHtml(it.jp)}">
         <span class="kvc-jp">${escapeHtml(it.jp)}</span>
         <span class="kvc-rom">${escapeHtml(it.romaji)}</span>
         <span class="kvc-fr">${escapeHtml(it.fr)}</span>
+        ${it.note ? `<span class="kvc-note">💡 ${escapeHtml(it.note)}</span>` : ''}
       </div>`;
     });
     html += `</div>`;
   });
   panel.innerHTML = html;
-  panel.querySelectorAll('.kana-vocab-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.85)));
-  wireAddButtons(panel, N5_VOCAB, it => newCard(it.jp, it.romaji, it.fr, '', 'N5', 'N5'));
+  panel.querySelectorAll('.kana-vocab-card').forEach(c=> c.addEventListener('click', ()=>{
+    speak(c.dataset.jp, 0.85);
+    if(c.classList.contains('has-note')) c.classList.toggle('expanded');
+  }));
+  wireAddButtons(panel, N5_VOCAB, it => newCard(it.jp, it.romaji, it.fr, it.note||'', 'N5', 'N5'));
 }
 
 // ---------- 6c. Grammaire ----------

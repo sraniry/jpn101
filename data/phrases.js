@@ -215,7 +215,8 @@ export const SEED_PACK = [
     {jp:`忘れる（忘れます）`,romaji:`wasureru (wasuremasu)`,fr:`oublier`,tag:`verbes`,level:`A0`,ex:`傘を忘れました (Kasa wo wasuremashita) = J'ai oublié mon parapluie. 忘れ物 (wasuremono) = objet oublié — mot à connaître pour les gares et transports.`},
   ];
 
-// ⭐ CORE_SET : les 50 phrases les plus fréquentes au quotidien au Japon
+// ⭐ CORE_SET : les 100 phrases et verbes les plus utiles au quotidien au Japon.
+// Priorité Pareto : ~20% du contenu qui couvre ~80% des situations réelles d'un débutant.
 // Les jp values doivent correspondre exactement aux champs jp: du SEED_PACK
 export const CORE_SET = new Set([
   // A0 — survie immédiate (23)
@@ -234,6 +235,24 @@ export const CORE_SET = new Set([
   `道に迷いました`,`〜まで行きたいんですが`,`具合が悪いです`,`病院はどこですか？`,
   `〜アレルギーがあります`,`カードは使えますか？`,`現金しか使えません`,
   `満席です`,`忘れ物をしました`,`肉が食べられません`,
+  // Se présenter & socialiser (11)
+  `学生です`,`お名前は何ですか？`,`〜歳です`,`二人です`,`会社員です`,
+  `お仕事は何ですか？`,`趣味は何ですか？`,`一緒に行きませんか？`,
+  `兄弟はいますか？`,`結婚していますか？`,`子供がいますか？`,
+  // Restaurant, transports, argent au quotidien (9)
+  `飲み物は何がありますか？`,`ここで食べます`,`持ち帰りできますか？`,
+  `サインしてください`,`割引はありますか？`,`何時に始まりますか？`,
+  `電車が遅れています`,`この電車で大丈夫ですか？`,`券売機はどこですか？`,
+  // 30 verbes essentiels — la base de toute phrase d'action
+  `行く（行きます）`,`来る（来ます）`,`買う（買います）`,`食べる（食べます）`,
+  `飲む（飲みます）`,`乗る・撮る（乗ります・撮ります）`,`わかる（わかります）`,
+  `話す（話します）`,`聞く（聞きます）`,`待つ（待ちます）`,`探す（探します）`,
+  `見つける（見つけます）`,`払う（払います）`,`予約する（予約します）`,
+  `助ける（助けます）`,`見せる（見せます）`,`書く（書きます）`,`読む（読みます）`,
+  `知る（知っています）`,`できる（できます）`,`〜たい・ほしい`,`帰る（帰ります）`,
+  `出る（出ます）`,`入る（入ります）`,`寝る（寝ます）`,`〜といいます`,
+  `〜が必要です・要る（要ります）`,`あげる（あげます）`,`もらう（もらいます）`,
+  `忘れる（忘れます）`,
 ]);
 
 export const READING_GROUPS = [
