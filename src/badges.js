@@ -1,5 +1,6 @@
-import { phrases, meta, getKanaPath, getConvDone, getExamHistory, bestQuizScore } from './storage.js';
+import { phrases, meta, getKanaPath, getConvDone, getExamHistory, bestQuizScore, getGrammarDrills } from './storage.js';
 import { CONVERSATIONS, CORE_SET } from '../data/phrases.js';
+import { GRAMMAR_DRILLS } from '../data/grammar-drills.js';
 import { KANA_LESSONS } from './views/kana.js';
 
 // ---------- Badges ----------
@@ -34,6 +35,16 @@ export const BADGES = [
     id:'conv-all', icon:'🎭', title:'Tous les dialogues',
     desc:'Termine les ' + totalConversations() + ' dialogues',
     progress: () => [getConvDone().length, totalConversations()],
+  },
+  {
+    id:'gram-half', icon:'📐', title:'Grammaire en route',
+    desc:'Valide la moitié des règles de grammaire',
+    progress: () => [getGrammarDrills().length, Math.ceil(GRAMMAR_DRILLS.length/2)],
+  },
+  {
+    id:'gram-all', icon:'🧱', title:'Grammaire rodée',
+    desc:'Valide les ' + GRAMMAR_DRILLS.length + ' règles de grammaire',
+    progress: () => [getGrammarDrills().length, GRAMMAR_DRILLS.length],
   },
   {
     id:'core-mastered', icon:'⭐', title:'Pareto bouclé',

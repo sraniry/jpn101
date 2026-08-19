@@ -53,7 +53,7 @@ function weakCategory(){
 
 export function renderJlpt(){
   const area = document.getElementById('jlptArea');
-  quizState = null; examState = null;
+  quizState = null; examState = null; kanjiSensQuiz = null;
   area.innerHTML = `
     <div class="skills-intro">Préparation <b>JLPT N5</b> : les ${N5_KANJI_ALL.length} kanji officiels, ~${N5_VOCAB_ALL.length} mots essentiels, les ${N5_GRAMMAR.length} structures testées, un quiz rapide, un examen blanc complet et ton planning jusqu'à l'épreuve de décembre.</div>
     <div class="kana-tabs">
@@ -72,7 +72,7 @@ export function renderJlpt(){
     tab.addEventListener('click', ()=>{
       area.querySelectorAll('.kana-tab').forEach(t=>t.classList.remove('active'));
       tab.classList.add('active');
-      quizState = null;
+      quizState = null; kanjiSensQuiz = null;
       if(examState && examState.timerId) clearInterval(examState.timerId);
       examState = null;
       renderPanel(tab.dataset.tab);
@@ -114,8 +114,14 @@ function wireAddButtons(panel, groups, makeCard){
 }
 
 // ---------- 6a. Kanji ----------
+// Vue unique des kanji de l'app : l'onglet Alphabet renvoie ici plutôt que d'exposer un
+// second jeu (ses 79 caractères étaient tous inclus dans ces 103, avec moins d'information).
+let kanjiSensQuiz = null;
+
 function renderKanjiPanel(panel){
-  let html = `<div class="kana-rule-note"><b>${N5_KANJI_ALL.length} kanji officiels N5.</b> Lecture <b>on'yomi</b> (katakana, d'origine chinoise — dans les mots composés) et <b>kun'yomi</b> (hiragana, japonaise — mot seul), romaji entre parenthèses. Touche un kanji pour l'entendre. 💡 = astuce mnémotechnique, 🧩 = décomposition en radicaux (les briques qui composent le kanji).</div>`;
+  if(kanjiSensQuiz){ renderKanjiSensQuiz(panel); return; }
+  let html = `<div class="kana-rule-note"><b>${N5_KANJI_ALL.length} kanji officiels N5.</b> Lecture <b>on'yomi</b> (katakana, d'origine chinoise — dans les mots composés) et <b>kun'yomi</b> (hiragana, japonaise — mot seul), romaji entre parenthèses. Touche un kanji pour l'entendre. 💡 = astuce mnémotechnique, 🧩 = décomposition en radicaux (les briques qui composent le kanji).</div>
+    <button class="continue-btn" id="kanjiSensStart" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
   N5_KANJI.forEach((g, gi)=>{
     html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kanji-grid">`;
     g.items.forEach(it=>{
@@ -139,6 +145,51 @@ function renderKanjiPanel(panel){
   wireAddButtons(panel, N5_KANJI, it => {
     const parts = [it.on, it.kun].filter(r => r && r !== '—').map(kanaToRomaji);
     return newCard(it.k, parts.join(' / '), it.fr, it.ex + (it.mnemo ? ' · 💡 '+it.mnemo : ''), 'kanji', 'N5');
+  });
+  panel.querySelector('#kanjiSensStart').addEventListener('click', ()=>{
+    kanjiSensQuiz = { deck: shuffle(N5_KANJI_ALL).slice(0,20), idx:0, correct:0 };
+    renderKanjiPanel(panel);
+  });
+}
+
+// Quiz « kanji → sens » : reconnaître ce que veut dire le caractère, pas sa lecture.
+// C'est la compétence utile sur un panneau ou un menu, où l'on n'a pas à le prononcer.
+function renderKanjiSensQuiz(panel){
+  const q = kanjiSensQuiz;
+  if(q.idx >= q.deck.length){
+    const pct = Math.round((q.correct/q.deck.length)*100);
+    if(!q.recorded){ q.recorded = true; addQuizStat('kanji', q.correct, q.deck.length); registerStudyActivity(); }
+    const best = bestQuizScore('kanji');
+    panel.innerHTML = `<div class="kana-quiz-done">
+      <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
+      <div class="kqd-msg">${pct>=90?'🎉 Excellent !':pct>=70?'👍 Bien !':'💪 Continue !'}</div>
+      <button class="kana-quiz-restart" id="kanjiSensEnd">← Retour aux kanji</button>
+    </div>`;
+    panel.querySelector('#kanjiSensEnd').addEventListener('click', ()=>{ kanjiSensQuiz = null; renderKanjiPanel(panel); });
+    return;
+  }
+  const card = q.deck[q.idx];
+  const choices = shuffle([card, ...shuffle(N5_KANJI_ALL.filter(k=>k.fr!==card.fr)).slice(0,3)]);
+  panel.innerHTML = `<div class="kana-quiz-card">
+    <div class="kqc-progress">${q.idx+1} / ${q.deck.length}</div>
+    <div class="kqc-question is-kana">${card.k}</div>
+    <div class="kqc-choices">${choices.map(c=>`<button class="kqc-btn" data-correct="${c.fr===card.fr}">${escapeHtml(c.fr)}</button>`).join('')}</div>
+    <div id="kanjiSensReveal"></div>
+  </div>`;
+  panel.querySelectorAll('.kqc-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const ok = btn.dataset.correct === 'true';
+      if(ok){ btn.classList.add('correct'); q.correct++; }
+      else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
+      panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
+      speak(card.k, 0.8);
+      const lectures = [card.on, card.kun].filter(r=>r && r!=='—').map(r=>`${r} (${kanaToRomaji(r)})`).join(' · ');
+      panel.querySelector('#kanjiSensReveal').innerHTML =
+        `<div class="listen-reveal"><b>${card.k}</b> = ${escapeHtml(card.fr)}<br>${escapeHtml(lectures)}<br>${escapeHtml(annotateFurigana(card.ex))}</div>
+         <button class="continue-btn" id="kanjiSensNext" style="margin-top:12px;">Continuer</button>`;
+      panel.querySelector('#kanjiSensNext').addEventListener('click', ()=>{ q.idx++; renderKanjiPanel(panel); });
+    });
   });
 }
 

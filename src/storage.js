@@ -147,6 +147,7 @@ export function migrateLegacyStores(){
     changed = true;
   }
   if(!meta.convDone){ meta.convDone = []; changed = true; }
+  if(!meta.grammarDrills){ meta.grammarDrills = []; changed = true; }
   if(!meta.quizStats){ meta.quizStats = {}; changed = true; }
   if(!meta.badgesSeen){ meta.badgesSeen = []; changed = true; }
   if(changed) saveMeta();
@@ -162,6 +163,13 @@ export function getExamHistory(){ return meta.examHistory || []; }
 export function addExamRecord(record){
   meta.examHistory = [...getExamHistory(), record];
   saveMeta();
+}
+
+// Règles de grammaire validées (drill réussi à ≥ 80 %), identifiées par leur titre de section
+export function getGrammarDrills(){ return meta.grammarDrills || []; }
+export function markGrammarDrill(key){
+  const d = getGrammarDrills();
+  if(key && !d.includes(key)){ meta.grammarDrills = [...d, key]; saveMeta(); }
 }
 
 export function getConvDone(){ return meta.convDone || []; }

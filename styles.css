@@ -575,3 +575,35 @@
   .bc-fill{ height:100%; background:var(--matcha); border-radius:2px; transition:width .4s ease; }
   .bc-status{ font-size:10.5px; font-family:'JetBrains Mono',monospace; color:#9a9184; margin-top:3px; }
   .badge-card.is-earned .bc-status{ color:var(--gold); font-weight:600; }
+
+  /* ---------- Mini-drills de grammaire ---------- */
+  .gram-progress{ margin-bottom:20px; }
+  .gram-done-pill{ font-size:10.5px; font-weight:700; color:var(--matcha); background:rgba(124,138,110,.14);
+    padding:2px 8px; border-radius:999px; margin-left:8px; vertical-align:middle; letter-spacing:.3px; }
+
+  .gram-drill{ margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); }
+  .gram-drill-start{ border:1px solid var(--indigo); background:transparent; color:var(--indigo);
+    padding:9px 16px; border-radius:999px; font-size:12.5px; font-weight:700; cursor:pointer;
+    font-family:'Work Sans',sans-serif; transition:all .15s ease; }
+  .gram-drill-start:hover{ background:var(--indigo); color:#fff; }
+  .gram-drill-intro{ margin:8px 0 0; font-size:12px; color:#7a7268; line-height:1.5; }
+
+  .gd-card{ background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .gd-progress{ font-family:'JetBrains Mono',monospace; font-size:11px; color:#9a9184; margin-bottom:10px; }
+  .gd-q{ font-size:14.5px; color:var(--ink); line-height:1.5; margin-bottom:14px; font-weight:500; }
+  .gd-choices{ display:flex; flex-direction:column; gap:8px; }
+  .gd-choice{ border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:10px;
+    padding:11px 14px; font-size:14px; text-align:left; cursor:pointer; font-family:'Work Sans',sans-serif;
+    transition:border-color .15s ease, background .15s ease; }
+  .gd-choice:hover:not(:disabled){ border-color:var(--indigo); }
+  .gd-choice:disabled{ cursor:default; }
+  .gd-choice-rom{ display:block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    color:var(--matcha); margin-top:3px; }
+  .gd-choice.correct{ border-color:var(--green); background:rgba(92,122,79,.12); }
+  .gd-choice.wrong{ border-color:var(--vermillion); background:rgba(184,64,31,.09); }
+  .gd-reveal:empty{ display:none; }
+  .gd-done{ text-align:center; background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .gd-done .kana-quiz-restart, .gd-close{ margin:4px 4px 0; }
+  .gd-close{ border:1px solid var(--line); background:transparent; color:#7a7268; padding:8px 16px;
+    border-radius:999px; font-size:12.5px; cursor:pointer; font-family:'Work Sans',sans-serif; }
+  .gd-close:hover{ border-color:var(--indigo); color:var(--indigo); }

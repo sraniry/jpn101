@@ -1,5 +1,4 @@
 import { HIRAGANA, KATAKANA, KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON, KATAKANA_ONLY } from '../../data/kana.js';
-import { KANJI_GROUPS, KANJI_ALL } from '../../data/kanji.js';
 import { speak } from '../tts.js';
 import { planMark, phrases, newCard, savePhrases, existingKeySet, cardKey,
          registerStudyActivity, getKanaPath, markKanaLesson, addQuizStat, bestQuizScore } from '../storage.js';
@@ -239,88 +238,6 @@ function renderLessonQuiz(panel, lesson){
   });
 }
 
-// ---------- Onglet Kanji ----------
-let kanjiQuizState = null;
-function renderKanjiTab(){
-  const panel = document.getElementById('kana-tab-kanji');
-  if(!panel) return;
-  if(kanjiQuizState){ renderKanjiQuiz(panel); return; }
-  let html = `<div class="kana-rule-note"><b>${KANJI_ALL.length} kanji du quotidien</b>, groupés par thème et par utilité de terrain. Objectif : les <b>reconnaître</b> (prix, panneaux, menus, horaires) — pas les écrire. Touche un kanji pour l'entendre dans son mot d'exemple.<br><span class="xref-note">↔ Ce sont les mêmes caractères que dans <b>JLPT N5 → 漢字</b>, présentés là-bas avec les lectures on/kun et la liste officielle complète. Les ajouter ici ou là-bas revient au même : aucune carte ne sera dupliquée dans tes révisions.</span></div>
-    <button class="continue-btn" id="kanjiQuizStart" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
-  KANJI_GROUPS.forEach((g, gi)=>{
-    html += `<div class="rg-head" style="margin-top:10px;"><h4 class="kana-table-title" style="margin:0;">${g.icon} ${g.title}</h4><button class="rg-add kanji-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kanji-grid">`;
-    g.items.forEach(it=>{
-      html += `<div class="kanji-card" data-jp="${it.k}">
-        <span class="kj-k">${it.k}</span>
-        <span class="kj-rom">${it.romaji}</span>
-        <span class="kj-fr">${it.fr}</span>
-        <span class="kj-ex">${it.ex}</span>
-      </div>`;
-    });
-    html += `</div>`;
-  });
-  panel.innerHTML = html;
-  panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
-  // Ajout d'un groupe de kanji aux révisions SRS (mêmes cartes que les phrases, tag "kanji")
-  panel.querySelectorAll('.kanji-add').forEach(b=>{
-    b.addEventListener('click', async e=>{
-      e.stopPropagation();
-      const g = KANJI_GROUPS[parseInt(b.dataset.group,10)];
-      const existing = existingKeySet(); let added = 0;
-      g.items.forEach(it=>{
-        // cardKey dédoublonne les kanji sur le seul caractère : la même carte ne peut plus
-        // entrer deux fois via cet onglet ET via JLPT N5, où la lecture est notée autrement.
-        const key = cardKey(it.k, it.romaji);
-        if(existing.has(key)) return;
-        phrases.push(newCard(it.k, it.romaji, it.fr, it.ex, 'kanji', 'N5'));
-        existing.add(key); added++;
-      });
-      if(added>0) await savePhrases();
-      b.textContent = added>0 ? added+' ajouté'+(added===1?'':'s')+' ✓' : 'Déjà dans tes révisions';
-      setTimeout(()=>{ b.textContent = '+ Ajouter à mes révisions'; }, 2000);
-    });
-  });
-  document.getElementById('kanjiQuizStart').addEventListener('click', ()=>{
-    kanjiQuizState = { deck: shuffleArray(KANJI_ALL).slice(0,20), idx:0, correct:0 };
-    renderKanjiTab();
-  });
-}
-
-function renderKanjiQuiz(panel){
-  const q = kanjiQuizState;
-  if(q.idx >= q.deck.length){
-    const pct = Math.round((q.correct/q.deck.length)*100);
-    if(!q.recorded){ q.recorded = true; addQuizStat('kanji', q.correct, q.deck.length); registerStudyActivity(); }
-    const best = bestQuizScore('kanji');
-    panel.innerHTML = `<div class="kana-quiz-done">
-      <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
-      ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
-      <div class="kqd-msg">${pct>=90?'🎉 Excellent !':pct>=70?'👍 Bien !':'💪 Continue !'}</div>
-      <button class="kana-quiz-restart" id="kanjiQuizEnd">← Retour aux kanji</button>
-    </div>`;
-    document.getElementById('kanjiQuizEnd').addEventListener('click', ()=>{ kanjiQuizState = null; renderKanjiTab(); });
-    return;
-  }
-  const card = q.deck[q.idx];
-  const others = shuffleArray(KANJI_ALL.filter(k=>k.k!==card.k)).slice(0,3);
-  const choices = shuffleArray([card, ...others]);
-  panel.innerHTML = `<div class="kana-quiz-card">
-    <div class="kqc-progress">${q.idx+1} / ${q.deck.length}</div>
-    <div class="kqc-question is-kana">${card.k}</div>
-    <div class="kqc-choices">${choices.map(c=>`<button class="kqc-btn" data-correct="${c.k===card.k}">${c.fr}</button>`).join('')}</div>
-  </div>`;
-  panel.querySelectorAll('.kqc-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const ok = btn.dataset.correct === 'true';
-      if(ok){ btn.classList.add('correct'); q.correct++; }
-      else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
-      panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
-      speak(card.k, 0.8);
-      setTimeout(()=>{ q.idx++; renderKanjiTab(); }, 900);
-    });
-  });
-}
-
 export function renderKana() {
   const area = document.getElementById('kanaArea');
 
@@ -328,14 +245,14 @@ export function renderKana() {
     <div class="kana-intro">
       <b>Hiragana</b> (gauche) : mots japonais natifs, particules, conjugaisons.<br>
       <b>Katakana</b> (droite) : mots étrangers (コーヒー = café, バス = bus).<br>
-      Clique sur un caractère pour l'entendre et voir son moyen mnémotechnique. Entraîne-toi avec le quiz.
+      Clique sur un caractère pour l'entendre et voir son moyen mnémotechnique. Entraîne-toi avec le quiz.<br>
+      <span class="xref-note">漢字 Les kanji ont leur propre section : <b>JLPT N5 → 漢字</b> réunit les 103 caractères officiels avec lectures on/kun, mnémotechniques, radicaux et deux quiz (sens et lecture).</span>
     </div>
 
     <div class="kana-tabs">
       <button class="kana-tab active" data-tab="path">📅 Parcours</button>
       <button class="kana-tab" data-tab="base">あ/ア Base</button>
       <button class="kana-tab" data-tab="derived">゛゜ Dérivés</button>
-      <button class="kana-tab" data-tab="kanji">漢字 Kanji</button>
       <button class="kana-tab" data-tab="quiz">🎯 Quiz</button>
     </div>
 
@@ -426,7 +343,6 @@ export function renderKana() {
       </div>
     </div>
 
-    <div id="kana-tab-kanji" class="kana-tab-panel" style="display:none"></div>
 
     <div id="kana-tab-quiz" class="kana-tab-panel" style="display:none">
       <div class="kana-quiz-setup">
@@ -452,7 +368,6 @@ export function renderKana() {
       const panel = area.querySelector(`#kana-tab-${tab.dataset.tab}`);
       if (panel) panel.style.display = '';
       if (tab.dataset.tab === 'path') renderPath();
-      if (tab.dataset.tab === 'kanji') renderKanjiTab();
     });
   });
 
