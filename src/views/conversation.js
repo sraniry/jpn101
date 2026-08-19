@@ -1,7 +1,7 @@
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
-import { planMark } from '../storage.js';
+import { planMark, registerStudyActivity, getConvDone, markConvDone } from '../storage.js';
 
 // Lecture audio d'un dialogue entier (entraînement de l'oreille) :
 // les utterances TTS se mettent en file d'attente naturellement dans speechSynthesis.
@@ -35,12 +35,19 @@ export function renderConversationList(){
       area.innerHTML = `<div class="skills-intro" style="color:#c0392b;">⚠️ Aucun dialogue chargé (CONVERSATIONS vide ou corrompu). Fais Cmd+Shift+R pour vider le cache.</div>`;
       return;
     }
+    const done = getConvDone();
+    const doneHere = valid.filter(c=>done.includes(c.id)).length;
     let html = `<div class="skills-intro">Mini-dialogues guidés : choisis la réponse la plus naturelle à chaque tour. C'est de la <b>production active</b> — la façon la plus efficace de préparer une vraie conversation.</div>`;
+    html += `<div class="conv-progress">
+      <div class="conv-progress-head"><span><b>${doneHere}</b> / ${valid.length} dialogues terminés</span><span>${Math.round((doneHere/valid.length)*100)} %</span></div>
+      <div class="today-track"><div class="today-track-fill" style="width:${(doneHere/valid.length)*100}%"></div></div>
+    </div>`;
     html += `<div class="conv-list">`;
     valid.forEach(c=>{
-      html += `<div class="conv-pick" data-id="${c.id}">
-        <div><h4>${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
-        <div class="conv-actions"><button class="conv-listen" data-id="${c.id}" title="Écouter le dialogue en entier">🎧</button><span class="conv-badge">Commencer</span></div>
+      const isDone = done.includes(c.id);
+      html += `<div class="conv-pick ${isDone?'is-done':''}" data-id="${c.id}">
+        <div><h4>${isDone?'✓ ':''}${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
+        <div class="conv-actions"><button class="conv-listen" data-id="${c.id}" title="Écouter le dialogue en entier">🎧</button><span class="conv-badge">${isDone?'Rejouer':'Commencer'}</span></div>
       </div>`;
     });
     html += `</div>`;
@@ -62,11 +69,18 @@ function renderConversationStage(){
   const turn = conv.turns[convState.turnIdx];
   if(!turn){
     planMark('conv');
+    markConvDone(conv.id);      // trace permanente : alimente la barre de progression et les badges
+    registerStudyActivity();     // un dialogue terminé compte dans la série quotidienne
     area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">Dialogue terminé !</h3><p style="color:#7a7268;font-size:13.5px;">Rejoue-le pour essayer d'autres réponses, ou choisis un autre dialogue.</p><button class="continue-btn" id="convBackBtn" style="margin-top:16px;">← Tous les dialogues</button></div>`;
     document.getElementById('convBackBtn').addEventListener('click', renderConversationList);
     return;
   }
-  let html = `<div class="conv-stage">`;
+  let html = `<div class="conv-stage-head">
+    <span>${conv.icon} ${escapeHtml(conv.title)}</span>
+    <span class="conv-turn-count">tour ${convState.turnIdx+1} / ${conv.turns.length}</span>
+  </div>
+  <div class="today-track conv-turn-track"><div class="today-track-fill" style="width:${(convState.turnIdx/conv.turns.length)*100}%"></div></div>
+  <div class="conv-stage">`;
   // show prior turns as resolved bubbles
   for(let i=0;i<convState.turnIdx;i++){
     html += renderResolvedTurn(conv.turns[i], conv._chosen ? conv._chosen[i] : null);

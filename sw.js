@@ -1,10 +1,11 @@
-const CACHE = 'nihongo-v9';
+const CACHE = 'nihongo-v10';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './src/main.js',
   './src/storage.js',
+  './src/badges.js',
   './src/cloudsync.js',
   './src/tts.js',
   './src/util.js',

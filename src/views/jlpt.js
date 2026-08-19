@@ -1,6 +1,7 @@
 import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_QUIZ } from '../../data/jlpt-n5.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
-import { phrases, newCard, savePhrases, existingKeySet } from '../storage.js';
+import { phrases, newCard, savePhrases, existingKeySet, cardKey, registerStudyActivity,
+         getExamHistory, addExamRecord, addQuizStat, bestQuizScore } from '../storage.js';
 import { speak } from '../tts.js';
 import { escapeHtml, kanaToRomaji, annotateFurigana } from '../util.js';
 
@@ -25,17 +26,11 @@ function shuffleChoicePair(choices, choicesRomaji){
 let quizState = null;
 let examState = null;
 
-// ---------- Historique des examens blancs (localStorage) ----------
-const HISTORY_KEY = 'jlptExamHistory-v1';
-function loadHistory(){
-  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
-  catch(e){ return []; }
-}
-function saveHistoryRecord(record){
-  const h = loadHistory();
-  h.push(record);
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch(e){}
-}
+// ---------- Historique des examens blancs ----------
+// Stocké dans meta (via storage.js) : il suit ainsi l'export JSON et la synchro cloud,
+// contrairement à l'ancienne clé localStorage isolée.
+function loadHistory(){ return getExamHistory(); }
+function saveHistoryRecord(record){ addExamRecord(record); }
 // Catégorie la plus faible sur l'ensemble de l'historique (pour Conseils + Historique)
 function weakCategory(){
   const h = loadHistory();
@@ -107,7 +102,7 @@ function wireAddButtons(panel, groups, makeCard){
       const existing = existingKeySet(); let added = 0;
       g.items.forEach(it=>{
         const card = makeCard(it);
-        const key = (card.jp+'|'+card.romaji).toLowerCase();
+        const key = cardKey(card.jp, card.romaji);
         if(existing.has(key)) return;
         phrases.push(card); existing.add(key); added++;
       });
@@ -139,7 +134,12 @@ function renderKanjiPanel(panel){
   });
   panel.innerHTML = html;
   panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
-  wireAddButtons(panel, N5_KANJI, it => newCard(it.k, it.on+' / '+it.kun, it.fr, it.ex + (it.mnemo ? ' · 💡 '+it.mnemo : ''), 'kanji', 'N5'));
+  // La lecture stockée dans la carte doit être du romaji latin : c'est la béquille de lecture.
+  // Y mettre les kana bruts (イチ / ひと(つ)) remplaçait l'aide par du japonais supplémentaire.
+  wireAddButtons(panel, N5_KANJI, it => {
+    const parts = [it.on, it.kun].filter(r => r && r !== '—').map(kanaToRomaji);
+    return newCard(it.k, parts.join(' / '), it.fr, it.ex + (it.mnemo ? ' · 💡 '+it.mnemo : ''), 'kanji', 'N5');
+  });
 }
 
 // ---------- 6b. Vocabulaire ----------
@@ -222,8 +222,11 @@ function renderQuizCard(panel){
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
     const line = t => `${t} : ${q.byType[t][0]}/${q.byType[t][1]}`;
+    if(!q.recorded){ q.recorded = true; addQuizStat('jlpt', q.correct, q.deck.length); registerStudyActivity(); }
+    const best = bestQuizScore('jlpt');
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
       <div class="kqd-msg">${pct>=80?'🎉 Niveau examen atteint !':pct>=55?'👍 Tu serais reçue — continue pour la marge.':'💪 Revois les sections faibles ci-dessous.'}</div>
       <p style="font-size:13px;color:#7a7268;">${line('Vocabulaire')} · ${line('Kanji')} · ${line('Grammaire')}</p>
       <button class="kana-quiz-restart" id="jlptQuizRestart">🔄 Nouvelle session</button>
@@ -462,6 +465,8 @@ function renderExamReport(panel){
   const topErrors = topErrorTypes(examState.errors);
 
   const record = { date: new Date().toISOString(), scores, total, passed, failedSections, topErrors };
+  // Un examen blanc complet est une vraie session de travail : il doit compter dans la série.
+  registerStudyActivity();
 
   panel.innerHTML = `
     <div class="exam-report">

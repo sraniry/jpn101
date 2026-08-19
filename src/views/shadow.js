@@ -16,7 +16,8 @@ export function renderShadow(){
   if(filtered.length === 0){ area.innerHTML = emptyState('Catégorie vide', 'Aucune phrase dans cette catégorie.'); return; }
   const card = filtered[shadowIdx];
 
-  let html = '<div class="shadow-card">';
+  let html = `<div class="skills-intro">Écoute le modèle, répète à voix haute, puis <b>enregistre-toi et compare</b>. C'est l'exercice qui fait le plus progresser à l'oral — et le seul où tu produis vraiment du son. Compte les répétitions : 3 à 5 par phrase suffisent.</div>`;
+  html += '<div class="shadow-card">';
   html += `<div class="shadow-filter">${tags.map(t=>`<span class="tag-chip ${t===shadowFilterTag?'active':''}" data-tag="${t}">${t==='all'?'Toutes':t}</span>`).join('')}</div>`;
   html += `<p class="section-label">Phrase ${shadowIdx+1} / ${filtered.length}${card.level?' · '+card.level:''}</p>`;
   html += `<div class="shadow-jp">${colorizeJp(card.jp)}</div>`;

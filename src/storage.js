@@ -114,7 +114,81 @@ export function planMark(field, inc){
   saveMeta();
 }
 
-export function existingKeySet(){ return new Set(phrases.map(p => (p.jp+'|'+p.romaji).toLowerCase())); }
+// ---------- Clé de déduplication d'une carte ----------
+// Un kanji isolé peut être ajouté depuis deux écrans (Alphabet → 漢字 et JLPT N5 → Kanji) avec
+// deux lectures différentes ("ichi" vs "ichi / hitotsu"). On dédoublonne donc les kanji sur le
+// seul caractère, sinon la même carte entre deux fois dans le SRS avec deux réponses attendues.
+const SINGLE_KANJI = /^[一-鿿]$/;
+export function cardKey(jp, romaji){
+  const j = (jp||'').trim();
+  return SINGLE_KANJI.test(j) ? j : (j+'|'+(romaji||'')).toLowerCase();
+}
+export function existingKeySet(){ return new Set(phrases.map(p => cardKey(p.jp, p.romaji))); }
+
+// ---------- Progressions hors-SRS, stockées dans meta ----------
+// Elles vivaient dans leurs propres clés localStorage : elles échappaient donc à l'export JSON
+// comme à la synchro cloud (qui ne transportent que phrases + meta). En les rangeant dans meta,
+// elles suivent automatiquement la sauvegarde, la restauration et la synchro multi-appareils.
+const LEGACY_KANA_KEY = 'kanaPath-v1';
+const LEGACY_EXAM_KEY = 'jlptExamHistory-v1';
+
+export function migrateLegacyStores(){
+  let changed = false;
+  if(!meta.kanaPath){
+    let legacy = null;
+    try { legacy = JSON.parse(localStorage.getItem(LEGACY_KANA_KEY)); } catch(e){}
+    meta.kanaPath = (legacy && Array.isArray(legacy.done)) ? { done: legacy.done } : { done: [] };
+    changed = true;
+  }
+  if(!meta.examHistory){
+    let legacy = null;
+    try { legacy = JSON.parse(localStorage.getItem(LEGACY_EXAM_KEY)); } catch(e){}
+    meta.examHistory = Array.isArray(legacy) ? legacy : [];
+    changed = true;
+  }
+  if(!meta.convDone){ meta.convDone = []; changed = true; }
+  if(!meta.quizStats){ meta.quizStats = {}; changed = true; }
+  if(!meta.badgesSeen){ meta.badgesSeen = []; changed = true; }
+  if(changed) saveMeta();
+}
+
+export function getKanaPath(){ return meta.kanaPath || { done: [] }; }
+export function markKanaLesson(idx){
+  const p = getKanaPath();
+  if(!p.done.includes(idx)){ p.done.push(idx); meta.kanaPath = p; saveMeta(); }
+}
+
+export function getExamHistory(){ return meta.examHistory || []; }
+export function addExamRecord(record){
+  meta.examHistory = [...getExamHistory(), record];
+  saveMeta();
+}
+
+export function getConvDone(){ return meta.convDone || []; }
+export function markConvDone(id){
+  const d = getConvDone();
+  if(id && !d.includes(id)){ meta.convDone = [...d, id]; saveMeta(); }
+}
+
+// Historique des scores de quiz : { kana:[…], kanji:[…], jlpt:[…], listening:[…] }
+// Chaque entrée = { date, correct, total }. Sert aux records personnels et aux badges.
+export function addQuizStat(kind, correct, total){
+  const all = meta.quizStats || {};
+  const list = all[kind] || [];
+  list.push({ date: todayStr(), correct, total });
+  all[kind] = list.slice(-50); // on garde les 50 dernières, largement assez pour une courbe
+  meta.quizStats = all;
+  saveMeta();
+}
+export function getQuizStats(kind){ return (meta.quizStats || {})[kind] || []; }
+export function bestQuizScore(kind){
+  const list = getQuizStats(kind);
+  if(!list.length) return null;
+  return list.reduce((best, s)=>{
+    const pct = s.total ? s.correct/s.total : 0;
+    return (!best || pct > best.pct) ? { pct, ...s } : best;
+  }, null);
+}
 
 export function removePhrase(id){ phrases = phrases.filter(p => p.id !== id); }
 

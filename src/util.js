@@ -19,6 +19,9 @@ const SOKUON = new Set(['っ', 'ッ']);
 
 export function kanaToRomaji(str){
   if(!str) return '';
+  // 「・」 (point médian katakana) sépare deux lectures : il doit devenir un séparateur latin,
+  // sinon un caractère japonais subsiste dans une ligne censée être 100 % lisible en romaji.
+  str = str.replace(/・/g, ' / ').replace(/\s{2,}/g, ' ');
   let out = '', i = 0;
   while(i < str.length){
     const ch = str[i];

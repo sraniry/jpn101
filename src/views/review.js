@@ -19,6 +19,25 @@ function findParticleForDrill(jp){
   return null;
 }
 
+// Le drill doit rester lisible sans savoir lire les kanji : on affiche le romaji, mais en
+// masquant la particule cherchée (sinon la réponse est donnée). は se lit « wa » quand c'est
+// la particule thème, を se transcrit « wo » ou « o » selon les packs : on couvre les deux.
+const PARTICLE_ROMAJI = { 'は':['wa'], 'が':['ga'], 'を':['wo','o'], 'に':['ni'], 'で':['de'], 'の':['no'] };
+function maskParticleInRomaji(romaji, particle){
+  if(!romaji) return '';
+  let out = romaji;
+  (PARTICLE_ROMAJI[particle] || []).forEach(r=>{
+    // \b évite de trouer « watashi » en cherchant « wa »
+    out = out.replace(new RegExp('\\b' + r + '\\b', 'gi'), '＿');
+  });
+  return out;
+}
+
+// ---------- Filtre par compétence (clic sur une carte de l'onglet Compétences) ----------
+let reviewFilterTag = null;
+export function setReviewFilterTag(tag){ reviewFilterTag = (tag && tag !== 'all') ? tag : null; }
+export function getReviewFilterTag(){ return reviewFilterTag; }
+
 // ---------- answer checking ----------
 function normalize(s){
   return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
@@ -65,7 +84,14 @@ function checkAnswer(typed, correct){
 
 // ---------- review ----------
 export function startReviewSession(){
-  reviewQueue = buildQueue(); reviewQueue._startCount = reviewQueue.length;
+  reviewQueue = buildQueue();
+  if(reviewFilterTag){
+    const filtered = reviewQueue.filter(c => c.tag === reviewFilterTag);
+    // Un filtre qui ne laisse aucune carte due serait un cul-de-sac : on le relâche plutôt que
+    // d'afficher « rien à revoir » alors qu'il reste des cartes dans les autres thèmes.
+    if(filtered.length) reviewQueue = filtered; else reviewFilterTag = null;
+  }
+  reviewQueue._startCount = reviewQueue.length;
   reviewedSinceBreak = 0; interleaveActive = false; nextReviewCard();
 }
 function nextReviewCard(){
@@ -87,6 +113,7 @@ export function renderReview(){
   const doneToday = Math.max(0, total - reviewQueue.length);
 
   let html = '<div class="review-wrap">';
+  if(reviewFilterTag) html += `<div class="review-filter-chip">Filtré sur <b>${escapeHtml(reviewFilterTag)}</b><button id="clearReviewFilter" title="Revoir toutes les catégories">✕</button></div>`;
   html += `<div class="progress-row"><span>${doneToday} fait${doneToday===1?'':'s'}</span><div class="progress-bar"><i style="width:${Math.min(100,(doneToday/total)*100)}%"></i></div><span>${reviewQueue.length} restante${reviewQueue.length===1?'':'s'}</span></div>`;
   html += `<div class="mode-row">
     <button class="mode-chip ${listenMode?'active':''}" id="toggleListen">🎧 Écoute</button>
@@ -164,6 +191,8 @@ export function renderReview(){
   html += '</div>';
   area.innerHTML = html;
 
+  const cf = document.getElementById('clearReviewFilter');
+  if(cf) cf.addEventListener('click', ()=>{ reviewFilterTag = null; startReviewSession(); });
   const tl = document.getElementById('toggleListen'); if(tl) tl.addEventListener('click', ()=>{ captureTyped(); listenMode=!listenMode; dicteMode=false; renderReview(); });
   const td = document.getElementById('toggleDicte'); if(td) td.addEventListener('click', ()=>{ captureTyped(); dicteMode=!dicteMode; listenMode=false; revealed=false; lastTyped=''; renderReview(); if(dicteMode) speak(currentReview.jp, 0.85); });
   const lpb = document.getElementById('listenPlayBtn'); if(lpb) lpb.addEventListener('click', e=>{ e.stopPropagation(); speak(currentReview.jp, 0.85); });
@@ -202,9 +231,13 @@ function renderParticleDrill(area){
   const choices = [info.particle, ...distractors.slice(0,2)];
   for(let i=choices.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [choices[i],choices[j]]=[choices[j],choices[i]]; }
 
+  const romajiLine = drillAnswered
+    ? (card.romaji||'')
+    : maskParticleInRomaji(card.romaji, info.particle);
   let html = `<div class="review-wrap"><div class="drill-box">
     <span class="drill-label">🎯 Production guidée — complète la particule</span>
     <div class="drill-jp">${escapeHtml(before)}<span class="blank">${drillAnswered ? escapeHtml(info.particle) : '＿'}</span>${escapeHtml(after)}</div>
+    <div class="drill-romaji">${escapeHtml(romajiLine)}</div>
     <div class="drill-fr">${escapeHtml(card.fr||'')}</div>
     <div class="drill-choices" id="drillChoices">`;
   choices.forEach(c=> html += `<button data-p="${c}">${c}</button>`);
@@ -252,6 +285,8 @@ function renderInterleaveBreak(area){
     <p class="section-label" style="text-align:center;">Pause ombrage (répétition mêlée)</p>
     <p>Répète cette phrase à voix haute 3 fois. Mélanger révision et prononciation ancre la mémoire bien plus que des blocs séparés.</p>
     <div class="jp-big">${escapeHtml(interleaveCard.jp)}</div>
+    <div class="jp-big-romaji">${escapeHtml(interleaveCard.romaji||'')}</div>
+    <div class="jp-big-fr">${escapeHtml(interleaveCard.fr||'')}</div>
     <button class="play-mini" id="interleavePlay">▶</button>
     <div class="rep-track">${dots}</div>
     <button class="continue-btn" id="interleaveContinue" ${interleaveReps<3?'style="opacity:.5;pointer-events:none;"':''}>Continuer la révision</button>

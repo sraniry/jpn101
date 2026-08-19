@@ -1,4 +1,4 @@
-import { phrases, getDueAll, planToday } from '../storage.js';
+import { phrases, getDueAll, planToday, getConvDone } from '../storage.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
 import { openConversation } from './conversation.js';
@@ -10,13 +10,38 @@ import { escapeHtml } from '../util.js';
 
 function gotoTab(view){ document.querySelector(`nav.tabs button[data-view="${view}"]`).click(); }
 
-// Dialogue suggéré du jour : rotation déterministe sur la date pour varier sans hasard
+const dayNumber = () => Math.floor(Date.now() / 86400000);
+
+// Dialogue suggéré du jour : rotation déterministe sur la date pour varier sans hasard.
+// Les dialogues déjà terminés passent en fin de file : on propose du neuf en priorité,
+// sans jamais bloquer si tout a été fait.
 function suggestedConversation(){
   const valid = CONVERSATIONS.filter(c=>c.id && Array.isArray(c.turns));
   if(valid.length === 0) return null;
-  const dayIdx = Math.floor(Date.now() / 86400000) % valid.length;
-  return valid[dayIdx];
+  const done = getConvDone();
+  const fresh = valid.filter(c=>!done.includes(c.id));
+  const pool = fresh.length ? fresh : valid;
+  return pool[dayNumber() % pool.length];
 }
+
+// 4e palier « bonus », en rotation quotidienne : il donne un point d'entrée quotidien aux
+// sections qui n'en avaient aucun (Prononcer, Écoute, Lire, JLPT) sans allonger le programme —
+// une seule d'entre elles est proposée chaque jour.
+const BONUS_ROTATION = [
+  { icon:'🎙️', title:'Prononcer à voix haute', time:'~5 min', view:'shadow',
+    desc:'Répète après le modèle et enregistre-toi pour comparer',
+    why:'Ton oreille juge mieux que n\'importe quelle note : t\'entendre après le modèle corrige l\'accent bien plus vite que de lire du romaji.' },
+  { icon:'🎧', title:'Compréhension orale', time:'~5 min', view:'listening',
+    desc:'Une série de 10 : phrases sans texte, ou prix au konbini',
+    why:'À Kyoto, on te parlera sans sous-titres. S\'entraîner sans texte est le seul moyen d\'y préparer l\'oreille.' },
+  { icon:'🪧', title:'Panneaux & formulaires', time:'~5 min', view:'reading',
+    desc:'Reconnaître 出口, 入口, トイレ, 禁止 sans hésiter',
+    why:'Ces mots-là ne se devinent pas : les reconnaître d\'un coup d\'œil évite les vrais ennuis sur place.' },
+  { icon:'🎓', title:'Entraînement JLPT N5', time:'~10 min', view:'jlpt',
+    desc:'Quiz rapide, kanji officiels ou examen blanc',
+    why:'L\'examen a lieu en décembre : quelques minutes régulières valent mieux qu\'un bachotage de dernière minute.' },
+];
+function bonusOfTheDay(){ return BONUS_ROTATION[dayNumber() % BONUS_ROTATION.length]; }
 
 export function renderToday(){
   const area = document.getElementById('todayArea');
@@ -74,10 +99,17 @@ export function renderToday(){
   });
   html += `</div>`;
 
-  if(doneCount === 3){
-    html += `<div class="today-bonus">Envie d'aller plus loin ? <b>Bonus :</b> les kanji du quotidien (onglet Alphabet → 漢字) ou les panneaux dans « Lire ».</div>`;
-  }
+  const bonus = bonusOfTheDay();
+  html += `<div class="today-bonus-step" data-view="${bonus.view}">
+    <div class="tbs-tag">Bonus du jour${doneCount === 3 ? ' — les 3 étapes sont faites, offre-toi ça' : ' (optionnel)'}</div>
+    <div class="ts-title"><span class="ts-icon">${bonus.icon}</span>${bonus.title}<span class="ts-time">${bonus.time}</span></div>
+    <div class="ts-desc">${bonus.desc}</div>
+    <div class="ts-why">${bonus.why}</div>
+    <span class="ts-go">Y aller →</span>
+  </div>`;
   area.innerHTML = html;
+  const bonusEl = area.querySelector('.today-bonus-step');
+  if(bonusEl) bonusEl.addEventListener('click', ()=> gotoTab(bonusEl.dataset.view));
   area.querySelectorAll('.today-step').forEach(el=> el.addEventListener('click', ()=>{
     gotoTab(el.dataset.view);
     // routing direct : lance le dialogue suggéré au lieu de la liste générale

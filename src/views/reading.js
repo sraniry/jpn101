@@ -1,4 +1,4 @@
-import { phrases, existingKeySet, newCard, savePhrases } from '../storage.js';
+import { phrases, existingKeySet, cardKey, newCard, savePhrases } from '../storage.js';
 import { READING_GROUPS } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
@@ -29,7 +29,7 @@ export function renderReading(){
       const g = READING_GROUPS[parseInt(b.dataset.group,10)];
       const existing = existingKeySet(); let added = 0;
       g.items.forEach(it=>{
-        const key = (it.jp+'|'+it.romaji).toLowerCase();
+        const key = cardKey(it.jp, it.romaji);
         if(existing.has(key)) return;
         phrases.push(newCard(it.jp, it.romaji, it.fr, it.note||'', 'panneaux', 'lecture'));
         existing.add(key); added++;

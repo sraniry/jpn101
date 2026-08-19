@@ -1,7 +1,8 @@
 import { HIRAGANA, KATAKANA, KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON, KATAKANA_ONLY } from '../../data/kana.js';
 import { KANJI_GROUPS, KANJI_ALL } from '../../data/kanji.js';
 import { speak } from '../tts.js';
-import { planMark, phrases, newCard, savePhrases, existingKeySet } from '../storage.js';
+import { planMark, phrases, newCard, savePhrases, existingKeySet, cardKey,
+         registerStudyActivity, getKanaPath, markKanaLesson, addQuizStat, bestQuizScore } from '../storage.js';
 
 // État du quiz
 let quizState = null;
@@ -15,12 +16,9 @@ export const KANA_LESSONS = [
   { row:'P ゜ + combinaisons', items: [...flatItems(KANA_HANDAKUTEN), ...flatItems(KANA_YOON)] },
 ];
 
-const KANA_PATH_KEY = 'kanaPath-v1';
-function loadKanaPath(){
-  try { return JSON.parse(localStorage.getItem(KANA_PATH_KEY)) || { done:[] }; }
-  catch(e){ return { done:[] }; }
-}
-function saveKanaPath(p){ try { localStorage.setItem(KANA_PATH_KEY, JSON.stringify(p)); } catch(e){} }
+// Le parcours vit dans meta (storage.js) : il est donc inclus dans l'export JSON et la synchro
+// cloud, au lieu de rester dans une clé localStorage isolée perdue au changement d'appareil.
+function loadKanaPath(){ return getKanaPath(); }
 
 export function kanaPathState(){
   const p = loadKanaPath();
@@ -94,9 +92,12 @@ function renderQuizCard() {
   const area = document.getElementById('kanaArea');
   if (!quizState || quizState.idx >= quizState.deck.length) {
     const pct = Math.round((quizState.correct / quizState.total) * 100);
+    if(!quizState.recorded){ quizState.recorded = true; addQuizStat('kana', quizState.correct, quizState.total); registerStudyActivity(); }
+    const best = bestQuizScore('kana');
     area.querySelector('#kana-quiz-zone').innerHTML = `
       <div class="kana-quiz-done">
         <div class="kqd-score">${quizState.correct}/${quizState.total} — ${pct}%</div>
+        ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
         <div class="kqd-msg">${pct >= 90 ? '🎉 Excellent !' : pct >= 70 ? '👍 Bien !' : '💪 Continue !'}</div>
         <button class="kana-quiz-restart">🔄 Recommencer</button>
       </div>`;
@@ -202,10 +203,10 @@ function renderLessonQuiz(panel, lesson){
     const pct = Math.round((q.correct / q.deck.length) * 100);
     const passed = pct >= 80;
     if(passed){
-      const p = loadKanaPath();
-      if(!p.done.includes(lessonState.lessonIdx)){ p.done.push(lessonState.lessonIdx); saveKanaPath(p); }
+      markKanaLesson(lessonState.lessonIdx);
       planMark('kana');
     }
+    if(!q.recorded){ q.recorded = true; addQuizStat('kana', q.correct, q.deck.length); registerStudyActivity(); }
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       <div class="kqd-msg">${passed ? '🎉 Leçon validée ! La suivante est débloquée.' : '💪 Il faut 80 % — relis la ligne et retente.'}</div>
@@ -244,7 +245,7 @@ function renderKanjiTab(){
   const panel = document.getElementById('kana-tab-kanji');
   if(!panel) return;
   if(kanjiQuizState){ renderKanjiQuiz(panel); return; }
-  let html = `<div class="kana-rule-note"><b>~80 kanji N5 essentiels</b>, groupés par thème. Objectif : les <b>reconnaître</b> (prix, panneaux, menus, horaires) — pas les écrire. Touche un kanji pour l'entendre dans son mot d'exemple.</div>
+  let html = `<div class="kana-rule-note"><b>${KANJI_ALL.length} kanji du quotidien</b>, groupés par thème et par utilité de terrain. Objectif : les <b>reconnaître</b> (prix, panneaux, menus, horaires) — pas les écrire. Touche un kanji pour l'entendre dans son mot d'exemple.<br><span class="xref-note">↔ Ce sont les mêmes caractères que dans <b>JLPT N5 → 漢字</b>, présentés là-bas avec les lectures on/kun et la liste officielle complète. Les ajouter ici ou là-bas revient au même : aucune carte ne sera dupliquée dans tes révisions.</span></div>
     <button class="continue-btn" id="kanjiQuizStart" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
   KANJI_GROUPS.forEach((g, gi)=>{
     html += `<div class="rg-head" style="margin-top:10px;"><h4 class="kana-table-title" style="margin:0;">${g.icon} ${g.title}</h4><button class="rg-add kanji-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kanji-grid">`;
@@ -267,7 +268,9 @@ function renderKanjiTab(){
       const g = KANJI_GROUPS[parseInt(b.dataset.group,10)];
       const existing = existingKeySet(); let added = 0;
       g.items.forEach(it=>{
-        const key = (it.k+'|'+it.romaji).toLowerCase();
+        // cardKey dédoublonne les kanji sur le seul caractère : la même carte ne peut plus
+        // entrer deux fois via cet onglet ET via JLPT N5, où la lecture est notée autrement.
+        const key = cardKey(it.k, it.romaji);
         if(existing.has(key)) return;
         phrases.push(newCard(it.k, it.romaji, it.fr, it.ex, 'kanji', 'N5'));
         existing.add(key); added++;
@@ -287,8 +290,11 @@ function renderKanjiQuiz(panel){
   const q = kanjiQuizState;
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
+    if(!q.recorded){ q.recorded = true; addQuizStat('kanji', q.correct, q.deck.length); registerStudyActivity(); }
+    const best = bestQuizScore('kanji');
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
       <div class="kqd-msg">${pct>=90?'🎉 Excellent !':pct>=70?'👍 Bien !':'💪 Continue !'}</div>
       <button class="kana-quiz-restart" id="kanjiQuizEnd">← Retour aux kanji</button>
     </div>`;

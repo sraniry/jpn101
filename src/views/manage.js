@@ -1,4 +1,4 @@
-import { phrases, meta, existingKeySet, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll, exportProgressionJSON, importProgressionJSON } from '../storage.js';
+import { phrases, meta, existingKeySet, cardKey, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll, exportProgressionJSON, importProgressionJSON } from '../storage.js';
 import { SEED_PACK, CORE_SET } from '../../data/phrases.js';
 import { escapeHtml } from '../util.js';
 import { render } from '../main.js';
@@ -6,7 +6,7 @@ import { render } from '../main.js';
 // ---------- import ----------
 export function updateImportBanner(){
   const existing = existingKeySet();
-  const remaining = SEED_PACK.filter(row => !existing.has((row.jp+'|'+row.romaji).toLowerCase())).length;
+  const remaining = SEED_PACK.filter(row => !existing.has(cardKey(row.jp, row.romaji))).length;
   const banner = document.getElementById('importBanner');
   const text = document.getElementById('importStatusText');
   const btn = document.getElementById('importBtn');
@@ -67,7 +67,7 @@ function renderCoreList(list){
   const core = SEED_PACK.filter(r => CORE_SET.has(r.jp));
   list.innerHTML = `<p style="font-size:12.5px;color:#7a7268;margin:0 0 10px;">Les <b>${core.length} phrases ⭐</b> qui couvrent ~80 % des situations réelles. Si tu manques de temps, maîtrise-les en priorité.</p>` +
     core.map(r=>{
-      const added = inSrs.has((r.jp+'|'+r.romaji).toLowerCase());
+      const added = inSrs.has(cardKey(r.jp, r.romaji));
       return `<div class="phrase-item">
         <div class="pi-jp">⭐ ${escapeHtml(r.jp)}</div>
         <div class="pi-mid"><div class="pi-romaji">${escapeHtml(r.romaji||'')}</div><div class="pi-fr">${escapeHtml(r.fr||'')}</div></div>
@@ -117,7 +117,7 @@ export function initManage(){
     const existing = existingKeySet(); let added = 0;
     SEED_PACK.forEach(row=>{
       if(!levels.includes(row.level)) return;
-      const key = (row.jp+'|'+row.romaji).toLowerCase();
+      const key = cardKey(row.jp, row.romaji);
       if(existing.has(key)) return;
       phrases.push(newCard(row.jp, row.romaji, row.fr, row.ex, row.tag, row.level));
       existing.add(key); added++;

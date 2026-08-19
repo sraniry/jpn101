@@ -1,8 +1,9 @@
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-import { loadAll, meta, getDueAll, updateStreak } from './storage.js';
+import { loadAll, meta, getDueAll, updateStreak, migrateLegacyStores } from './storage.js';
 import { speak, renderSoundBars } from './tts.js';
 import { renderSkills } from './views/skills.js';
 import { startReviewSession, renderReview } from './views/review.js';
+import { renderShadow } from './views/shadow.js';
 import { renderConversationList } from './views/conversation.js';
 import { renderReading } from './views/reading.js';
 import { renderGrammar } from './views/grammar.js';
@@ -23,6 +24,7 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'today') renderToday();
     if(btn.dataset.view === 'skills') renderSkills();
     if(btn.dataset.view === 'review'){ renderSoundBars(); startReviewSession(); }
+    if(btn.dataset.view === 'shadow'){ renderSoundBars(); renderShadow(); }
     if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
     if(btn.dataset.view === 'listening') renderListening();
     if(btn.dataset.view === 'reading') renderReading();
@@ -50,6 +52,7 @@ export function render(){
   if(activeView && activeView.id === 'view-today') renderToday();
   if(activeView && activeView.id === 'view-skills') renderSkills();
   if(activeView && activeView.id === 'view-review') startReviewSession();
+  if(activeView && activeView.id === 'view-shadow') renderShadow();
   if(activeView && activeView.id === 'view-conversation') renderConversationList();
   if(activeView && activeView.id === 'view-listening') renderListening();
   if(activeView && activeView.id === 'view-reading') renderReading();
@@ -63,6 +66,7 @@ async function init(){
   const synced = await importFromURL();
   if(!synced) await loadAll();
   await initCloudSync(); // fusionne avec le cloud (si un code personnel est configuré) avant le premier rendu
+  migrateLegacyStores(); // rapatrie parcours kana + historique d'examens dans meta (donc dans la sauvegarde et la synchro)
   document.getElementById('dailyLimit').value = meta.dailyLimit || 40;
   updateImportBanner(); updateStreak(); render();
   if(synced){

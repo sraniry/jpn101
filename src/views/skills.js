@@ -3,6 +3,8 @@ import { CORE_SET } from '../../data/phrases.js';
 import { escapeHtml, emptyState } from '../util.js';
 import { setShadowFilterTag } from './shadow.js';
 import { setListFilterTag } from './manage.js';
+import { setReviewFilterTag } from './review.js';
+import { badgesHtml } from '../badges.js';
 
 // ---------- skills dashboard ----------
 const SKILL_META = {
@@ -42,10 +44,13 @@ export function renderSkills(){
     </div>`;
   });
   html += `</div>`;
+  html += badgesHtml();
   area.innerHTML = html;
   area.querySelectorAll('.skill-card').forEach(c=>{
     c.addEventListener('click', ()=>{
-      setShadowFilterTag(c.dataset.tag); setListFilterTag(c.dataset.tag);
+      // Les trois filtres sont posés ensemble pour que Réviser, Ombrage et Mes phrases
+      // parlent tous du même thème quand on arrive depuis une compétence.
+      setReviewFilterTag(c.dataset.tag); setShadowFilterTag(c.dataset.tag); setListFilterTag(c.dataset.tag);
       document.querySelector('nav.tabs button[data-view="review"]').click();
     });
   });

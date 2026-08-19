@@ -1,4 +1,4 @@
-import { phrases } from '../storage.js';
+import { phrases, registerStudyActivity, addQuizStat, bestQuizScore } from '../storage.js';
 import { SEED_PACK } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
@@ -62,8 +62,11 @@ function renderListenQuiz(){
   const q = listenQuiz;
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
+    if(!q.recorded){ q.recorded = true; addQuizStat('listening', q.correct, q.deck.length); registerStudyActivity(); }
+    const best = bestQuizScore('listening');
     zone.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
       <div class="kqd-msg">${pct>=90?'🎉 Oreille affûtée !':pct>=70?'👍 Bien ! Réécoute les ratés.':'💪 Normal au début — l\'oreille vient avec les répétitions.'}</div>
       <button class="kana-quiz-restart" id="listenRestart">🔄 Nouvelle série</button>
     </div>`;
