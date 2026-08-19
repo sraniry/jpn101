@@ -104,7 +104,7 @@ export function buildQueue(){
 // meta.plan = {date, kana:bool, reviews:int, conv:bool} — remis à zéro chaque jour
 export function planToday(){
   const today = todayStr();
-  if(!meta.plan || meta.plan.date !== today){ meta.plan = { date:today, kana:false, reviews:0, conv:false }; saveMeta(); }
+  if(!meta.plan || meta.plan.date !== today){ meta.plan = { date:today, kana:false, reviews:0, conv:0 }; saveMeta(); }
   return meta.plan;
 }
 export function planMark(field, inc){

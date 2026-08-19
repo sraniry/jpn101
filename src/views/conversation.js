@@ -68,7 +68,7 @@ function renderConversationStage(){
   const conv = CONVERSATIONS.find(c=>c.id === convState.convId);
   const turn = conv.turns[convState.turnIdx];
   if(!turn){
-    planMark('conv');
+    planMark('conv', 1); // compteur (objectif 2/jour), plus un simple booléen
     markConvDone(conv.id);      // trace permanente : alimente la barre de progression et les badges
     registerStudyActivity();     // un dialogue terminé compte dans la série quotidienne
     area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">Dialogue terminé !</h3><p style="color:#7a7268;font-size:13.5px;">Rejoue-le pour essayer d'autres réponses, ou choisis un autre dialogue.</p><button class="continue-btn" id="convBackBtn" style="margin-top:16px;">← Tous les dialogues</button></div>`;

@@ -21,14 +21,25 @@ export function renderReading(){
   renderGrid();
 }
 
+// État persistant du bouton de groupe : reflète ce qui est RÉELLEMENT dans les révisions,
+// pas une confirmation transitoire qu'on oublie 2 secondes plus tard.
+function groupAddLabel(items){
+  const existing = existingKeySet();
+  const addedCount = items.filter(it => existing.has(cardKey(it.jp, it.romaji))).length;
+  if(addedCount === 0) return { label:'+ Ajouter à mes révisions', state:'none' };
+  if(addedCount === items.length) return { label:'✓ Déjà dans tes révisions', state:'all' };
+  return { label:`+ Ajouter le reste (${items.length-addedCount})`, state:'partial' };
+}
+
 function renderGrid(){
   const area = document.getElementById('readingArea');
   const known = getReadingKnown();
   let html = `<div class="read-intro">Tu as dit « parler avant lire » — mais certains mots, tu dois les <b>reconnaître</b> sans hésiter pour survivre : toilettes, gauche/droite, entrée/sortie, interdit. Touche un panneau pour l'entendre, ou ajoute un groupe à tes révisions pour les ancrer.</div>`;
   html += `<button class="continue-btn" id="readingQuizStart" style="margin-bottom:16px;">🎯 Quiz : reconnaître les panneaux (20 questions)</button>`;
   READING_GROUPS.forEach((g, gi)=>{
+    const st = groupAddLabel(g.items);
     html += `<div class="read-group">
-      <div class="rg-head"><h3>${g.icon} ${g.title}</h3><button class="rg-add" data-group="${gi}">+ Ajouter à mes révisions</button></div>
+      <div class="rg-head"><h3>${g.icon} ${g.title}</h3><button class="rg-add ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div>
       <div class="sign-grid">`;
     g.items.forEach(it=>{
       const isKnown = known.includes(it.jp);
@@ -62,11 +73,13 @@ function renderGrid(){
         phrases.push(newCard(it.jp, it.romaji, it.fr, it.note||'', 'panneaux', 'lecture'));
         existing.add(key); added++;
       });
-      // refreshCounters() met à jour le badge et les stats SANS reconstruire ce panneau —
-      // un render() complet ici écrasait la confirmation avant qu'elle soit visible.
-      if(added>0){ await savePhrases(); refreshCounters(); }
-      b.textContent = added>0 ? (added + ' ajouté' + (added===1?'':'s') + ' ✓') : 'Déjà dans tes révisions';
-      setTimeout(()=>{ b.textContent = '+ Ajouter à mes révisions'; }, 2000);
+      if(added>0) await savePhrases();
+      // refreshCounters() met à jour le badge/stats globaux ; renderGrid() reconstruit CE
+      // panneau pour que le bouton affiche l'état réel et durable (« ✓ Déjà dans tes
+      // révisions »), plutôt qu'une confirmation qui s'efface après 2 secondes sans rien dire
+      // de l'état actuel.
+      refreshCounters();
+      renderGrid();
     });
   });
   document.getElementById('readingQuizStart').addEventListener('click', startReadingQuiz);

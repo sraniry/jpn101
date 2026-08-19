@@ -638,3 +638,19 @@
   .reading-quiz-actions{ display:flex; flex-direction:column; gap:8px; margin-top:12px; }
   .reading-quiz-actions .continue-btn{ margin:0; }
   .reading-quiz-actions .archive-btn{ margin:0; }
+
+  /* ---------- Boutons « Ajouter à mes révisions » : état persistant ---------- */
+  /* .rg-head/.rg-add existaient déjà scopés à .read-group (Lire) ; ces règles non scopées
+     couvrent aussi les groupes JLPT N5 (kanji/vocab), qui n'avaient aucun style dédié. */
+  .rg-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;}
+  .rg-add{ border:1px solid var(--matcha); background:transparent; color:var(--matcha); font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:999px; cursor:pointer; font-family:'Work Sans',sans-serif; white-space:nowrap; }
+  .rg-add:hover:not(:disabled){ background:var(--matcha); color:#fff;}
+  .rg-add.is-added{ border-color:var(--line); color:#9a9184; background:var(--bg); cursor:default; }
+  .rg-add.is-added:hover{ background:var(--bg); color:#9a9184; }
+
+  /* ---------- Dialogues du jour : deux cibles distinctes dans l'onglet Aujourd'hui ---------- */
+  .today-step-conv{ cursor:default; }
+  .today-conv-picks{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
+  .today-conv-pick{ text-align:left; border:1px solid var(--line); background:var(--paper); color:var(--indigo-deep);
+    font-size:12.5px; font-weight:600; padding:9px 12px; border-radius:10px; cursor:pointer; font-family:'Work Sans',sans-serif; }
+  .today-conv-pick:hover{ border-color:var(--indigo); background:rgba(44,62,92,.05); }

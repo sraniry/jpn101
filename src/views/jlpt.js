@@ -95,8 +95,19 @@ function renderPanel(tab){
   else if(tab==='plan') renderPlanPanel(panel);
 }
 
-// Branche les boutons « + Ajouter à mes révisions » d'un panneau (kanji ou vocab)
-function wireAddButtons(panel, groups, makeCard){
+// État persistant du bouton de groupe : reflète ce qui est RÉELLEMENT dans les révisions
+// plutôt qu'une confirmation transitoire qui redevient muette après 2 secondes.
+function groupAddLabel(items, makeCard){
+  const existing = existingKeySet();
+  const addedCount = items.filter(it => { const c = makeCard(it); return existing.has(cardKey(c.jp, c.romaji)); }).length;
+  if(addedCount === 0) return { label:'+ Ajouter à mes révisions', state:'none' };
+  if(addedCount === items.length) return { label:'✓ Déjà dans tes révisions', state:'all' };
+  return { label:`+ Ajouter le reste (${items.length-addedCount})`, state:'partial' };
+}
+
+// Branche les boutons « + Ajouter à mes révisions » d'un panneau (kanji ou vocab).
+// rerenderFn reconstruit le panneau après l'ajout pour que le bouton affiche l'état durable.
+function wireAddButtons(panel, groups, makeCard, rerenderFn){
   panel.querySelectorAll('.jlpt-add').forEach(b=>{
     b.addEventListener('click', async e=>{
       e.stopPropagation();
@@ -108,9 +119,9 @@ function wireAddButtons(panel, groups, makeCard){
         if(existing.has(key)) return;
         phrases.push(card); existing.add(key); added++;
       });
-      if(added>0){ await savePhrases(); refreshCounters(); }
-      b.textContent = added>0 ? added+' ajouté'+(added===1?'':'s')+' ✓' : 'Déjà dans tes révisions';
-      setTimeout(()=>{ b.textContent = '+ Ajouter à mes révisions'; }, 2000);
+      if(added>0) await savePhrases();
+      refreshCounters();
+      rerenderFn();
     });
   });
 }
@@ -119,6 +130,13 @@ function wireAddButtons(panel, groups, makeCard){
 // Vue unique des kanji de l'app : l'onglet Alphabet renvoie ici plutôt que d'exposer un
 // second jeu (ses 79 caractères étaient tous inclus dans ces 103, avec moins d'information).
 let kanjiSensQuiz = null;
+
+// La lecture stockée dans la carte doit être du romaji latin : c'est la béquille de lecture.
+// Y mettre les kana bruts (イチ / ひと(つ)) remplaçait l'aide par du japonais supplémentaire.
+function kanjiMakeCard(it){
+  const parts = [it.on, it.kun].filter(r => r && r !== '—').map(kanaToRomaji);
+  return newCard(it.k, parts.join(' / '), it.fr, it.ex + (it.mnemo ? ' · 💡 '+it.mnemo : ''), 'kanji', 'N5');
+}
 
 function renderKanjiPanel(panel){
   if(kanjiSensQuiz){ renderKanjiSensQuiz(panel); return; }
@@ -138,7 +156,8 @@ function renderKanjiPanel(panel){
     <div class="kana-rule-note"><b>${N5_KANJI_ALL.length} kanji officiels N5.</b> Romaji entre parenthèses pour chaque lecture. Touche un kanji pour l'entendre. 💡 = astuce mnémotechnique, 🧩 = radicaux, 📝 = phrase d'usage courante.</div>
     <button class="continue-btn" id="kanjiSensStart" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
   N5_KANJI.forEach((g, gi)=>{
-    html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kanji-grid">`;
+    const st = groupAddLabel(g.items, kanjiMakeCard);
+    html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div><div class="kanji-grid">`;
     g.items.forEach(it=>{
       const onR = it.on === '—' ? '—' : `${it.on} (${kanaToRomaji(it.on)})`;
       const kunR = it.kun === '—' ? '—' : `${it.kun} (${kanaToRomaji(it.kun)})`;
@@ -158,12 +177,7 @@ function renderKanjiPanel(panel){
   panel.innerHTML = html;
   panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
   panel.querySelectorAll('.kj-sentence').forEach(s=> s.addEventListener('click', e=>{ e.stopPropagation(); speak(s.dataset.jpSentence, 0.85); }));
-  // La lecture stockée dans la carte doit être du romaji latin : c'est la béquille de lecture.
-  // Y mettre les kana bruts (イチ / ひと(つ)) remplaçait l'aide par du japonais supplémentaire.
-  wireAddButtons(panel, N5_KANJI, it => {
-    const parts = [it.on, it.kun].filter(r => r && r !== '—').map(kanaToRomaji);
-    return newCard(it.k, parts.join(' / '), it.fr, it.ex + (it.mnemo ? ' · 💡 '+it.mnemo : ''), 'kanji', 'N5');
-  });
+  wireAddButtons(panel, N5_KANJI, kanjiMakeCard, ()=> renderKanjiPanel(panel));
   panel.querySelector('#kanjiSensStart').addEventListener('click', ()=>{
     kanjiSensQuiz = { deck: shuffle(N5_KANJI_ALL).slice(0,20), idx:0, correct:0 };
     renderKanjiPanel(panel);
@@ -212,10 +226,13 @@ function renderKanjiSensQuiz(panel){
 }
 
 // ---------- 6b. Vocabulaire ----------
+function vocabMakeCard(it){ return newCard(it.jp, it.romaji, it.fr, it.note||'', 'N5', 'N5'); }
+
 function renderVocabPanel(panel){
   let html = `<div class="kana-rule-note"><b>~${N5_VOCAB_ALL.length} mots N5 essentiels</b> qui ne sont pas déjà dans le pack de phrases. Touche un mot pour l'entendre ; s'il a un 💡, retouche-le pour voir l'astuce. Ajoute un thème entier à tes révisions.</div>`;
   N5_VOCAB.forEach((g, gi)=>{
-    html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.icon} ${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kana-vocab-grid">`;
+    const st = groupAddLabel(g.items, vocabMakeCard);
+    html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.icon} ${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div><div class="kana-vocab-grid">`;
     g.items.forEach(it=>{
       html += `<div class="kana-vocab-card${it.note?' has-note':''}" data-jp="${escapeHtml(it.jp)}">
         <span class="kvc-jp">${escapeHtml(it.jp)}</span>
@@ -231,7 +248,7 @@ function renderVocabPanel(panel){
     speak(c.dataset.jp, 0.85);
     if(c.classList.contains('has-note')) c.classList.toggle('expanded');
   }));
-  wireAddButtons(panel, N5_VOCAB, it => newCard(it.jp, it.romaji, it.fr, it.note||'', 'N5', 'N5'));
+  wireAddButtons(panel, N5_VOCAB, vocabMakeCard, ()=> renderVocabPanel(panel));
 }
 
 // ---------- 6c. Grammaire ----------
