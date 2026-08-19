@@ -1,8 +1,9 @@
-import { phrases, getDueAll, planToday, getConvDone } from '../storage.js';
+import { phrases, meta, saveMeta, todayStr, getDueAll, planToday, getConvDone } from '../storage.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
 import { openConversation } from './conversation.js';
 import { escapeHtml } from '../util.js';
+import { celebrate } from '../encouragement.js';
 
 // ---------- Onglet Aujourd'hui : parcours guidé quotidien ----------
 // Trois étapes fixes (~30-45 min) : kana → révisions SRS → un dialogue.
@@ -67,6 +68,13 @@ export function renderToday(){
   const convProgress = Math.min(convRaw, CONV_GOAL);
   const convDone = convProgress >= CONV_GOAL;
   const doneCount = [kanaDone, reviewDone, convDone].filter(Boolean).length;
+
+  // Un seul toast par jour à l'instant précis où les 3 étapes se complètent — pas à chaque
+  // re-rendu de l'onglet une fois qu'elles le sont déjà (sinon il réapparaîtrait à chaque clic).
+  if(doneCount === 3 && meta.dailyProgramCelebrated !== todayStr()){
+    meta.dailyProgramCelebrated = todayStr(); saveMeta();
+    celebrate('dailyProgram', { emoji:'🎉', title: 'Programme du jour terminé' });
+  }
 
   const kanaLabel = kana.done >= kana.total
     ? 'Tous les kana sont validés — entretien libre via le quiz'

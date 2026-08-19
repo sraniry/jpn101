@@ -5,6 +5,8 @@ import { phrases, newCard, savePhrases, existingKeySet, cardKey, registerStudyAc
          getExamHistory, addExamRecord, addQuizStat, bestQuizScore } from '../storage.js';
 import { refreshCounters } from '../main.js';
 import { speak } from '../tts.js';
+import { celebrate, quizLine } from '../encouragement.js';
+import { celebrateNewBadges } from '../badges.js';
 import { escapeHtml, kanaToRomaji, annotateFurigana } from '../util.js';
 
 // ---------- JLPT N5 : kanji, vocabulaire, grammaire, quiz, conseils, examen blanc, historique, planning ----------
@@ -190,12 +192,13 @@ function renderKanjiSensQuiz(panel){
   const q = kanjiSensQuiz;
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
-    if(!q.recorded){ q.recorded = true; addQuizStat('kanji', q.correct, q.deck.length); registerStudyActivity(); }
+    if(!q.recorded){ q.recorded = true; addQuizStat('kanji', q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
     const best = bestQuizScore('kanji');
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
       <div class="kqd-msg">${pct>=90?'🎉 Excellent !':pct>=70?'👍 Bien !':'💪 Continue !'}</div>
+      <div class="kqd-teacher">${quizLine(pct)}</div>
       <button class="kana-quiz-restart" id="kanjiSensEnd">← Retour aux kanji</button>
     </div>`;
     panel.querySelector('#kanjiSensEnd').addEventListener('click', ()=>{ kanjiSensQuiz = null; renderKanjiPanel(panel); });
@@ -308,12 +311,13 @@ function renderQuizCard(panel){
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
     const line = t => `${t} : ${q.byType[t][0]}/${q.byType[t][1]}`;
-    if(!q.recorded){ q.recorded = true; addQuizStat('jlpt', q.correct, q.deck.length); registerStudyActivity(); }
+    if(!q.recorded){ q.recorded = true; addQuizStat('jlpt', q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
     const best = bestQuizScore('jlpt');
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
       <div class="kqd-msg">${pct>=80?'🎉 Niveau examen atteint !':pct>=55?'👍 Tu serais reçue — continue pour la marge.':'💪 Revois les sections faibles ci-dessous.'}</div>
+      <div class="kqd-teacher">${quizLine(pct)}</div>
       <p style="font-size:13px;color:#7a7268;">${line('Vocabulaire')} · ${line('Kanji')} · ${line('Grammaire')}</p>
       <button class="kana-quiz-restart" id="jlptQuizRestart">🔄 Nouvelle session</button>
     </div>`;
@@ -571,6 +575,8 @@ function renderExamReport(panel){
     saveHistoryRecord(record);
     e.target.textContent = '✓ Sauvegardé';
     e.target.disabled = true;
+    if(passed) celebrate('examPass', { emoji:'🎓', title: 'Examen blanc réussi' });
+    celebrateNewBadges();
   });
   panel.querySelector('#examRestart').addEventListener('click', ()=> renderExamSetup(panel));
 }

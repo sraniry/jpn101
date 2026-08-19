@@ -3,6 +3,8 @@ import { GRAMMAR_DRILLS } from '../../data/grammar-drills.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
 import { registerStudyActivity, addQuizStat, getGrammarDrills, markGrammarDrill } from '../storage.js';
+import { celebrate, quizLine } from '../encouragement.js';
+import { celebrateNewBadges } from '../badges.js';
 
 // ---------- Grammaire : référence + mini-drill par section ----------
 // La référence reste du HTML statique (data/grammar.js). On l'injecte, puis on rattache
@@ -101,11 +103,13 @@ function renderDrill(host){
       s.recorded = true;
       addQuizStat('grammar', s.correct, s.questions.length);
       registerStudyActivity();
-      if(passed) markGrammarDrill(s.key);
+      if(passed){ markGrammarDrill(s.key); celebrate('grammarDrill', { emoji:'📐', title: 'Règle validée' }); }
+      celebrateNewBadges();
     }
     host.innerHTML = `<div class="gd-done">
       <div class="kqd-score">${s.correct}/${s.questions.length} — ${Math.round(pct*100)} %</div>
       <div class="kqd-msg">${passed ? '🎉 Règle validée !' : '💪 Il faut 80 % — relis la règle juste au-dessus et retente.'}</div>
+      ${!passed ? `<div class="kqd-teacher">${quizLine(pct*100)}</div>` : ''}
       <button class="gram-drill-start" data-key="${escapeHtml(s.key)}">🔄 Refaire</button>
       <button class="gd-close">Fermer</button>
     </div>`;

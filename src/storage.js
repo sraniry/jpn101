@@ -55,6 +55,11 @@ export function registerStudyActivity(){
     meta.streak = (meta.lastStudyDate && (new Date(today)-new Date(meta.lastStudyDate))/86400000 <= 1.5) ? (meta.streak||0)+1 : 1;
     meta.lastStudyDate = today; saveMeta();
     document.getElementById('streakBadge').textContent = '🔥 ' + meta.streak + ' jour' + (meta.streak===1?'':'s');
+    // Les paliers 7 et 30 jours ont déjà leur propre badge (célébré ailleurs) ; entre les
+    // deux, un petit mot rappelle que chaque jour compte, sans spammer le tout premier jour.
+    if(meta.streak >= 2 && meta.streak < 7){
+      import('./encouragement.js').then(({ celebrate }) => celebrate('streak', { emoji:'🔥', title: meta.streak + ' jours d\'affilée' }));
+    }
   }
 }
 

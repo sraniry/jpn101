@@ -3,12 +3,31 @@ import { CORE_SET } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
 import { renderHeader, refreshCounters } from '../main.js';
+import { celebrate } from '../encouragement.js';
+import { celebrateNewBadges } from '../badges.js';
+
+// Objectif de révisions du jour (doit rester aligné avec REVIEW_GOAL_CAP dans today.js) —
+// dupliqué en constante locale plutôt qu'importé pour ne pas créer de dépendance croisée
+// entre les deux vues pour une seule valeur.
+const REVIEW_GOAL_CAP = 30;
+let reviewGoalCelebrated = false; // évite de répéter le toast à chaque carte une fois l'objectif atteint
+let caughtUpCelebrated = false;   // idem pour "file vidée" : un seul toast par vidage, pas à chaque re-rendu
 
 let reviewQueue = [], currentReview = null, revealed = false;
 let drillMode = false, drillInfo = null, drillAnswered = false;
 let reviewedSinceBreak = 0, listenMode = false, dicteMode = false;
 let interleaveActive = false, interleaveCard = null, interleaveReps = 0;
 let lastTyped = '';
+
+// Appelé après chaque carte notée : vérifie l'objectif du jour et les badges (cartes ancrées,
+// pareto bouclé…) sans jamais répéter le même toast deux fois dans la même session.
+function afterRate(){
+  celebrateNewBadges();
+  if(!reviewGoalCelebrated && meta.plan && meta.plan.reviews >= REVIEW_GOAL_CAP){
+    reviewGoalCelebrated = true;
+    celebrate('reviewGoal', { emoji:'🎯', title: 'Objectif du jour atteint' });
+  }
+}
 
 const PARTICLE_SET = ['は','が','を','に','で','の'];
 function findParticleForDrill(jp){
@@ -83,6 +102,8 @@ function checkAnswer(typed, correct){
 }
 
 // ---------- review ----------
+let hadCardsThisSession = false; // pour ne fêter "file vidée" que si elle vient d'être vidée, pas si elle est née vide
+
 export function startReviewSession(){
   reviewQueue = buildQueue();
   if(reviewFilterTag){
@@ -92,11 +113,19 @@ export function startReviewSession(){
     if(filtered.length) reviewQueue = filtered; else reviewFilterTag = null;
   }
   reviewQueue._startCount = reviewQueue.length;
+  if(reviewQueue.length > 0) hadCardsThisSession = true;
   reviewedSinceBreak = 0; interleaveActive = false; nextReviewCard();
 }
 function nextReviewCard(){
   revealed = false; listenMode = false; lastTyped = ''; drillMode = false; drillAnswered = false;
-  if(reviewQueue.length === 0){ currentReview = null; renderReview(); return; }
+  if(reviewQueue.length === 0){
+    currentReview = null; renderReview();
+    if(hadCardsThisSession && !caughtUpCelebrated){
+      caughtUpCelebrated = true;
+      celebrate('reviewCaughtUp', { emoji:'✅', title: 'File vidée' });
+    }
+    return;
+  }
   currentReview = reviewQueue[0];
   if(currentReview.reps === 0) meta.newIntroducedCount = (meta.newIntroducedCount||0)+1;
   const candidate = currentReview.reps > 0 ? findParticleForDrill(currentReview.jp) : null;
@@ -203,7 +232,7 @@ export function renderReview(){
   const rb = document.getElementById('revealBtn'); if(rb) rb.addEventListener('click', e=>{ e.stopPropagation(); captureTyped(); revealed=true; renderReview(); });
   const ab = document.getElementById('archiveBtn');
   if(ab) ab.addEventListener('click', ()=>{
-    archiveCard(currentReview, true); savePhrases(); refreshCounters();
+    archiveCard(currentReview, true); savePhrases(); refreshCounters(); celebrateNewBadges();
     reviewQueue.shift(); nextReviewCard();
   });
 
@@ -212,7 +241,7 @@ export function renderReview(){
       const grade = parseInt(b.dataset.grade,10);
       rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
       const justStudied = currentReview;
-      reviewQueue.shift(); reviewedSinceBreak++; renderHeader();
+      reviewQueue.shift(); reviewedSinceBreak++; renderHeader(); afterRate();
       if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){
         reviewedSinceBreak = 0; interleaveActive = true; interleaveCard = justStudied; interleaveReps = 0; renderReview();
       } else nextReviewCard();
@@ -274,7 +303,7 @@ function renderParticleDrill(area){
         const grade = parseInt(b.dataset.grade,10);
         rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
         const justStudied = currentReview;
-        reviewQueue.shift(); reviewedSinceBreak++; renderHeader();
+        reviewQueue.shift(); reviewedSinceBreak++; renderHeader(); afterRate();
         if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){
           reviewedSinceBreak = 0; interleaveActive = true; interleaveCard = justStudied; interleaveReps = 0; renderReview();
         } else nextReviewCard();
@@ -282,7 +311,7 @@ function renderParticleDrill(area){
     });
     const adb = document.getElementById('archiveBtnDrill');
     if(adb) adb.addEventListener('click', ()=>{
-      archiveCard(currentReview, true); savePhrases();
+      archiveCard(currentReview, true); savePhrases(); celebrateNewBadges();
       reviewQueue.shift(); renderHeader(); nextReviewCard();
     });
   }

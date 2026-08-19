@@ -4,6 +4,8 @@ import { READING_GROUPS } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
 import { refreshCounters } from '../main.js';
+import { quizLine } from '../encouragement.js';
+import { celebrateNewBadges } from '../badges.js';
 
 const READING_ALL = READING_GROUPS.flatMap(g => g.items);
 
@@ -106,12 +108,13 @@ function renderReadingQuizCard(){
   const q = readingQuiz;
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
-    if(!q.recorded){ q.recorded = true; addQuizStat('reading', q.correct, q.deck.length); registerStudyActivity(); }
+    if(!q.recorded){ q.recorded = true; addQuizStat('reading', q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
     const best = bestQuizScore('reading');
     area.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
       <div class="kqd-msg">${pct>=90?'🎉 Tu reconnais les panneaux au premier coup d\'œil !':pct>=70?'👍 Bien parti.':'💪 Continue, ça vient vite avec la répétition.'}</div>
+      <div class="kqd-teacher">${quizLine(pct)}</div>
       <button class="kana-quiz-restart" id="readingQuizEnd">← Retour aux panneaux</button>
     </div>`;
     document.getElementById('readingQuizEnd').addEventListener('click', renderGrid);

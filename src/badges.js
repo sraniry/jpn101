@@ -1,7 +1,8 @@
-import { phrases, meta, getKanaPath, getConvDone, getExamHistory, bestQuizScore, getGrammarDrills } from './storage.js';
+import { phrases, meta, saveMeta, getKanaPath, getConvDone, getExamHistory, bestQuizScore, getGrammarDrills } from './storage.js';
 import { CONVERSATIONS, CORE_SET } from '../data/phrases.js';
 import { GRAMMAR_DRILLS } from '../data/grammar-drills.js';
 import { KANA_LESSONS } from './views/kana.js';
+import { celebrate } from './encouragement.js';
 
 // ---------- Badges ----------
 // Chaque badge est calculé à la volée depuis la progression réelle (aucun état dupliqué).
@@ -101,8 +102,18 @@ export function popNewlyEarned(){
   const seen = meta.badgesSeen || [];
   const earned = badgeState().filter(b => b.earned).map(b => b.id);
   const fresh = earned.filter(id => !seen.includes(id));
-  if(fresh.length){ meta.badgesSeen = earned; }
+  if(fresh.length){ meta.badgesSeen = earned; saveMeta(); }
   return fresh;
+}
+
+// À appeler après toute action qui pourrait débloquer un badge (fin de quiz, archivage,
+// dialogue terminé…). N'affiche qu'un badge à la fois même si plusieurs tombent d'un coup,
+// pour ne pas empiler les toasts.
+export function celebrateNewBadges(){
+  const fresh = popNewlyEarned();
+  if(!fresh.length) return;
+  const badge = BADGES.find(b => b.id === fresh[0]);
+  if(badge) celebrate('badge', { emoji: badge.icon, title: 'Badge débloqué — ' + badge.title });
 }
 
 export function badgesHtml(){

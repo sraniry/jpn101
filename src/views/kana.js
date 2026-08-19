@@ -2,6 +2,8 @@ import { HIRAGANA, KATAKANA, KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON
 import { speak } from '../tts.js';
 import { planMark, phrases, newCard, savePhrases, existingKeySet, cardKey,
          registerStudyActivity, getKanaPath, markKanaLesson, addQuizStat, bestQuizScore } from '../storage.js';
+import { celebrate, quizLine } from '../encouragement.js';
+import { celebrateNewBadges } from '../badges.js';
 
 // État du quiz
 let quizState = null;
@@ -134,13 +136,14 @@ function renderQuizCard() {
   const area = document.getElementById('kanaArea');
   if (!quizState || quizState.idx >= quizState.deck.length) {
     const pct = Math.round((quizState.correct / quizState.total) * 100);
-    if(!quizState.recorded){ quizState.recorded = true; addQuizStat('kana', quizState.correct, quizState.total); registerStudyActivity(); }
+    if(!quizState.recorded){ quizState.recorded = true; addQuizStat('kana', quizState.correct, quizState.total); registerStudyActivity(); celebrateNewBadges(); }
     const best = bestQuizScore('kana');
     area.querySelector('#kana-quiz-zone').innerHTML = `
       <div class="kana-quiz-done">
         <div class="kqd-score">${quizState.correct}/${quizState.total} — ${pct}%</div>
         ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
         <div class="kqd-msg">${pct >= 90 ? '🎉 Excellent !' : pct >= 70 ? '👍 Bien !' : '💪 Continue !'}</div>
+        <div class="kqd-teacher">${quizLine(pct)}</div>
         <button class="kana-quiz-restart">🔄 Recommencer</button>
       </div>`;
     area.querySelector('.kana-quiz-restart').addEventListener('click', () => startQuiz(quizState.pool, quizState.mode));
@@ -247,6 +250,8 @@ function renderLessonQuiz(panel, lesson){
     if(passed){
       markKanaLesson(lessonState.lessonIdx);
       planMark('kana');
+      celebrate('kanaLesson', { emoji:'あ', title: 'Leçon validée' });
+      celebrateNewBadges();
     }
     if(!q.recorded){ q.recorded = true; addQuizStat('kana', q.correct, q.deck.length); registerStudyActivity(); }
     panel.innerHTML = `<div class="kana-quiz-done">
