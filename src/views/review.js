@@ -2,7 +2,7 @@ import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStud
 import { CORE_SET } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
-import { renderHeader } from '../main.js';
+import { renderHeader, refreshCounters } from '../main.js';
 
 let reviewQueue = [], currentReview = null, revealed = false;
 let drillMode = false, drillInfo = null, drillAnswered = false;
@@ -203,8 +203,8 @@ export function renderReview(){
   const rb = document.getElementById('revealBtn'); if(rb) rb.addEventListener('click', e=>{ e.stopPropagation(); captureTyped(); revealed=true; renderReview(); });
   const ab = document.getElementById('archiveBtn');
   if(ab) ab.addEventListener('click', ()=>{
-    archiveCard(currentReview, true); savePhrases();
-    reviewQueue.shift(); renderHeader(); nextReviewCard();
+    archiveCard(currentReview, true); savePhrases(); refreshCounters();
+    reviewQueue.shift(); nextReviewCard();
   });
 
   area.querySelectorAll('.rate-row button').forEach(b=>{

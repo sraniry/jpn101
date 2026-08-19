@@ -31,6 +31,10 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'kana') renderKana();
     if(btn.dataset.view === 'grammar') renderGrammar();
     if(btn.dataset.view === 'jlpt') renderJlpt();
+    // « Mes phrases » n'a pas de fonction renderXxx dédiée : sans ceci, un archivage ou un
+    // ajout fait ailleurs (Réviser, Prononcer, Lire, JLPT) n'apparaissait qu'après une action
+    // qui redéclenchait un render() complet — la liste pouvait donc rester périmée.
+    if(btn.dataset.view === 'add') refreshCounters();
   });
 });
 
@@ -46,8 +50,17 @@ document.addEventListener('click', (e)=>{
 
 export function renderHeader(){ document.getElementById('dueCount').textContent = getDueAll().length; }
 
-export function render(){
+// Rafraîchit le badge « à revoir », les stats et la liste de « Mes phrases », SANS toucher
+// à la vue actuellement affichée. render() ci-dessous fait ça + re-rend la vue active — mais
+// quand l'appelant EST la vue active en train de gérer son propre re-rendu (ex: un bouton
+// « + Ajouter » dans Lire), appeler render() détruirait la confirmation visuelle qu'il vient
+// d'afficher avant qu'elle soit visible. refreshCounters() est le bon choix dans ce cas.
+export function refreshCounters(){
   renderHeader(); renderStats(); renderTagChips(); renderList(); renderSoundBars();
+}
+
+export function render(){
+  refreshCounters();
   const activeView = document.querySelector('section.view.active');
   if(activeView && activeView.id === 'view-today') renderToday();
   if(activeView && activeView.id === 'view-skills') renderSkills();

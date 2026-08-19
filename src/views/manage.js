@@ -27,7 +27,9 @@ export function setListFilterTag(tag){ listFilterTag = tag; }
 
 export function renderTagChips(){
   const chipsEl = document.getElementById('tagChips');
-  const tags = ['core', 'all', ...new Set(phrases.map(p=>p.tag)), 'archivées'];
+  // « archivées » juste après les deux premiers plutôt qu'en toute fin de liste — sinon elle
+  // se perd parmi les tags de contenu (café, verbes, voyage…) au fur et à mesure qu'ils s'accumulent.
+  const tags = ['core', 'all', 'archivées', ...new Set(phrases.map(p=>p.tag))];
   const label = t => t==='core' ? '⭐ Essentiels' : t==='all' ? 'Toutes' : t==='archivées' ? '🎓 Déjà sues' : t;
   chipsEl.innerHTML = tags.map(t=>`<span class="tag-chip ${t===listFilterTag?'active':''}" data-tag="${t}">${label(t)}</span>`).join('');
   chipsEl.querySelectorAll('.tag-chip').forEach(c=> c.addEventListener('click', ()=>{ listFilterTag = c.dataset.tag; renderList(); renderTagChips(); }));

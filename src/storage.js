@@ -148,6 +148,7 @@ export function migrateLegacyStores(){
   }
   if(!meta.convDone){ meta.convDone = []; changed = true; }
   if(!meta.grammarDrills){ meta.grammarDrills = []; changed = true; }
+  if(!meta.readingKnown){ meta.readingKnown = []; changed = true; }
   if(!meta.quizStats){ meta.quizStats = {}; changed = true; }
   if(!meta.badgesSeen){ meta.badgesSeen = []; changed = true; }
   if(changed) saveMeta();
@@ -170,6 +171,18 @@ export function getGrammarDrills(){ return meta.grammarDrills || []; }
 export function markGrammarDrill(key){
   const d = getGrammarDrills();
   if(key && !d.includes(key)){ meta.grammarDrills = [...d, key]; saveMeta(); }
+}
+
+// Panneaux/formulaires marqués « connus » dans Lire — indépendant du SRS : ces éléments ne
+// sont pas forcément importés dans les révisions, on veut juste ne plus les revoir en quiz.
+export function getReadingKnown(){ return meta.readingKnown || []; }
+export function markReadingKnown(jp){
+  const k = getReadingKnown();
+  if(jp && !k.includes(jp)){ meta.readingKnown = [...k, jp]; saveMeta(); }
+}
+export function unmarkReadingKnown(jp){
+  const k = getReadingKnown();
+  if(k.includes(jp)){ meta.readingKnown = k.filter(x=>x!==jp); saveMeta(); }
 }
 
 export function getConvDone(){ return meta.convDone || []; }

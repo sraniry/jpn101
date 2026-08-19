@@ -1,4 +1,5 @@
-import { phrases, registerStudyActivity, savePhrases } from '../storage.js';
+import { phrases, registerStudyActivity, savePhrases, archiveCard } from '../storage.js';
+import { refreshCounters } from '../main.js';
 import { speak, recState, toggleRecording } from '../tts.js';
 import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
 
@@ -9,11 +10,14 @@ export function setShadowFilterTag(tag){ shadowFilterTag = tag; }
 
 export function renderShadow(){
   const area = document.getElementById('shadowArea');
-  if(phrases.length === 0){ area.innerHTML = emptyState('Rien à répéter encore', 'Importe le pack A0 → A2 dans « Mes phrases », ou ajoute tes phrases.'); return; }
-  const tags = ['all', ...new Set(phrases.map(p=>p.tag))];
-  const filtered = shadowFilterTag === 'all' ? phrases : phrases.filter(p=>p.tag === shadowFilterTag);
+  // Une carte archivée (« Je connais déjà ») ne doit réapparaître nulle part, y compris ici —
+  // sinon archiver depuis Réviser n'empêche pas de retomber dessus en Prononcer.
+  const active = phrases.filter(p=>!p.archived);
+  if(active.length === 0){ area.innerHTML = emptyState('Rien à répéter encore', phrases.length ? 'Toutes tes phrases sont marquées « connues ». Ajoute-en dans « Mes phrases », ou remets-en une en revision.' : 'Importe le pack A0 → A2 dans « Mes phrases », ou ajoute tes phrases.'); return; }
+  const tags = ['all', ...new Set(active.map(p=>p.tag))];
+  const filtered = shadowFilterTag === 'all' ? active : active.filter(p=>p.tag === shadowFilterTag);
   if(shadowIdx >= filtered.length) shadowIdx = 0;
-  if(filtered.length === 0){ area.innerHTML = emptyState('Catégorie vide', 'Aucune phrase dans cette catégorie.'); return; }
+  if(filtered.length === 0){ area.innerHTML = emptyState('Catégorie vide', 'Aucune phrase active dans cette catégorie.'); return; }
   const card = filtered[shadowIdx];
 
   let html = `<div class="skills-intro">Écoute le modèle, répète à voix haute, puis <b>enregistre-toi et compare</b>. C'est l'exercice qui fait le plus progresser à l'oral — et le seul où tu produis vraiment du son. Compte les répétitions : 3 à 5 par phrase suffisent.</div>`;
@@ -33,6 +37,7 @@ export function renderShadow(){
   </div>`;
   if(card.note){ html += `<div class="explain-box shadow-explain"><span class="eb-label">Structure & grammaire</span>${formatExplain(card.note)}${grammarChipsHtml(card.jp)}</div>`; }
   html += `<div class="shadow-nav"><button id="prevPhrase">← Précédente</button><button id="nextPhrase">Suivante →</button></div>`;
+  html += `<button class="archive-btn" id="archiveBtnShadow">🎓 Je connais déjà — ne plus revoir</button>`;
   html += '</div>';
   area.innerHTML = html;
 
@@ -46,4 +51,10 @@ export function renderShadow(){
   const recPlayBtn = document.getElementById('recordPlayBtn');
   if(recPlayBtn) recPlayBtn.addEventListener('click', ()=>{ if(recState.url){ const a = new Audio(recState.url); a.play(); } });
   document.getElementById('nextPhrase').addEventListener('click', ()=>{ shadowIdx=(shadowIdx+1)%filtered.length; recState.recording=false; recState.url=null; recState.chunks=[]; renderShadow(); });
+  document.getElementById('archiveBtnShadow').addEventListener('click', ()=>{
+    archiveCard(card, true); savePhrases(); refreshCounters();
+    recState.recording=false; recState.url=null; recState.chunks=[];
+    if(shadowIdx >= filtered.length - 1) shadowIdx = 0;
+    renderShadow();
+  });
 }

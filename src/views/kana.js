@@ -6,6 +6,49 @@ import { planMark, phrases, newCard, savePhrases, existingKeySet, cardKey,
 // État du quiz
 let quizState = null;
 
+// ---------- Mots et phrases courantes utilisant les dérivés (゛゜ et combinaisons) ----------
+// Demandé explicitement : voir les dérivés dans du vocabulaire réel plutôt que dans un tableau
+// abstrait aide à les retenir. Trois groupes alignés sur les tableaux ci-dessus.
+const DERIVED_WORDS = {
+  dakuten: [
+    { jp:'頑張って', romaji:'Ganbatte', fr:'Courage ! / Fais de ton mieux !' },
+    { jp:'大丈夫です', romaji:'Daijoubu desu', fr:'Ça va, pas de problème.' },
+    { jp:'ご飯', romaji:'Gohan', fr:'Riz / repas' },
+    { jp:'鞄', romaji:'Kaban', fr:'Sac' },
+    { jp:'番号', romaji:'Bangou', fr:'Numéro' },
+    { jp:'残念です', romaji:'Zannen desu', fr:'C\'est dommage.' },
+    { jp:'全部でいくらですか', romaji:'Zenbu de ikura desu ka', fr:'Combien ça fait au total ?' },
+  ],
+  handakuten: [
+    { jp:'乾杯', romaji:'Kanpai', fr:'Santé ! (en trinquant)' },
+    { jp:'立派です', romaji:'Rippa desu', fr:'C\'est magnifique / splendide.' },
+    { jp:'出発します', romaji:'Shuppatsu shimasu', fr:'Je pars / le départ a lieu.' },
+    { jp:'元気いっぱい', romaji:'Genki ippai', fr:'Plein d\'énergie.' },
+    { jp:'ぴったりです', romaji:'Pittari desu', fr:'C\'est parfaitement adapté.' },
+    { jp:'鉛筆', romaji:'Enpitsu', fr:'Crayon' },
+  ],
+  yoon: [
+    { jp:'今日は何曜日ですか', romaji:'Kyou wa nan youbi desu ka', fr:'Quel jour sommes-nous aujourd\'hui ?' },
+    { jp:'写真を撮ってもいいですか', romaji:'Shashin wo tottemo ii desu ka', fr:'Puis-je prendre une photo ?' },
+    { jp:'電車に乗ります', romaji:'Densha ni norimasu', fr:'Je monte dans le train.' },
+    { jp:'お茶をください', romaji:'Ocha wo kudasai', fr:'Du thé, s\'il vous plaît.' },
+    { jp:'病院はどこですか', romaji:'Byouin wa doko desu ka', fr:'Où est l\'hôpital ?' },
+    { jp:'旅行が好きです', romaji:'Ryokou ga suki desu', fr:'J\'aime voyager.' },
+    { jp:'じゃあね', romaji:'Jaa ne', fr:'À plus ! (familier)' },
+    { jp:'三百円です', romaji:'Sanbyaku en desu', fr:'Ça fait 300 yens.' },
+  ],
+};
+function derivedWordsHtml(list){
+  return `<div class="kana-vocab-grid">${list.map(w=>
+    `<div class="kana-vocab-card derived-word" data-jp="${escapeHtmlAttr(w.jp)}">
+      <span class="kvc-jp">${w.jp}</span>
+      <span class="kvc-rom">${w.romaji}</span>
+      <span class="kvc-fr">${w.fr}</span>
+    </div>`
+  ).join('')}</div>`;
+}
+function escapeHtmlAttr(s){ return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
 // ---------- Parcours kana : leçons ordonnées, validées par quiz (≥ 80 %) ----------
 // Une leçon par ligne de base, puis les formes dérivées regroupées.
 const flatItems = groups => groups.flatMap(g => g.items);
@@ -319,18 +362,24 @@ export function renderKana() {
       </div>
       <h4 class="kana-table-title">Sonores ゛ — が・ざ・だ・ば</h4>
       ${renderCompactTable(KANA_DAKUTEN)}
+      <p class="kana-vocab-note">Ces sons dans des mots et phrases que tu vas vraiment utiliser — touche pour écouter :</p>
+      ${derivedWordsHtml(DERIVED_WORDS.dakuten)}
 
       <div class="kana-rule-note">
         <b>゜ (handakuten)</b> : uniquement sur la ligne H, fait « péter » un son P — comme une bulle qui pop.
       </div>
       <h4 class="kana-table-title">P ゜ — ぱ行</h4>
       ${renderCompactTable(KANA_HANDAKUTEN)}
+      <p class="kana-vocab-note">Plus rare, mais dans des mots très courants :</p>
+      ${derivedWordsHtml(DERIVED_WORDS.handakuten)}
 
       <div class="kana-rule-note">
         <b>Combinaisons yōon</b> : un petit や/ゆ/よ collé à une consonne en -i fusionne en une seule syllabe (きゃ = "kya", jamais "ki-ya").
       </div>
       <h4 class="kana-table-title">Combinaisons — きゃ・しゃ・ちゃ…</h4>
       ${renderCompactTable(KANA_YOON)}
+      <p class="kana-vocab-note">Les combinaisons yōon sont partout dans les mots du quotidien — voici les plus fréquentes, en mots et en phrases :</p>
+      ${derivedWordsHtml(DERIVED_WORDS.yoon)}
 
       <div class="kana-rule-note">
         <b>Sons étrangers</b> : katakana seul, sans équivalent hiragana, utilisés pour transcrire des sons absents du japonais natif (ex. ファ pour "fa").

@@ -1,7 +1,9 @@
 import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_QUIZ } from '../../data/jlpt-n5.js';
+import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { phrases, newCard, savePhrases, existingKeySet, cardKey, registerStudyActivity,
          getExamHistory, addExamRecord, addQuizStat, bestQuizScore } from '../storage.js';
+import { refreshCounters } from '../main.js';
 import { speak } from '../tts.js';
 import { escapeHtml, kanaToRomaji, annotateFurigana } from '../util.js';
 
@@ -106,7 +108,7 @@ function wireAddButtons(panel, groups, makeCard){
         if(existing.has(key)) return;
         phrases.push(card); existing.add(key); added++;
       });
-      if(added>0) await savePhrases();
+      if(added>0){ await savePhrases(); refreshCounters(); }
       b.textContent = added>0 ? added+' ajouté'+(added===1?'':'s')+' ✓' : 'Déjà dans tes révisions';
       setTimeout(()=>{ b.textContent = '+ Ajouter à mes révisions'; }, 2000);
     });
@@ -120,13 +122,27 @@ let kanjiSensQuiz = null;
 
 function renderKanjiPanel(panel){
   if(kanjiSensQuiz){ renderKanjiSensQuiz(panel); return; }
-  let html = `<div class="kana-rule-note"><b>${N5_KANJI_ALL.length} kanji officiels N5.</b> Lecture <b>on'yomi</b> (katakana, d'origine chinoise — dans les mots composés) et <b>kun'yomi</b> (hiragana, japonaise — mot seul), romaji entre parenthèses. Touche un kanji pour l'entendre. 💡 = astuce mnémotechnique, 🧩 = décomposition en radicaux (les briques qui composent le kanji).</div>
+  let html = `
+    <div class="onkun-explain">
+      <h4 class="kana-table-title" style="margin-top:0;">🤔 Pourquoi un même kanji se lit différemment ?</h4>
+      <p>Chaque kanji porte <b>deux types de lecture</b>, jamais utilisées en même temps :</p>
+      <ul class="onkun-list">
+        <li><b>音 On'yomi</b> (katakana ci-dessous) — lecture importée du chinois il y a des siècles. S'utilise quand le kanji est <b>combiné avec un autre kanji</b> pour former un mot composé.</li>
+        <li><b>訓 Kun'yomi</b> (hiragana ci-dessous) — lecture japonaise d'origine. S'utilise quand le kanji est <b>seul</b>, ou suivi de hiragana (okurigana).</li>
+      </ul>
+      <div class="onkun-example">
+        <b>日</b> (jour/soleil) : seul avec un okurigana → <span class="jpchunk">日</span>が出る <span class="romaji-sm">(hi ga deru — le soleil se lève, lecture kun ひ)</span>. Combiné à un autre kanji → 毎<span class="jpchunk">日</span> <span class="romaji-sm">(mainichi — tous les jours, lecture on にち)</span>.
+      </div>
+      <p class="onkun-tip">💡 Astuce qui marche presque toujours : <b>seul → kun'yomi, en groupe de kanji → on'yomi.</b> Pas la peine de mémoriser les deux d'un coup — laisse le contexte (mot seul ou composé) te guider.</p>
+    </div>
+    <div class="kana-rule-note"><b>${N5_KANJI_ALL.length} kanji officiels N5.</b> Romaji entre parenthèses pour chaque lecture. Touche un kanji pour l'entendre. 💡 = astuce mnémotechnique, 🧩 = radicaux, 📝 = phrase d'usage courante.</div>
     <button class="continue-btn" id="kanjiSensStart" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
   N5_KANJI.forEach((g, gi)=>{
     html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add" data-group="${gi}">+ Ajouter à mes révisions</button></div><div class="kanji-grid">`;
     g.items.forEach(it=>{
       const onR = it.on === '—' ? '—' : `${it.on} (${kanaToRomaji(it.on)})`;
       const kunR = it.kun === '—' ? '—' : `${it.kun} (${kanaToRomaji(it.kun)})`;
+      const sentence = KANJI_SENTENCES[it.k];
       html += `<div class="kanji-card" data-jp="${it.k}">
         <span class="kj-k">${it.k}</span>
         <span class="kj-rom">音 ${escapeHtml(onR)}<br>訓 ${escapeHtml(kunR)}</span>
@@ -134,12 +150,14 @@ function renderKanjiPanel(panel){
         <span class="kj-ex">${escapeHtml(annotateFurigana(it.ex))}</span>
         ${it.mnemo ? `<span class="kj-mnemo">💡 ${escapeHtml(it.mnemo)}</span>` : ''}
         ${it.radicals ? `<span class="kj-radicals">🧩 ${escapeHtml(it.radicals)}</span>` : ''}
+        ${sentence ? `<span class="kj-sentence" data-jp-sentence="${escapeHtml(sentence.jp)}">📝 ${escapeHtml(sentence.jp)}<br><span class="kj-sentence-rom">${escapeHtml(sentence.romaji)}</span><br><span class="kj-sentence-fr">${escapeHtml(sentence.fr)}</span></span>` : ''}
       </div>`;
     });
     html += `</div>`;
   });
   panel.innerHTML = html;
   panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
+  panel.querySelectorAll('.kj-sentence').forEach(s=> s.addEventListener('click', e=>{ e.stopPropagation(); speak(s.dataset.jpSentence, 0.85); }));
   // La lecture stockée dans la carte doit être du romaji latin : c'est la béquille de lecture.
   // Y mettre les kana bruts (イチ / ひと(つ)) remplaçait l'aide par du japonais supplémentaire.
   wireAddButtons(panel, N5_KANJI, it => {
