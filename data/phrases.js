@@ -198,7 +198,7 @@ export const SEED_PACK = [
     {jp:`払う（払います）`,romaji:`harau (haraimasu)`,fr:`payer`,tag:`verbes`,level:`A0`,ex:`カードで払えますか？(Kaado de haraemasu ka?) = On peut payer par carte ? 払えます = forme potentielle.`},
     {jp:`予約する（予約します）`,romaji:`yoyaku suru (yoyaku shimasu)`,fr:`réserver`,tag:`verbes`,level:`A1`,ex:`レストランを予約しました (Resutoran wo yoyaku shimashita) = J'ai réservé un restaurant. する verbs : [mot] + します.`},
     {jp:`助ける（助けます）`,romaji:`tasukeru (tasukemasu)`,fr:`aider`,tag:`verbes`,level:`A0`,ex:`助けてください！(Tasukete kudasai!) = Aidez-moi ! Forme -て + ください = demande directe.`},
-    {jp:`見せる（見せます）`,romaji:`miseru (misemasu)`,fr:`montrer`,tag:`verbes`,level:`A0`,ex:`地図を見せてください (Chizu wo misete kudasai) = Montrez-moi la carte. Ou : これを見せてください = montrez-moi ça.`},
+    {jp:`見せる（見せます）`,romaji:`miseru (misemasu)`,fr:`montrer`,tag:`verbes`,level:`A0`,ex:`地図（ちず / chizu）= plan, carte géographique — à ne pas confondre avec チーズ（chiizu）= fromage, prononciation proche mais i long. 地図を見せてください (Chizu wo misete kudasai) = Montrez-moi le plan. Ou : これを見せてください = montrez-moi ça.`},
     {jp:`書く（書きます）`,romaji:`kaku (kakimasu)`,fr:`écrire`,tag:`verbes`,level:`A0`,ex:`名前を書いてください (Namae wo kaite kudasai) = Écrivez votre nom s'il vous plaît. Forme -て de 書く = 書いて.`},
     {jp:`読む（読みます）`,romaji:`yomu (yomimasu)`,fr:`lire`,tag:`verbes`,level:`A0`,ex:`漢字が読めません (Kanji ga yomemasen) = Je ne sais pas lire les kanji. 読めます = forme potentielle de 読む.`},
     {jp:`知る（知っています）`,romaji:`shiru (shitte imasu)`,fr:`savoir / connaître`,tag:`verbes`,level:`A1`,ex:`知っています = je sais (état actuel). 知りません = je ne sais pas. Jamais 知ります pour l'état — toujours 知っています.`},
@@ -701,7 +701,7 @@ export const CONVERSATIONS = [
     ]},
     { speaker:'npc', jp:'歩いて5分くらいです。セブン-イレブンです。', romaji:'Aruite gofun kurai desu. Sebun irebun desu.', fr:'Environ 5 minutes à pied. C\'est un 7-Eleven.' },
     { speaker:'user', choices:[
-      { jp:'ありがとうございます。地図を見せてもらえますか？', romaji:'Arigatou gozaimasu. Chizu wo misete moraemasu ka?', fr:'Merci. Vous pouvez me montrer sur la carte ?', quality:'best', feedback:'Montrer ton téléphone avec Google Maps + cette phrase = combo parfait pour les directions complexes.' },
+      { jp:'ありがとうございます。地図を見せてもらえますか？', romaji:'Arigatou gozaimasu. Chizu wo misete moraemasu ka?', fr:'Merci. Vous pouvez me montrer sur le plan ?', quality:'best', feedback:'Montrer ton téléphone avec Google Maps + cette phrase = combo parfait pour les directions complexes.' },
       { jp:'ありがとうございます！', romaji:'Arigatou gozaimasu!', fr:'Merci !', quality:'ok', feedback:'Simple et suffisant si tu as bien compris.' },
       { jp:'セブン-イレブンはどこですか？', romaji:'Sebun irebun wa doko desu ka?', fr:'Où est le 7-Eleven ?', quality:'weak', feedback:'Il vient de te le dire ! Montre que tu as compris en répétant les directions.' }
     ]},

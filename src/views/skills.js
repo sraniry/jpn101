@@ -1,10 +1,11 @@
-import { phrases } from '../storage.js';
+import { phrases, getMasteredSkillsSeen, markSkillMasteredSeen } from '../storage.js';
 import { CORE_SET } from '../../data/phrases.js';
 import { escapeHtml, emptyState } from '../util.js';
 import { setShadowFilterTag } from './shadow.js';
 import { setListFilterTag } from './manage.js';
 import { setReviewFilterTag } from './review.js';
 import { badgesHtml } from '../badges.js';
+import { celebrate } from '../encouragement.js';
 
 // ---------- skills dashboard ----------
 const SKILL_META = {
@@ -28,6 +29,8 @@ export function renderSkills(){
   let html = `<div class="skills-intro">Chaque compétence regroupe des phrases par situation réelle. Une carte est « maîtrisée » dès qu'elle a un intervalle de révision ≥ 7 jours. Avec 30 min/jour, vise 1 compétence au niveau 5 par semaine.</div>`;
   html += `<div class="pareto-banner">⭐ <b>Pareto 20/80 :</b> les phrases marquées ⭐ sont les ~20% qui couvrent ~80% des situations réelles. Si tu es limité(e) en temps, maîtrise-les en priorité — elles se retrouvent dans presque toutes les compétences ci-dessous.</div>`;
   html += `<div class="skill-grid">`;
+  const seenMastered = getMasteredSkillsSeen();
+  let newlyMastered = null; // un seul toast même si plusieurs passent à 5/5 au même rendu
   Object.keys(byTag).sort((a,b)=> byTag[b].length - byTag[a].length).forEach(tag=>{
     const list = byTag[tag];
     const mastered = list.filter(p=>p.interval >= 7).length;
@@ -35,6 +38,7 @@ export function renderSkills(){
     const lvl = skillLevel(pct);
     const meta = SKILL_META[tag] || {icon:'📁', label:tag};
     const coreCount = list.filter(p=>CORE_SET.has(p.jp)).length;
+    if(lvl >= 5 && !seenMastered.includes(tag) && !newlyMastered) newlyMastered = { tag, label: meta.label };
     html += `<div class="skill-card" data-tag="${tag}">
       <div class="skill-head"><h4>${meta.icon} ${escapeHtml(meta.label)}${coreCount?`<span class="star-pill">⭐ ${coreCount}</span>`:''}</h4><span class="skill-level">Niveau ${lvl}/5</span></div>
       <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${pct}%"></div></div>
@@ -44,6 +48,10 @@ export function renderSkills(){
     </div>`;
   });
   html += `</div>`;
+  if(newlyMastered){
+    markSkillMasteredSeen(newlyMastered.tag);
+    celebrate('skillMastered', { emoji:'🏆', title:'Compétence maîtrisée', params:{ theme: newlyMastered.label } });
+  }
   html += badgesHtml();
   area.innerHTML = html;
   area.querySelectorAll('.skill-card').forEach(c=>{

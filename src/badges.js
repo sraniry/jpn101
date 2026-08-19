@@ -109,11 +109,17 @@ export function popNewlyEarned(){
 // À appeler après toute action qui pourrait débloquer un badge (fin de quiz, archivage,
 // dialogue terminé…). N'affiche qu'un badge à la fois même si plusieurs tombent d'un coup,
 // pour ne pas empiler les toasts.
+// Certains badges méritent un message dédié plutôt que le pool générique — le parcours kana
+// complet est un jalon symbolique fort (46 sons, toute la lecture japonaise en dépend).
+const DEDICATED_POOL = { 'kana-all': 'allKana' };
+
 export function celebrateNewBadges(){
   const fresh = popNewlyEarned();
   if(!fresh.length) return;
   const badge = BADGES.find(b => b.id === fresh[0]);
-  if(badge) celebrate('badge', { emoji: badge.icon, title: 'Badge débloqué — ' + badge.title });
+  if(!badge) return;
+  const context = DEDICATED_POOL[badge.id] || 'badge';
+  celebrate(context, { emoji: badge.icon, title: 'Badge débloqué — ' + badge.title });
 }
 
 export function badgesHtml(){

@@ -1,3 +1,5 @@
+import { celebrate } from './encouragement.js';
+
 const STORAGE_KEY = 'phrases-v2';
 const META_KEY = 'meta-v2';
 
@@ -52,13 +54,21 @@ export function updateStreak(){
 export function registerStudyActivity(){
   const today = todayStr();
   if(meta.lastStudyDate !== today){
-    meta.streak = (meta.lastStudyDate && (new Date(today)-new Date(meta.lastStudyDate))/86400000 <= 1.5) ? (meta.streak||0)+1 : 1;
+    const gapDays = meta.lastStudyDate ? (new Date(today)-new Date(meta.lastStudyDate))/86400000 : 0;
+    meta.streak = (meta.lastStudyDate && gapDays <= 1.5) ? (meta.streak||0)+1 : 1;
     meta.lastStudyDate = today; saveMeta();
     document.getElementById('streakBadge').textContent = '🔥 ' + meta.streak + ' jour' + (meta.streak===1?'':'s');
-    // Les paliers 7 et 30 jours ont déjà leur propre badge (célébré ailleurs) ; entre les
-    // deux, un petit mot rappelle que chaque jour compte, sans spammer le tout premier jour.
-    if(meta.streak >= 2 && meta.streak < 7){
-      import('./encouragement.js').then(({ celebrate }) => celebrate('streak', { emoji:'🔥', title: meta.streak + ' jours d\'affilée' }));
+    // Import statique (en tête de fichier) plutôt que dynamique : un import() différé
+    // résolvait APRÈS des toasts synchrones déclenchés dans le même clic (ex: « file vidée »
+    // en Réviser), et l'écrasait par accident selon l'ordre de résolution des promesses.
+    // Retour après une coupure : jamais de ton punitif sur la série perdue, uniquement un
+    // accueil rassurant. Prioritaire sur le message de streak (streak repart à 1 ce jour-là).
+    if(gapDays > 1.5){
+      celebrate('welcomeBack', { emoji:'👋', title:'Contente de te revoir' });
+    } else if(meta.streak >= 2 && meta.streak < 7){
+      // Les paliers 7 et 30 jours ont déjà leur propre badge (célébré ailleurs) ; entre les
+      // deux, un petit mot rappelle que chaque jour compte, sans spammer le tout premier jour.
+      celebrate('streak', { emoji:'🔥', title: meta.streak + ' jours d\'affilée' });
     }
   }
 }
@@ -154,6 +164,7 @@ export function migrateLegacyStores(){
   if(!meta.convDone){ meta.convDone = []; changed = true; }
   if(!meta.grammarDrills){ meta.grammarDrills = []; changed = true; }
   if(!meta.readingKnown){ meta.readingKnown = []; changed = true; }
+  if(!meta.masteredSkillsSeen){ meta.masteredSkillsSeen = []; changed = true; }
   if(!meta.quizStats){ meta.quizStats = {}; changed = true; }
   if(!meta.badgesSeen){ meta.badgesSeen = []; changed = true; }
   if(changed) saveMeta();
@@ -188,6 +199,14 @@ export function markReadingKnown(jp){
 export function unmarkReadingKnown(jp){
   const k = getReadingKnown();
   if(k.includes(jp)){ meta.readingKnown = k.filter(x=>x!==jp); saveMeta(); }
+}
+
+// Compétences (onglet Compétences) déjà célébrées au niveau 5/5 — évite de répéter le
+// toast de maîtrise à chaque re-rendu du dashboard une fois le niveau atteint.
+export function getMasteredSkillsSeen(){ return meta.masteredSkillsSeen || []; }
+export function markSkillMasteredSeen(tag){
+  const s = getMasteredSkillsSeen();
+  if(tag && !s.includes(tag)){ meta.masteredSkillsSeen = [...s, tag]; saveMeta(); }
 }
 
 export function getConvDone(){ return meta.convDone || []; }

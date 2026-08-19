@@ -19,13 +19,26 @@ let reviewedSinceBreak = 0, listenMode = false, dicteMode = false;
 let interleaveActive = false, interleaveCard = null, interleaveReps = 0;
 let lastTyped = '';
 
+// Stats de LA session en cours (remises à zéro à chaque startReviewSession) : elles seules
+// permettent de choisir un message qui décrit ce qui vient vraiment de se passer, plutôt
+// qu'un texte générique déconnecté de la réalité de la séance.
+let sessionTotal = 0, sessionGoodOrEasy = 0, sessionParticleWrong = 0;
+
 // Appelé après chaque carte notée : vérifie l'objectif du jour et les badges (cartes ancrées,
-// pareto bouclé…) sans jamais répéter le même toast deux fois dans la même session.
+// pareto bouclé…) sans jamais répéter le même toast deux fois dans la même session. Le
+// message choisi reflète les vraies stats de la séance (particules ratées, bonnes notes
+// majoritaires, ou simple décompte), jamais un texte générique.
 function afterRate(){
   celebrateNewBadges();
   if(!reviewGoalCelebrated && meta.plan && meta.plan.reviews >= REVIEW_GOAL_CAP){
     reviewGoalCelebrated = true;
-    celebrate('reviewGoal', { emoji:'🎯', title: 'Objectif du jour atteint' });
+    if(sessionParticleWrong >= 3){
+      celebrate('reviewParticleMistakes', { emoji:'🔁', title:'Objectif du jour atteint' });
+    } else if(sessionTotal > 0 && sessionGoodOrEasy / sessionTotal >= 0.75){
+      celebrate('reviewGoodGrades', { emoji:'🔁', title:'Objectif du jour atteint' });
+    } else {
+      celebrate('reviewCount', { emoji:'🎯', title:'Objectif du jour atteint', params:{ n: sessionTotal } });
+    }
   }
 }
 
@@ -114,6 +127,7 @@ export function startReviewSession(){
   }
   reviewQueue._startCount = reviewQueue.length;
   if(reviewQueue.length > 0) hadCardsThisSession = true;
+  sessionTotal = 0; sessionGoodOrEasy = 0; sessionParticleWrong = 0;
   reviewedSinceBreak = 0; interleaveActive = false; nextReviewCard();
 }
 function nextReviewCard(){
@@ -240,6 +254,7 @@ export function renderReview(){
     b.addEventListener('click', ()=>{
       const grade = parseInt(b.dataset.grade,10);
       rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
+      sessionTotal++; if(grade>=2) sessionGoodOrEasy++;
       const justStudied = currentReview;
       reviewQueue.shift(); reviewedSinceBreak++; renderHeader(); afterRate();
       if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){
@@ -291,6 +306,7 @@ function renderParticleDrill(area){
       b.addEventListener('click', ()=>{
         drillAnswered = true;
         const ok = b.dataset.p === info.particle;
+        if(!ok) sessionParticleWrong++;
         area.querySelectorAll('#drillChoices button').forEach(x=>{ if(x.dataset.p === info.particle) x.classList.add('correct'); });
         if(!ok) b.classList.add('wrong');
         speak(card.jp, 0.85);
@@ -302,6 +318,7 @@ function renderParticleDrill(area){
       b.addEventListener('click', ()=>{
         const grade = parseInt(b.dataset.grade,10);
         rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
+        sessionTotal++; if(grade>=2) sessionGoodOrEasy++;
         const justStudied = currentReview;
         reviewQueue.shift(); reviewedSinceBreak++; renderHeader(); afterRate();
         if(reviewedSinceBreak >= 5 && reviewQueue.length > 0){

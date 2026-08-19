@@ -2,7 +2,7 @@ import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_
 import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { phrases, newCard, savePhrases, existingKeySet, cardKey, registerStudyActivity,
-         getExamHistory, addExamRecord, addQuizStat, bestQuizScore } from '../storage.js';
+         getExamHistory, addExamRecord, addQuizStat, bestQuizScore, getQuizStats } from '../storage.js';
 import { refreshCounters } from '../main.js';
 import { speak } from '../tts.js';
 import { celebrate, quizLine } from '../encouragement.js';
@@ -311,7 +311,23 @@ function renderQuizCard(panel){
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
     const line = t => `${t} : ${q.byType[t][0]}/${q.byType[t][1]}`;
-    if(!q.recorded){ q.recorded = true; addQuizStat('jlpt', q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
+    if(!q.recorded){
+      q.recorded = true;
+      // Comparé à la tentative précédente AVANT d'enregistrer celle-ci, pour un vrai delta.
+      const prevHistory = getQuizStats('jlpt');
+      const prevBest = bestQuizScore('jlpt');
+      addQuizStat('jlpt', q.correct, q.deck.length); registerStudyActivity();
+      if(prevHistory.length){
+        const prev = prevHistory[prevHistory.length-1];
+        const prevPct = Math.round((prev.correct/prev.total)*100);
+        if(prevBest && q.correct >= prevBest.total * prevBest.pct && pct > Math.round(prevBest.pct*100)){
+          celebrate('quizRecord', { emoji:'🏆', title:'Nouveau record' });
+        } else if(pct > prevPct + 5){
+          celebrate('quizImprovement', { emoji:'📈', title:'Progrès mesuré', params:{ from:`${prev.correct}/${prev.total}`, to:`${q.correct}/${q.deck.length}`, delta: pct-prevPct, section:'ce quiz JLPT' } });
+        }
+      }
+      celebrateNewBadges();
+    }
     const best = bestQuizScore('jlpt');
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
@@ -557,6 +573,9 @@ function renderExamReport(panel){
   const record = { date: new Date().toISOString(), scores, total, passed, failedSections, topErrors };
   // Un examen blanc complet est une vraie session de travail : il doit compter dans la série.
   registerStudyActivity();
+  // Comparaison avec la tentative précédente, AVANT que celle-ci ne soit sauvegardée —
+  // c'est la seule façon d'avoir un vrai delta plutôt qu'un commentaire générique.
+  const prevRecord = getExamHistory().slice(-1)[0];
 
   panel.innerHTML = `
     <div class="exam-report">
@@ -575,7 +594,24 @@ function renderExamReport(panel){
     saveHistoryRecord(record);
     e.target.textContent = '✓ Sauvegardé';
     e.target.disabled = true;
-    if(passed) celebrate('examPass', { emoji:'🎓', title: 'Examen blanc réussi' });
+    if(passed){
+      celebrate('examPass', { emoji:'🎓', title: 'Examen blanc réussi' });
+    } else if(prevRecord){
+      // Cherche la plus grosse amélioration réelle, sinon signale la section la plus faible —
+      // jamais les deux en même temps pour ne pas noyer le message.
+      let bestDelta = null;
+      SECTION_ORDER.forEach(s=>{
+        const delta = scores[s].score60 - (prevRecord.scores[s] ? prevRecord.scores[s].score60 : 0);
+        if(!bestDelta || delta > bestDelta.delta) bestDelta = { section:s, delta, from:prevRecord.scores[s]?prevRecord.scores[s].score60:0, to:scores[s].score60 };
+      });
+      if(bestDelta && bestDelta.delta >= 5){
+        celebrate('quizImprovement', { emoji:'📈', title:'Progrès mesuré', params:{ from:`${bestDelta.from}/60`, to:`${bestDelta.to}/60`, delta:bestDelta.delta, section:bestDelta.section } });
+      } else if(failedSections.length){
+        celebrate('quizWeakSection', { emoji:'🎯', title:'Piste de travail', params:{ section: failedSections[0] } });
+      }
+    } else if(failedSections.length){
+      celebrate('quizWeakSection', { emoji:'🎯', title:'Piste de travail', params:{ section: failedSections[0] } });
+    }
     celebrateNewBadges();
   });
   panel.querySelector('#examRestart').addEventListener('click', ()=> renderExamSetup(panel));
