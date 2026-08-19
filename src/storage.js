@@ -79,7 +79,7 @@ export function archiveCard(card, archived){
 export function getDueAll(){ return phrases.filter(p => p.due <= nowTs() && !p.archived); }
 
 const LEVEL_ORDER = { 'A0':0, 'A1':1, 'A2':2, 'B1':3 };
-function levelRank(level){ return LEVEL_ORDER.hasOwnProperty(level) ? LEVEL_ORDER[level] : 99; }
+export function levelRank(level){ return LEVEL_ORDER.hasOwnProperty(level) ? LEVEL_ORDER[level] : 99; }
 
 export function buildQueue(){
   const today = todayStr();

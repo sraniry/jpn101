@@ -249,6 +249,10 @@ function renderParticleDrill(area){
       <button class="rate-hard" data-grade="1">Difficile</button>
       <button class="rate-good" data-grade="2">Bien</button>
       <button class="rate-easy" data-grade="3">Facile</button></div>`;
+    // Sans ce bouton, une carte contenant une particule pouvait ne jamais sortir des révisions :
+    // à chaque passage elle a une chance de tomber sur ce drill (findParticleForDrill), qui
+    // n'offrait que la notation — jamais l'archivage. Elle revenait donc indéfiniment.
+    html += `<button class="archive-btn" id="archiveBtnDrill">🎓 Je connais déjà — ne plus revoir</button>`;
   }
   html += `</div></div>`;
   area.innerHTML = html;
@@ -275,6 +279,11 @@ function renderParticleDrill(area){
           reviewedSinceBreak = 0; interleaveActive = true; interleaveCard = justStudied; interleaveReps = 0; renderReview();
         } else nextReviewCard();
       });
+    });
+    const adb = document.getElementById('archiveBtnDrill');
+    if(adb) adb.addEventListener('click', ()=>{
+      archiveCard(currentReview, true); savePhrases();
+      reviewQueue.shift(); renderHeader(); nextReviewCard();
     });
   }
 }

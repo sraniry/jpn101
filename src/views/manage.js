@@ -1,4 +1,4 @@
-import { phrases, meta, existingKeySet, cardKey, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll, exportProgressionJSON, importProgressionJSON } from '../storage.js';
+import { phrases, meta, existingKeySet, cardKey, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll, exportProgressionJSON, importProgressionJSON, levelRank } from '../storage.js';
 import { SEED_PACK, CORE_SET } from '../../data/phrases.js';
 import { escapeHtml } from '../util.js';
 import { render } from '../main.js';
@@ -39,12 +39,16 @@ export function renderList(){
   if(listFilterTag === 'archivées') items = phrases.filter(p=>p.archived);
   else if(listFilterTag === 'all') items = phrases.filter(p=>!p.archived);
   else items = phrases.filter(p=>p.tag===listFilterTag && !p.archived);
-  items = items.slice().sort((a,b)=>a.due-b.due);
+  // Tri par niveau (A0 → A1 → A2) en priorité, échéance en second critère : on apprend
+  // dans l'ordre plutôt que de sauter du vocabulaire A2 avant d'avoir vu tout le A0.
+  items = items.slice().sort((a,b)=> levelRank(a.level) - levelRank(b.level) || a.due-b.due);
   if(items.length === 0){ list.innerHTML = `<p style="font-size:13px;color:#9a9184;text-align:center;padding:20px;">${listFilterTag==='archivées' ? "Rien d'archivé pour l'instant — marque une phrase « Je connais déjà » pendant une révision, ou avec le bouton 🎓 ci-dessous." : 'Aucune phrase pour le moment.'}</p>`; return; }
+  let lastLevel = null;
   list.innerHTML = items.map(p=>{
     const isDue = p.due <= nowTs();
     const dueLabel = p.archived ? 'archivée' : (isDue ? 'à revoir' : 'dans ' + Math.max(1, Math.ceil((p.due-nowTs())/86400000)) + 'j');
-    return `<div class="phrase-item ${p.archived?'pi-archived':''}">
+    const header = (p.level !== lastLevel) ? (lastLevel = p.level, levelHeaderHtml(p.level)) : '';
+    return header + `<div class="phrase-item ${p.archived?'pi-archived':''}">
       <div class="pi-jp">${escapeHtml(p.jp)}${CORE_SET.has(p.jp)?' ⭐':''}</div>
       <div class="pi-mid"><div class="pi-romaji">${escapeHtml(p.romaji||'')}</div><div class="pi-fr">${escapeHtml(p.fr||'')}</div></div>
       ${p.level ? `<div class="pi-level">${escapeHtml(p.level)}</div>` : ''}
@@ -60,15 +64,31 @@ export function renderList(){
     if(p){ archiveCard(p, !p.archived); await savePhrases(); render(); }
   }));
 }
+// Petit en-tête inséré au changement de niveau dans une liste triée par levelRank —
+// rend le regroupement A0 → A1 → A2 visible plutôt qu'un simple tri silencieux.
+const LEVEL_INTRO = {
+  'A0':'Bases absolues — à voir en premier, avant tout le reste.',
+  'A1':'Une fois les bases à l\'aise : vocabulaire du quotidien.',
+  'A2':'Une fois l\'A1 confortable : situations plus élaborées.',
+};
+function levelHeaderHtml(level){
+  const label = level || 'Sans niveau';
+  const intro = LEVEL_INTRO[level] || '';
+  return `<div class="level-section-head"><span class="lsh-badge">${escapeHtml(label)}</span>${intro ? `<span class="lsh-intro">${escapeHtml(intro)}</span>` : ''}</div>`;
+}
+
 // Liste ⭐ Essentiels : construite depuis le SEED_PACK filtré par CORE_SET (source de vérité),
 // visible même avant l'import du pack. Indique si la carte est déjà dans les révisions.
 function renderCoreList(list){
   const inSrs = existingKeySet();
-  const core = SEED_PACK.filter(r => CORE_SET.has(r.jp));
+  const core = SEED_PACK.filter(r => CORE_SET.has(r.jp))
+    .slice().sort((a,b)=> levelRank(a.level) - levelRank(b.level));
+  let lastLevel = null;
   list.innerHTML = `<p style="font-size:12.5px;color:#7a7268;margin:0 0 10px;">Les <b>${core.length} phrases ⭐</b> qui couvrent ~80 % des situations réelles. Si tu manques de temps, maîtrise-les en priorité.</p>` +
     core.map(r=>{
       const added = inSrs.has(cardKey(r.jp, r.romaji));
-      return `<div class="phrase-item">
+      const header = (r.level !== lastLevel) ? (lastLevel = r.level, levelHeaderHtml(r.level)) : '';
+      return header + `<div class="phrase-item">
         <div class="pi-jp">⭐ ${escapeHtml(r.jp)}</div>
         <div class="pi-mid"><div class="pi-romaji">${escapeHtml(r.romaji||'')}</div><div class="pi-fr">${escapeHtml(r.fr||'')}</div></div>
         ${r.level ? `<div class="pi-level">${escapeHtml(r.level)}</div>` : ''}
