@@ -24,6 +24,7 @@ const AUTH_SDK = 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 let fb = null;        // { doc, getDoc, setDoc, serverTimestamp, db } une fois chargé
 let fbReadyPromise = null;
 let pushTimer = null;
+let fbLastError = null; // dernier message d'erreur Firebase, pour l'afficher à l'utilisatrice
 
 export function getSyncCode(){
   try { return (localStorage.getItem(SYNC_CODE_KEY) || '').trim(); } catch(e){ return ''; }
@@ -47,6 +48,7 @@ async function ensureFirebase(){
       return fb;
     } catch(e) {
       console.error('Firebase indisponible :', e);
+      fbLastError = (e && e.message) ? e.message : String(e);
       fb = null;
       return null;
     }
@@ -57,7 +59,10 @@ async function ensureFirebase(){
 function docRef(f, code){ return f.doc(f.db, 'progress', code); }
 
 // ---------- Indicateur visuel (bloc "Mes phrases") ----------
-function setIndicator(state){
+// detail : message d'erreur réel (Firebase/Firestore), affiché en title (survol) et dans
+// le texte sous le champ — sans lui, "⚠️ Erreur de synchronisation" ne dit jamais pourquoi,
+// impossible à diagnostiquer (navigation privée ? bloqueur de pub ? réseau ?).
+function setIndicator(state, detail){
   const el = document.getElementById('cloudSyncIndicator');
   if(!el) return;
   const map = {
@@ -69,6 +74,13 @@ function setIndicator(state){
   const [label, cls] = map[state] || ['', ''];
   el.textContent = label;
   el.className = 'cloud-sync-indicator ' + cls;
+  el.title = detail || '';
+  const status = document.getElementById('syncCodeStatus');
+  if(status && state === 'error'){
+    status.textContent = detail
+      ? `⚠️ ${detail} — vérifie que tu n'es pas en navigation privée et qu'aucun bloqueur de pub ne filtre google/gstatic.`
+      : `⚠️ Erreur inconnue — vérifie ta connexion, la navigation privée, ou un bloqueur de pub qui filtrerait Google.`;
+  }
 }
 export function updateSyncIndicator(){
   setIndicator(isSyncConfigured() ? 'synced' : 'unconfigured');
@@ -80,7 +92,7 @@ export async function pushToCloud(){
   if(!code) return;
   setIndicator('syncing');
   const f = await ensureFirebase();
-  if(!f){ setIndicator('error'); return; }
+  if(!f){ setIndicator('error', fbLastError); return; }
   try {
     await f.setDoc(docRef(f, code), {
       phrases,
@@ -91,7 +103,7 @@ export async function pushToCloud(){
     setIndicator('synced');
   } catch(e) {
     console.error('Push cloud échoué :', e);
-    setIndicator('error');
+    setIndicator('error', e && e.message);
   }
 }
 
@@ -109,7 +121,7 @@ export async function pullAndMerge(){
   if(!code) return;
   setIndicator('syncing');
   const f = await ensureFirebase();
-  if(!f){ setIndicator('error'); return; }
+  if(!f){ setIndicator('error', fbLastError); return; }
   try {
     const snap = await f.getDoc(docRef(f, code));
     if(!snap.exists()){
@@ -131,7 +143,7 @@ export async function pullAndMerge(){
     setIndicator('synced');
   } catch(e) {
     console.error('Pull cloud échoué :', e);
-    setIndicator('error');
+    setIndicator('error', e && e.message);
   }
 }
 
