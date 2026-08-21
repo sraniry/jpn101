@@ -1,5 +1,6 @@
 import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_QUIZ } from '../../data/jlpt-n5.js';
 import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
+import { KANJI_RADICALS } from '../../data/kanji-radicals.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { phrases, newCard, savePhrases, existingKeySet, cardKey, registerStudyActivity,
          getExamHistory, addExamRecord, addQuizStat, bestQuizScore, getQuizStats } from '../storage.js';
@@ -62,6 +63,7 @@ export function renderJlpt(){
     <div class="skills-intro">Préparation <b>JLPT N5</b> : les ${N5_KANJI_ALL.length} kanji officiels, ~${N5_VOCAB_ALL.length} mots essentiels, les ${N5_GRAMMAR.length} structures testées, un quiz rapide et un examen blanc complet.</div>
     <div class="kana-tabs">
       <button class="kana-tab active" data-tab="kanji">漢字 Kanji</button>
+      <button class="kana-tab" data-tab="radicals">🧩 Radicaux</button>
       <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
       <button class="kana-tab" data-tab="grammar">📐 Grammaire</button>
       <button class="kana-tab" data-tab="quiz">🎯 Quiz rapide</button>
@@ -87,6 +89,7 @@ export function renderJlpt(){
 function renderPanel(tab){
   const panel = document.getElementById('jlpt-panel');
   if(tab==='kanji') renderKanjiPanel(panel);
+  else if(tab==='radicals') renderRadicalsPanel(panel);
   else if(tab==='vocab') renderVocabPanel(panel);
   else if(tab==='grammar') renderGrammarPanel(panel);
   else if(tab==='quiz') renderQuizSetup(panel);
@@ -224,6 +227,42 @@ function renderKanjiSensQuiz(panel){
       panel.querySelector('#kanjiSensNext').addEventListener('click', ()=>{ q.idx++; renderKanjiPanel(panel); });
     });
   });
+}
+
+// ---------- 6a-bis. Radicaux ----------
+// La logique derrière l'apprentissage des kanji : au lieu de mémoriser 103 dessins isolés,
+// reconnaître les ~25 briques (radicaux) qui reviennent partout réduit le problème à
+// beaucoup moins d'éléments — et donne un SENS à la forme plutôt qu'un dessin à copier.
+const KANJI_FR_BY_CHAR = Object.fromEntries(N5_KANJI_ALL.map(it => [it.k, it.fr]));
+
+function renderRadicalsPanel(panel){
+  const totalKanjiCovered = new Set(KANJI_RADICALS.flatMap(r => r.k)).size;
+  let html = `
+    <div class="onkun-explain">
+      <h4 class="kana-table-title" style="margin-top:0;">🧩 Pourquoi apprendre les radicaux plutôt que chaque kanji seul ?</h4>
+      <p>Un kanji n'est presque jamais un dessin arbitraire : c'est un assemblage de <b>radicaux</b>, des briques visuelles qui portent chacune un sens ou une histoire. Une fois qu'une brique est connue, elle se reconnaît instantanément dans tous les autres kanji qui la contiennent.</p>
+      <div class="onkun-example">
+        Exemple concret : le radical <b class="jpchunk">木</b> (arbre) apparaît seul dans <b class="jpchunk">木</b> (arbre), puis combiné dans <b class="jpchunk">東</b> (est — le soleil qui se lève <i>derrière un arbre</i>), <b class="jpchunk">校</b> (école), <b class="jpchunk">来</b> (venir) et <b class="jpchunk">本</b> (livre/origine). Cinq kanji, une seule forme à reconnaître.
+      </div>
+      <p class="onkun-tip">💡 Cette page couvre <b>${KANJI_RADICALS.length} radicaux récurrents</b>, qui expliquent la construction de <b>${totalKanjiCovered} des ${N5_KANJI_ALL.length} kanji N5</b>. Touche un radical ou un kanji pour l'entendre. Le détail complet de chaque kanji reste dans l'onglet 漢字 Kanji (💡 astuce + 🧩 radicaux + 📝 phrase).</p>
+    </div>
+    <div class="radical-grid">`;
+  KANJI_RADICALS.forEach(r=>{
+    html += `<div class="radical-card">
+      <div class="radical-head">
+        <span class="radical-char" data-jp="${escapeHtml(r.r.split(' / ')[0])}">${escapeHtml(r.r)}</span>
+        <span class="radical-meaning">${escapeHtml(r.meaning)}</span>
+      </div>
+      <p class="radical-story">${escapeHtml(r.story)}</p>
+      <div class="radical-kanji-list">
+        ${r.k.map(k=>`<span class="radical-kanji-chip" data-jp="${escapeHtml(k)}">${escapeHtml(k)}<span class="rkc-fr">${escapeHtml(KANJI_FR_BY_CHAR[k]||'')}</span></span>`).join('')}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  panel.innerHTML = html;
+  panel.querySelectorAll('.radical-char, .radical-kanji-chip').forEach(el=>
+    el.addEventListener('click', ()=> speak(el.dataset.jp, 0.8)));
 }
 
 // ---------- 6b. Vocabulaire ----------
