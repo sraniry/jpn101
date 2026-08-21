@@ -1,5 +1,3 @@
-import { renderShadow } from './views/shadow.js';
-
 // ---------- robust TTS ----------
 let jaVoiceFound = null, voiceProbed = false, speakStatus = null; // null | 'speaking' | 'failed'
 // Chrome (hors Edge) souffre d'un bug macOS où speechSynthesis accepte l'utterance
@@ -92,42 +90,7 @@ export function wireSoundBar(el){
 }
 export function renderSoundBars(){
   const r = document.getElementById('soundBarReview');
-  const s = document.getElementById('soundBarShadow');
   const c = document.getElementById('soundBarConv');
   if(r){ r.innerHTML = soundBarHTML(); wireSoundBar(r); }
-  if(s){ s.innerHTML = soundBarHTML(); wireSoundBar(s); }
   if(c){ c.innerHTML = soundBarHTML(); wireSoundBar(c); }
-}
-
-// ---------- microphone recording ----------
-export let recState = { recording:false, url:null, chunks:[] };
-let mediaRecorder = null, mediaStream = null;
-export async function toggleRecording(){
-  if(recState.recording){
-    if(mediaRecorder) mediaRecorder.stop();
-    return;
-  }
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    alert("Ton navigateur ne permet pas l'enregistrement micro ici. Essaie dans Chrome.");
-    return;
-  }
-  try{
-    mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-    recState.chunks = [];
-    mediaRecorder = new MediaRecorder(mediaStream);
-    mediaRecorder.ondataavailable = e => { if(e.data.size>0) recState.chunks.push(e.data); };
-    mediaRecorder.onstop = ()=>{
-      const blob = new Blob(recState.chunks, { type:'audio/webm' });
-      if(recState.url) URL.revokeObjectURL(recState.url);
-      recState.url = URL.createObjectURL(blob);
-      recState.recording = false;
-      mediaStream.getTracks().forEach(t=>t.stop());
-      renderShadow();
-    };
-    mediaRecorder.start();
-    recState.recording = true;
-    renderShadow();
-  }catch(e){
-    alert("Micro refusé ou indisponible. Autorise l'accès au micro dans les réglages du site (icône 🔒 ou caméra dans la barre d'adresse).");
-  }
 }

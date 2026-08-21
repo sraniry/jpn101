@@ -11,3 +11,6 @@ plutôt que supprimés, car deux d'entre eux ont une valeur de sauvegarde.
 - `kanji.js` — ancien jeu de 79 kanji de l'onglet Alphabet. Ses caractères étaient tous
   inclus dans les 103 de `data/jlpt-n5.js`, avec moins d'information (pas de lectures
   on/kun, pas de radicaux). Les deux vues ont été fusionnées dans JLPT N5 → 漢字.
+- `shadow.js` — onglet « Prononcer » (répétition + enregistrement micro). Retiré à la
+  demande explicite de l'utilisatrice. Le mic-recording associé (recState/toggleRecording
+  dans src/tts.js) a été supprimé avec lui, n'étant utilisé que par cet écran.

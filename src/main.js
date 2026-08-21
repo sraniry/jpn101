@@ -3,7 +3,6 @@ import { loadAll, meta, getDueAll, updateStreak, migrateLegacyStores } from './s
 import { speak, renderSoundBars } from './tts.js';
 import { renderSkills } from './views/skills.js';
 import { startReviewSession, renderReview } from './views/review.js';
-import { renderShadow } from './views/shadow.js';
 import { renderConversationList } from './views/conversation.js';
 import { renderReading } from './views/reading.js';
 import { renderGrammar } from './views/grammar.js';
@@ -24,7 +23,6 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'today') renderToday();
     if(btn.dataset.view === 'skills') renderSkills();
     if(btn.dataset.view === 'review'){ renderSoundBars(); startReviewSession(); }
-    if(btn.dataset.view === 'shadow'){ renderSoundBars(); renderShadow(); }
     if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
     if(btn.dataset.view === 'listening') renderListening();
     if(btn.dataset.view === 'reading') renderReading();
@@ -32,8 +30,8 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'grammar') renderGrammar();
     if(btn.dataset.view === 'jlpt') renderJlpt();
     // « Mes phrases » n'a pas de fonction renderXxx dédiée : sans ceci, un archivage ou un
-    // ajout fait ailleurs (Réviser, Prononcer, Lire, JLPT) n'apparaissait qu'après une action
-    // qui redéclenchait un render() complet — la liste pouvait donc rester périmée.
+    // ajout fait ailleurs (Réviser, Lire, JLPT) n'apparaissait qu'après une action qui
+    // redéclenchait un render() complet — la liste pouvait donc rester périmée.
     if(btn.dataset.view === 'add') refreshCounters();
   });
 });
@@ -65,7 +63,6 @@ export function render(){
   if(activeView && activeView.id === 'view-today') renderToday();
   if(activeView && activeView.id === 'view-skills') renderSkills();
   if(activeView && activeView.id === 'view-review') startReviewSession();
-  if(activeView && activeView.id === 'view-shadow') renderShadow();
   if(activeView && activeView.id === 'view-conversation') renderConversationList();
   if(activeView && activeView.id === 'view-listening') renderListening();
   if(activeView && activeView.id === 'view-reading') renderReading();

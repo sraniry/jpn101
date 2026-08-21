@@ -9,7 +9,7 @@ import { celebrate, quizLine } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
 import { escapeHtml, kanaToRomaji, annotateFurigana } from '../util.js';
 
-// ---------- JLPT N5 : kanji, vocabulaire, grammaire, quiz, conseils, examen blanc, historique, planning ----------
+// ---------- JLPT N5 : kanji, vocabulaire, grammaire, quiz, conseils, examen blanc, historique ----------
 // Règle globale : aucun caractère japonais affiché seul sans sa lecture romaji juste en dessous —
 // sauf le kanji/particule dont la lecture EST la réponse cherchée (sinon le quiz n'a plus de sens),
 // révélée après la réponse comme partout ailleurs dans l'app.
@@ -59,7 +59,7 @@ export function renderJlpt(){
   const area = document.getElementById('jlptArea');
   quizState = null; examState = null; kanjiSensQuiz = null;
   area.innerHTML = `
-    <div class="skills-intro">Préparation <b>JLPT N5</b> : les ${N5_KANJI_ALL.length} kanji officiels, ~${N5_VOCAB_ALL.length} mots essentiels, les ${N5_GRAMMAR.length} structures testées, un quiz rapide, un examen blanc complet et ton planning jusqu'à l'épreuve de décembre.</div>
+    <div class="skills-intro">Préparation <b>JLPT N5</b> : les ${N5_KANJI_ALL.length} kanji officiels, ~${N5_VOCAB_ALL.length} mots essentiels, les ${N5_GRAMMAR.length} structures testées, un quiz rapide et un examen blanc complet.</div>
     <div class="kana-tabs">
       <button class="kana-tab active" data-tab="kanji">漢字 Kanji</button>
       <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
@@ -68,7 +68,6 @@ export function renderJlpt(){
       <button class="kana-tab" data-tab="exam">📝 Examen blanc</button>
       <button class="kana-tab" data-tab="tips">💡 Conseils</button>
       <button class="kana-tab" data-tab="history">📊 Historique</button>
-      <button class="kana-tab" data-tab="plan">🗓️ Planning</button>
     </div>
     <div id="jlpt-panel"></div>
   `;
@@ -94,7 +93,6 @@ function renderPanel(tab){
   else if(tab==='exam') renderExamSetup(panel);
   else if(tab==='tips') renderTipsPanel(panel);
   else if(tab==='history') renderHistoryPanel(panel);
-  else if(tab==='plan') renderPlanPanel(panel);
 }
 
 // État persistant du bouton de groupe : reflète ce qui est RÉELLEMENT dans les révisions
@@ -656,47 +654,3 @@ function renderHistoryPanel(panel){
   panel.innerHTML = html;
 }
 
-// ---------- 6h. Planning ----------
-// Semaines dynamiques : de maintenant jusqu'à fin novembre de l'année de l'examen
-// (le JLPT N5 a lieu le premier dimanche de décembre).
-const PLAN_PHASES = [
-  { theme:'Hiragana + Katakana complets', goal:'12 leçons kana validées', use:'Alphabet → Parcours (1-2 leçons/j) + Quiz', min:25 },
-  { theme:'Phrases ⭐ essentielles + premiers kanji', goal:'50 phrases ⭐ vues, kanji Nombres+Temps', use:'Réviser + Mes phrases (⭐) + JLPT N5 → Kanji', min:30 },
-  { theme:'Vocabulaire N5 : la moitié', goal:'~75 mots N5 dans le SRS', use:'JLPT N5 → Vocabulaire + Réviser + Écoute', min:30 },
-  { theme:'Vocabulaire N5 : le reste + kanji Verbes', goal:'~150 mots N5, 60 kanji vus', use:'JLPT N5 → Vocabulaire/Kanji + Réviser', min:30 },
-  { theme:'Grammaire N5 (structures 1-12)', goal:'12 structures comprises', use:'JLPT N5 → Grammaire + Grammaire + Conversation', min:30 },
-  { theme:'Grammaire N5 (structures 13-25)', goal:'25 structures comprises', use:'JLPT N5 → Grammaire + dialogues quotidiens', min:30 },
-  { theme:'Kanji : les 103 complets', goal:'Tous les kanji reconnus (quiz ≥ 80 %)', use:'JLPT N5 → Kanji + Quiz rapide', min:30 },
-  { theme:'Compréhension orale intensive', goal:'Écoute : ≥ 80 % aux deux modes', use:'Écoute (phrases + prix) + 🎧 dialogues', min:30 },
-  { theme:'Premier examen blanc', goal:'Identifier les sections faibles', use:'JLPT N5 → Examen blanc + Conseils', min:30 },
-  { theme:'Consolidation ciblée', goal:'Combler les lacunes du 1er examen blanc', use:'Aujourd\'hui + section faible identifiée', min:30 },
-  { theme:'Examen blanc + repos actif', goal:'2e examen blanc ≥ 80/180, dormir !', use:'JLPT N5 → Examen blanc + Écoute légère', min:25 },
-];
-
-function renderPlanPanel(panel){
-  const now = new Date();
-  const examYear = now.getMonth() >= 11 ? now.getFullYear()+1 : now.getFullYear();
-  const end = new Date(examYear, 10, 30); // 30 novembre
-  const weeks = [];
-  let cursor = new Date(now);
-  cursor.setHours(0,0,0,0);
-  // aligner sur le lundi de la semaine courante
-  cursor.setDate(cursor.getDate() - ((cursor.getDay()+6)%7));
-  while(cursor <= end){
-    const wEnd = new Date(cursor); wEnd.setDate(wEnd.getDate()+6);
-    weeks.push({ start:new Date(cursor), end:wEnd });
-    cursor.setDate(cursor.getDate()+7);
-  }
-  // répartir les phases sur les semaines disponibles (les dernières = consolidation)
-  const fmt = d => d.toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
-  let html = `<div class="kana-rule-note"><b>${weeks.length} semaines</b> jusqu'à fin novembre ${examYear} (examen N5 début décembre ${examYear}). Max 30 min/jour — la régularité fait tout. Semaine en cours en surbrillance.</div>
-  <div class="kana-table-wrap"><table class="gram jlpt-plan"><tr><th>Semaine</th><th>Thème</th><th>Objectif</th><th>Sections de l'app</th><th>Temps/j</th></tr>`;
-  weeks.forEach((w, i)=>{
-    const phaseIdx = Math.min(Math.floor(i * PLAN_PHASES.length / weeks.length), PLAN_PHASES.length-1);
-    const p = PLAN_PHASES[phaseIdx];
-    const isNow = now >= w.start && now <= new Date(w.end.getTime()+86399000);
-    html += `<tr class="${isNow?'plan-now':''}"><td><b>S${i+1}</b><br><span class="plan-dates">${fmt(w.start)} – ${fmt(w.end)}</span></td><td>${escapeHtml(p.theme)}</td><td>${escapeHtml(p.goal)}</td><td>${escapeHtml(p.use)}</td><td>~${p.min} min</td></tr>`;
-  });
-  html += `</table></div>`;
-  panel.innerHTML = html;
-}

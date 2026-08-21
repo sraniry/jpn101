@@ -672,3 +672,9 @@
   .tt-text b{ font-family:'Shippori Mincho',serif; font-size:14px; color:var(--indigo-deep); }
   .tt-text span{ font-size:12.5px; color:#4f4a40; line-height:1.5; }
   @media (prefers-reduced-motion: reduce){ .teacher-toast{ transition:opacity .2s ease; transform:translateX(-50%); } }
+
+  /* ---------- Quiz par section (Lire) ---------- */
+  .rg-head-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .rg-quiz{ border:1px solid var(--indigo); background:transparent; color:var(--indigo); font-size:11.5px;
+    font-weight:600; padding:6px 12px; border-radius:999px; cursor:pointer; font-family:'Work Sans',sans-serif; white-space:nowrap; }
+  .rg-quiz:hover{ background:var(--indigo); color:#fff; }

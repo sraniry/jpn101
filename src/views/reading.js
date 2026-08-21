@@ -15,7 +15,7 @@ function shuffle(arr){
   return a;
 }
 
-let readingQuiz = null; // { deck, idx, correct }
+let readingQuiz = null; // { deck, idx, correct, groupTitle }
 
 // ---------- reading / signs ----------
 export function renderReading(){
@@ -36,12 +36,17 @@ function groupAddLabel(items){
 function renderGrid(){
   const area = document.getElementById('readingArea');
   const known = getReadingKnown();
-  let html = `<div class="read-intro">Tu as dit « parler avant lire » — mais certains mots, tu dois les <b>reconnaître</b> sans hésiter pour survivre : toilettes, gauche/droite, entrée/sortie, interdit. Touche un panneau pour l'entendre, ou ajoute un groupe à tes révisions pour les ancrer.</div>`;
-  html += `<button class="continue-btn" id="readingQuizStart" style="margin-bottom:16px;">🎯 Quiz : reconnaître les panneaux (20 questions)</button>`;
+  let html = `<div class="read-intro">Tu as dit « parler avant lire » — mais certains mots, tu dois les <b>reconnaître</b> sans hésiter : panneaux, formulaires, et maintenant les menus de restaurant. Touche un mot pour l'entendre, ajoute un groupe à tes révisions, ou lance son quiz pour tester ta reconnaissance.</div>`;
   READING_GROUPS.forEach((g, gi)=>{
     const st = groupAddLabel(g.items);
     html += `<div class="read-group">
-      <div class="rg-head"><h3>${g.icon} ${g.title}</h3><button class="rg-add ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div>
+      <div class="rg-head">
+        <h3>${g.icon} ${g.title}</h3>
+        <div class="rg-head-actions">
+          <button class="rg-quiz" data-quiz-group="${gi}">🎯 Quiz</button>
+          <button class="rg-add ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button>
+        </div>
+      </div>
       <div class="sign-grid">`;
     g.items.forEach(it=>{
       const isKnown = known.includes(it.jp);
@@ -84,22 +89,27 @@ function renderGrid(){
       renderGrid();
     });
   });
-  document.getElementById('readingQuizStart').addEventListener('click', startReadingQuiz);
+  area.querySelectorAll('.rg-quiz').forEach(b=>{
+    b.addEventListener('click', ()=> startReadingQuiz(parseInt(b.dataset.quizGroup,10)));
+  });
 }
 
-// ---------- Quiz : reconnaître le panneau (jp → sens) ----------
-// Les panneaux marqués « connus » sont exclus du tirage, pour ne pas revoir en boucle
-// ce qu'elle maîtrise déjà — exactement la demande initiale.
-function startReadingQuiz(){
+// ---------- Quiz par section (jp → sens) ----------
+// Un quiz par groupe plutôt qu'un seul mélangeant tout : on peut cibler « Restaurant »
+// sans retomber sur des panneaux de toilettes. Les distracteurs viennent du même groupe
+// en priorité (choix thématiquement cohérents), complétés par le reste si le groupe est
+// petit. Les entrées marquées « connues » sont exclues du tirage, pas des distracteurs.
+function startReadingQuiz(groupIndex){
+  const g = READING_GROUPS[groupIndex];
   const known = getReadingKnown();
-  const pool = READING_ALL.filter(it => !known.includes(it.jp));
+  const pool = g.items.filter(it => !known.includes(it.jp));
+  const area = document.getElementById('readingArea');
   if(pool.length === 0){
-    const area = document.getElementById('readingArea');
-    area.innerHTML = `<div class="kana-rule-note">Tous les panneaux sont marqués « connus » — bravo ! <button class="continue-btn" id="readingQuizReset" style="margin-top:10px;">← Retour</button></div>`;
+    area.innerHTML = `<div class="kana-rule-note">Tout « ${escapeHtml(g.title)} » est marqué « connu » — bravo ! <button class="continue-btn" id="readingQuizReset" style="margin-top:10px;">← Retour</button></div>`;
     document.getElementById('readingQuizReset').addEventListener('click', renderGrid);
     return;
   }
-  readingQuiz = { deck: shuffle(pool).slice(0, Math.min(20, pool.length)), idx:0, correct:0 };
+  readingQuiz = { deck: shuffle(pool).slice(0, Math.min(15, pool.length)), idx:0, correct:0, groupIndex, groupTitle:g.title };
   renderReadingQuizCard();
 }
 
@@ -113,15 +123,22 @@ function renderReadingQuizCard(){
     area.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
-      <div class="kqd-msg">${pct>=90?'🎉 Tu reconnais les panneaux au premier coup d\'œil !':pct>=70?'👍 Bien parti.':'💪 Continue, ça vient vite avec la répétition.'}</div>
+      <div class="kqd-msg">${pct>=90?'🎉 Tu reconnais « '+escapeHtml(q.groupTitle)+' » au premier coup d\'œil !':pct>=70?'👍 Bien parti sur « '+escapeHtml(q.groupTitle)+' ».':'💪 Continue, ça vient vite avec la répétition.'}</div>
       <div class="kqd-teacher">${quizLine(pct)}</div>
-      <button class="kana-quiz-restart" id="readingQuizEnd">← Retour aux panneaux</button>
+      <button class="kana-quiz-restart" id="readingQuizEnd">← Retour</button>
     </div>`;
     document.getElementById('readingQuizEnd').addEventListener('click', renderGrid);
     return;
   }
   const card = q.deck[q.idx];
-  const others = shuffle(READING_ALL.filter(it=>it.fr!==card.fr)).slice(0,3);
+  // Distracteurs pris dans le même groupe en priorité (choix thématiquement cohérents) ;
+  // complétés par le reste des panneaux si le groupe est trop petit pour en fournir 3.
+  const sameGroupPool = READING_GROUPS[q.groupIndex].items.filter(it=>it.fr!==card.fr);
+  const others = shuffle(sameGroupPool).slice(0,3);
+  if(others.length < 3){
+    const extra = shuffle(READING_ALL.filter(it=>it.fr!==card.fr && !others.includes(it))).slice(0, 3-others.length);
+    others.push(...extra);
+  }
   const choices = shuffle([card, ...others]);
   area.innerHTML = `<div class="kana-quiz-card">
     <div class="kqc-progress">${q.idx+1} / ${q.deck.length}</div>

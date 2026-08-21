@@ -28,12 +28,9 @@ function suggestedConversations(n){
 }
 
 // 4e palier « bonus », en rotation quotidienne : il donne un point d'entrée quotidien aux
-// sections qui n'en avaient aucun (Prononcer, Écoute, Lire, JLPT) sans allonger le programme —
-// une seule d'entre elles est proposée chaque jour.
+// sections qui n'en avaient aucun (Écoute, Lire, JLPT) sans allonger le programme — une
+// seule d'entre elles est proposée chaque jour.
 const BONUS_ROTATION = [
-  { icon:'🎙️', title:'Prononcer à voix haute', time:'~5 min', view:'shadow',
-    desc:'Répète après le modèle et enregistre-toi pour comparer',
-    why:'Ton oreille juge mieux que n\'importe quelle note : t\'entendre après le modèle corrige l\'accent bien plus vite que de lire du romaji.' },
   { icon:'🎧', title:'Compréhension orale', time:'~5 min', view:'listening',
     desc:'Une série de 10 : phrases sans texte, ou prix au konbini',
     why:'À Kyoto, on te parlera sans sous-titres. S\'entraîner sans texte est le seul moyen d\'y préparer l\'oreille.' },
