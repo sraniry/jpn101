@@ -42,7 +42,16 @@ export function kanaToRomaji(str){
 // Ajoute la romanisation entre parenthèses juste après une furigana entre （）, ex: "一つ（ひとつ）" → "一つ（ひとつ / hitotsu）"
 export function annotateFurigana(str){
   if(!str) return '';
-  return str.replace(/（([^）]+)）/g, (m, kana) => `（${kana} / ${kanaToRomaji(kana)}）`);
+  return str.replace(/（([^）]+)）/g, (m, kana) => `（${kana} / ${rjMark(kanaToRomaji(kana))}）`);
+}
+
+// ---------- Marqueurs romaji dans du texte libre ----------
+// Un romaji noyé dans une phrase (explication, lecture d'un kanji…) doit pouvoir être masqué
+// seul. On l'entoure de ⟦…⟧ dans la donnée, et escapeRj() le transforme en <span class="rj-inline">
+// APRÈS l'échappement HTML — le module romajiToggle gère ensuite ces spans comme les autres.
+export function rjMark(s){ return '⟦' + s + '⟧'; }
+export function escapeRj(s){
+  return escapeHtml(s).replace(/⟦([^⟧]*)⟧/g, '<span class="rj-inline">$1</span>');
 }
 
 export function emptyState(title, body){ return `<div class="empty"><div class="stamp">合格</div><h3>${title}</h3><p>${body}</p></div>`; }

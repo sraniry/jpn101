@@ -155,7 +155,7 @@ function renderReadingQuizCard(){
       area.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
       speak(card.jp, 0.8);
       area.querySelector('#readingQuizReveal').innerHTML = `
-        <div class="listen-reveal"><b>${escapeHtml(card.jp)}</b> — ${escapeHtml(card.romaji)}${card.note?`<br>${escapeHtml(card.note)}`:''}</div>
+        <div class="listen-reveal"><b>${escapeHtml(card.jp)}</b> — <span class="rj-inline">${escapeHtml(card.romaji)}</span>${card.note?`<br>${escapeHtml(card.note)}`:''}</div>
         <div class="reading-quiz-actions">
           <button class="continue-btn" id="readingQuizNext">Continuer</button>
           <button class="archive-btn" id="readingQuizKnown">🎓 Je connais déjà — ne plus revoir</button>

@@ -113,7 +113,7 @@ function renderListenQuiz(){
       // révélation du texte APRÈS la réponse — on relie le son à l'écrit
       const reveal = isPrix
         ? `<b>${card}円</b> — ${escapeHtml(numberHint(card))}`
-        : `<b>${escapeHtml(card.jp)}</b><br>${escapeHtml(card.romaji||'')}`;
+        : `<b>${escapeHtml(card.jp)}</b><br><span class="rj-inline">${escapeHtml(card.romaji||'')}</span>`;
       document.getElementById('listenReveal').innerHTML = `<div class="listen-reveal">${reveal}</div><button class="continue-btn" id="listenNext" style="margin-top:12px;">Continuer</button>`;
       document.getElementById('listenNext').addEventListener('click', ()=>{ q.idx++; q.answered=false; renderListenQuiz(); });
     });

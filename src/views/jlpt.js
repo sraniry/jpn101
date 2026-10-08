@@ -8,7 +8,7 @@ import { refreshCounters } from '../main.js';
 import { speak } from '../tts.js';
 import { celebrate, quizLine } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
-import { escapeHtml, kanaToRomaji, annotateFurigana } from '../util.js';
+import { escapeHtml, escapeRj, rjMark, kanaToRomaji, annotateFurigana } from '../util.js';
 
 // ---------- JLPT N5 : kanji, vocabulaire, grammaire, quiz, conseils, examen blanc, historique ----------
 // Règle globale : aucun caractère japonais affiché seul sans sa lecture romaji juste en dessous —
@@ -162,14 +162,14 @@ function renderKanjiPanel(panel){
     const st = groupAddLabel(g.items, kanjiMakeCard);
     html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div><div class="kanji-grid">`;
     g.items.forEach(it=>{
-      const onR = it.on === '—' ? '—' : `${it.on} (${kanaToRomaji(it.on)})`;
-      const kunR = it.kun === '—' ? '—' : `${it.kun} (${kanaToRomaji(it.kun)})`;
+      const reading = r => r === '—' ? '—' : `${escapeHtml(r)} <span class="rj-inline">(${escapeHtml(kanaToRomaji(r))})</span>`;
+      const onR = reading(it.on), kunR = reading(it.kun);
       const sentence = KANJI_SENTENCES[it.k];
       html += `<div class="kanji-card" data-jp="${it.k}">
         <span class="kj-k">${it.k}</span>
-        <span class="kj-rom">音 ${escapeHtml(onR)}<br>訓 ${escapeHtml(kunR)}</span>
+        <span class="kj-rom">音 ${onR}<br>訓 ${kunR}</span>
         <span class="kj-fr">${escapeHtml(it.fr)}</span>
-        <span class="kj-ex">${escapeHtml(annotateFurigana(it.ex))}</span>
+        <span class="kj-ex">${escapeRj(annotateFurigana(it.ex))}</span>
         ${it.mnemo ? `<span class="kj-mnemo">💡 ${escapeHtml(it.mnemo)}</span>` : ''}
         ${it.radicals ? `<span class="kj-radicals">🧩 ${escapeHtml(it.radicals)}</span>` : ''}
         ${sentence ? `<span class="kj-sentence" data-jp-sentence="${escapeHtml(sentence.jp)}">📝 ${escapeHtml(sentence.jp)}<br><span class="kj-sentence-rom">${escapeHtml(sentence.romaji)}</span><br><span class="kj-sentence-fr">${escapeHtml(sentence.fr)}</span></span>` : ''}
@@ -220,9 +220,9 @@ function renderKanjiSensQuiz(panel){
       else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
       speak(card.k, 0.8);
-      const lectures = [card.on, card.kun].filter(r=>r && r!=='—').map(r=>`${r} (${kanaToRomaji(r)})`).join(' · ');
+      const lectures = [card.on, card.kun].filter(r=>r && r!=='—').map(r=>`${r} ${rjMark('('+kanaToRomaji(r)+')')}`).join(' · ');
       panel.querySelector('#kanjiSensReveal').innerHTML =
-        `<div class="listen-reveal"><b>${card.k}</b> = ${escapeHtml(card.fr)}<br>${escapeHtml(lectures)}<br>${escapeHtml(annotateFurigana(card.ex))}</div>
+        `<div class="listen-reveal"><b>${card.k}</b> = ${escapeHtml(card.fr)}<br>${escapeRj(lectures)}<br>${escapeRj(annotateFurigana(card.ex))}</div>
          <button class="continue-btn" id="kanjiSensNext" style="margin-top:12px;">Continuer</button>`;
       panel.querySelector('#kanjiSensNext').addEventListener('click', ()=>{ q.idx++; renderKanjiPanel(panel); });
     });
@@ -311,15 +311,15 @@ function renderGrammarPanel(panel){
 function buildQuizDeck(){
   const vocabQs = shuffle(N5_VOCAB_ALL).slice(0,20).map(v=>{
     const others = shuffle(N5_VOCAB_ALL.filter(x=>x.fr!==v.fr)).slice(0,3).map(x=>x.fr);
-    return { type:'Vocabulaire', q:`Que signifie « ${v.jp} » (${v.romaji}) ?`, jp:v.jp, choices:shuffle([v.fr,...others]), ok:v.fr,
-      explanation:`${v.jp} (${v.romaji}) = ${v.fr}.` };
+    return { type:'Vocabulaire', q:`Que signifie « ${v.jp} » ?`, qRomaji:v.romaji, jp:v.jp, choices:shuffle([v.fr,...others]), ok:v.fr,
+      explanation:`${v.jp} ${rjMark('('+v.romaji+')')} = ${v.fr}.` };
   });
   const kanjiQs = shuffle(N5_KANJI_ALL).slice(0,20).map(k=>{
     const reading = k.kun !== '—' ? k.kun : k.on;
     const pool = N5_KANJI_ALL.filter(x=>x.k!==k.k).map(x=> x.kun!=='—' ? x.kun : x.on);
     const choices = shuffle([reading,...shuffle([...new Set(pool)]).slice(0,3)]);
     return { type:'Kanji', q:`Quelle est la lecture de « ${k.k} » (${k.fr}) ?`, jp:k.k, choices, choicesRomaji:choices.map(kanaToRomaji), ok:reading,
-      explanation:`${k.k} se lit ${reading} (${kanaToRomaji(reading)}) — « ${k.fr} ». Exemple : ${annotateFurigana(k.ex)}` };
+      explanation:`${k.k} se lit ${reading} ${rjMark('('+kanaToRomaji(reading)+')')} — « ${k.fr} ». Exemple : ${annotateFurigana(k.ex)}` };
   });
   const gramQs = shuffle(N5_GRAMMAR_QUIZ).slice(0,20).map(g=>{
     const sc = shuffleChoicePair(g.choices, g.choicesRomaji);
@@ -395,7 +395,7 @@ function renderQuizCard(panel){
       else { btn.classList.add('wrong'); panel.querySelector('[data-ok="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
       speak(card.jp, 0.85);
-      panel.querySelector('#jqReveal').innerHTML = `<div class="listen-reveal">${escapeHtml(card.explanation)}</div><button class="continue-btn" id="jqNext" style="margin-top:12px;">Continuer</button>`;
+      panel.querySelector('#jqReveal').innerHTML = `<div class="listen-reveal">${escapeRj(card.explanation)}</div><button class="continue-btn" id="jqNext" style="margin-top:12px;">Continuer</button>`;
       panel.querySelector('#jqNext').addEventListener('click', ()=>{ q.idx++; renderQuizCard(panel); });
     });
   });
@@ -454,7 +454,7 @@ function buildExamSection1(){
   // 20 vocabulaire (sens) + 15 lecture de kanji = 35, comme la vraie section 文字・語彙
   const vocabQs = shuffle(N5_VOCAB_ALL).slice(0,20).map(v=>{
     const others = shuffle(N5_VOCAB_ALL.filter(x=>x.fr!==v.fr)).slice(0,3).map(x=>x.fr);
-    return { kind:'vocab', q:`Que signifie « ${v.jp} » (${v.romaji}) ?`, jp:v.jp, choices:shuffle([v.fr,...others]), ok:v.fr, tag:v.jp };
+    return { kind:'vocab', q:`Que signifie « ${v.jp} » ?`, qRomaji:v.romaji, jp:v.jp, choices:shuffle([v.fr,...others]), ok:v.fr, tag:v.jp };
   });
   const kanjiQs = shuffle(N5_KANJI_ALL).slice(0,15).map(k=>{
     const reading = k.kun !== '—' ? k.kun : k.on;
@@ -540,7 +540,7 @@ function renderExamQuestion(panel){
       <div class="romaji">${escapeHtml(card.romaji||'')}</div>
       <button class="listen-btn" id="examReplay">▶ Réécouter</button>
     </div>`;
-  } else if(card.kind === 'grammar'){
+  } else if(card.qRomaji){
     bodyHtml = `<div class="jq-question">${escapeHtml(card.q)}</div><div class="jq-q-romaji">${escapeHtml(card.qRomaji)}</div>`;
   } else {
     bodyHtml = `<div class="jq-question">${escapeHtml(card.q)}</div>`;

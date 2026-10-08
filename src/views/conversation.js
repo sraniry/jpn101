@@ -111,7 +111,7 @@ function renderConversationStage(){
   } else {
     html += `<div class="conv-choices" id="convChoices">`;
     turn.choices.forEach((ch, idx)=>{
-      html += `<button class="conv-choice-btn" data-idx="${idx}"><span class="cc-jp">${escapeHtml(ch.jp)}</span>${escapeHtml(ch.romaji)} — ${escapeHtml(ch.fr)}</button>`;
+      html += `<button class="conv-choice-btn" data-idx="${idx}"><span class="cc-jp">${escapeHtml(ch.jp)}</span><span class="rj-inline">${escapeHtml(ch.romaji)}</span> — ${escapeHtml(ch.fr)}</button>`;
     });
     html += `</div></div><div class="conv-nav-row"><button class="conv-back" id="convExit">← Quitter</button><div></div></div>`;
     area.innerHTML = html;

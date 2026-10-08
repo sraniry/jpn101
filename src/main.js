@@ -12,6 +12,7 @@ import { renderListening } from './views/listening.js';
 import { renderJlpt } from './views/jlpt.js';
 import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
 import { initCloudSync, initCloudSyncUI } from './cloudsync.js';
+import { initRomajiToggle } from './romajiToggle.js';
 
 // ---------- tabs ----------
 document.querySelectorAll('nav.tabs button').forEach(btn=>{
@@ -79,6 +80,7 @@ async function init(){
   migrateLegacyStores(); // rapatrie parcours kana + historique d'examens dans meta (donc dans la sauvegarde et la synchro)
   document.getElementById('dailyLimit').value = meta.dailyLimit || 40;
   updateImportBanner(); updateStreak(); render();
+  initRomajiToggle(); // après render() : meta est chargé (préférences romaji) et le DOM initial existe
   if(synced){
     alert('✅ Progression importée depuis le lien ! Tes révisions, archives et stats sont à jour.');
   }
