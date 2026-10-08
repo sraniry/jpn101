@@ -1,4 +1,4 @@
-import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity, planMark } from '../storage.js';
+import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity, planMark, saveMeta } from '../storage.js';
 import { CORE_SET } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
@@ -99,6 +99,27 @@ function canonicalize(s){
   });
   return out.trim();
 }
+// Mode « lecture » : le japonais est au recto, on tape sa lecture en romaji. On ignore la
+// casse, la ponctuation et la longueur des voyelles (ou/oo/o, uu/u) : l'objectif est de
+// vérifier qu'on sait LIRE les kana/kanji, pas de sanctionner une convention d'écriture.
+function romajiKey(s){
+  return (s||'').toLowerCase().replace(/ō/g,'oo').replace(/ū/g,'uu').replace(/[^a-z]/g,'')
+    .replace(/ou/g,'o').replace(/oo/g,'o').replace(/uu/g,'u');
+}
+function editDistance(a,b){
+  const d = Array.from({length:a.length+1},(_,i)=>[i]);
+  for(let j=1;j<=b.length;j++) d[0][j]=j;
+  for(let i=1;i<=a.length;i++) for(let j=1;j<=b.length;j++)
+    d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[a.length][b.length];
+}
+function checkRomaji(typed, correct){
+  const a = romajiKey(typed), b = romajiKey(correct);
+  if(!a) return null;
+  if(a === b) return 'good';
+  return editDistance(a,b) <= Math.max(1, Math.round(b.length*0.15)) ? 'close' : 'off';
+}
+function readMode(){ return meta.reviewReadMode !== false; } // défaut : on tape la lecture
 function checkAnswer(typed, correct){
   const a = canonicalize(normalize(typed)), b = canonicalize(normalize(correct));
   if(!a) return null;
@@ -158,7 +179,9 @@ export function renderReview(){
   let html = '<div class="review-wrap">';
   if(reviewFilterTag) html += `<div class="review-filter-chip">Filtré sur <b>${escapeHtml(reviewFilterTag)}</b><button id="clearReviewFilter" title="Revoir toutes les catégories">✕</button></div>`;
   html += `<div class="progress-row"><span>${doneToday} fait${doneToday===1?'':'s'}</span><div class="progress-bar"><i style="width:${Math.min(100,(doneToday/total)*100)}%"></i></div><span>${reviewQueue.length} restante${reviewQueue.length===1?'':'s'}</span></div>`;
+  const reading = readMode() && !listenMode && !dicteMode;
   html += `<div class="mode-row">
+    <button class="mode-chip ${readMode()?'active':''}" id="toggleRead" title="Bascule entre : taper la lecture en romaji / donner le sens en français">${readMode()?'🇯🇵 Je tape le romaji':'🇫🇷 Je donne le sens'}</button>
     <button class="mode-chip ${listenMode?'active':''}" id="toggleListen">🎧 Écoute</button>
     <button class="mode-chip ${dicteMode?'active':''}" id="toggleDicte">✏️ Dictée romaji</button>
   </div>`;
@@ -175,9 +198,12 @@ export function renderReview(){
     html += `<button class="listen-btn" id="listenPlayBtn">▶</button><div class="hint" style="margin-top:14px;">Écoute, devine le sens, puis touche pour révéler</div>`;
   } else {
     html += `<div class="jp-text">${colorizeJp(currentReview.jp)}</div>`;
-    html += `<div class="romaji">${escapeHtml(currentReview.romaji||'')}</div>`;
-    if(currentReview.pitch) html += renderPitch(currentReview.pitch);
-    if(!revealed) html += `<div class="hint">Dis le sens à voix haute, écris ta réponse, puis touche la carte</div>`;
+    // Mode lecture : pas de romaji au recto, sinon on recopierait au lieu de lire
+    if(!reading){
+      html += `<div class="romaji">${escapeHtml(currentReview.romaji||'')}</div>`;
+      if(currentReview.pitch) html += renderPitch(currentReview.pitch);
+    }
+    if(!revealed) html += `<div class="hint">${reading?'Lis cette phrase à voix haute et tape-la en romaji':'Dis le sens à voix haute, écris ta réponse, puis touche la carte'}</div>`;
   }
   if(revealed){
     html += `<div class="jp-text">${colorizeJp(currentReview.jp)}</div>`;
@@ -189,8 +215,8 @@ export function renderReview(){
   html += `</div>`;
 
   if(!revealed){
-    const placeholder = dicteMode ? 'Tape le romaji… ex: Konnichiwa' : 'Ça veut dire…';
-    const label = dicteMode ? 'Tape ce que tu entends en romaji (orthographe approximative OK)' : 'Ta réponse (effort de rappel, même incertain — la casse n\'a aucune importance)';
+    const placeholder = (dicteMode||reading) ? 'Tape le romaji… ex: Konnichiwa' : 'Ça veut dire…';
+    const label = dicteMode ? 'Tape ce que tu entends en romaji (orthographe approximative OK)' : reading ? 'Comment ça se lit ? Tape en romaji (casse, espaces, ou/oo : sans importance)' : 'Ta réponse (effort de rappel, même incertain — la casse n\'a aucune importance)';
     html += `<div class="recall-input"><label>${label}</label><textarea id="recallBox" rows="1" placeholder="${placeholder}" autocapitalize="off" autocorrect="off" spellcheck="false">${escapeHtml(lastTyped)}</textarea></div>`;
     html += `<button class="reveal-btn" id="revealBtn">Vérifier / Révéler</button>`;
   } else {
@@ -202,6 +228,14 @@ export function renderReview(){
         const map = { good:['good','✓ Bonne prononciation !'], close:['close','≈ Presque — regarde la diff'], off:['off','✗ Écoute encore'] };
         const v = map[verdict];
         html += `<div class="verdict ${v[0]}">${v[1]}<span class="ans">Romaji attendu : ${escapeHtml(romajiCorrect)}</span><span class="ans">Ta réponse : ${escapeHtml(lastTyped)}</span></div>`;
+      }
+    } else if(readMode() && !listenMode){
+      const romajiCorrect = currentReview.romaji||'';
+      const verdict = checkRomaji(lastTyped, romajiCorrect);
+      if(verdict){
+        const map = { good:['good','✓ Bien lu !'], close:['close','≈ Presque — compare avec la lecture'], off:['off','✗ Relis les kana'] };
+        const v = map[verdict];
+        html += `<div class="verdict ${v[0]}">${v[1]}<span class="ans">Lecture attendue : ${escapeHtml(romajiCorrect)}</span><span class="ans">Ta réponse : ${escapeHtml(lastTyped)}</span></div>`;
       }
     } else {
       const verdict = checkAnswer(lastTyped, currentReview.fr);
@@ -236,6 +270,7 @@ export function renderReview(){
 
   const cf = document.getElementById('clearReviewFilter');
   if(cf) cf.addEventListener('click', ()=>{ reviewFilterTag = null; startReviewSession(); });
+  const tr = document.getElementById('toggleRead'); if(tr) tr.addEventListener('click', ()=>{ captureTyped(); meta.reviewReadMode = !readMode(); saveMeta(); listenMode=false; dicteMode=false; revealed=false; lastTyped=''; renderReview(); });
   const tl = document.getElementById('toggleListen'); if(tl) tl.addEventListener('click', ()=>{ captureTyped(); listenMode=!listenMode; dicteMode=false; renderReview(); });
   const td = document.getElementById('toggleDicte'); if(td) td.addEventListener('click', ()=>{ captureTyped(); dicteMode=!dicteMode; listenMode=false; revealed=false; lastTyped=''; renderReview(); if(dicteMode) speak(currentReview.jp, 0.85); });
   const lpb = document.getElementById('listenPlayBtn'); if(lpb) lpb.addEventListener('click', e=>{ e.stopPropagation(); speak(currentReview.jp, 0.85); });
