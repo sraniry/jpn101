@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v20';
+const CACHE = 'nihongo-v21';
 const ASSETS = [
   './',
   './index.html',
@@ -34,7 +34,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' })))));
   self.skipWaiting();
 });
 
@@ -46,8 +46,9 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network-first pour les modules ES (dev friendly), cache sinon
+  // Network-first, en contournant le cache HTTP (GitLab Pages le garde ~10 min :
+  // sans ça, une mise en ligne reste invisible tant que Safari sert l'ancien JS)
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    fetch(e.request, { cache: 'no-cache' }).catch(() => caches.match(e.request))
   );
 });
