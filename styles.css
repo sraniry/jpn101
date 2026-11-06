@@ -737,6 +737,12 @@
 .conv-bd-toggle:hover{ opacity:1; text-decoration:underline; }
 .cbd-sep{ border:none; border-top:1px solid var(--line); margin:8px 0; }
 
+/* Pièges & annales */
+.pieges-subs{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 14px; }
+.po-sentence{ font-family:'Shippori Mincho',serif; font-size:20px; color:var(--indigo-deep); margin:10px 0 4px; line-height:1.8; }
+.po-slot{ display:inline-block; min-width:44px; text-align:center; border-bottom:2px solid var(--line); margin:0 3px; color:#9a9184; }
+.po-slot.star{ border-bottom-color:var(--vermillion); color:var(--vermillion); font-weight:700; }
+
 /* Écoutes N4 */
 .jl-setting{ font-size:13px; color:#7a7268; margin-bottom:8px; }
 .jl-review{ background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:12px; text-align:left; }

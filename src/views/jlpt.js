@@ -3,6 +3,7 @@ import { N4_KANJI } from '../../data/jlpt-n4.js';
 import { N4_VOCAB, N4_VOCAB_ALL } from '../../data/jlpt-n4-vocab.js';
 import { N4_GRAMMAR, N4_GRAMMAR_QUIZ } from '../../data/jlpt-n4-grammar.js';
 import { N4_LISTENING } from '../../data/jlpt-n4-listening.js';
+import { PIEGES } from '../../data/jlpt-pieges.js';
 import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
 import { KANJI_RADICALS } from '../../data/kanji-radicals.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
@@ -74,7 +75,7 @@ function weakCategory(){
 export function renderJlpt(){
   const area = document.getElementById('jlptArea');
   if(examState && examState.timerId) clearInterval(examState.timerId);
-  quizState = null; examState = null; kanjiSensQuiz = null; n4Listen = null;
+  quizState = null; examState = null; kanjiSensQuiz = null; n4Listen = null; piegesQuiz = null;
   const lv = L();
   const intro = jlptLevel === 'N5'
     ? `Préparation <b>JLPT N5</b> : les ${lv.kanjiAll.length} kanji officiels, ~${lv.vocabAll.length} mots essentiels, les ${lv.grammar.length} structures testées, un quiz rapide et un examen blanc complet.`
@@ -91,6 +92,7 @@ export function renderJlpt(){
       <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
       <button class="kana-tab" data-tab="grammar">📐 Grammaire</button>
       ${jlptLevel === 'N4' ? '<button class="kana-tab" data-tab="listen">🎧 Écoute</button>' : ''}
+      <button class="kana-tab" data-tab="pieges">⚠️ Pièges &amp; annales</button>
       <button class="kana-tab" data-tab="quiz">🎯 Quiz rapide</button>
       <button class="kana-tab" data-tab="exam">📝 Examen blanc</button>
       <button class="kana-tab" data-tab="tips">💡 Conseils</button>
@@ -109,7 +111,7 @@ export function renderJlpt(){
     tab.addEventListener('click', ()=>{
       area.querySelectorAll('#jlpt-tabs .kana-tab').forEach(t=>t.classList.remove('active'));
       tab.classList.add('active');
-      quizState = null; kanjiSensQuiz = null; n4Listen = null;
+      quizState = null; kanjiSensQuiz = null; n4Listen = null; piegesQuiz = null;
       if(examState && examState.timerId) clearInterval(examState.timerId);
       examState = null;
       renderPanel(tab.dataset.tab);
@@ -125,6 +127,7 @@ function renderPanel(tab){
   else if(tab==='vocab') renderVocabPanel(panel);
   else if(tab==='grammar') renderGrammarPanel(panel);
   else if(tab==='listen') renderN4ListeningPanel(panel);
+  else if(tab==='pieges') renderPiegesPanel(panel);
   else if(tab==='quiz') renderQuizSetup(panel);
   else if(tab==='exam') renderExamSetup(panel);
   else if(tab==='tips') renderTipsPanel(panel);
@@ -589,6 +592,113 @@ function dialogueReviewHtml(it, chosen){
     <div class="jl-answer">✓ ${escapeHtml(it.ok)}${chosen && chosen !== it.ok ? ` <span class="jl-chosen">— tu avais répondu : ${escapeHtml(chosen)}</span>` : ''}</div>
     <div class="listen-reveal">${escapeHtml(it.explanation)}</div>
   </div>`;
+}
+
+// ---------- Pièges & annales ----------
+// Contenu original inspiré du format officiel et des pièges récurrents (pas des sujets réels).
+let piegesSub = 'traps';
+let piegesQuiz = null;
+const PIEGES_SUBS = [['traps','⚠️ Pièges'],['quiz','🎯 Quiz pièges'],['order','★ Phrases à ordonner'],['format','📋 Types de questions'],['grammar','📐 Grammaire clé'],['themes','🗂️ Thèmes']];
+
+function exHtml(e){ return `<div class="jg-ex" data-jp="${escapeHtml(e.jp)}">🔊 <b>${escapeHtml(e.jp)}</b><span class="jg-rom">${escapeHtml(e.romaji)}</span><span class="jg-tr">${escapeHtml(e.fr)}</span></div>`; }
+
+function piegesBodyHtml(D){
+  if(piegesSub === 'traps'){
+    const cats = [...new Set(D.traps.map(t=>t.cat))];
+    return cats.map(c=>`<h4 class="kana-table-title" style="margin-top:16px;">${escapeHtml(c)}</h4>` +
+      D.traps.filter(t=>t.cat===c).map(t=>`<div class="jlpt-gram"><div class="jg-head"><span class="jg-s">${escapeHtml(t.title)}</span></div><div class="jg-fr">${escapeRj(escapeHtml(t.explanation))}</div>${t.examples.map(exHtml).join('')}</div>`).join('')).join('');
+  }
+  if(piegesSub === 'format'){
+    return D.format.map(f=>`<div class="jlpt-gram"><div class="jg-head"><span class="jg-s">${escapeHtml(f.name)}</span><span class="jg-new">${escapeHtml(f.section)}</span></div><div class="jg-fr">${escapeHtml(f.what)}</div><div class="jg-fr">💡 ${escapeHtml(f.tip)}</div></div>`).join('');
+  }
+  if(piegesSub === 'grammar'){
+    return `<div class="kana-rule-note">Classés du plus souvent évalué au moins souvent. Les structures marquées ✓ dans l'onglet Grammaire sont détaillées là-bas.</div>` +
+      D.topGrammar.map((g,i)=>`<div class="jlpt-gram"><div class="jg-head"><span class="jg-s">${i+1}. ${escapeHtml(g.s)}</span></div><div class="jg-fr">📌 ${escapeHtml(g.why)}</div><div class="jg-fr">⚠️ ${escapeHtml(g.trap)}</div></div>`).join('');
+  }
+  if(piegesSub === 'themes'){
+    return `<div class="kana-rule-note">Les sujets reviennent d'une session à l'autre : si tu connais le vocabulaire de ces situations, tu comprends déjà l'essentiel des textes.</div>` +
+      D.themes.map(t=>`<div class="jlpt-gram"><div class="jg-head"><span class="jg-s">${t.icon} ${escapeHtml(t.theme)}</span></div><div class="jg-fr">${escapeHtml(t.desc)}</div><div class="jg-fr">📖 ${escapeHtml(t.words)}</div></div>`).join('');
+  }
+  const isOrder = piegesSub === 'order';
+  const n = isOrder ? D.ordering.length : D.quiz.length;
+  return `<div class="kana-rule-note">${isOrder
+    ? `<b>Questions ★</b> : 4 morceaux à ranger pour former une phrase, et on te demande celui qui tombe dans la case ★ (la 3e). Astuce d'examen : construis d'abord toute la phrase sur ton brouillon, <b>puis</b> regarde la case ★.`
+    : `<b>${n} questions pièges</b> construites sur les erreurs classiques de l'examen : chaque mauvaise réponse est celle que beaucoup choisissent.`} Série de ${isOrder?10:15}, explication après chaque réponse.</div>
+    <button class="continue-btn" id="piegesStart">${isOrder?'★ Commencer les phrases à ordonner':'🎯 Commencer le quiz pièges'}</button>`;
+}
+
+function renderPiegesPanel(panel){
+  if(piegesQuiz){ renderPiegesCard(panel); return; }
+  const D = PIEGES[jlptLevel];
+  panel.innerHTML = `<div class="kana-rule-note">📚 Contenu <b>original</b>, construit d'après le format officiel du JLPT ${jlptLevel} et ses pièges récurrents. Ce ne sont pas des sujets réels : le JEES ne publie qu'un sujet d'exemple par niveau — fais-le sur le site officiel en plus.</div>
+    <div class="pieges-subs">${PIEGES_SUBS.map(([k,l])=>`<button class="mode-chip ${k===piegesSub?'active':''}" data-sub="${k}">${l}</button>`).join('')}</div>
+    <div id="piegesBody">${piegesBodyHtml(D)}</div>`;
+  panel.querySelectorAll('.pieges-subs .mode-chip').forEach(b=> b.addEventListener('click', ()=>{ piegesSub = b.dataset.sub; renderPiegesPanel(panel); }));
+  panel.querySelectorAll('.jg-ex').forEach(e=> e.addEventListener('click', ()=> speak(e.dataset.jp, 0.85)));
+  const start = panel.querySelector('#piegesStart');
+  if(start) start.addEventListener('click', ()=>{
+    if(piegesSub === 'order'){
+      piegesQuiz = { kind:'order', deck: shuffle(D.ordering).slice(0,10), idx:0, correct:0 };
+    } else {
+      const deck = shuffle(D.quiz).slice(0,15).map(g=>{
+        const sc = shuffleChoicePair(g.choices, g.choicesRomaji);
+        return { ...g, choices:sc.choices, choicesRomaji: sc.choicesRomaji && sc.choicesRomaji.map((r,i)=> r===sc.choices[i] ? '' : r) };
+      });
+      piegesQuiz = { kind:'quiz', deck, idx:0, correct:0 };
+    }
+    renderPiegesCard(panel);
+  });
+}
+
+function renderPiegesCard(panel){
+  const q = piegesQuiz, stat = `pieges-${jlptLevel}`;
+  if(q.idx >= q.deck.length){
+    const pct = Math.round((q.correct/q.deck.length)*100);
+    const key = stat + (q.kind === 'order' ? '-order' : '');
+    if(!q.recorded){ q.recorded = true; addQuizStat(key, q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
+    const best = bestQuizScore(key);
+    panel.innerHTML = `<div class="kana-quiz-done">
+      <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
+      <div class="kqd-msg">${pct>=80?'🎉 Tu évites les pièges !':pct>=55?'👍 Presque — relis les pièges ratés.':'💪 Retourne lire l\'onglet Pièges, puis recommence.'}</div>
+      <div class="kqd-teacher">${quizLine(pct)}</div>
+      <button class="kana-quiz-restart" id="piegesEnd">← Retour</button>
+    </div>`;
+    panel.querySelector('#piegesEnd').addEventListener('click', ()=>{ piegesQuiz = null; renderPiegesPanel(panel); });
+    return;
+  }
+  const card = q.deck[q.idx];
+  let body, choices, choicesRomaji = null, ok, reveal, jp;
+  if(q.kind === 'order'){
+    ok = card.pieces[2];
+    choices = shuffle([...card.pieces]);
+    const slots = ['＿＿','＿＿','★','＿＿'].map(s=>`<span class="po-slot${s==='★'?' star':''}">${s}</span>`).join('');
+    body = `<div class="jq-question">Quel morceau va dans la case ★ ?</div><div class="po-sentence">${escapeHtml(card.pre||'')}${slots}${escapeHtml(card.post||'')}</div><div class="jq-q-romaji">${escapeHtml(card.fr)}</div>`;
+    jp = (card.pre||'') + card.pieces.join('') + (card.post||'');
+    reveal = `<b>${escapeHtml(jp)}</b> ${rjMark('('+card.romaji+')')}<br>${escapeHtml(card.pieces.join(' → '))}<br>${escapeHtml(card.explanation)}`;
+  } else {
+    ok = card.ok; choices = card.choices; choicesRomaji = card.choicesRomaji;
+    body = `<div class="jq-question">${escapeHtml(card.q)}</div>${card.qRomaji && card.qRomaji !== card.q ? `<div class="jq-q-romaji">${escapeHtml(card.qRomaji)}</div>` : ''}`;
+    jp = /＿/.test(card.q) ? card.q.replace(/＿+/, ok) : null;
+    reveal = escapeHtml(card.explanation);
+  }
+  panel.innerHTML = `<div class="kana-quiz-card">
+    <div class="kqc-progress">${q.idx+1} / ${q.deck.length}${card.cat ? ` · <span class="jq-type">${escapeHtml(card.cat)}</span>` : ''}</div>
+    ${body}
+    <div class="kqc-choices listen-choices">${choiceButtonsHtml(choices, choicesRomaji, ok)}</div>
+    <div id="piegesReveal"></div>
+  </div>`;
+  panel.querySelectorAll('.kqc-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const good = btn.dataset.ok === 'true';
+      if(good){ btn.classList.add('correct'); q.correct++; }
+      else { btn.classList.add('wrong'); panel.querySelector('[data-ok="true"]').classList.add('correct'); }
+      panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
+      if(jp) speak(jp, 0.85);
+      panel.querySelector('#piegesReveal').innerHTML = `<div class="listen-reveal">${reveal}</div><button class="continue-btn" id="piegesNext" style="margin-top:12px;">Continuer</button>`;
+      panel.querySelector('#piegesNext').addEventListener('click', ()=>{ q.idx++; renderPiegesCard(panel); });
+    });
+  });
 }
 
 let n4Listen = null;
