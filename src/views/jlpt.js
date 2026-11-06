@@ -1,5 +1,7 @@
 import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_QUIZ } from '../../data/jlpt-n5.js';
 import { N4_KANJI } from '../../data/jlpt-n4.js';
+import { N4_VOCAB, N4_VOCAB_ALL } from '../../data/jlpt-n4-vocab.js';
+import { N4_GRAMMAR, N4_GRAMMAR_QUIZ } from '../../data/jlpt-n4-grammar.js';
 import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
 import { KANJI_RADICALS } from '../../data/kanji-radicals.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
@@ -34,10 +36,19 @@ let examState = null;
 let jlptLevel = 'N5';
 export function setJlptLevel(level){ jlptLevel = level; }
 
+// Tout ce qui change d'un niveau à l'autre. Formats d'examen : JEES (N4 = 25 + 55 + 35 min, réussite à 90/180).
+const LEVELS = {
+  N5: { kanjiAll:N5_KANJI_ALL, vocab:N5_VOCAB, vocabAll:N5_VOCAB_ALL, grammar:N5_GRAMMAR, gquiz:N5_GRAMMAR_QUIZ,
+        quizStat:'jlpt', minutes:{ Vocabulaire:25, Grammaire:50, Oral:30 }, passTotal:80 },
+  N4: { kanjiAll:N4_KANJI.flatMap(g=>g.items), vocab:N4_VOCAB, vocabAll:N4_VOCAB_ALL, grammar:N4_GRAMMAR, gquiz:N4_GRAMMAR_QUIZ,
+        quizStat:'jlpt-n4', minutes:{ Vocabulaire:25, Grammaire:55, Oral:35 }, passTotal:90 },
+};
+const L = () => LEVELS[jlptLevel];
+
 // ---------- Historique des examens blancs ----------
 // Stocké dans meta (via storage.js) : il suit ainsi l'export JSON et la synchro cloud,
 // contrairement à l'ancienne clé localStorage isolée.
-function loadHistory(){ return getExamHistory(); }
+function loadHistory(){ return getExamHistory().filter(r => (r.level || 'N5') === jlptLevel); }
 function saveHistoryRecord(record){ addExamRecord(record); }
 // Catégorie la plus faible sur l'ensemble de l'historique (pour Conseils + Historique)
 function weakCategory(){
@@ -61,45 +72,40 @@ function weakCategory(){
 
 export function renderJlpt(){
   const area = document.getElementById('jlptArea');
+  if(examState && examState.timerId) clearInterval(examState.timerId);
   quizState = null; examState = null; kanjiSensQuiz = null;
-  const n4Total = N4_KANJI.reduce((s,g)=>s+g.items.length,0);
+  const lv = L();
+  const intro = jlptLevel === 'N5'
+    ? `Préparation <b>JLPT N5</b> : les ${lv.kanjiAll.length} kanji officiels, ~${lv.vocabAll.length} mots essentiels, les ${lv.grammar.length} structures testées, un quiz rapide et un examen blanc complet.`
+    : `Préparation <b>JLPT N4</b> : ${lv.kanjiAll.length} kanji, ~${lv.vocabAll.length} mots et ${lv.grammar.length} structures <b>en plus</b> du N5 (aucun doublon), un quiz rapide et un examen blanc au format N4.`;
   area.innerHTML = `
     <div class="jlpt-level-switch">
       <button class="jlpt-level-btn ${jlptLevel==='N5'?'active':''}" data-level="N5">N5</button>
       <button class="jlpt-level-btn ${jlptLevel==='N4'?'active':''}" data-level="N4">N4</button>
     </div>
-    <div id="jlpt-level-n5" ${jlptLevel==='N4'?'style="display:none"':''}>
-      <div class="skills-intro">Préparation <b>JLPT N5</b> : les ${N5_KANJI_ALL.length} kanji officiels, ~${N5_VOCAB_ALL.length} mots essentiels, les ${N5_GRAMMAR.length} structures testées, un quiz rapide et un examen blanc complet.</div>
-      <div class="kana-tabs" id="jlpt-tabs-n5">
-        <button class="kana-tab active" data-tab="kanji">漢字 Kanji</button>
-        <button class="kana-tab" data-tab="radicals">🧩 Radicaux</button>
-        <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
-        <button class="kana-tab" data-tab="grammar">📐 Grammaire</button>
-        <button class="kana-tab" data-tab="quiz">🎯 Quiz rapide</button>
-        <button class="kana-tab" data-tab="exam">📝 Examen blanc</button>
-        <button class="kana-tab" data-tab="tips">💡 Conseils</button>
-        <button class="kana-tab" data-tab="history">📊 Historique</button>
-      </div>
-      <div id="jlpt-panel"></div>
+    <div class="skills-intro">${intro}</div>
+    <div class="kana-tabs" id="jlpt-tabs">
+      <button class="kana-tab active" data-tab="kanji">漢字 Kanji</button>
+      ${jlptLevel === 'N5' ? '<button class="kana-tab" data-tab="radicals">🧩 Radicaux</button>' : ''}
+      <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
+      <button class="kana-tab" data-tab="grammar">📐 Grammaire</button>
+      <button class="kana-tab" data-tab="quiz">🎯 Quiz rapide</button>
+      <button class="kana-tab" data-tab="exam">📝 Examen blanc</button>
+      <button class="kana-tab" data-tab="tips">💡 Conseils</button>
+      <button class="kana-tab" data-tab="history">📊 Historique</button>
     </div>
-    <div id="jlpt-level-n4" ${jlptLevel==='N5'?'style="display:none"':''}>
-      <div class="skills-intro">Préparation <b>JLPT N4</b> : ${n4Total} kanji N4 (sans doublons N5), avec lectures, mnémotechniques et exemples. Adapté pour le niveau intermédiaire.</div>
-      <div id="jlpt-panel-n4"></div>
-    </div>
+    <div id="jlpt-panel"></div>
   `;
   area.querySelectorAll('.jlpt-level-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
+      if(btn.dataset.level === jlptLevel) return;
       jlptLevel = btn.dataset.level;
-      area.querySelectorAll('.jlpt-level-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      area.querySelector('#jlpt-level-n5').style.display = jlptLevel==='N4' ? 'none' : '';
-      area.querySelector('#jlpt-level-n4').style.display = jlptLevel==='N5' ? 'none' : '';
-      if(jlptLevel==='N4') renderN4KanjiPanel(area.querySelector('#jlpt-panel-n4'));
+      renderJlpt();
     });
   });
-  area.querySelectorAll('#jlpt-tabs-n5 .kana-tab').forEach(tab=>{
+  area.querySelectorAll('#jlpt-tabs .kana-tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
-      area.querySelectorAll('#jlpt-tabs-n5 .kana-tab').forEach(t=>t.classList.remove('active'));
+      area.querySelectorAll('#jlpt-tabs .kana-tab').forEach(t=>t.classList.remove('active'));
       tab.classList.add('active');
       quizState = null; kanjiSensQuiz = null;
       if(examState && examState.timerId) clearInterval(examState.timerId);
@@ -108,12 +114,11 @@ export function renderJlpt(){
     });
   });
   renderPanel('kanji');
-  if(jlptLevel==='N4') renderN4KanjiPanel(area.querySelector('#jlpt-panel-n4'));
 }
 
 function renderPanel(tab){
   const panel = document.getElementById('jlpt-panel');
-  if(tab==='kanji') renderKanjiPanel(panel);
+  if(tab==='kanji') (jlptLevel === 'N4' ? renderN4KanjiPanel : renderKanjiPanel)(panel);
   else if(tab==='radicals') renderRadicalsPanel(panel);
   else if(tab==='vocab') renderVocabPanel(panel);
   else if(tab==='grammar') renderGrammarPanel(panel);
@@ -343,11 +348,13 @@ function renderRadicalsPanel(panel){
 }
 
 // ---------- 6b. Vocabulaire ----------
-function vocabMakeCard(it){ return newCard(it.jp, it.romaji, it.fr, it.note||'', 'N5', 'N5'); }
+function vocabMakeCard(it){ return newCard(it.jp, it.romaji, it.fr, it.note||'', jlptLevel, jlptLevel); }
 
 function renderVocabPanel(panel){
-  let html = `<div class="kana-rule-note"><b>~${N5_VOCAB_ALL.length} mots N5 essentiels</b> qui ne sont pas déjà dans le pack de phrases. Touche un mot pour l'entendre ; s'il a un 💡, retouche-le pour voir l'astuce. Ajoute un thème entier à tes révisions.</div>`;
-  N5_VOCAB.forEach((g, gi)=>{
+  const lv = L();
+  const what = jlptLevel === 'N5' ? 'mots N5 essentiels qui ne sont pas déjà dans le pack de phrases' : 'mots N4, en plus de ceux du N5';
+  let html = `<div class="kana-rule-note"><b>~${lv.vocabAll.length} ${what}</b>. Touche un mot pour l'entendre ; s'il a un 💡, retouche-le pour voir l'astuce. Ajoute un thème entier à tes révisions.</div>`;
+  lv.vocab.forEach((g, gi)=>{
     const st = groupAddLabel(g.items, vocabMakeCard);
     html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.icon} ${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div><div class="kana-vocab-grid">`;
     g.items.forEach(it=>{
@@ -365,13 +372,14 @@ function renderVocabPanel(panel){
     speak(c.dataset.jp, 0.85);
     if(c.classList.contains('has-note')) c.classList.toggle('expanded');
   }));
-  wireAddButtons(panel, N5_VOCAB, vocabMakeCard, ()=> renderVocabPanel(panel));
+  wireAddButtons(panel, L().vocab, vocabMakeCard, ()=> renderVocabPanel(panel));
 }
 
 // ---------- 6c. Grammaire ----------
 function renderGrammarPanel(panel){
-  let html = `<div class="kana-rule-note">Les <b>${N5_GRAMMAR.length} structures testées au N5</b>. Celles marquées ✓ sont déjà expliquées en détail dans l'onglet Grammaire. Touche un exemple pour l'entendre.</div>`;
-  N5_GRAMMAR.forEach(g=>{
+  const lv = L();
+  let html = `<div class="kana-rule-note">Les <b>${lv.grammar.length} structures testées au ${jlptLevel}</b>. Celles marquées ✓ sont déjà expliquées en détail dans l'onglet Grammaire. Touche un exemple pour l'entendre.</div>`;
+  lv.grammar.forEach(g=>{
     html += `<div class="jlpt-gram">
       <div class="jg-head"><span class="jg-s">${escapeHtml(g.s)}</span>${g.covered?'<span class="jg-covered">✓ dans Grammaire</span>':'<span class="jg-new">nouveau</span>'}</div>
       <div class="jg-s-romaji">${escapeHtml(g.sRomaji)}</div>
@@ -386,21 +394,22 @@ function renderGrammarPanel(panel){
 // ---------- 6d. Quiz rapide (mode A) ----------
 // 60 questions : 20 vocabulaire + 20 kanji + 20 grammaire, mélangées. Romaji + explication après chaque réponse.
 function buildQuizDeck(){
-  const vocabQs = shuffle(N5_VOCAB_ALL).slice(0,20).map(v=>{
-    const others = shuffle(N5_VOCAB_ALL.filter(x=>x.fr!==v.fr)).slice(0,3).map(x=>x.fr);
+  const { vocabAll, kanjiAll, gquiz } = L();
+  const vocabQs = shuffle(vocabAll).slice(0,20).map(v=>{
+    const others = shuffle(vocabAll.filter(x=>x.fr!==v.fr)).slice(0,3).map(x=>x.fr);
     return { type:'Vocabulaire', q:`Que signifie « ${v.jp} » ?`, qRomaji:v.romaji, jp:v.jp, choices:shuffle([v.fr,...others]), ok:v.fr,
       explanation:`${v.jp} ${rjMark('('+v.romaji+')')} = ${v.fr}.` };
   });
-  const kanjiQs = shuffle(N5_KANJI_ALL).slice(0,20).map(k=>{
+  const kanjiQs = shuffle(kanjiAll).slice(0,20).map(k=>{
     const reading = k.kun !== '—' ? k.kun : k.on;
-    const pool = N5_KANJI_ALL.filter(x=>x.k!==k.k).map(x=> x.kun!=='—' ? x.kun : x.on);
+    const pool = kanjiAll.filter(x=>x.k!==k.k).map(x=> x.kun!=='—' ? x.kun : x.on);
     const choices = shuffle([reading,...shuffle([...new Set(pool)]).slice(0,3)]);
     return { type:'Kanji', q:`Quelle est la lecture de « ${k.k} » (${k.fr}) ?`, jp:k.k, choices, choicesRomaji:choices.map(kanaToRomaji), ok:reading,
       explanation:`${k.k} se lit ${reading} ${rjMark('('+kanaToRomaji(reading)+')')} — « ${k.fr} ». Exemple : ${annotateFurigana(k.ex)}` };
   });
-  const gramQs = shuffle(N5_GRAMMAR_QUIZ).slice(0,20).map(g=>{
+  const gramQs = shuffle(gquiz).slice(0,20).map(g=>{
     const sc = shuffleChoicePair(g.choices, g.choicesRomaji);
-    return { type:'Grammaire', q:g.q, qRomaji:g.qRomaji, jp:g.q.replace('＿', g.ok), choices:sc.choices, choicesRomaji:sc.choicesRomaji, ok:g.ok,
+    return { type:'Grammaire', q:g.q, qRomaji:g.qRomaji, jp:g.q.replace(/＿+/, g.ok), choices:sc.choices, choicesRomaji:sc.choicesRomaji, ok:g.ok,
       explanation:g.explanation };
   });
   return shuffle([...vocabQs, ...kanjiQs, ...gramQs]);
@@ -428,9 +437,9 @@ function renderQuizCard(panel){
     if(!q.recorded){
       q.recorded = true;
       // Comparé à la tentative précédente AVANT d'enregistrer celle-ci, pour un vrai delta.
-      const prevHistory = getQuizStats('jlpt');
-      const prevBest = bestQuizScore('jlpt');
-      addQuizStat('jlpt', q.correct, q.deck.length); registerStudyActivity();
+      const prevHistory = getQuizStats(L().quizStat);
+      const prevBest = bestQuizScore(L().quizStat);
+      addQuizStat(L().quizStat, q.correct, q.deck.length); registerStudyActivity();
       if(prevHistory.length){
         const prev = prevHistory[prevHistory.length-1];
         const prevPct = Math.round((prev.correct/prev.total)*100);
@@ -442,7 +451,7 @@ function renderQuizCard(panel){
       }
       celebrateNewBadges();
     }
-    const best = bestQuizScore('jlpt');
+    const best = bestQuizScore(L().quizStat);
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
@@ -489,11 +498,11 @@ function renderTipsPanel(panel){
     <h4 class="kana-table-title">📋 Format officiel de l'examen (source : JEES)</h4>
     <div class="kana-table-wrap"><table class="gram jlpt-plan">
       <tr><th>Section</th><th>Durée</th><th>Questions</th><th>Score max</th></tr>
-      <tr><td>1 — Vocabulaire (文字・語彙)</td><td>25 min</td><td>~35</td><td>60 pts</td></tr>
-      <tr><td>2 — Grammaire + lecture (文法・読解)</td><td>50 min</td><td>~35</td><td>60 pts</td></tr>
-      <tr><td>3 — Compréhension orale (聴解)</td><td>30 min</td><td>~30</td><td>60 pts</td></tr>
+      <tr><td>1 — Vocabulaire (文字・語彙)</td><td>${L().minutes.Vocabulaire} min</td><td>~35</td><td>60 pts</td></tr>
+      <tr><td>2 — Grammaire + lecture (文法・読解)</td><td>${L().minutes.Grammaire} min</td><td>~35</td><td>60 pts</td></tr>
+      <tr><td>3 — Compréhension orale (聴解)</td><td>${L().minutes.Oral} min</td><td>~30</td><td>60 pts</td></tr>
     </table></div>
-    <div class="kana-rule-note" style="margin-top:12px;">Score total : <b>180 points</b>. Il existe un <b>score minimum par section</b> — on peut être éliminé sur une seule section, même avec un excellent score global. Seuil couramment cité : <b>≥ 19/60 par section</b> ET <b>≥ 80/180 au total</b> (à reconfirmer auprès du JEES pour la session exacte).</div>
+    <div class="kana-rule-note" style="margin-top:12px;">Score total : <b>180 points</b>. Il existe un <b>score minimum par section</b> — on peut être éliminé sur une seule section, même avec un excellent score global. Seuil couramment cité pour le ${jlptLevel} : <b>≥ 19/60 par section</b> ET <b>≥ ${L().passTotal}/180 au total</b>${jlptLevel==='N4' ? ' (au vrai N4, vocabulaire et grammaire sont notés ensemble sur 120, avec un minimum de 38)' : ''} — à reconfirmer auprès du JEES pour la session exacte.</div>
 
     <h4 class="kana-table-title" style="margin-top:20px;">🎯 Conseils stratégiques</h4>
     <ul class="tips-list">
@@ -520,33 +529,35 @@ function renderTipsPanel(panel){
 
 // ---------- 6f. Examen blanc (mode B) ----------
 const SECTION_META = {
-  Vocabulaire: { minutes:25, label:'Section 1 — Vocabulaire (文字・語彙)' },
-  Grammaire:   { minutes:50, label:'Section 2 — Grammaire + lecture (文法・読解)' },
-  Oral:        { minutes:30, label:'Section 3 — Compréhension orale (聴解)' },
+  Vocabulaire: { label:'Section 1 — Vocabulaire (文字・語彙)' },
+  Grammaire:   { label:'Section 2 — Grammaire + lecture (文法・読解)' },
+  Oral:        { label:'Section 3 — Compréhension orale (聴解)' },
 };
 const SECTION_ORDER = ['Vocabulaire','Grammaire','Oral'];
-const PASS_TOTAL = 80, PASS_SECTION = 19;
+const PASS_SECTION = 19;
 
 function buildExamSection1(){
   // 20 vocabulaire (sens) + 15 lecture de kanji = 35, comme la vraie section 文字・語彙
-  const vocabQs = shuffle(N5_VOCAB_ALL).slice(0,20).map(v=>{
-    const others = shuffle(N5_VOCAB_ALL.filter(x=>x.fr!==v.fr)).slice(0,3).map(x=>x.fr);
+  const { vocabAll, kanjiAll } = L();
+  const vocabQs = shuffle(vocabAll).slice(0,20).map(v=>{
+    const others = shuffle(vocabAll.filter(x=>x.fr!==v.fr)).slice(0,3).map(x=>x.fr);
     return { kind:'vocab', q:`Que signifie « ${v.jp} » ?`, qRomaji:v.romaji, jp:v.jp, choices:shuffle([v.fr,...others]), ok:v.fr, tag:v.jp };
   });
-  const kanjiQs = shuffle(N5_KANJI_ALL).slice(0,15).map(k=>{
+  const kanjiQs = shuffle(kanjiAll).slice(0,15).map(k=>{
     const reading = k.kun !== '—' ? k.kun : k.on;
-    const pool = N5_KANJI_ALL.filter(x=>x.k!==k.k).map(x=> x.kun!=='—' ? x.kun : x.on);
+    const pool = kanjiAll.filter(x=>x.k!==k.k).map(x=> x.kun!=='—' ? x.kun : x.on);
     const choices = shuffle([reading,...shuffle([...new Set(pool)]).slice(0,3)]);
     return { kind:'kanji', q:`Quelle est la lecture de « ${k.k} » (${k.fr}) ?`, jp:k.k, choices, choicesRomaji:choices.map(kanaToRomaji), ok:reading, tag:k.k };
   });
   return shuffle([...vocabQs, ...kanjiQs]);
 }
 function buildExamSection2(){
-  // 35 questions de grammaire à trous — les 24 structures existantes sont cyclées (mélangées deux fois) pour atteindre 35
-  const pool = shuffle([...N5_GRAMMAR_QUIZ, ...shuffle(N5_GRAMMAR_QUIZ)]).slice(0,35);
+  // 35 questions de grammaire à trous ; s'il y a moins de 35 questions, la liste est cyclée.
+  const gq = L().gquiz;
+  const pool = shuffle([...gq, ...shuffle(gq)]).slice(0,35);
   return pool.map(g => {
     const sc = shuffleChoicePair(g.choices, g.choicesRomaji);
-    return { kind:'grammar', q:g.q, qRomaji:g.qRomaji, jp:g.q.replace('＿', g.ok), choices:sc.choices, choicesRomaji:sc.choicesRomaji, ok:g.ok, tag:g.ok, explanation:g.explanation };
+    return { kind:'grammar', q:g.q, qRomaji:g.qRomaji, jp:g.q.replace(/＿+/, g.ok), choices:sc.choices, choicesRomaji:sc.choicesRomaji, ok:g.ok, tag:g.ok, explanation:g.explanation };
   });
 }
 function buildExamSection3(){
@@ -562,7 +573,7 @@ function buildExamSection3(){
 function renderExamSetup(panel){
   const weak = weakCategory();
   panel.innerHTML = `
-    <div class="kana-rule-note"><b>Examen blanc complet</b>, fidèle au format réel : 3 sections chronométrées (25 + 50 + 30 min), 90 questions au total. Pendant l'examen, pas de correction immédiate — comme le vrai jour J. Le rapport final arrive à la fin. La section passe automatiquement soit quand le temps est écoulé, soit dès que tu as répondu à toutes les questions.</div>
+    <div class="kana-rule-note"><b>Examen blanc ${jlptLevel} complet</b>, fidèle au format réel : 3 sections chronométrées (${SECTION_ORDER.map(s=>L().minutes[s]).join(' + ')} min), 90 questions au total, réussite à ${L().passTotal}/180. Pendant l'examen, pas de correction immédiate — comme le vrai jour J. Le rapport final arrive à la fin. La section passe automatiquement soit quand le temps est écoulé, soit dès que tu as répondu à toutes les questions.</div>
     ${weak ? `<div class="weak-point-banner">📌 Point à surveiller : <b>${escapeHtml(weak.cat)}</b> (${Math.round(weak.ratio*100)}% de réussite jusqu'ici).</div>` : ''}
     <button class="continue-btn" id="jlptExamStart">📝 Commencer l'examen blanc</button>
   `;
@@ -580,7 +591,7 @@ function renderExamSetup(panel){
 function startExamSection(panel){
   const sectionName = SECTION_ORDER[examState.sectionIdx];
   examState.idx = 0;
-  examState.secondsLeft = SECTION_META[sectionName].minutes * 60;
+  examState.secondsLeft = L().minutes[sectionName] * 60;
   if(examState.timerId) clearInterval(examState.timerId);
   examState.timerId = setInterval(()=>{
     examState.secondsLeft--;
@@ -681,15 +692,16 @@ function renderExamReport(panel){
   });
   const total = SECTION_ORDER.reduce((sum,s)=> sum + scores[s].score60, 0);
   const failedSections = SECTION_ORDER.filter(s => scores[s].score60 < PASS_SECTION);
-  const passed = total >= PASS_TOTAL && failedSections.length === 0;
+  const passTotal = L().passTotal;
+  const passed = total >= passTotal && failedSections.length === 0;
   const topErrors = topErrorTypes(examState.errors);
 
-  const record = { date: new Date().toISOString(), scores, total, passed, failedSections, topErrors };
+  const record = { date: new Date().toISOString(), level: jlptLevel, scores, total, passed, failedSections, topErrors };
   // Un examen blanc complet est une vraie session de travail : il doit compter dans la série.
   registerStudyActivity();
   // Comparaison avec la tentative précédente, AVANT que celle-ci ne soit sauvegardée —
   // c'est la seule façon d'avoir un vrai delta plutôt qu'un commentaire générique.
-  const prevRecord = getExamHistory().slice(-1)[0];
+  const prevRecord = loadHistory().slice(-1)[0];
 
   panel.innerHTML = `
     <div class="exam-report">
@@ -698,7 +710,7 @@ function renderExamReport(panel){
       <div class="exam-score-grid">
         ${SECTION_ORDER.map(s=>`<div class="exam-score-cell ${scores[s].score60<PASS_SECTION?'weak':''}"><b>${s}</b><span>${scores[s].correct}/${scores[s].total} · ${scores[s].score60}/60</span></div>`).join('')}
       </div>
-      ${failedSections.length ? `<div class="listen-reveal">Section${failedSections.length>1?'s':''} sous le seuil (< 19/60) : <b>${failedSections.join(', ')}</b>${!passed && failedSections.length===0 ? ' — c\'est le score total qui manque.' : ''}</div>` : (!passed ? `<div class="listen-reveal">Toutes les sections sont au-dessus du seuil, mais le total (${total}/180) reste sous 80.</div>` : '')}
+      ${failedSections.length ? `<div class="listen-reveal">Section${failedSections.length>1?'s':''} sous le seuil (< 19/60) : <b>${failedSections.join(', ')}</b>${!passed && failedSections.length===0 ? ' — c\'est le score total qui manque.' : ''}</div>` : (!passed ? `<div class="listen-reveal">Toutes les sections sont au-dessus du seuil, mais le total (${total}/180) reste sous ${passTotal}.</div>` : '')}
       ${topErrors.length ? `<div class="exam-errors"><b>Top erreurs à retravailler :</b><ul class="tips-list">${topErrors.map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul></div>` : ''}
       <button class="continue-btn" id="examSave">💾 Sauvegarder ce résultat</button>
       <button class="kana-quiz-restart" id="examRestart" style="margin-top:10px;">🔄 Nouvel examen blanc</button>
@@ -735,7 +747,7 @@ function renderExamReport(panel){
 function renderHistoryPanel(panel){
   const history = loadHistory();
   if(history.length === 0){
-    panel.innerHTML = `<div class="kana-rule-note">Aucun examen blanc sauvegardé pour l'instant. Passe un <b>Examen blanc</b> et clique « 💾 Sauvegarder ce résultat » pour commencer ton historique.</div>`;
+    panel.innerHTML = `<div class="kana-rule-note">Aucun examen blanc ${jlptLevel} sauvegardé pour l'instant. Passe un <b>Examen blanc</b> et clique « 💾 Sauvegarder ce résultat » pour commencer ton historique.</div>`;
     return;
   }
   const maxTotal = 180;
