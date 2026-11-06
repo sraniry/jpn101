@@ -600,33 +600,63 @@ export const CONVERSATIONS = [
   ]},
 
   { id:'konbini', icon:'🏪', title:'Au konbini (convenience store)', skill:'voyage', level:'A0-A1', turns:[
-    { speaker:'npc', jp:'いらっしゃいませ！', romaji:'Irasshaimase!', fr:'Bienvenue !' },
+    { speaker:'npc', jp:'いらっしゃいませ！', romaji:'Irasshaimase!', fr:'Bienvenue !', breakdown:[
+      { chunk:'いらっしゃいませ', role:'La formule d\'accueil universelle dans tout commerce japonais — konbini, restaurant, boutique.', tip:'Tu l\'entendras à chaque fois que tu pousses une porte. Pas besoin de répondre : un sourire ou un hochement de tête suffit.' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'これください', romaji:'Kore kudasai', fr:'Ça, s\'il vous plaît', quality:'best', feedback:'La phrase de survie numéro un au konbini — pointer + kudasai fonctionne toujours.' },
+      { jp:'これください', romaji:'Kore kudasai', fr:'Ça, s\'il vous plaît', quality:'best', feedback:'La phrase de survie numéro un au konbini — pointer + kudasai fonctionne toujours.', breakdown:[
+        { chunk:'これ', role:'"Ça" — le truc que tu montres du doigt. Pointer l\'objet + これ = aucun kanji à connaître.', tip:'これ = ici, それ = là-bas, あれ = là-bas loin. Au konbini tu n\'utiliseras que これ.' },
+        { chunk:'ください', role:'"Donnez-moi" — la formule magique pour commander ou demander n\'importe quoi.', tip:'[chose] + ください fonctionne partout : コーヒーください, レシートください.' }
+      ]},
       { jp:'これはいくらですか？', romaji:'Kore wa ikura desu ka?', fr:'C\'est combien ?', quality:'ok', feedback:'Valide pour demander un prix, mais le prix est affiché — pas toujours nécessaire.' },
       { jp:'買いたいです', romaji:'Kaitai desu', fr:'Je veux acheter', quality:'weak', feedback:'Grammaticalement correct mais inhabituel au konbini — kudasai est plus naturel.' }
     ]},
-    { speaker:'npc', jp:'温めますか？', romaji:'Atatamemasu ka?', fr:'Je vous le chauffe ?' },
+    { speaker:'npc', jp:'温めますか？', romaji:'Atatamemasu ka?', fr:'Je vous le chauffe ?', breakdown:[
+      { chunk:'温め', role:'"Chauffer" — de 温める (atatameru). Tu verras ce mot pour les plats préparés.', tip:'温かい (atatakai) = chaud/tiède. Le même radical 温 revient dans les onsen (温泉).' },
+      { chunk:'ますか', role:'Question polie — ます rend la phrase formelle, か transforme en question.', tip:'La forme ますか est la question de base dans tout échange commercial japonais.' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'はい、お願いします', romaji:'Hai, onegaishimasu', fr:'Oui, s\'il vous plaît', quality:'best', feedback:'Simple et poli — tu entendras cette question pour les plats préparés (bento, onigiri chaud).' },
+      { jp:'はい、お願いします', romaji:'Hai, onegaishimasu', fr:'Oui, s\'il vous plaît', quality:'best', feedback:'Simple et poli — tu entendras cette question pour les plats préparés (bento, onigiri chaud).', breakdown:[
+        { chunk:'はい', role:'"Oui" — simple et clair. Entre proches on dit うん.', tip:'はい sert aussi de "je vous écoute / présent" quand quelqu\'un t\'appelle.' },
+        { chunk:'お願いします', role:'"S\'il vous plaît / je vous en prie" — la formule magique pour accepter n\'importe quelle proposition.', tip:'お願いします (onegaishimasu) te sortira de quasiment toutes les situations : commander, accepter, demander de l\'aide.' }
+      ]},
       { jp:'いいえ、大丈夫です', romaji:'Iie, daijoubu desu', fr:'Non, ça va comme ça', quality:'ok', feedback:'Correct — 大丈夫 est le mot universel pour "non merci / c\'est bien".' },
       { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne comprends pas', quality:'weak', feedback:'Tu peux juste dire はい ou いいえ — même sans comprendre toute la phrase, tu auras compris le contexte.' }
     ]},
-    { speaker:'npc', jp:'袋はご利用ですか？', romaji:'Fukuro wa goriyou desu ka?', fr:'Vous voulez un sac ?' },
+    { speaker:'npc', jp:'袋はご利用ですか？', romaji:'Fukuro wa goriyou desu ka?', fr:'Vous voulez un sac ?', breakdown:[
+      { chunk:'袋', role:'"Sac plastique" — le kanji que tu verras écrit près des caisses.', tip:'Les sacs sont payants au Japon depuis 2020. Avoir son sac réutilisable évite cette question.' },
+      { chunk:'はご利用ですか', role:'"Allez-vous utiliser... ?" — forme ultra-polie avec ご (préfixe de respect) + 利用 (utilisation).', tip:'この辺 — ご + [nom] est la formule polie que tu entendras dans tous les commerces japonais.' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'いいえ、結構です', romaji:'Iie, kekkou desu', fr:'Non merci', quality:'best', feedback:'結構です = refus poli. Au Japon les sacs plastiques sont payants depuis 2020.' },
+      { jp:'いいえ、結構です', romaji:'Iie, kekkou desu', fr:'Non merci', quality:'best', feedback:'結構です = refus poli. Au Japon les sacs plastiques sont payants depuis 2020.', breakdown:[
+        { chunk:'いいえ', role:'"Non" — le refus poli de base.', tip:'À l\'oral familier on dit ううん mais いいえ est toujours sûr dans un commerce.' },
+        { chunk:'結構です', role:'"C\'est bien comme ça / non merci" — le refus poli par excellence, doux et sans ambiguïté.', tip:'結構 (kekkou) veut dire "suffisant / satisfaisant". Mémorise-le : tu t\'en serviras souvent pour décliner poliment.' }
+      ]},
       { jp:'はい、ください', romaji:'Hai, kudasai', fr:'Oui, donnez-m\'en un', quality:'ok', feedback:'Valide si tu as besoin d\'un sac — quelques yens supplémentaires.' },
       { jp:'いらない', romaji:'Iranai', fr:'J\'en veux pas', quality:'weak', feedback:'Compris mais trop familier pour un échange commercial — 結構です est plus poli.' }
     ]},
-    { speaker:'npc', jp:'ポイントカードはお持ちですか？', romaji:'Pointo kaado wa omochi desu ka?', fr:'Vous avez une carte de fidélité ?' },
+    { speaker:'npc', jp:'ポイントカードはお持ちですか？', romaji:'Pointo kaado wa omochi desu ka?', fr:'Vous avez une carte de fidélité ?', breakdown:[
+      { chunk:'ポイントカード', role:'"Carte de fidélité" — de l\'anglais "point card". Chaque grande chaîne a la sienne.', tip:'Lawson, 7-Eleven, FamilyMart — chacun a son système. Tu n\'en as probablement pas : いいえ suffit.' },
+      { chunk:'はお持ちですか', role:'"Est-ce que vous avez (sur vous)... ?" — お持ち est la forme ultra-polie de 持っている (avoir sur soi).', tip:'お + [verbe] = version respectueuse. お持ち = お + 持ち (tenir/avoir).' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'持っていません', romaji:'Motte imasen', fr:'Je n\'en ai pas', quality:'best', feedback:'Clair et naturel — tu entendras cette question partout au Japon (Lawson, 7-Eleven, FamilyMart…).' },
+      { jp:'持っていません', romaji:'Motte imasen', fr:'Je n\'en ai pas', quality:'best', feedback:'Clair et naturel — tu entendras cette question partout au Japon (Lawson, 7-Eleven, FamilyMart…).', breakdown:[
+        { chunk:'持って', role:'"Avoir (sur soi)" — de 持つ (motsu). La forme -て connecte au mot suivant.', tip:'持つ = tenir, avoir sur soi. 持っていく = emporter, 持ってくる = apporter.' },
+        { chunk:'いません', role:'"(Je n\'ai) pas" — いません est le négatif poli de いる (être/avoir).', tip:'持っています = j\'en ai / 持っていません = je n\'en ai pas. La structure いる/いない s\'utilise pour les états persistants.' }
+      ]},
       { jp:'いいえ', romaji:'Iie', fr:'Non', quality:'ok', feedback:'Compris, ça suffit pour la situation.' },
       { jp:'何ですか？', romaji:'Nan desu ka?', fr:'C\'est quoi ?', quality:'weak', feedback:'Le caissier va répéter et ça crée une situation inconfortable — いいえ suffit.' }
     ]},
-    { speaker:'npc', jp:'お支払いはどうされますか？', romaji:'Oshiharai wa dou saremasu ka?', fr:'Comment vous payez ?' },
+    { speaker:'npc', jp:'お支払いはどうされますか？', romaji:'Oshiharai wa dou saremasu ka?', fr:'Comment vous payez ?', breakdown:[
+      { chunk:'お支払い', role:'"Le paiement" — お (préfixe poli) + 支払い (paiement). La forme formelle que tu entends en caisse.', tip:'支払う (shiharau) = payer. Le お devant = "votre paiement" — le caissier respecte son client.' },
+      { chunk:'はどうされますか', role:'"Comment allez-vous faire ?" — どう (comment) + される (forme ultra-respectueuse de する).', tip:'Variante plus simple que tu peux aussi entendre : 現金ですか？カードですか？' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'カードで払います', romaji:'Kaado de haraimasu', fr:'Je paie par carte', quality:'best', feedback:'で indique le moyen de paiement. Variante : 現金で (en espèces), スイカで (avec Suica).' },
+      { jp:'カードで払います', romaji:'Kaado de haraimasu', fr:'Je paie par carte', quality:'best', feedback:'で indique le moyen de paiement. Variante : 現金で (en espèces), スイカで (avec Suica).', breakdown:[
+        { chunk:'カード', role:'"Carte" — de l\'anglais "card". Toutes les cartes étrangères ne sont pas acceptées partout.', tip:'Suica (IC card) est plus pratique que les cartes bancaires dans les petits commerces. À avoir dès le premier jour.' },
+        { chunk:'で', role:'"Avec / par le moyen de" — で marque le moyen ou l\'outil utilisé.', tip:'現金で = en espèces, スイカで = avec Suica, クレジットカードで = par carte de crédit. Même structure chaque fois.' },
+        { chunk:'払います', role:'"Je paie" — de 払う (harau). La forme polie du présent/futur.', tip:'払う = payer. お会計 (okaike) = l\'addition. お会計お願いします = "l\'addition s\'il vous plaît".' }
+      ]},
       { jp:'現金です', romaji:'Genkin desu', fr:'En espèces', quality:'ok', feedback:'Correct et clair, compris immédiatement.' },
       { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne comprends pas', quality:'weak', feedback:'Pointe vers ta carte ou montre ton billet — le geste remplace les mots ici.' }
     ]}
@@ -868,27 +898,54 @@ export const CONVERSATIONS = [
   // ── ÉTUDE ───────────────────────────────────────────────────────────────────
 
   { id:'universite', icon:'🎓', title:'Premier jour à l\'université', skill:'étude', level:'A1-A2', turns:[
-    { speaker:'npc', jp:'あの、新入生ですか？どこから来ましたか？', romaji:'Ano, shinnyuusei desu ka? Doko kara kimashita ka?', fr:'Euh, tu es nouvel(le) étudiant(e) ? Tu viens d\'où ?' },
+    { speaker:'npc', jp:'あの、新入生ですか？どこから来ましたか？', romaji:'Ano, shinnyuusei desu ka? Doko kara kimashita ka?', fr:'Euh, tu es nouvel(le) étudiant(e) ? Tu viens d\'où ?', breakdown:[
+      { chunk:'あの', role:'"Euh..." — une hésitation naturelle, comme en français. Ça rend la phrase moins abrupte.', tip:'あの… s\'utilise pour introduire une question ou une conversation de manière douce. Très courant.' },
+      { chunk:'新入生ですか', role:'"Tu es un(e) nouvel(le) étudiant(e) ?" — 新 (nouveau) + 入 (entrer) + 生 (élève). Question directe mais sympa.', tip:'新入生 (shinnyuusei) = nouvel étudiant. Tu entendras ce mot partout en avril au Japon, la rentrée universitaire.' },
+      { chunk:'どこから来ましたか', role:'"D\'où tu viens ?" — どこ (où) + から (depuis) + 来ました (tu es venu, passé poli) + か (question).', tip:'La question classique pour faire connaissance. Réponds : [pays/ville] + から来ました.' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'はい、フランスから来た交換留学生です。よろしくお願いします', romaji:'Hai, Furansu kara kita koukan ryuugakusei desu. Yoroshiku onegaishimasu', fr:'Oui, je suis étudiant(e) en échange, je viens de France. Ravi(e) !', quality:'best', feedback:'来た = passé de 来る = venu(e). Présentation complète avec origine + statut + formule de politesse.' },
+      { jp:'はい、フランスから来た交換留学生です。よろしくお願いします', romaji:'Hai, Furansu kara kita koukan ryuugakusei desu. Yoroshiku onegaishimasu', fr:'Oui, je suis étudiant(e) en échange, je viens de France. Ravi(e) !', quality:'best', feedback:'来た = passé de 来る = venu(e). Présentation complète avec origine + statut + formule de politesse.', breakdown:[
+        { chunk:'フランスから来た', role:'"Je suis venu(e) de France" — フランス + から (depuis) + 来た (je suis venu, passé simple).', tip:'来た (kita) est le passé de 来る (kuru). Mémorise ce couple : 来る (venir) / 来た (je suis venu).' },
+        { chunk:'交換留学生', role:'"Étudiant(e) en échange" — 交換 (échange) + 留学生 (étudiant à l\'étranger).', tip:'留学生 (ryuugakusei) = étudiant étranger. Ce mot te définira pendant tout ton séjour.' },
+        { chunk:'よろしくお願いします', role:'"Ravi(e) de te connaître / je compte sur toi" — la formule rituelle après toute présentation.', tip:'Ne jamais oublier よろしくお願いします après une présentation — ça sonne froid et incomplet sans ça.' }
+      ]},
       { jp:'フランス人です', romaji:'Furansujin desu', fr:'Je suis français(e)', quality:'ok', feedback:'Correct mais incomplet — ajoute 交換留学生 pour expliquer ta présence.' },
       { jp:'こんにちは', romaji:'Konnichiwa', fr:'Bonjour', quality:'weak', feedback:'Poli mais tu rates l\'occasion de te présenter — on attend はじめまして + présentation ici.' }
     ]},
-    { speaker:'npc', jp:'へえ！日本語はどこで勉強しましたか？', romaji:'Hee! Nihongo wa doko de benkyou shimashita ka?', fr:'Oh ! Tu as étudié le japonais où ?' },
+    { speaker:'npc', jp:'へえ！日本語はどこで勉強しましたか？', romaji:'Hee! Nihongo wa doko de benkyou shimashita ka?', fr:'Oh ! Tu as étudié le japonais où ?', breakdown:[
+      { chunk:'へえ', role:'"Oh !" — une exclamation de surprise admirative. Très naturelle dans une vraie conversation.', tip:'へえ, そうですか (hee, sou desu ka) = "ah bon ?" C\'est la réaction typique japonaise qui montre qu\'on écoute.' },
+      { chunk:'どこで勉強しましたか', role:'"Où est-ce que tu as étudié ?" — どこ (où) + で (lieu de l\'action) + 勉強しました (tu as étudié) + か.', tip:'で = "à l\'endroit où l\'action se passe". 大学で勉強する = étudier À l\'université.' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'フランスの大学と、アプリで独学しました。まだまだですが…', romaji:'Furansu no daigaku to, apuri de dokugaku shimashita. Mada mada desu ga...', fr:'À l\'université en France et en autodidacte avec des applis. Je suis encore débutant(e)...', quality:'best', feedback:'まだまだ = pas encore là / encore beaucoup à apprendre. が à la fin laisse la phrase ouverte — nuance modeste typiquement japonaise.' },
+      { jp:'フランスの大学と、アプリで独学しました。まだまだですが…', romaji:'Furansu no daigaku to, apuri de dokugaku shimashita. Mada mada desu ga...', fr:'À l\'université en France et en autodidacte avec des applis. Je suis encore débutant(e)...', quality:'best', feedback:'まだまだ = pas encore là / encore beaucoup à apprendre. が à la fin laisse la phrase ouverte — nuance modeste typiquement japonaise.', breakdown:[
+        { chunk:'独学しました', role:'"J\'ai étudié seul(e) / en autodidacte" — 独 (seul) + 学 (étude).', tip:'独学 (dokugaku) = autodidaxie. C\'est un mot valorisé au Japon — persévérance et initiative personnelle.' },
+        { chunk:'まだまだですが', role:'"Je suis encore loin du compte, mais..." — まだまだ = "pas encore là", が laisse la phrase ouverte.', tip:'La modestie est clé dans la culture japonaise. まだまだです après un compliment = réponse parfaite. Ne pas dire "merci, je suis bon".' }
+      ]},
       { jp:'大学で勉強しました', romaji:'Daigaku de benkyou shimashita', fr:'J\'ai étudié à l\'université', quality:'ok', feedback:'Simple et clair — tu peux préciser les détails si tu veux.' },
       { jp:'少しだけ知っています', romaji:'Sukoshi dake shitte imasu', fr:'J\'en sais juste un peu', quality:'ok', feedback:'Modestie naturelle — 少しだけ = seulement un peu. Tout à fait approprié.' }
     ]},
-    { speaker:'npc', jp:'授業登録はもうしましたか？', romaji:'Jugyou touroku wa mou shimashita ka?', fr:'Tu as déjà fait ton inscription aux cours ?' },
+    { speaker:'npc', jp:'授業登録はもうしましたか？', romaji:'Jugyou touroku wa mou shimashita ka?', fr:'Tu as déjà fait ton inscription aux cours ?', breakdown:[
+      { chunk:'授業登録', role:'"Inscription aux cours" — 授業 (cours) + 登録 (enregistrement/inscription).', tip:'Tu feras cette démarche dès le premier jour. Mémorise 登録 (touroku) = inscription/enregistrement — utile partout.' },
+      { chunk:'はもうしましたか', role:'"Tu l\'as déjà fait ?" — もう (déjà) + しました (tu as fait) + か (question).', tip:'もう + [passé] = "déjà fait ?". まだ + [négatif] = "pas encore". Ces deux mots vont souvent ensemble.' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'まだです。どこでしたらいいですか？', romaji:'Mada desu. Doko de shitara ii desu ka?', fr:'Pas encore. Je dois le faire où ?', quality:'best', feedback:'まだ = pas encore. どこでしたらいいですか = "où devrais-je le faire ?" — formule très utile pour demander où faire quelque chose.' },
+      { jp:'まだです。どこでしたらいいですか？', romaji:'Mada desu. Doko de shitara ii desu ka?', fr:'Pas encore. Je dois le faire où ?', quality:'best', feedback:'まだ = pas encore. どこでしたらいいですか = "où devrais-je le faire ?" — formule très utile pour demander où faire quelque chose.', breakdown:[
+        { chunk:'まだです', role:'"Pas encore" — まだ seul suffit, です le rend poli.', tip:'まだ = pas encore (neutre ou positif d\'attente). もう = déjà. まだ vs もう = l\'une des distinctions les plus utiles en japonais.' },
+        { chunk:'どこでしたらいいですか', role:'"Où est-ce que je devrais le faire ?" — どこ + したら (si je fais) + いいです (c\'est bien) + か.', tip:'[動詞 + たら] + いいですか = "qu\'est-ce que je devrais faire ?" Pattern ultra-utile pour demander quoi faire.' }
+      ]},
       { jp:'はい、もうしました', romaji:'Hai, mou shimashita', fr:'Oui, c\'est déjà fait', quality:'ok', feedback:'Parfait si c\'est vrai.' },
       { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne sais pas', quality:'weak', feedback:'Tu peux demander directement — mada desu. Doko de shitara ii desu ka est plus utile.' }
     ]},
-    { speaker:'npc', jp:'留学生センターに行ってください。2号館の1階です。', romaji:'Ryuugakusei sentaa ni itte kudasai. Nigo-kan no ikkai desu.', fr:'Va au Centre des étudiants étrangers. C\'est au rez-de-chaussée du bâtiment 2.' },
+    { speaker:'npc', jp:'留学生センターに行ってください。2号館の1階です。', romaji:'Ryuugakusei sentaa ni itte kudasai. Nigo-kan no ikkai desu.', fr:'Va au Centre des étudiants étrangers. C\'est au rez-de-chaussée du bâtiment 2.', breakdown:[
+      { chunk:'留学生センター', role:'"Centre des étudiants étrangers" — 留学生 (étudiant étranger) + センター (de l\'anglais "center").', tip:'Ce bâtiment sera ton port d\'attache les premières semaines : inscription, logement, aide administrative.' },
+      { chunk:'に行ってください', role:'"Allez à... / va à..." — に marque la destination, 行って = aller (forme -て), ください = s\'il vous plaît.', tip:'[lieu] + に行ってください = "allez à [lieu]". Structure de direction la plus utile pour suivre des indications.' },
+      { chunk:'1階', role:'"Rez-de-chaussée" — 1 (いち) + 階 (kai = étage). Le compteur d\'étages.', tip:'1階 (ikkai) = RDC, 2階 (nikai) = 1er étage, 3階 (sangai) = 2e étage... Le japonais compte les étages comme l\'anglais.' }
+    ]},
     { speaker:'user', choices:[
-      { jp:'ありがとうございます。一緒に行きませんか？', romaji:'Arigatou gozaimasu. Issho ni ikimasen ka?', fr:'Merci. Tu veux bien venir avec moi ?', quality:'best', feedback:'一緒に行きませんか = invitation à venir ensemble. La forme négative interrogative pour inviter = forme polie typiquement japonaise.' },
+      { jp:'ありがとうございます。一緒に行きませんか？', romaji:'Arigatou gozaimasu. Issho ni ikimasen ka?', fr:'Merci. Tu veux bien venir avec moi ?', quality:'best', feedback:'一緒に行きませんか = invitation à venir ensemble. La forme négative interrogative pour inviter = forme polie typiquement japonaise.', breakdown:[
+        { chunk:'一緒に', role:'"Ensemble" — 一緒 (issho) = ensemble, に est la particule de manière.', tip:'一緒に + [verbe] = faire quelque chose ensemble. 一緒に食べましょう = mangeons ensemble.' },
+        { chunk:'行きませんか', role:'"Tu ne veux pas aller ?" — forme négative interrogative pour inviter poliment.', tip:'En japonais, inviter par la négation est poli et doux. 行きませんか > 行きましょう (allons-y) > 行こう (allez viens, familier).' }
+      ]},
       { jp:'ありがとうございます！2号館はどこですか？', romaji:'Arigatou gozaimasu! Nigo-kan wa doko desu ka?', fr:'Merci ! Le bâtiment 2, c\'est où ?', quality:'ok', feedback:'Très naturel de demander où est le bâtiment en même temps.' },
       { jp:'わかりました', romaji:'Wakarimashita', fr:'D\'accord', quality:'ok', feedback:'Bien — vas-y directement.' }
     ]}

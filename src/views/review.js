@@ -169,7 +169,15 @@ function nextReviewCard(){
 }
 export function renderReview(){
   const area = document.getElementById('reviewArea');
-  if(phrases.length === 0){ area.innerHTML = emptyState('まだ何もない', 'Va dans « Mes phrases » et importe le pack A0 → A2, ou ajoute tes propres phrases.'); return; }
+  if(phrases.length === 0){
+    area.innerHTML = emptyState('まだ何もない', 'Pour commencer les révisions, importe le pack A0 → A2 dans « Mes phrases ».');
+    const btn = document.createElement('button');
+    btn.className = 'continue-btn'; btn.style.marginTop = '16px';
+    btn.textContent = '→ Aller dans « Mes phrases »';
+    btn.addEventListener('click', ()=> document.querySelector('nav.tabs button[data-view="list"]').click());
+    area.querySelector('.empty-state')?.appendChild(btn);
+    return;
+  }
   if(interleaveActive){ renderInterleaveBreak(area); return; }
   if(!currentReview){ area.innerHTML = emptyState('Tout est à jour !', "Aucune carte à revoir (ou limite de nouvelles cartes atteinte aujourd'hui). Reviens plus tard."); return; }
   if(drillMode){ renderParticleDrill(area); return; }
@@ -184,6 +192,13 @@ export function renderReview(){
     <button class="mode-chip ${readMode()?'active':''}" id="toggleRead" title="Bascule entre : taper la lecture en romaji / donner le sens en français">${readMode()?'🇯🇵 Je tape le romaji':'🇫🇷 Je donne le sens'}</button>
     <button class="mode-chip ${listenMode?'active':''}" id="toggleListen">🎧 Écoute</button>
     <button class="mode-chip ${dicteMode?'active':''}" id="toggleDicte">✏️ Dictée romaji</button>
+    <button class="mode-chip" id="toggleModeGuide" title="Comment choisir son mode ?">❓</button>
+  </div>
+  <div class="mode-guide" id="modeGuide" style="display:none">
+    <div class="mode-guide-row"><b>🇫🇷 Je donne le sens</b> — tu vois le japonais, tu donnes la traduction. Mode de départ : 1 semaine.</div>
+    <div class="mode-guide-row"><b>🇯🇵 Je tape le romaji</b> — tu vois le japonais, tu tapes comment ça se lit. Passe à ce mode dès que les kana sont acquis.</div>
+    <div class="mode-guide-row"><b>🎧 Écoute</b> — tu entends, tu devines le sens. Commence après 2 semaines de révisions régulières.</div>
+    <div class="mode-guide-row"><b>✏️ Dictée</b> — tu entends, tu écris la transcription romaji. Mode avancé pour ancrer la prononciation.</div>
   </div>`;
 
   html += `<div class="flashcard" id="flashcardEl">`;
@@ -270,6 +285,7 @@ export function renderReview(){
 
   const cf = document.getElementById('clearReviewFilter');
   if(cf) cf.addEventListener('click', ()=>{ reviewFilterTag = null; startReviewSession(); });
+  const tmg = document.getElementById('toggleModeGuide'); if(tmg) tmg.addEventListener('click', ()=>{ const g=document.getElementById('modeGuide'); if(g) g.style.display = g.style.display==='none'?'block':'none'; });
   const tr = document.getElementById('toggleRead'); if(tr) tr.addEventListener('click', ()=>{ captureTyped(); meta.reviewReadMode = !readMode(); saveMeta(); listenMode=false; dicteMode=false; revealed=false; lastTyped=''; renderReview(); });
   const tl = document.getElementById('toggleListen'); if(tl) tl.addEventListener('click', ()=>{ captureTyped(); listenMode=!listenMode; dicteMode=false; renderReview(); });
   const td = document.getElementById('toggleDicte'); if(td) td.addEventListener('click', ()=>{ captureTyped(); dicteMode=!dicteMode; listenMode=false; revealed=false; lastTyped=''; renderReview(); if(dicteMode) speak(currentReview.jp, 0.85); });

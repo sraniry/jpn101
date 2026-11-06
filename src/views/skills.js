@@ -1,8 +1,9 @@
 import { phrases, getMasteredSkillsSeen, markSkillMasteredSeen } from '../storage.js';
-import { CORE_SET } from '../../data/phrases.js';
+import { CORE_SET, CONVERSATIONS } from '../../data/phrases.js';
 import { escapeHtml, emptyState } from '../util.js';
 import { setListFilterTag } from './manage.js';
 import { setReviewFilterTag } from './review.js';
+import { openConversation } from './conversation.js';
 import { badgesHtml } from '../badges.js';
 import { celebrate } from '../encouragement.js';
 
@@ -42,7 +43,7 @@ export function renderSkills(){
       <div class="skill-head"><h4>${meta.icon} ${escapeHtml(meta.label)}${coreCount?`<span class="star-pill">⭐ ${coreCount}</span>`:''}</h4><span class="skill-level">Niveau ${lvl}/5</span></div>
       <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${pct}%"></div></div>
       <div class="skill-meta"><span>${mastered}/${list.length} maîtrisées</span><span>${pct}%</span></div>
-      ${lvl===3 ? `<div class="skill-challenge">🎯 Mini-défi débloqué : tente une conversation simulée sur ce thème</div>` : ''}
+      ${lvl===3 ? `<button class="skill-challenge skill-challenge-btn" data-tag="${tag}">🎯 Mini-défi débloqué — tente une conversation sur ce thème →</button>` : ''}
       ${lvl>=5 ? `<div class="skill-challenge">🏆 Compétence maîtrisée !</div>` : ''}
     </div>`;
   });
@@ -54,11 +55,20 @@ export function renderSkills(){
   html += badgesHtml();
   area.innerHTML = html;
   area.querySelectorAll('.skill-card').forEach(c=>{
-    c.addEventListener('click', ()=>{
-      // Les deux filtres sont posés ensemble pour que Réviser et Mes phrases parlent
-      // tous les deux du même thème quand on arrive depuis une compétence.
+    c.addEventListener('click', e=>{
+      if(e.target.closest('.skill-challenge-btn')) return; // handled separately
       setReviewFilterTag(c.dataset.tag); setListFilterTag(c.dataset.tag);
       document.querySelector('nav.tabs button[data-view="review"]').click();
+    });
+  });
+  area.querySelectorAll('.skill-challenge-btn').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      const tag = btn.dataset.tag;
+      const conv = CONVERSATIONS.find(c => c.skill === tag && Array.isArray(c.turns));
+      if(!conv) return;
+      document.querySelector('nav.tabs button[data-view="conversation"]').click();
+      openConversation(conv.id);
     });
   });
 }

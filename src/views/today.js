@@ -40,6 +40,9 @@ const BONUS_ROTATION = [
   { icon:'🎓', title:'Entraînement JLPT N5', time:'~10 min', view:'jlpt',
     desc:'Quiz rapide, kanji officiels ou examen blanc',
     why:'L\'examen a lieu en décembre : quelques minutes régulières valent mieux qu\'un bachotage de dernière minute.' },
+  { icon:'📖', title:'Kanji N4', time:'~10 min', view:'jlpt',
+    desc:'80 kanji supplémentaires pour franchir le palier N4',
+    why:'Les kanji N4 reviennent dans les panneaux, les menus et les formulaires universitaires à Kyoto — un investissement direct pour ton séjour.' },
 ];
 function bonusOfTheDay(){ return BONUS_ROTATION[dayNumber() % BONUS_ROTATION.length]; }
 

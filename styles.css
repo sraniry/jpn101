@@ -252,6 +252,11 @@
   .skill-bar-fill{ height:100%; background:linear-gradient(90deg, var(--matcha), var(--green)); border-radius:5px; transition:width .4s ease;}
   .skill-meta{ font-size:11.5px; color:#9a9184; display:flex; justify-content:space-between;}
   .skill-challenge{ margin-top:10px; font-size:11.5px; background:rgba(176,122,40,0.12); color:var(--amber); padding:6px 10px; border-radius:8px; display:inline-block;}
+  .skill-challenge-btn{ border:none; cursor:pointer; font-family:'Work Sans',sans-serif; font-weight:600; text-align:left; width:100%; transition:background .15s; }
+  .skill-challenge-btn:hover{ background:rgba(176,122,40,0.22); }
+  .mode-guide{ background:rgba(44,62,92,0.06); border-radius:10px; padding:10px 14px; margin-top:6px; }
+  .mode-guide-row{ font-size:12px; color:var(--text); padding:4px 0; border-bottom:1px solid var(--line); }
+  .mode-guide-row:last-child{ border-bottom:none; }
   .star-pill{ font-size:10px; background:var(--gold); color:#fff; padding:2px 7px; border-radius:999px; margin-left:6px; }
 
   /* ---- production / particle drill ---- */
