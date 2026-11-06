@@ -520,87 +520,79 @@ export const CONVERSATIONS = [
   { id:'izakaya', icon:'🍜', title:'Au restaurant / izakaya', skill:'voyage', level:'A0-A1', turns:[
     { speaker:'npc', jp:'いらっしゃいませ！何名様ですか？', romaji:'Irasshaimase! Nanmeisama desu ka?', fr:'Bienvenue ! Vous êtes combien ?',
       breakdown:[
-        { chunk:'いらっしゃいませ', role:'formule d\'accueil en boutique/restaurant', tip:'jamais traduit littéralement — toujours prononcé à l\'entrée d\'un commerce' },
-        { chunk:'何名様', role:'combien de personnes (très poli)', tip:'何 = combien · 名 = compteur de personnes · 様 = suffixe honorifique client' },
-        { chunk:'ですか', role:'question (poli)', tip:null }
+        { chunk:'いらっしゃいませ', role:'La formule d\'accueil universelle dans tout commerce japonais.', tip:'Tu l\'entendras à chaque fois que tu entres quelque part. Tu n\'as pas à répondre — un simple sourire suffit.' },
+        { chunk:'何名様', role:'"Combien de personnes ?" dit avec un maximum de politesse.', tip:'名様 = "personnes honorables" — ils comptent tes invités comme s\'ils étaient des rois. Tu réponds : 二人です (futari desu) = "on est deux".' },
+        { chunk:'ですか', role:'Le point d\'interrogation en japonais.', tip:'Toute phrase qui se termine par ですか devient une question polie. Simple !' }
       ]},
     { speaker:'user', choices:[
       { jp:'二人です。禁煙席をお願いします', romaji:'Futari desu. Kin\'enseki wo onegaishimasu', fr:'On est deux. Non-fumeur s\'il vous plaît', quality:'best', feedback:'Parfait — nombre + préférence en une phrase, exactement ce qu\'il faut.',
         breakdown:[
-          { chunk:'二人です', role:'nous sommes deux', tip:'二人 = futari (2 personnes) · compteur irrégulier : 1→ひとり, 2→ふたり, 3+→人 (にん)' },
-          { chunk:'禁煙席', role:'siège non-fumeur', tip:'禁 = interdit · 煙 = fumée · 席 = siège → zone non-fumeur' },
-          { chunk:'をお願いします', role:'je voudrais / s\'il vous plaît', tip:'を = objet · お願いします = demande universelle polie — fonctionne avec n\'importe quel nom' }
+          { chunk:'二人です', role:'"On est deux." — la formule la plus naturelle pour donner un nombre de personnes.', tip:'1 personne = ひとり, 2 = ふたり, 3+ = 〜にん. Les deux premiers sont irréguliers, retiens-les séparément.' },
+          { chunk:'禁煙席', role:'"Siège non-fumeur." Trois kanji qui racontent toute l\'histoire.', tip:'禁 = interdit, 煙 = fumée, 席 = place. Tu peux deviner le sens même sans avoir appris le mot !' },
+          { chunk:'をお願いします', role:'Le combo magique pour demander n\'importe quoi poliment.', tip:'"Mot + をお願いします" = "je voudrais ça svp". Mémorise la formule entière, pas les morceaux.' }
         ]},
       { jp:'二人', romaji:'Futari', fr:'Deux', quality:'ok', feedback:'Compris, mais ajoute です pour être plus poli.' },
       { jp:'私たちは二人の人間です', romaji:'Watashitachi wa futari no ningen desu', fr:'Nous sommes deux êtres humains', quality:'weak', feedback:'Correct grammaticalement mais personne ne dit ça — trop littéral.' }
     ]},
     { speaker:'npc', jp:'かしこまりました。こちらへどうぞ。', romaji:'Kashikomarimashita. Kochira e douzo.', fr:'Bien compris. Par ici, je vous prie.',
       breakdown:[
-        { chunk:'かしこまりました', role:'confirmation ultra-polie', tip:'plus formel que わかりました — réservé aux commerces et services · jamais entre amis' },
-        { chunk:'こちらへ', role:'par ici (direction)', tip:'こちら = ici/cette direction · へ = particule de direction (≈ vers/à)' },
-        { chunk:'どうぞ', role:'je vous en prie / allez-y', tip:'どうぞ seul = invitation polie à avancer, s\'asseoir, prendre quelque chose' }
+        { chunk:'かしこまりました', role:'"Bien compris" — mais dans la version 5 étoiles.', tip:'わかりました = OK normal. かしこまりました = "votre désir est un ordre" — tu l\'entendras dans les bons restaurants et hôtels.' },
+        { chunk:'こちらへどうぞ', role:'"Par ici, je vous en prie." — suivi souvent d\'un geste de la main.', tip:'どうぞ tout seul = "allez-y / servez-vous / entrez". C\'est un mot très utile : tu peux l\'utiliser pour offrir quelque chose à quelqu\'un aussi.' }
       ]},
     { speaker:'npc', jp:'お決まりになりましたら、お呼びください。', romaji:'Okimari ni narimashitara, oyobi kudasai.', fr:'Quand vous aurez choisi, appelez-moi.',
       breakdown:[
-        { chunk:'お決まりに', role:'avoir décidé (honorifique)', tip:'お + 決まる = choisir/décider · お + V = rend le verbe respectueux envers le client' },
-        { chunk:'なりましたら', role:'quand ce sera fait (conditionnel)', tip:'なる = devenir · ましたら = conditionnel passé poli → "quand vous aurez [fait]..."' },
-        { chunk:'お呼び', role:'appeler (honorifique)', tip:'お + 呼ぶ = appeler quelqu\'un (respectueux)' },
-        { chunk:'ください', role:'veuillez… / s\'il vous plaît', tip:'ください après お+V = demande polie d\'action · お呼びください = "appelez-moi svp"' }
+        { chunk:'お決まりになりましたら', role:'"Quand vous aurez choisi..." — une façon très enveloppée de dire "quand vous êtes prêts".', tip:'En japonais poli, on enveloppe même les verbes simples avec des préfixes (お〜) pour montrer du respect. Ici, "décider" devient "お決まりになる". Tu n\'as pas besoin de le reproduire — reconnaître suffit.' },
+        { chunk:'お呼びください', role:'"Appelez-moi, s\'il vous plaît."', tip:'お呼び = appeler (habillé en poli) + ください = s\'il vous plaît. La structure お〜ください = "veuillez faire ça" — tu la reverras souvent.' }
       ]},
     { speaker:'user', choices:[
       { jp:'すみません！注文お願いします', romaji:'Sumimasen! Chuumon onegaishimasu', fr:'Excusez-moi ! Je voudrais commander', quality:'best', feedback:'Exactement la formule attendue — すみません pour attirer l\'attention, puis la commande.',
         breakdown:[
-          { chunk:'すみません', role:'excusez-moi (attirer l\'attention)', tip:'le mot magique pour appeler un serveur — universellement compris, jamais trop poli' },
-          { chunk:'注文', role:'commande (nom)', tip:'注文する = commander · ici employé seul comme raccourci naturel en contexte' },
-          { chunk:'お願いします', role:'s\'il vous plaît', tip:'お + 願う = souhaiter · お願いします = formule universelle de demande polie' }
+          { chunk:'すみません', role:'Le mot le plus utile de toute la langue japonaise.', tip:'Il veut dire "excusez-moi" mais aussi "merci" et "désolé" selon le contexte. Pour appeler un serveur, c\'est TOUJOURS すみません — jamais "oi !" ou "hé !".' },
+          { chunk:'注文お願いします', role:'"Je voudrais commander, s\'il vous plaît."', tip:'注文 = commande. お願いします = s\'il vous plaît. Tu peux utiliser ce combo pour tout : タクシーお願いします (un taxi svp), レシートお願いします (un reçu svp).' }
         ]},
       { jp:'ヘイ！', romaji:'Hei!', fr:'Hé !', quality:'weak', feedback:'Trop abrupt — すみません est la formule universelle pour appeler quelqu\'un.' },
       { jp:'お願いします', romaji:'Onegaishimasu', fr:'S\'il vous plaît', quality:'ok', feedback:'Ça marche si le serveur te regarde déjà — sinon, commence par すみません.' }
     ]},
     { speaker:'npc', jp:'ご注文はお決まりですか？', romaji:'Gochuumon wa okimari desu ka?', fr:'Vous avez choisi ?',
       breakdown:[
-        { chunk:'ご注文', role:'votre commande (honorifique)', tip:'ご + 注文 · ご (or お) + nom = honorifique — ici ご s\'applique aux mots d\'origine sino-japonaise' },
-        { chunk:'は', role:'thème de la phrase', tip:'は marque le sujet/thème · "concernant votre commande..."' },
-        { chunk:'お決まり', role:'avoir choisi (honorifique)', tip:'お + 決まる (être décidé) · お決まりですか = "avez-vous choisi ?" en style boutique' },
-        { chunk:'ですか', role:'question (poli)', tip:null }
+        { chunk:'ご注文は', role:'"En ce qui concerne votre commande..." — ご est un préfixe de politesse.', tip:'Tu verras souvent ご ou お devant des mots pour les rendre plus polis. C\'est comme "votre" en français : "votre commande" vs "la commande".' },
+        { chunk:'お決まりですか', role:'"Vous avez décidé ?" — version habillée de "vous avez choisi ?".', tip:'決まる = être décidé, fixé. お〜ですか = question polie sur l\'état. En gros : "est-ce que ça s\'est décidé de votre côté ?" — le serveur fait comme si c\'était vous qui décidiez, pas lui qui attendait.' }
       ]},
     { speaker:'user', choices:[
       { jp:'これをください。あと、ビールを一つお願いします', romaji:'Kore wo kudasai. Ato, biiru wo hitotsu onegaishimasu', fr:'Ça, s\'il vous plaît. Et une bière aussi', quality:'best', feedback:'これをください en pointant = formule magique même sans vocabulaire. あと (+ en plus) enchaîne bien.',
         breakdown:[
-          { chunk:'これをください', role:'donnez-moi ça (en pointant)', tip:'これ = ceci · を = objet · ください = donnez-moi → fonctionne avec n\'importe quel objet' },
-          { chunk:'あと', role:'et en plus / aussi', tip:'connecteur pratique pour ajouter un article : あと〇〇をください = "et aussi..."' },
-          { chunk:'ビールを一つ', role:'une bière', tip:'一つ = compteur générique (1) · 一つ, 二つ, 三つ... pour des objets courants sans compteur spécifique' }
+          { chunk:'これをください', role:'"Donnez-moi ça." — LE survivalisme de base en restaurant japonais.', tip:'Tu n\'as pas besoin de savoir le nom du plat. Tu pointes, tu dis これをください, et ça marche. Mémorise cette phrase avant tout le reste.' },
+          { chunk:'あと', role:'"Et en plus..." — le connecteur pour ajouter un article à une commande.', tip:'あと + ce que tu veux = "et aussi X". Super pratique : あと、お水をください = "et aussi de l\'eau svp".' },
+          { chunk:'ビールを一つ', role:'"Une bière." — 一つ est le compteur universel quand tu ne connais pas le bon compteur.', tip:'En japonais, les objets se comptent avec des suffixes différents selon leur forme. Quand tu ne sais pas lequel utiliser, 一つ/二つ/三つ fonctionnent presque toujours.' }
         ]},
       { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne comprends pas', quality:'weak', feedback:'Honnête mais pas d\'avancement — essaie de pointer et dire これをください à la place.' },
       { jp:'これ、お願いします', romaji:'Kore, onegaishimasu', fr:'Ça, s\'il vous plaît', quality:'ok', feedback:'Correct, fonctionne bien — juste la bière manque.' }
     ]},
     { speaker:'npc', jp:'アレルギーはございますか？', romaji:'Arerugii wa gozaimasu ka?', fr:'Vous avez des allergies ?',
       breakdown:[
-        { chunk:'アレルギー', role:'allergie (emprunt anglais "allergy")', tip:'katakana = mots étrangers · アレルギーがあります = j\'ai une allergie' },
-        { chunk:'は', role:'thème', tip:'は marque ce dont on parle' },
-        { chunk:'ございますか', role:'avez-vous... (très poli)', tip:'ございます = forme ultra-polie de あります (exister/avoir) · utilisé dans les commerces' }
+        { chunk:'アレルギー', role:'"Allergie" — écrit en katakana car c\'est un mot venu de l\'anglais (allergy).', tip:'Les mots étrangers s\'écrivent en katakana au Japon. コーヒー = coffee, アイスクリーム = ice cream. Si tu connais le mot en anglais, tu peux souvent le deviner !' },
+        { chunk:'ございますか', role:'"Avez-vous..." en version extra-polie.', tip:'ございます = la version ultra-respectueuse de "il y a / j\'ai". Tu l\'entends dans les hôtels, boutiques, restaurants. Tu n\'as pas besoin de l\'utiliser toi-même — tes interlocuteurs te parleront ainsi.' }
       ]},
     { speaker:'user', choices:[
       { jp:'いいえ、大丈夫です。ありがとうございます', romaji:'Iie, daijoubu desu. Arigatou gozaimasu', fr:'Non, pas de problème. Merci', quality:'best', feedback:'Clair, rassurant, poli — réponse idéale.',
         breakdown:[
-          { chunk:'いいえ', role:'non (poli)', tip:'plus formel que いや · いいえ = non clair et poli' },
-          { chunk:'大丈夫です', role:'ça va / pas de problème', tip:'大丈夫 = solide → "ça va" · utilisé pour rassurer ou refuser poliment · très polyvalent' },
-          { chunk:'ありがとうございます', role:'merci (poli)', tip:'ありがとう (casual) → ありがとうございます (poli) · gozaimasu = ございます' }
+          { chunk:'いいえ', role:'"Non." — la version polie et claire.', tip:'いや / ううん = non familier. いいえ = non poli. Dans un restaurant, toujours いいえ.' },
+          { chunk:'大丈夫です', role:'"Ça va / Pas de problème." — un des mots les plus utiles du japonais.', tip:'大丈夫 (daijoubu) = solide, sans problème. Tu peux l\'utiliser pour dire "non merci" quand quelqu\'un te propose quelque chose, pour dire "je vais bien", pour rassurer quelqu\'un. Super polyvalent.' },
+          { chunk:'ありがとうございます', role:'"Merci" — en version polie.', tip:'ありがとう = merci entre amis. ありがとうございます = merci poli (restaurant, boutique). La différence : un seul mot en plus, mais ça change beaucoup l\'impression que tu fais.' }
         ]},
       { jp:'エビアレルギーがあります', romaji:'Ebi arerugii ga arimasu', fr:'Je suis allergique aux crevettes', quality:'ok', feedback:'Parfaitement valide si c\'est le cas — remplace エビ par ton allergie.' },
       { jp:'何？', romaji:'Nani?', fr:'Quoi ?', quality:'weak', feedback:'Trop brusque — essaie もう一度お願いします si tu n\'as pas compris.' }
     ]},
     { speaker:'npc', jp:'ごゆっくりどうぞ。', romaji:'Goyukkuri douzo.', fr:'Prenez votre temps.',
       breakdown:[
-        { chunk:'ご', role:'préfixe honorifique', tip:'ご (ou お) + nom/adjectif = rend la phrase respectueuse · ici s\'applique à ゆっくり' },
-        { chunk:'ゆっくり', role:'doucement / sans se presser', tip:'adverbe : ゆっくりする = prendre son temps · ゆっくり食べる = manger sans se dépêcher' },
-        { chunk:'どうぞ', role:'je vous en prie', tip:'どうぞ seul = invitation · ごゆっくりどうぞ = formule fixe en restaurant' }
+        { chunk:'ごゆっくり', role:'"Doucement / sans vous presser" — avec le préfixe ご qui dit que c\'est pour toi.', tip:'ゆっくり tout seul = doucement. Quand un Japonais te dit ゆっくりしてください, c\'est "installe-toi, tu n\'es pas pressé". Tu peux l\'utiliser pour demander à quelqu\'un de parler plus lentement : もう少しゆっくり話してください.' },
+        { chunk:'どうぞ', role:'"Je vous en prie / allez-y." — un des mots les plus gracieux du japonais.', tip:'どうぞ seul s\'utilise dans plein de situations : offrir quelque chose, inviter à entrer, pousser quelqu\'un à parler. C\'est à la fois "allez-y", "servez-vous" et "je t\'en prie".' }
       ]},
     { speaker:'user', choices:[
       { jp:'お会計お願いします', romaji:'Okaikei onegaishimasu', fr:'L\'addition, s\'il vous plaît', quality:'best', feedback:'Formule fixe, toujours dite ainsi pour demander l\'addition.',
         breakdown:[
-          { chunk:'お会計', role:'l\'addition / le paiement', tip:'お + 会計 · 会 = réunir · 計 = compter → お会計 = addition (honorifique)' },
-          { chunk:'お願いします', role:'s\'il vous plaît', tip:'お会計お願いします = formule complète pour l\'addition — mémorise-la telle quelle' }
+          { chunk:'お会計', role:'"L\'addition." — mot à mémoriser tel quel avant ton premier voyage.', tip:'会計 = les comptes. お devant = version polie pour les clients. Au Japon, on ne claque pas des doigts et on ne fait pas le geste de signer — on dit juste cette formule.' },
+          { chunk:'お願いします', role:'"S\'il vous plaît." — ta deuxième formule la plus utile au Japon.', tip:'お願いします (onegaishimasu) se colle après presque tout pour faire une demande polie. C\'est littéralement "je vous fais une prière / je vous en supplie" — mais ça sonne très naturel, pas dramatique du tout.' }
         ]},
       { jp:'いくら？', romaji:'Ikura?', fr:'C\'est combien ?', quality:'ok', feedback:'Compris, mais お会計お願いします est plus poli pour un restaurant.' },
       { jp:'払います', romaji:'Haraimasu', fr:'Je vais payer', quality:'weak', feedback:'Correct en soi mais inhabituel — le serveur ne sait pas si tu veux l\'addition ou si tu l\'as déjà.' }
@@ -1148,100 +1140,90 @@ export const CONVERSATIONS = [
   { id:'matcha', icon:'🍵', title:'Acheter du matcha (Kyoto)', skill:'gastronomie', level:'A2-B1', turns:[
     { speaker:'npc', jp:'いらっしゃいませ。どのようなお茶をお探しですか？', romaji:'Irasshaimase. Dono you na ocha wo osagashi desu ka?', fr:'Bienvenue. Quel type de thé cherchez-vous ?',
       breakdown:[
-        { chunk:'どのような', role:'"quel type de" (poli)', tip:'どんな = version courante · どのような = version formelle, style boutique/texte' },
-        { chunk:'お茶', role:'thé (honorifique)', tip:'お + 茶 = thé · お préfixe = rend le mot plus élégant · 茶 seul = moins poli' },
-        { chunk:'を', role:'objet (particule)', tip:'を marque ce qu\'on cherche — l\'objet de l\'action' },
-        { chunk:'お探しですか', role:'cherchez-vous (très poli)', tip:'お + 探す (chercher) + ですか → forme honorifique de 探していますか' }
+        { chunk:'どのような', role:'"Quel type de..." — version habillée de どんな.', tip:'どんな = quelle sorte de (conversation normale). どのような = même sens, mais plus élégant — tu le verras dans les boutiques, les e-mails formels. Les deux se comprennent partout.' },
+        { chunk:'お茶', role:'"Le thé" — avec お devant pour marquer la politesse.', tip:'茶 tout seul = thé (brut). お茶 = thé (poli). En japonais, お ou ご devant un mot, c\'est un signe de respect, comme "votre" en français. Ici c\'est le thé du client qui est honoré !' },
+        { chunk:'お探しですか', role:'"Cherchez-vous ?" — le verbe "chercher" enveloppé dans la politesse.', tip:'探す = chercher. お探しですか = est-ce que vous cherchez quelque chose ? C\'est la façon dont les vendeurs demandent si tu as besoin d\'aide. Tu peux répondre simplement : はい、〜を探しています (oui, je cherche...).' }
       ]},
     { speaker:'user', choices:[
       { jp:'抹茶を探しています。ラテに使いたいんですが、まろやかな風味のものを探しています', romaji:'Matcha wo sagashite imasu. Rate ni tsukaitai n desu ga, maroyaka na fuumi no mono wo sagashite imasu', fr:'Je cherche du matcha pour faire des lattes — j\'aime les saveurs douces et rondes en bouche', quality:'best', feedback:'Parfait — tu donnes le contexte d\'utilisation (ラテ), la texture recherchée (まろやか = doux/rond) et montres que tu connais le vocabulaire de dégustation.',
         breakdown:[
-          { chunk:'を探しています', role:'je cherche (en cours)', tip:'探す + て + います = action en cours · ～ています = ce qu\'on est en train de faire' },
-          { chunk:'ラテに使いたい', role:'vouloir utiliser pour le latte', tip:'に = but/destination · 使いたい = vouloir utiliser (使う + たい)' },
-          { chunk:'んですが', role:'"je voulais vous dire..." (intro douce)', tip:'ん = nominalise + explique · ですが = "mais/en fait" → ton de confidence, non contradictoire' },
-          { chunk:'まろやかな', role:'adjectif-な = doux/rond', tip:'まろやか = saveur douce et ronde · な transforme l\'adjectif en modificateur nominal' },
-          { chunk:'風味のもの', role:'quelque chose avec cet arôme', tip:'風味 = arôme/saveur · の = de/qui a · もの = chose → "une chose qui a cet arôme"' }
+          { chunk:'を探しています', role:'"Je suis en train de chercher." — 探しています, pas 探します.', tip:'En japonais, ～ています dit que l\'action est en cours maintenant. 探します = je chercherai (futur). 探しています = je cherche (maintenant, en ce moment dans la boutique). Cette distinction est très utile.' },
+          { chunk:'ラテに使いたい', role:'"Je veux l\'utiliser pour faire des lattes."', tip:'使いたい = vouloir utiliser. たい accroché à un verbe = "je veux faire ça". 食べたい = je veux manger. 行きたい = je veux aller. C\'est une des structures les plus pratiques à retenir.' },
+          { chunk:'んですが', role:'"C\'est que..." — un petit mot qui transforme ta phrase en invitation à la conversation.', tip:'んですが est difficile à traduire, mais l\'effet est clair : tu n\'assènes pas un fait, tu l\'offres. C\'est comme dire "je cherche quelque chose pour les lattes, tu vois ce que je veux dire ?" — ça invite le vendeur à répondre.' },
+          { chunk:'まろやかな風味', role:'"Un arôme doux et rond." — le vocabulaire de la dégustation.', tip:'まろやか = doux, rond en bouche, sans amertume. 風味 = arôme, saveur. まろやかな風味 = "une saveur douce et enveloppante". Mémorise まろやか — les Japonais adorent ce mot pour parler de goût.' }
         ]},
       { jp:'抹茶ください', romaji:'Matcha kudasai', fr:'Du matcha, s\'il vous plaît', quality:'ok', feedback:'Fonctionne, mais le vendeur va te demander quel type — autant donner plus d\'infos dès le départ.' },
       { jp:'一番いい抹茶はどれですか？', romaji:'Ichiban ii matcha wa dore desu ka?', fr:'Quel est le meilleur matcha ?', quality:'weak', feedback:'La question est vague — le "meilleur" dépend de l\'usage : cérémonie, latte, pâtisserie. Précise ton intention.' }
     ]},
     { speaker:'npc', jp:'ラテ用でしたら、甘みが出やすい石臼挽きのものがよいかもしれません。品種はどちらがお好みですか？宇治や八女などがございますよ。', romaji:'Rate you deshitara, amami ga deyasui ishiusu biki no mono ga yoi kamo shiremasen. Hinshu wa dochira ga okonomi desu ka? Uji ya yame nado ga gozaimasu yo.', fr:'Pour un latte, je recommande un matcha moulu à la pierre qui dégage facilement des notes sucrées. Vous avez une préférence de cultivar / région ? Nous avons de l\'Uji, du Yame...',
       breakdown:[
-        { chunk:'ラテ用', role:'pour le latte', tip:'用 (よう) = pour/à usage de · suffix très polyvalent : 旅行用 = pour le voyage, 業務用 = professionnel' },
-        { chunk:'でしたら', role:'si c\'est pour... (conditionnel poli)', tip:'でした + ら = "si c\'est le cas" → conditionnel à partir d\'un nom/contexte' },
-        { chunk:'甘みが出やすい', role:'qui dégage facilement de la douceur', tip:'甘み = douceur (nom) · が = sujet · 出る = sortir · やすい = facile à faire → "～やすい" = facile à ~' },
-        { chunk:'かもしれません', role:'c\'est peut-être / probablement', tip:'doux et non-assertif, fréquent dans les recommandations polies · かも seul = version casual' },
-        { chunk:'どちら', role:'lequel / laquelle (poli)', tip:'どちら = lequel des deux (ou plusieurs) · poli de どれ · utilisé pour offrir des options' },
-        { chunk:'お好み', role:'votre goût/préférence (honorifique)', tip:'お + 好み · 好む = apprécier → 好み = préférence · お préfixe = style formel en magasin' }
+        { chunk:'ラテ用', role:'"Pour le latte." — 用 (よう) est un suffix qui veut dire "destiné à".', tip:'用 accroché à un mot = "pour/à usage de". 旅行用 = pour le voyage. 業務用 = professionnel. C\'est très courant sur les emballages japonais. Ici : ラテ用 = "pour usage latte".' },
+        { chunk:'でしたら', role:'"Si c\'est le cas..." — le vendeur rebondit sur ce que tu viens de dire.', tip:'でしたら = "si c\'est comme ça". C\'est la façon japonaise de dire "dans ce cas, voilà ce que je recommande". Tu l\'entendras souvent dans les recommandations.' },
+        { chunk:'甘みが出やすい', role:'"Qui libère facilement de la douceur." — un concept de dégustation.', tip:'出やすい = facile à sortir/dégager. やすい accroché à un verbe = "facile à faire". 食べやすい = facile à manger. 分かりやすい = facile à comprendre. C\'est une structure très productive.' },
+        { chunk:'かもしれません', role:'"Peut-être / probablement." — les Japonais évitent d\'affirmer trop fort.', tip:'かもしれません = c\'est peut-être le cas. Les Japonais adoucissent souvent leurs affirmations avec ce mot — ce n\'est pas de l\'hésitation, c\'est de la politesse. かも seul = version décontractée entre amis.' },
+        { chunk:'お好みですか', role:'"Quelle est votre préférence ?" — お好み = ce qu\'on aime.', tip:'好む = aimer/apprécier. 好み = préférence (nom). お好み = votre préférence (poli). お好み焼き (l\'okonomi-yaki) = "cuire comme on aime" — ce plat qui se personnalise à l\'infini !' }
       ]},
     { speaker:'user', choices:[
       { jp:'宇治産のものが多いですが、品種はあまり詳しくなくて…おすすめはありますか？まろやかさとほんのりナッツのような風味が好きなんです', romaji:'Uji-san no mono ga ooi desu ga, hinshu wa amari kuwashiku nakute... osusume wa arimasu ka? Maroyakasa to honnori nattsu no you na fuumi ga suki nan desu', fr:'J\'ai surtout bu de l\'Uji, mais je ne connais pas bien les cultivars... Vous auriez une recommandation ? J\'aime le côté doux et les notes un peu noisette', quality:'best', feedback:'Parfait — tu montres ta curiosité, admets ta limite (honnête) et donnes des descripteurs précis (まろやか, ナッツ風味). C\'est exactement ce qu\'un vendeur apprécie.',
         breakdown:[
-          { chunk:'宇治産', role:'produit à Uji', tip:'産 (さん) = produit à/de · 国産 = fabriqué au Japon · 京都産 = de Kyoto · suffix très courant' },
-          { chunk:'あまり詳しくなくて', role:'pas vraiment expert (soft)', tip:'あまり + négatif = pas vraiment · 詳しくない = ne pas connaître bien · くて = et (enchaîne deux idées)' },
-          { chunk:'おすすめはありますか', role:'vous auriez une recommandation ?', tip:'おすすめ = recommandation (お + すすめる) · ありますか = y a-t-il ?' },
-          { chunk:'ほんのり', role:'légèrement / subtilement', tip:'adverbe : présence légère et discrète · ほんのり甘い = légèrement sucré · très évocateur dans le langage du goût' },
-          { chunk:'～のような', role:'comme / qui ressemble à', tip:'ナッツのような = qui ressemble à des noisettes · のような = "de type / comme" · utilisé pour des comparaisons' },
-          { chunk:'が好きなんです', role:'j\'aime / je suis fan de', tip:'好き = aimer · なんです = nominalise + renforce l\'affirmation · "c\'est que j\'aime..."' }
+          { chunk:'宇治産', role:'"Produit à Uji." — 産 se colle à un lieu pour dire "d\'où ça vient".', tip:'産 (さん) = originaire de. 国産 = fabriqué au Japon. 京都産 = de Kyoto. 宇治産 = de la région d\'Uji. Sur les emballages japonais, tu verras souvent 〜産 pour indiquer l\'origine.' },
+          { chunk:'あまり詳しくなくて', role:'"Je ne suis pas très calé là-dedans..." — admettre une limite poliment.', tip:'あまり + négatif = pas vraiment / pas beaucoup. 詳しい = être expert/calé. あまり詳しくない = je ne suis pas vraiment expert. Le くて à la fin enchaîne avec ce qui suit — ici "...donc j\'ai besoin d\'aide".' },
+          { chunk:'おすすめはありますか', role:'"Vous auriez une recommandation ?" — ta phrase préférée en boutique japonaise.', tip:'おすすめ = recommandation (お + すすめる = recommander). ありますか = est-ce qu\'il y a ? Combinés : "est-ce qu\'il y a quelque chose que vous recommandez ?" — fonctionne dans n\'importe quelle boutique.' },
+          { chunk:'ほんのり', role:'"Légèrement / subtilement." — pour décrire une saveur discrète.', tip:'ほんのり = une présence légère, à peine là. ほんのり甘い = légèrement sucré. ほんのり pink = légèrement rosé. C\'est un mot très évocateur que les Japonais adorent pour les descriptions sensorielles.' },
+          { chunk:'のような風味', role:'"Un arôme qui ressemble à..." — pour faire des comparaisons.', tip:'のような = "comme / qui ressemble à". ナッツのような風味 = un arôme comme des noisettes. 絹のような = comme de la soie. C\'est ta structure pour les comparaisons en japonais.' },
+          { chunk:'が好きなんです', role:'"C\'est que j\'aime ça." — pas juste "j\'aime", mais "je veux que tu saches que j\'aime".', tip:'好き = aimer. なんです transforme la phrase en explication : tu ne dis pas juste "j\'aime ça", tu le poses comme un fait que tu veux partager. Ça dit "voilà mon profil de goût, ça t\'aidera à me recommander quelque chose".' }
         ]},
       { jp:'宇治がいいです', romaji:'Uji ga ii desu', fr:'Je veux de l\'Uji', quality:'ok', feedback:'Correct mais trop bref — le vendeur ne peut pas vraiment affiner sa recommandation avec si peu d\'infos.' },
       { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne sais pas', quality:'weak', feedback:'Honnête mais un peu fermé — ajoute ce que tu aimes : まろやかなのが好きです (j\'aime le doux).' }
     ]},
     { speaker:'npc', jp:'それなら「さみどり」という品種がおすすめです。まろやかで旨味が強く、ラテにすると自然な甘さが出ます。私自身もお気に入りなんですよ。', romaji:'Sore nara "samidori" to iu hinshu ga osusume desu. Maroyaka de umami ga tsuyoku, rate ni suru to shizen na amasa ga demasu. Watashi jishin mo okiniri nan desu yo.', fr:'Dans ce cas, je recommande la variété "Samidori". Elle est douce, riche en umami, et en latte elle dégage une douceur naturelle. C\'est mon préférée aussi.',
       breakdown:[
-        { chunk:'それなら', role:'dans ce cas (transition)', tip:'それ = ça · なら = si / dans ce cas → enchaîne naturellement sur une recommandation' },
-        { chunk:'という品種', role:'la variété appelée...', tip:'という = "qui s\'appelle / nommé" · 品種 = cultivar/variété botanique' },
-        { chunk:'ラテにすると', role:'quand on en fait un latte', tip:'にする = transformer en / faire de · すると = quand on le fait → condition temporelle' },
-        { chunk:'自然な甘さが出ます', role:'dégage une douceur naturelle', tip:'自然 = naturel · 甘さ = douceur (nom) · 出る = sortir/émerger · 甘い (adjectif) → 甘さ (nom)' },
-        { chunk:'私自身も', role:'moi personnellement aussi', tip:'自身 = soi-même (renforcement) · も = aussi → "moi-même aussi j\'aime"' },
-        { chunk:'なんですよ', role:'je vous le dis (affirmation personnelle)', tip:'なんです = nominalise + explique · よ = assertion, information que tu partages · ton de confidence' }
+        { chunk:'それなら', role:'"Dans ce cas..." — la transition naturelle quand on rebondit sur ce qu\'on vient d\'entendre.', tip:'それ = ça. なら = si / dans ce cas. Ensemble : "si c\'est comme ça, alors...". C\'est la façon naturelle d\'enchaîner une recommandation ou une suite logique. Très courant en conversation.' },
+        { chunk:'という品種', role:'"La variété qui s\'appelle..." — という introduit un nom propre ou une citation.', tip:'という (to iu) = "qui s\'appelle" / "nommé". サミドリという品種 = "la variété nommée Samidori". Tu peux utiliser という pour introduire n\'importe quel terme : これは「旨味」という概念です = "voici ce qu\'on appelle l\'umami".' },
+        { chunk:'ラテにすると', role:'"Quand on en fait un latte..." — に + する = transformer en quelque chose.', tip:'にする = faire de X, transformer en X. ラテにする = en faire un latte. コーヒーにする = choisir le café. すると = quand on le fait → "quand on en fait un latte, il se passe que...".' },
+        { chunk:'甘さが出ます', role:'"Une douceur se dégage." — le verbe 出る (sortir) pour les saveurs et arômes.', tip:'出る = sortir, émerger. En japonais, on dit que les saveurs "sortent" ou "se dégagent" (出る). 甘さが出る = la douceur émerge. 旨味が出る = l\'umami se révèle. Très courant dans le langage de la cuisine.' },
+        { chunk:'私自身もお気に入りなんですよ', role:'"Moi-même, c\'est mon préféré aussi, je te le dis." — une confidence personnelle.', tip:'自身 = moi-même (insistance). お気に入り = favori, coup de cœur. なんですよ = "c\'est que..." + よ = je t\'assure. Le vendeur partage un secret personnel — c\'est un signe qu\'il s\'investit vraiment dans sa recommandation.' }
       ]},
     { speaker:'user', choices:[
       { jp:'ありがとうございます。ご自身のおすすめはどんな飲み方ですか？', romaji:'Arigatou gozaimasu. Gojishin no osusume wa donna nomikata desu ka?', fr:'Merci. Et vous personnellement, comment vous aimez le boire ?', quality:'best', feedback:'Super — demander l\'avis du vendeur sur sa propre façon de déguster crée une vraie conversation. ご自身 (votre propre) est élégant et poli.',
         breakdown:[
-          { chunk:'ご自身の', role:'votre propre / vous-même (honorifique)', tip:'ご + 自身 = vous-même · ご rend plus poli · 自身 = soi-même (renforcement)' },
-          { chunk:'おすすめ', role:'recommandation', tip:'お + すすめ (すすめる = recommander) → forme nominale · "votre recommandation personnelle"' },
-          { chunk:'どんな飲み方', role:'quelle façon de boire', tip:'どんな = quel type de · 飲み方 = façon de boire (飲む + 方) · 方 suffix = façon de faire' },
-          { chunk:'ですか', role:'question (poli)', tip:null }
+          { chunk:'ご自身の', role:'"Vous personnellement / de votre propre côté." — façon élégante de dire "vous, vous-même".', tip:'自身 = soi-même (pour insister). ご devant = poli. ご自身の = "ce qui vous est propre, à vous". Plus élégant que あなた (vous) qui peut sonner abrupt en japonais.' },
+          { chunk:'おすすめ', role:'"Votre recommandation / ce que vous conseillez."', tip:'おすすめ vient de すすめる = recommander. おすすめ (nom) = ce qu\'on conseille, le coup de cœur. Tu verras おすすめ sur les menus — c\'est le plat du jour, ce que le chef met en avant.' },
+          { chunk:'どんな飲み方', role:'"Comment / de quelle façon boire ?" — 方 transforme un verbe en "manière de faire".', tip:'飲む = boire. 方 (かた) accroché à un verbe = la façon de faire. 飲み方 = façon de boire. 食べ方 = façon de manger. 使い方 = façon d\'utiliser (tu verras ça sur les modes d\'emploi !).' }
         ]},
       { jp:'それをください', romaji:'Sore wo kudasai', fr:'Je vais prendre ça', quality:'ok', feedback:'Direct et efficace — mais tu passes à côté d\'une conversation enrichissante.' },
       { jp:'高いですか？', romaji:'Takai desu ka?', fr:'C\'est cher ?', quality:'weak', feedback:'Un peu abrupt — si tu veux le prix, essaie いくらですか？ après avoir écouté la recommandation.' }
     ]},
     { speaker:'npc', jp:'私は薄茶で、お点前で飲むのが好きです。品種は「やぶきた」がシンプルで落ち着きます。ところで、どちらから？', romaji:'Watashi wa usucha de, otemae de nomu no ga suki desu. Hinshu wa "yabukita" ga shimpuru de ochitsukimasu. Tokoro de, dochira kara?', fr:'Moi j\'aime le usucha (thé léger), préparé en cérémonie. Et pour la variété, le "Yabukita" est simple et reposant. D\'où venez-vous ?',
       breakdown:[
-        { chunk:'薄茶', role:'thé léger (cérémonie)', tip:'薄 = mince/léger · 茶 = thé → matcha dilué · opposé : 濃茶 (koicha) = thé épais, cérémoniel' },
-        { chunk:'お点前', role:'geste de préparation du thé', tip:'お + 点前 = art/geste de la cérémonie du thé · terme technique traditionnel' },
-        { chunk:'飲むのが好き', role:'j\'aime boire', tip:'飲む + の = nominalise "boire" · が + 好き = aimer · "aimer la chose de boire"' },
-        { chunk:'落ち着きます', role:'ça apaise / reposant', tip:'落ち着く = se calmer, se poser · 落ち着きます = ça me repose, je me sens ancré' },
-        { chunk:'ところで', role:'au fait / à propos (transition)', tip:'change de sujet doucement · ところで = "au fait, ..." → très naturel pour orienter une conversation' },
-        { chunk:'どちらから', role:'d\'où venez-vous ?', tip:'どちら = lequel/où (poli) · から = depuis/de · sous-entendu : あなたはどちらから？' }
+        { chunk:'飲むのが好きです', role:'"J\'aime boire." — le の transforme le verbe en chose qu\'on peut aimer.', tip:'飲む = boire. のが好き = aimer faire ça. En japonais, pour dire "j\'aime [faire quelque chose]", tu mets の entre le verbe et が好き. 食べるのが好き = j\'aime manger. 歩くのが好き = j\'aime marcher. Super utile !' },
+        { chunk:'落ち着きます', role:'"Ça m\'apaise / je me sens calme." — un verbe qui dit beaucoup en japonais.', tip:'落ち着く = se poser, trouver un ancrage, se calmer. C\'est le verbe qu\'on utilise pour décrire une atmosphère douce, un lieu reposant, une saveur qui recentre. "Ça落ち着く" = "ça me fait du bien, ça me pose".' },
+        { chunk:'ところで', role:'"Au fait..." — la transition qui change de sujet en douceur.', tip:'ところで = "au fait, à propos". C\'est la façon naturelle de dire "maintenant que j\'y pense, je veux te demander autre chose". Très courant en conversation — ça ne brusque personne.' },
+        { chunk:'どちらから', role:'"D\'où venez-vous ?" — la question la plus courante quand tu rencontres un étranger au Japon.', tip:'どちら = "où / lequel" (version polie de どこ). から = depuis / de. La phrase complète est あなたはどちらからですか mais le Japonais sous-entend tout ça et ne dit que どちらから — tu réponds directement avec le pays.' }
       ]},
     { speaker:'user', choices:[
       { jp:'フランスから来ました。今、京都大学に交換留学中で、6ヶ月間ここにいる予定です', romaji:'Furansu kara kimashita. Ima, Kyoto Daigaku ni koukan ryuugaku-chuu de, rok-ka-getsu-kan koko ni iru yotei desu', fr:'Je viens de France. Je suis actuellement en échange à Kyoto University — j\'ai prévu de rester 6 mois', quality:'best', feedback:'Parfait — ça donne du contexte, explique ton niveau de japonais et ouvre la conversation. 交換留学中 utilise 中 (en train de faire).',
         breakdown:[
-          { chunk:'フランスから来ました', role:'je viens de France', tip:'から = depuis/de · きました = suis venu (passé poli de くる)' },
-          { chunk:'京都大学に', role:'à Kyoto University', tip:'に = localisation/destination · に行く = aller à · に留学する = étudier à' },
-          { chunk:'交換留学中', role:'en échange universitaire (en cours)', tip:'交換 = échange · 留学 = étudier à l\'étranger · 中 = en train de/au milieu de · 中 suffix = action en cours' },
-          { chunk:'6ヶ月間', role:'pendant 6 mois', tip:'ヶ月 = compteur de mois · 間 = pendant (durée) · 6ヶ月間 = pendant 6 mois · 間 suffix = durée' },
-          { chunk:'いる予定です', role:'j\'ai prévu de rester', tip:'いる = être (personnes) · 予定 = plan/prévision · 予定です = c\'est prévu/planifié' }
+          { chunk:'フランスから来ました', role:'"Je viens de France." — から = depuis, きました = je suis venu.', tip:'から signifie "depuis" ou "de". フランスから = depuis la France. 来ました = suis venu (passé de 来る, kuru). La structure "pays + から + 来ました" est la réponse standard à "d\'où venez-vous ?".' },
+          { chunk:'交換留学中', role:'"En échange universitaire (en ce moment)." — 中 dit que c\'est en cours.', tip:'交換 = échange. 留学 = étudier à l\'étranger. 中 (ちゅう ou じゅう) accroché à un mot = en train de / au milieu de. 工事中 = en travaux. 準備中 = en préparation. 交換留学中 = en échange en ce moment.' },
+          { chunk:'6ヶ月間ここにいる予定です', role:'"J\'ai prévu de rester 6 mois ici." — 予定 dit que c\'est un plan.', tip:'予定 (よてい) = ce qui est prévu, le planning. 予定です = c\'est planifié. ヶ月 = mois (compteur). 間 = pendant (durée). 6ヶ月間 = pendant 6 mois. Tu verras souvent 予定 dans les e-mails : 〜する予定です = je prévois de faire...' }
         ]},
       { jp:'フランスです', romaji:'Furansu desu', fr:'France', quality:'ok', feedback:'Court mais compris — ajouter 京大の留学生です enrichit beaucoup.' },
       { jp:'パリ', romaji:'Pari', fr:'Paris', quality:'weak', feedback:'Réponse trop courte — le vendeur cherche à te connaître, profites-en.' }
     ]},
     { speaker:'npc', jp:'それはすごい！日本語もお上手ですね。よかったら、また来てください。試飲もできますよ。', romaji:'Sore wa sugoi! Nihongo mo ojouzu desu ne. Yokattara, mata kite kudasai. Shiin mo dekimasu yo.', fr:'C\'est impressionnant ! Votre japonais est très bon. N\'hésitez pas à revenir. On fait aussi des dégustations.',
       breakdown:[
-        { chunk:'それはすごい', role:'c\'est impressionnant !', tip:'それ = ça · すごい = incroyable/impressionnant · exclamation directe et naturelle' },
-        { chunk:'お上手ですね', role:'vous êtes doué(e) (poli)', tip:'お + 上手 = habile · ですね = n\'est-ce pas / affirmation partagée · お上手 = compliment classique sur une compétence' },
-        { chunk:'よかったら', role:'si vous voulez bien / si ça vous dit', tip:'よかったら = "si c\'est bien pour vous" → invitation non-imposée, très polie · よい = bien + たら' },
-        { chunk:'また来てください', role:'veuillez revenir', tip:'また = encore/de nouveau · 来て + ください = s\'il vous plaît venez · ください après てform = demande polie' },
-        { chunk:'試飲もできますよ', role:'on propose aussi des dégustations', tip:'試飲 = dégustation · も = aussi · できます = c\'est possible · よ = affirmation, information nouvelle pour l\'interlocuteur' }
+        { chunk:'それはすごい', role:'"C\'est incroyable !" — l\'exclamation de surprise la plus naturelle en japonais.', tip:'すごい = incroyable, impressionnant, super. C\'est un mot très polyvalent : すごい人 = une personne impressionnante, すごく上手 = vraiment habile, すごい ! seul = wow !' },
+        { chunk:'お上手ですね', role:'"Vous êtes très habile." — le compliment classique sur une compétence.', tip:'上手 (じょうず) = être habile, maîtriser quelque chose. お devant = poli. ですね = "n\'est-ce pas, non ?" — partagé, pas assertif. Tu l\'entendras souvent quand tu parles japonais à Kyoto. La réponse polie : いいえ、まだまだです (non, je suis encore loin du compte).' },
+        { chunk:'よかったら', role:'"Si ça vous dit / si vous le souhaitez." — une invitation sans pression.', tip:'よかったら = "si c\'est bien pour vous". C\'est la façon japonaise d\'inviter quelqu\'un sans l\'obliger — une porte ouverte, pas une pression. Tu peux l\'utiliser toi-même : よかったら、一緒に行きませんか ? = si ça te dit, on y va ensemble ?' },
+        { chunk:'試飲もできますよ', role:'"On fait aussi des dégustations, tu sais !" — よ ajoute une touche de "je t\'informe".', tip:'試飲 (しいん) = dégustation (試 = essayer, 飲 = boire). できます = c\'est possible. も = aussi. よ à la fin = "je te le dis, c\'est une info nouvelle pour toi". Utile à retenir pour proposer ou annoncer quelque chose.' }
       ]},
     { speaker:'user', choices:[
       { jp:'ありがとうございます。また来ます！試飲はいつでもできますか？', romaji:'Arigatou gozaimasu. Mata kimasu! Shiin wa itsu demo dekimasu ka?', fr:'Merci ! Je reviendrai ! Les dégustations, c\'est possible n\'importe quand ?', quality:'best', feedback:'Bon suivi — tu profites de l\'invitation et demandes les infos pratiques. いつでも (n\'importe quand) est plus précis que いつ (quand).',
         breakdown:[
-          { chunk:'また来ます', role:'je reviendrai', tip:'また = encore · 来ます = viendrai (futur/habitude) · 来ます = présent/futur poli de くる' },
-          { chunk:'いつでも', role:'n\'importe quand / toujours possible', tip:'いつ = quand · でも = même / n\'importe → いつでも = à tout moment · pattern: だれでも = n\'importe qui' },
-          { chunk:'できますか', role:'c\'est possible ? / peut-on ?', tip:'できる = pouvoir/être possible · できますか = question sur la possibilité · réponse : できます / できません' }
+          { chunk:'また来ます', role:'"Je reviendrai." — また = encore, 来ます = je viendrai.', tip:'また = encore, de nouveau. 来ます = viendrai (présent/futur poli de 来る, kuru). また来ます = je reviendrai. C\'est aussi une façon de terminer une visite chaleureusement — tu dis au revoir en annonçant que tu reviens.' },
+          { chunk:'いつでも', role:'"N\'importe quand." — un mot très utile construit sur un pattern.', tip:'いつ = quand. でも = même / n\'importe. いつでも = à tout moment. Le pattern X+でも = n\'importe X : だれでも = n\'importe qui, どこでも = n\'importe où, なんでも = n\'importe quoi. Très pratique !' },
+          { chunk:'できますか', role:'"C\'est possible ?" — ta question universelle pour demander si quelque chose est faisable.', tip:'できる = pouvoir, être possible. できますか = est-ce possible ? できます = oui. できません = non. Tu peux l\'utiliser pour tout : クレジットカードはできますか ? = on peut payer par carte ?' }
         ]},
       { jp:'ありがとう', romaji:'Arigatou', fr:'Merci', quality:'ok', feedback:'Poli et suffisant — mais ça ferme la conversation.' },
       { jp:'日本語は下手です', romaji:'Nihongo wa heta desu', fr:'Mon japonais est mauvais', quality:'weak', feedback:'Fausse modestie excessive — いいえ、まだまだです (non, je suis encore loin du compte) est plus naturel.' }

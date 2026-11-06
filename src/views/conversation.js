@@ -103,7 +103,7 @@ function renderConversationStage(){
     html += renderResolvedTurn(conv.turns[i], conv._chosen ? conv._chosen[i] : null);
   }
   if(turn.speaker === 'npc'){
-    html += bubbleHtml('npc', turn.jp, turn.romaji, turn.fr);
+    html += bubbleHtml('npc', turn.jp, turn.romaji, turn.fr, turn.breakdown);
     html += `</div><div class="conv-nav-row"><button class="conv-back" id="convExit">← Quitter</button><button class="continue-btn" id="convNext">Continuer</button></div>`;
     area.innerHTML = html;
     document.getElementById('convNext').addEventListener('click', ()=>{ speak(turn.jp,0.85); convState.turnIdx++; renderConversationStage(); });
