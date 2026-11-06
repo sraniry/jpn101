@@ -1085,7 +1085,41 @@ export const CONVERSATIONS = [
       { jp:'英語でお願いします', romaji:'Eigo de onegaishimasu', fr:'En anglais, s\'il vous plaît', quality:'ok', feedback:'Simple et direct — l\'anglais est généralement disponible dans les sites touristiques.' },
       { jp:'日本語でいいです', romaji:'Nihongo de ii desu', fr:'Le japonais ira', quality:'ok', feedback:'Courageux ! Mais seulement si tu peux vraiment lire le japonais.' }
     ]}
-  ]}
+  ]},
 
+  // ── GASTRONOMIE ─────────────────────────────────────────────────────────────
+
+  { id:'matcha', icon:'🍵', title:'Acheter du matcha (Kyoto)', skill:'gastronomie', level:'A2-B1', turns:[
+    { speaker:'npc', jp:'いらっしゃいませ。どのようなお茶をお探しですか？', romaji:'Irasshaimase. Dono you na ocha wo osagashi desu ka?', fr:'Bienvenue. Quel type de thé cherchez-vous ?' },
+    { speaker:'user', choices:[
+      { jp:'抹茶を探しています。ラテに使いたいんですが、まろやかな風味のものを探しています', romaji:'Matcha wo sagashite imasu. Rate ni tsukaitai n desu ga, maroyaka na fuumi no mono wo sagashite imasu', fr:'Je cherche du matcha pour faire des lattes — j\'aime les saveurs douces et rondes en bouche', quality:'best', feedback:'Parfait — tu donnes le contexte d\'utilisation (ラテ), la texture recherchée (まろやか = doux/rond) et montres que tu connais le vocabulaire de dégustation.' },
+      { jp:'抹茶ください', romaji:'Matcha kudasai', fr:'Du matcha, s\'il vous plaît', quality:'ok', feedback:'Fonctionne, mais le vendeur va te demander quel type — autant donner plus d\'infos dès le départ.' },
+      { jp:'一番いい抹茶はどれですか？', romaji:'Ichiban ii matcha wa dore desu ka?', fr:'Quel est le meilleur matcha ?', quality:'weak', feedback:'La question est vague — le "meilleur" dépend de l\'usage : cérémonie, latte, pâtisserie. Précise ton intention.' }
+    ]},
+    { speaker:'npc', jp:'ラテ用でしたら、甘みが出やすい石臼挽きのものがよいかもしれません。品種はどちらがお好みですか？宇治や八女などがございますよ。', romaji:'Rate you deshitara, amami ga deyasui ishiusu biki no mono ga yoi kamo shiremasen. Hinshu wa dochira ga okonomi desu ka? Uji ya yame nado ga gozaimasu yo.', fr:'Pour un latte, je recommande un matcha moulu à la pierre qui dégage facilement des notes sucrées. Vous avez une préférence de cultivar / région ? Nous avons de l\'Uji, du Yame...' },
+    { speaker:'user', choices:[
+      { jp:'宇治産のものが多いですが、品種はあまり詳しくなくて…おすすめはありますか？まろやかさとほんのりナッツのような風味が好きなんです', romaji:'Uji-san no mono ga ooi desu ga, hinshu wa amari kuwashiku nakute... osusume wa arimasu ka? Maroyakasa to honnori nattsu no you na fuumi ga suki nan desu', fr:'J\'ai surtout bu de l\'Uji, mais je ne connais pas bien les cultivars... Vous auriez une recommandation ? J\'aime le côté doux et les notes un peu noisette', quality:'best', feedback:'Parfait — tu montres ta curiosité, admets ta limite (honnête) et donnes des descripteurs précis (まろやか, ナッツ風味). C\'est exactement ce qu\'un vendeur apprécie.' },
+      { jp:'宇治がいいです', romaji:'Uji ga ii desu', fr:'Je veux de l\'Uji', quality:'ok', feedback:'Correct mais trop bref — le vendeur ne peut pas vraiment affiner sa recommandation avec si peu d\'infos.' },
+      { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne sais pas', quality:'weak', feedback:'Honnête mais un peu fermé — ajoute ce que tu aimes : まろやかなのが好きです (j\'aime le doux).' }
+    ]},
+    { speaker:'npc', jp:'それなら「さみどり」という品種がおすすめです。まろやかで旨味が強く、ラテにすると自然な甘さが出ます。私自身もお気に入りなんですよ。', romaji:'Sore nara "samidori" to iu hinshu ga osusume desu. Maroyaka de umami ga tsuyoku, rate ni suru to shizen na amasa ga demasu. Watashi jishin mo okiniri nan desu yo.', fr:'Dans ce cas, je recommande la variété "Samidori". Elle est douce, riche en umami, et en latte elle dégage une douceur naturelle. C\'est mon préférée aussi.' },
+    { speaker:'user', choices:[
+      { jp:'ありがとうございます。ご自身のおすすめはどんな飲み方ですか？', romaji:'Arigatou gozaimasu. Gojishin no osusume wa donna nomikata desu ka?', fr:'Merci. Et vous personnellement, comment vous aimez le boire ?', quality:'best', feedback:'Super — demander l\'avis du vendeur sur sa propre façon de déguster crée une vraie conversation. ご自身 (votre propre) est élégant et poli.' },
+      { jp:'それをください', romaji:'Sore wo kudasai', fr:'Je vais prendre ça', quality:'ok', feedback:'Direct et efficace — mais tu passes à côté d\'une conversation enrichissante.' },
+      { jp:'高いですか？', romaji:'Takai desu ka?', fr:'C\'est cher ?', quality:'weak', feedback:'Un peu abrupt — si tu veux le prix, essaie いくらですか？ après avoir écouté la recommandation.' }
+    ]},
+    { speaker:'npc', jp:'私は薄茶で、お点前で飲むのが好きです。品種は「やぶきた」がシンプルで落ち着きます。ところで、どちらから？', romaji:'Watashi wa usucha de, otemae de nomu no ga suki desu. Hinshu wa "yabukita" ga shimpuru de ochitsukimasu. Tokoro de, dochira kara?', fr:'Moi j\'aime le usucha (thé léger), préparé en cérémonie. Et pour la variété, le "Yabukita" est simple et reposant. D\'où venez-vous ?' },
+    { speaker:'user', choices:[
+      { jp:'フランスから来ました。今、京都大学に交換留学中で、6ヶ月間ここにいる予定です', romaji:'Furansu kara kimashita. Ima, Kyoto Daigaku ni koukan ryuugaku-chuu de, rok-ka-getsu-kan koko ni iru yotei desu', fr:'Je viens de France. Je suis actuellement en échange à Kyoto University — j\'ai prévu de rester 6 mois', quality:'best', feedback:'Parfait — ça donne du contexte, explique ton niveau de japonais et ouvre la conversation. 交換留学中 utilise 中 (en train de faire).' },
+      { jp:'フランスです', romaji:'Furansu desu', fr:'France', quality:'ok', feedback:'Court mais compris — ajouter 京大の留学生です enrichit beaucoup.' },
+      { jp:'パリ', romaji:'Pari', fr:'Paris', quality:'weak', feedback:'Réponse trop courte — le vendeur cherche à te connaître, profites-en.' }
+    ]},
+    { speaker:'npc', jp:'それはすごい！日本語もお上手ですね。よかったら、また来てください。試飲もできますよ。', romaji:'Sore wa sugoi! Nihongo mo ojouzu desu ne. Yokattara, mata kite kudasai. Shiin mo dekimasu yo.', fr:'C\'est impressionnant ! Votre japonais est très bon. N\'hésitez pas à revenir. On fait aussi des dégustations.' },
+    { speaker:'user', choices:[
+      { jp:'ありがとうございます。また来ます！試飲はいつでもできますか？', romaji:'Arigatou gozaimasu. Mata kimasu! Shiin wa itsu demo dekimasu ka?', fr:'Merci ! Je reviendrai ! Les dégustations, c\'est possible n\'importe quand ?', quality:'best', feedback:'Bon suivi — tu profites de l\'invitation et demandes les infos pratiques. いつでも (n\'importe quand) est plus précis que いつ (quand).' },
+      { jp:'ありがとう', romaji:'Arigatou', fr:'Merci', quality:'ok', feedback:'Poli et suffisant — mais ça ferme la conversation.' },
+      { jp:'日本語は下手です', romaji:'Nihongo wa heta desu', fr:'Mon japonais est mauvais', quality:'weak', feedback:'Fausse modestie excessive — いいえ、まだまだです (non, je suis encore loin du compte) est plus naturel.' }
+    ]}
+  ]}
 
 ];

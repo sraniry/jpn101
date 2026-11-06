@@ -458,6 +458,16 @@
   .klc-pair{ font-family:'Shippori Mincho',serif; font-size:24px; color:var(--indigo-deep); }
   .klc-mnemo{ font-size:11px; color:#7a7268; line-height:1.45; }
 
+  /* ---------- Onglets Hiragana / Katakana séparés ---------- */
+  .kana-solo-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(130px,1fr)); gap:10px; margin-top:10px; }
+  .kana-solo-cell{ background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; gap:3px; transition:border-color .15s, background .15s; }
+  .kana-solo-cell:hover{ border-color:var(--indigo); }
+  .kana-solo-cell.is-open{ background:rgba(44,62,92,0.06); }
+  .ksc-kana{ font-family:'Shippori Mincho',serif; font-size:30px; color:var(--indigo-deep); line-height:1.2; }
+  .ksc-rom{ font-size:13px; font-weight:600; color:var(--text); }
+  .ksc-mnemo{ font-size:11px; color:#7a7268; line-height:1.45; display:none; margin-top:4px; }
+  .kana-solo-cell.is-open .ksc-mnemo{ display:block; }
+
   /* ---------- Kanji ---------- */
   .kanji-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:10px; margin-bottom:16px; }
   .kanji-card{ background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; gap:2px; }
@@ -710,3 +720,10 @@
     font-weight:600; padding:5px 12px; border-radius:999px; cursor:pointer; font-family:'Work Sans',sans-serif; }
   .rj-page-btn:hover, .rj-global-btn:hover{ border-color:var(--indigo); color:var(--indigo); }
   .rj-global-btn{ margin-top:10px; }
+
+/* JLPT level switcher */
+.jlpt-level-switch{ display:flex; gap:8px; margin-bottom:16px; }
+.jlpt-level-btn{ background:var(--bg); border:1.5px solid var(--line); color:var(--text); font-family:'Work Sans',sans-serif;
+  font-size:13px; font-weight:700; padding:5px 20px; border-radius:999px; cursor:pointer; transition:all .15s; }
+.jlpt-level-btn:hover{ border-color:var(--indigo); color:var(--indigo); }
+.jlpt-level-btn.active{ background:var(--indigo); border-color:var(--indigo); color:#fff; }

@@ -282,6 +282,7 @@ export function renderReview(){
   const ab = document.getElementById('archiveBtn');
   if(ab) ab.addEventListener('click', ()=>{
     archiveCard(currentReview, true); savePhrases(); refreshCounters(); celebrateNewBadges();
+    registerStudyActivity(); planMark('reviews', 1);
     reviewQueue.shift(); nextReviewCard();
   });
 
@@ -364,6 +365,7 @@ function renderParticleDrill(area){
     const adb = document.getElementById('archiveBtnDrill');
     if(adb) adb.addEventListener('click', ()=>{
       archiveCard(currentReview, true); savePhrases(); celebrateNewBadges();
+      registerStudyActivity(); planMark('reviews', 1);
       reviewQueue.shift(); renderHeader(); nextReviewCard();
     });
   }

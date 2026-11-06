@@ -1,4 +1,5 @@
 import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_QUIZ } from '../../data/jlpt-n5.js';
+import { N4_KANJI } from '../../data/jlpt-n4.js';
 import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
 import { KANJI_RADICALS } from '../../data/kanji-radicals.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
@@ -30,6 +31,7 @@ function shuffleChoicePair(choices, choicesRomaji){
 
 let quizState = null;
 let examState = null;
+let jlptLevel = 'N5';
 
 // ---------- Historique des examens blancs ----------
 // Stocké dans meta (via storage.js) : il suit ainsi l'export JSON et la synchro cloud,
@@ -59,23 +61,44 @@ function weakCategory(){
 export function renderJlpt(){
   const area = document.getElementById('jlptArea');
   quizState = null; examState = null; kanjiSensQuiz = null;
+  const n4Total = N4_KANJI.reduce((s,g)=>s+g.items.length,0);
   area.innerHTML = `
-    <div class="skills-intro">Préparation <b>JLPT N5</b> : les ${N5_KANJI_ALL.length} kanji officiels, ~${N5_VOCAB_ALL.length} mots essentiels, les ${N5_GRAMMAR.length} structures testées, un quiz rapide et un examen blanc complet.</div>
-    <div class="kana-tabs">
-      <button class="kana-tab active" data-tab="kanji">漢字 Kanji</button>
-      <button class="kana-tab" data-tab="radicals">🧩 Radicaux</button>
-      <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
-      <button class="kana-tab" data-tab="grammar">📐 Grammaire</button>
-      <button class="kana-tab" data-tab="quiz">🎯 Quiz rapide</button>
-      <button class="kana-tab" data-tab="exam">📝 Examen blanc</button>
-      <button class="kana-tab" data-tab="tips">💡 Conseils</button>
-      <button class="kana-tab" data-tab="history">📊 Historique</button>
+    <div class="jlpt-level-switch">
+      <button class="jlpt-level-btn ${jlptLevel==='N5'?'active':''}" data-level="N5">N5</button>
+      <button class="jlpt-level-btn ${jlptLevel==='N4'?'active':''}" data-level="N4">N4</button>
     </div>
-    <div id="jlpt-panel"></div>
+    <div id="jlpt-level-n5" ${jlptLevel==='N4'?'style="display:none"':''}>
+      <div class="skills-intro">Préparation <b>JLPT N5</b> : les ${N5_KANJI_ALL.length} kanji officiels, ~${N5_VOCAB_ALL.length} mots essentiels, les ${N5_GRAMMAR.length} structures testées, un quiz rapide et un examen blanc complet.</div>
+      <div class="kana-tabs" id="jlpt-tabs-n5">
+        <button class="kana-tab active" data-tab="kanji">漢字 Kanji</button>
+        <button class="kana-tab" data-tab="radicals">🧩 Radicaux</button>
+        <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
+        <button class="kana-tab" data-tab="grammar">📐 Grammaire</button>
+        <button class="kana-tab" data-tab="quiz">🎯 Quiz rapide</button>
+        <button class="kana-tab" data-tab="exam">📝 Examen blanc</button>
+        <button class="kana-tab" data-tab="tips">💡 Conseils</button>
+        <button class="kana-tab" data-tab="history">📊 Historique</button>
+      </div>
+      <div id="jlpt-panel"></div>
+    </div>
+    <div id="jlpt-level-n4" ${jlptLevel==='N5'?'style="display:none"':''}>
+      <div class="skills-intro">Préparation <b>JLPT N4</b> : ${n4Total} kanji N4 (sans doublons N5), avec lectures, mnémotechniques et exemples. Adapté pour le niveau intermédiaire.</div>
+      <div id="jlpt-panel-n4"></div>
+    </div>
   `;
-  area.querySelectorAll('.kana-tab').forEach(tab=>{
+  area.querySelectorAll('.jlpt-level-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      jlptLevel = btn.dataset.level;
+      area.querySelectorAll('.jlpt-level-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      area.querySelector('#jlpt-level-n5').style.display = jlptLevel==='N4' ? 'none' : '';
+      area.querySelector('#jlpt-level-n4').style.display = jlptLevel==='N5' ? 'none' : '';
+      if(jlptLevel==='N4') renderN4KanjiPanel(area.querySelector('#jlpt-panel-n4'));
+    });
+  });
+  area.querySelectorAll('#jlpt-tabs-n5 .kana-tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
-      area.querySelectorAll('.kana-tab').forEach(t=>t.classList.remove('active'));
+      area.querySelectorAll('#jlpt-tabs-n5 .kana-tab').forEach(t=>t.classList.remove('active'));
       tab.classList.add('active');
       quizState = null; kanjiSensQuiz = null;
       if(examState && examState.timerId) clearInterval(examState.timerId);
@@ -84,6 +107,7 @@ export function renderJlpt(){
     });
   });
   renderPanel('kanji');
+  if(jlptLevel==='N4') renderN4KanjiPanel(area.querySelector('#jlpt-panel-n4'));
 }
 
 function renderPanel(tab){
@@ -184,6 +208,52 @@ function renderKanjiPanel(panel){
   panel.querySelector('#kanjiSensStart').addEventListener('click', ()=>{
     kanjiSensQuiz = { deck: shuffle(N5_KANJI_ALL).slice(0,20), idx:0, correct:0 };
     renderKanjiPanel(panel);
+  });
+}
+
+// ---------- N4 Kanji ----------
+function kanjiMakeCardN4(it){
+  const parts = [it.on, it.kun].filter(r => r && r !== '—').map(kanaToRomaji);
+  return newCard(it.k, parts.join(' / '), it.fr, it.ex + (it.mnemo ? ' · 💡 '+it.mnemo : ''), 'kanji', 'N4');
+}
+
+function renderN4KanjiPanel(panel){
+  if(!panel) return;
+  const n4All = N4_KANJI.flatMap(g=>g.items);
+  let html = `<div class="kana-rule-note"><b>${n4All.length} kanji N4</b> — aucun doublon avec N5. Touche un kanji pour l'entendre.</div>`;
+  N4_KANJI.forEach((g, gi)=>{
+    const st = groupAddLabel(g.items, kanjiMakeCardN4);
+    html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add-n4 ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div><div class="kanji-grid">`;
+    g.items.forEach(it=>{
+      const reading = r => r === '—' ? '—' : `${escapeHtml(r)} <span class="rj-inline">(${escapeHtml(kanaToRomaji(r))})</span>`;
+      html += `<div class="kanji-card" data-jp="${it.k}">
+        <span class="kj-k">${it.k}</span>
+        <span class="kj-rom">音 ${reading(it.on)}<br>訓 ${reading(it.kun)}</span>
+        <span class="kj-fr">${escapeHtml(it.fr)}</span>
+        <span class="kj-ex">${escapeRj(annotateFurigana(it.ex))}</span>
+        ${it.mnemo ? `<span class="kj-mnemo">💡 ${escapeHtml(it.mnemo)}</span>` : ''}
+        ${it.radicals ? `<span class="kj-radicals">🧩 ${escapeHtml(it.radicals)}</span>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  panel.innerHTML = html;
+  panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
+  panel.querySelectorAll('.jlpt-add-n4').forEach(b=>{
+    b.addEventListener('click', async e=>{
+      e.stopPropagation();
+      const g = N4_KANJI[parseInt(b.dataset.group,10)];
+      const existing = existingKeySet(); let added = 0;
+      g.items.forEach(it=>{
+        const card = kanjiMakeCardN4(it);
+        const key = cardKey(card.jp, card.romaji);
+        if(existing.has(key)) return;
+        phrases.push(card); existing.add(key); added++;
+      });
+      if(added>0) await savePhrases();
+      refreshCounters();
+      renderN4KanjiPanel(panel);
+    });
   });
 }
 

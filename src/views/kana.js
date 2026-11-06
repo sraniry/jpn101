@@ -299,15 +299,43 @@ export function renderKana() {
 
     <div class="kana-tabs">
       <button class="kana-tab active" data-tab="path">📅 Parcours</button>
-      <button class="kana-tab" data-tab="base">あ/ア Base</button>
+      <button class="kana-tab" data-tab="hiragana">あ Hiragana</button>
+      <button class="kana-tab" data-tab="katakana">ア Katakana</button>
+      <button class="kana-tab" data-tab="base">あ/ア Tableau</button>
       <button class="kana-tab" data-tab="derived">゛゜ Dérivés</button>
       <button class="kana-tab" data-tab="quiz">🎯 Quiz</button>
     </div>
 
     <div id="kana-tab-path" class="kana-tab-panel active"></div>
 
+    <div id="kana-tab-hiragana" class="kana-tab-panel" style="display:none">
+      <h4 class="kana-table-title">ひらがな — les 46 sons de base</h4>
+      <p class="kana-vocab-note">Clique sur un caractère pour l'entendre. Chaque caractère a un moyen mnémotechnique visuel pour t'aider à le mémoriser.</p>
+      <div class="kana-solo-grid">
+        ${KANA_BASE.flatMap(g=>g.items).map(it=>`
+          <div class="kana-solo-cell" data-jp="${it.h}">
+            <span class="ksc-kana" data-jp="${it.h}">${it.h}</span>
+            <span class="ksc-rom">${it.romaji}</span>
+            ${it.hmnemo ? `<span class="ksc-mnemo">${it.hmnemo.replace(/^[^\s]+ : /,'')}</span>` : ''}
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div id="kana-tab-katakana" class="kana-tab-panel" style="display:none">
+      <h4 class="kana-table-title">カタカナ — les 46 sons de base</h4>
+      <p class="kana-vocab-note">Le katakana sert pour les mots étrangers et les onomatopées. Les formes plus anguleuses sont souvent plus difficiles à mémoriser — les tips visuels aident !</p>
+      <div class="kana-solo-grid">
+        ${KANA_BASE.flatMap(g=>g.items).map(it=>`
+          <div class="kana-solo-cell" data-jp="${it.k}">
+            <span class="ksc-kana" data-jp="${it.k}">${it.k}</span>
+            <span class="ksc-rom">${it.romaji}</span>
+            ${it.mnemo ? `<span class="ksc-mnemo">${it.mnemo.replace(/^[ァ-ン]+ : /,'')}</span>` : ''}
+          </div>`).join('')}
+      </div>
+    </div>
+
     <div id="kana-tab-base" class="kana-tab-panel" style="display:none">
-      <h4 class="kana-table-title">46 sons de base — hiragana / katakana</h4>
+      <h4 class="kana-table-title">46 sons de base — hiragana / katakana côte à côte</h4>
       <label class="kana-mnemo-toggle"><input type="checkbox" id="mnemoToggle"> Afficher les moyens mnémotechniques (katakana)</label>
       ${renderPairedTable(KANA_BASE, true)}
 
@@ -441,7 +469,7 @@ export function renderKana() {
     const el = e.target.closest('[data-jp]');
     if (!el || !el.dataset.jp) return;
     speak(el.dataset.jp, 0.8);
-    const cell = e.target.closest('.kana-pair-cell');
+    const cell = e.target.closest('.kana-pair-cell, .kana-solo-cell');
     if (cell) cell.classList.toggle('is-open');
   });
 
