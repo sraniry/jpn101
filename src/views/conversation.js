@@ -1,36 +1,40 @@
 import { CONVERSATIONS } from '../../data/phrases.js';
-import { CONV_BREAKDOWNS } from '../../data/conv-breakdowns.js';
+import { CONV_BREAKDOWNS, CONV_ALT_BREAKDOWNS } from '../../data/conv-breakdowns.js';
 
 // Les décryptages sont rangés à part, par dialogue puis par index de tour :
-// tour PNJ → sa réplique, tour utilisateur → le meilleur choix.
+// tour PNJ → sa réplique, tour utilisateur → le meilleur choix ; les autres choix sont
+// dans CONV_ALT_BREAKDOWNS, indexés par tour puis par position du choix.
 CONVERSATIONS.forEach(conv=>{
-  const byTurn = CONV_BREAKDOWNS[conv.id];
-  if(!byTurn || !Array.isArray(conv.turns)) return;
+  if(!Array.isArray(conv.turns)) return;
+  const byTurn = CONV_BREAKDOWNS[conv.id] || {};
+  const alt = CONV_ALT_BREAKDOWNS[conv.id] || {};
   conv.turns.forEach((t, i)=>{
     const bd = byTurn[i];
-    if(!bd) return;
-    if(t.speaker === 'npc'){ if(!t.breakdown) t.breakdown = bd; return; }
-    const best = (t.choices || []).find(c=>c.quality === 'best');
-    if(best && !best.breakdown) best.breakdown = bd;
+    if(t.speaker === 'npc'){ if(bd && !t.breakdown) t.breakdown = bd; return; }
+    (t.choices || []).forEach((c, ci)=>{
+      const own = c.quality === 'best' ? bd : (alt[i] || {})[ci];
+      if(own && !c.breakdown) c.breakdown = own;
+    });
   });
 });
-import { speak } from '../tts.js';
+import { speak, speakSequence } from '../tts.js';
 import { escapeHtml } from '../util.js';
 import { planMark, registerStudyActivity, getConvDone, markConvDone } from '../storage.js';
 import { celebrate } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
 
-// Lecture audio d'un dialogue entier (entraînement de l'oreille) :
-// les utterances TTS se mettent en file d'attente naturellement dans speechSynthesis.
+// Lecture audio d'un dialogue entier (entraînement de l'oreille). Retoucher 🎧 arrête la lecture.
 let listeningId = null;
 function playFullDialogue(conv){
   window.speechSynthesis.cancel();
   if(listeningId === conv.id){ listeningId = null; return; }
   listeningId = conv.id;
-  conv.turns.forEach(t=>{
-    if(t.speaker === 'npc') speak(t.jp, 0.85);
-    else if(t.choices){ const best = t.choices.find(c=>c.quality==='best') || t.choices[0]; speak(best.jp, 0.85); }
-  });
+  const parts = conv.turns.map(t=>{
+    if(t.speaker === 'npc') return { text:t.jp, pitch:0.9 };
+    const best = (t.choices || []).find(c=>c.quality==='best') || (t.choices || [])[0];
+    return best ? { text:best.jp, pitch:1.2 } : null;
+  }).filter(Boolean);
+  speakSequence(parts, 0.85);
 }
 
 // ---------- conversation simulator ----------

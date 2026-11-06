@@ -2,13 +2,14 @@ import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_
 import { N4_KANJI } from '../../data/jlpt-n4.js';
 import { N4_VOCAB, N4_VOCAB_ALL } from '../../data/jlpt-n4-vocab.js';
 import { N4_GRAMMAR, N4_GRAMMAR_QUIZ } from '../../data/jlpt-n4-grammar.js';
+import { N4_LISTENING } from '../../data/jlpt-n4-listening.js';
 import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
 import { KANJI_RADICALS } from '../../data/kanji-radicals.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { phrases, newCard, savePhrases, existingKeySet, cardKey, registerStudyActivity,
          getExamHistory, addExamRecord, addQuizStat, bestQuizScore, getQuizStats } from '../storage.js';
 import { refreshCounters } from '../main.js';
-import { speak } from '../tts.js';
+import { speak, speakSequence } from '../tts.js';
 import { celebrate, quizLine } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
 import { escapeHtml, escapeRj, rjMark, kanaToRomaji, annotateFurigana } from '../util.js';
@@ -73,7 +74,7 @@ function weakCategory(){
 export function renderJlpt(){
   const area = document.getElementById('jlptArea');
   if(examState && examState.timerId) clearInterval(examState.timerId);
-  quizState = null; examState = null; kanjiSensQuiz = null;
+  quizState = null; examState = null; kanjiSensQuiz = null; n4Listen = null;
   const lv = L();
   const intro = jlptLevel === 'N5'
     ? `Préparation <b>JLPT N5</b> : les ${lv.kanjiAll.length} kanji officiels, ~${lv.vocabAll.length} mots essentiels, les ${lv.grammar.length} structures testées, un quiz rapide et un examen blanc complet.`
@@ -89,6 +90,7 @@ export function renderJlpt(){
       ${jlptLevel === 'N5' ? '<button class="kana-tab" data-tab="radicals">🧩 Radicaux</button>' : ''}
       <button class="kana-tab" data-tab="vocab">📖 Vocabulaire</button>
       <button class="kana-tab" data-tab="grammar">📐 Grammaire</button>
+      ${jlptLevel === 'N4' ? '<button class="kana-tab" data-tab="listen">🎧 Écoute</button>' : ''}
       <button class="kana-tab" data-tab="quiz">🎯 Quiz rapide</button>
       <button class="kana-tab" data-tab="exam">📝 Examen blanc</button>
       <button class="kana-tab" data-tab="tips">💡 Conseils</button>
@@ -107,7 +109,7 @@ export function renderJlpt(){
     tab.addEventListener('click', ()=>{
       area.querySelectorAll('#jlpt-tabs .kana-tab').forEach(t=>t.classList.remove('active'));
       tab.classList.add('active');
-      quizState = null; kanjiSensQuiz = null;
+      quizState = null; kanjiSensQuiz = null; n4Listen = null;
       if(examState && examState.timerId) clearInterval(examState.timerId);
       examState = null;
       renderPanel(tab.dataset.tab);
@@ -122,6 +124,7 @@ function renderPanel(tab){
   else if(tab==='radicals') renderRadicalsPanel(panel);
   else if(tab==='vocab') renderVocabPanel(panel);
   else if(tab==='grammar') renderGrammarPanel(panel);
+  else if(tab==='listen') renderN4ListeningPanel(panel);
   else if(tab==='quiz') renderQuizSetup(panel);
   else if(tab==='exam') renderExamSetup(panel);
   else if(tab==='tips') renderTipsPanel(panel);
@@ -561,12 +564,82 @@ function buildExamSection2(){
   });
 }
 function buildExamSection3(){
-  // Compréhension orale : dialogue affiché (jp + romaji) + lu par le TTS, puis question sur le sens
+  // N4 : vrais dialogues d'examen, entendus sans texte, question sur un détail.
+  if(jlptLevel === 'N4'){
+    return shuffle(N4_LISTENING).slice(0,20).map(it=>({ kind:'dialogue', item:it, q:it.q, choices:shuffle([...it.choices]), ok:it.ok, tag:'Compréhension orale' }));
+  }
+  // N5 : réplique affichée (jp + romaji) + lue par le TTS, puis question sur le sens
   const npcTurns = CONVERSATIONS.filter(c=>Array.isArray(c.turns)).flatMap(c=>c.turns.filter(t=>t.speaker==='npc' && t.jp && t.fr));
   const picked = shuffle(npcTurns).slice(0,20);
   return picked.map(t=>{
     const others = shuffle(npcTurns.filter(x=>x.fr!==t.fr)).slice(0,3).map(x=>x.fr);
     return { kind:'listening', q:'Qu\'est-ce que la personne vient de dire ?', jp:t.jp, romaji:t.romaji, choices:shuffle([t.fr,...others]), ok:t.fr, tag:'Compréhension orale' };
+  });
+}
+
+// ---------- Écoutes N4 : dialogues à deux voix ----------
+function playDialogue(it){
+  speakSequence(it.lines.map(l=>({ text:l.jp, pitch: l.who === 'F' ? 1.25 : 0.85 })), 0.9);
+}
+function dialogueReviewHtml(it, chosen){
+  return `<div class="jl-review">
+    <div class="jl-setting">🎧 ${escapeHtml(it.setting)}</div>
+    ${it.lines.map(l=>`<div class="jl-line"><span class="jl-who">${l.who === 'F' ? '👩' : '👨'}</span><div><b>${escapeHtml(l.jp)}</b><span class="jl-rom">${escapeHtml(l.romaji)}</span><span class="jl-fr">${escapeHtml(l.fr)}</span></div></div>`).join('')}
+    <div class="jl-q">❓ ${escapeHtml(it.q)}</div>
+    <div class="jl-answer">✓ ${escapeHtml(it.ok)}${chosen && chosen !== it.ok ? ` <span class="jl-chosen">— tu avais répondu : ${escapeHtml(chosen)}</span>` : ''}</div>
+    <div class="listen-reveal">${escapeHtml(it.explanation)}</div>
+  </div>`;
+}
+
+let n4Listen = null;
+function renderN4ListeningPanel(panel){
+  if(!n4Listen){
+    const best = bestQuizScore('listening-n4');
+    panel.innerHTML = `<div class="kana-rule-note"><b>${N4_LISTENING.length} écoutes au format de l'examen N4</b> : un dialogue entre deux personnes, puis une question sur un <b>détail</b> (heure, lieu, ce qu'il faut apporter, pourquoi…). Comme le jour J, le texte est caché : écoute d'abord, autant de fois que tu veux. Après ta réponse, tu vois la transcription et l'explication.</div>
+      ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total}</div>` : ''}
+      <button class="continue-btn" id="n4ListenStart">🎧 Commencer (10 écoutes)</button>`;
+    panel.querySelector('#n4ListenStart').addEventListener('click', ()=>{
+      n4Listen = { deck: shuffle(N4_LISTENING).slice(0,10), idx:0, correct:0 };
+      renderN4ListeningPanel(panel);
+    });
+    return;
+  }
+  const q = n4Listen;
+  if(q.idx >= q.deck.length){
+    const pct = Math.round((q.correct/q.deck.length)*100);
+    if(!q.recorded){ q.recorded = true; addQuizStat('listening-n4', q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
+    panel.innerHTML = `<div class="kana-quiz-done">
+      <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
+      <div class="kqd-teacher">${quizLine(pct)}</div>
+      <button class="kana-quiz-restart" id="n4ListenEnd">🔄 Nouvelle série</button>
+    </div>`;
+    panel.querySelector('#n4ListenEnd').addEventListener('click', ()=>{ n4Listen = null; renderN4ListeningPanel(panel); });
+    return;
+  }
+  const it = q.deck[q.idx];
+  const choices = shuffle([...it.choices]);
+  panel.innerHTML = `<div class="kana-quiz-card">
+    <div class="kqc-progress">${q.idx+1} / ${q.deck.length}</div>
+    <div class="exam-listen-box">
+      <div class="jl-setting">🎧 ${escapeHtml(it.setting)}</div>
+      <button class="listen-btn" id="n4Replay">▶ Écouter / réécouter</button>
+    </div>
+    <div class="jq-question">${escapeHtml(it.q)}</div>
+    <div class="kqc-choices listen-choices">${choiceButtonsHtml(choices, null, it.ok)}</div>
+    <div id="n4ListenReveal"></div>
+  </div>`;
+  playDialogue(it);
+  panel.querySelector('#n4Replay').addEventListener('click', ()=> playDialogue(it));
+  panel.querySelectorAll('.kqc-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const ok = btn.dataset.ok === 'true';
+      if(ok){ btn.classList.add('correct'); q.correct++; }
+      else { btn.classList.add('wrong'); panel.querySelector('[data-ok="true"]').classList.add('correct'); }
+      panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
+      panel.querySelector('#n4ListenReveal').innerHTML = dialogueReviewHtml(it, btn.dataset.choice) +
+        `<button class="continue-btn" id="n4ListenNext" style="margin-top:12px;">Continuer</button>`;
+      panel.querySelector('#n4ListenNext').addEventListener('click', ()=>{ q.idx++; renderN4ListeningPanel(panel); });
+    });
   });
 }
 
@@ -622,7 +695,13 @@ function renderExamQuestion(panel){
   const meta = SECTION_META[sectionName];
 
   let bodyHtml = '';
-  if(card.kind === 'listening'){
+  if(card.kind === 'dialogue'){
+    bodyHtml = `<div class="exam-listen-box">
+      <div class="jl-setting">🎧 ${escapeHtml(card.item.setting)}</div>
+      <button class="listen-btn" id="examReplay">▶ Réécouter</button>
+    </div>
+    <div class="jq-question">${escapeHtml(card.q)}</div>`;
+  } else if(card.kind === 'listening'){
     bodyHtml = `<div class="exam-listen-box">
       <div class="jp-text" data-jp="${escapeHtml(card.jp)}">${escapeHtml(card.jp)}</div>
       <div class="romaji">${escapeHtml(card.romaji||'')}</div>
@@ -651,13 +730,17 @@ function renderExamQuestion(panel){
     speak(card.jp, 0.85);
     panel.querySelector('#examReplay').addEventListener('click', ()=> speak(card.jp, 0.85));
   }
+  if(card.kind === 'dialogue'){
+    playDialogue(card.item);
+    panel.querySelector('#examReplay').addEventListener('click', ()=> playDialogue(card.item));
+  }
   panel.querySelectorAll('.kqc-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const ok = btn.dataset.ok === 'true';
       const sec = examState.results[sectionName];
       sec.total++;
       if(ok) sec.correct++;
-      else examState.errors.push({ section:sectionName, kind:card.kind, tag:card.tag, chosen:btn.dataset.choice, correct:card.ok });
+      else examState.errors.push({ section:sectionName, kind:card.kind, tag:card.tag, chosen:btn.dataset.choice, correct:card.ok, item:card.item });
       examState.idx++;
       renderExamQuestion(panel);
     });
@@ -695,6 +778,7 @@ function renderExamReport(panel){
   const passTotal = L().passTotal;
   const passed = total >= passTotal && failedSections.length === 0;
   const topErrors = topErrorTypes(examState.errors);
+  const missedDialogues = examState.errors.filter(e=>e.item);
 
   const record = { date: new Date().toISOString(), level: jlptLevel, scores, total, passed, failedSections, topErrors };
   // Un examen blanc complet est une vraie session de travail : il doit compter dans la série.
@@ -712,6 +796,7 @@ function renderExamReport(panel){
       </div>
       ${failedSections.length ? `<div class="listen-reveal">Section${failedSections.length>1?'s':''} sous le seuil (< 19/60) : <b>${failedSections.join(', ')}</b>${!passed && failedSections.length===0 ? ' — c\'est le score total qui manque.' : ''}</div>` : (!passed ? `<div class="listen-reveal">Toutes les sections sont au-dessus du seuil, mais le total (${total}/180) reste sous ${passTotal}.</div>` : '')}
       ${topErrors.length ? `<div class="exam-errors"><b>Top erreurs à retravailler :</b><ul class="tips-list">${topErrors.map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul></div>` : ''}
+      ${missedDialogues.length ? `<details class="exam-missed"><summary>🎧 Revoir les ${missedDialogues.length} écoute${missedDialogues.length>1?'s':''} ratée${missedDialogues.length>1?'s':''} (transcription + explication)</summary>${missedDialogues.map(e=>dialogueReviewHtml(e.item, e.chosen)).join('')}</details>` : ''}
       <button class="continue-btn" id="examSave">💾 Sauvegarder ce résultat</button>
       <button class="kana-quiz-restart" id="examRestart" style="margin-top:10px;">🔄 Nouvel examen blanc</button>
     </div>

@@ -1910,3 +1910,1646 @@ export const CONV_BREAKDOWNS = {
   ]
  }
 };
+// Réponses « correctes » et « faibles » : dialogue → tour → position du choix.
+export const CONV_ALT_BREAKDOWNS = {
+ "izakaya": {
+  "1": {
+   "1": [
+    {
+     "chunk": "二人",
+     "role": "« Deux. » — le nombre tout seul, sans rien autour.",
+     "tip": "Ça marche, le serveur comprendra. Mais tout seul ça sonne un peu sec : ajoute です et tu passes à « on est deux » poli → 二人です (futari desu)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "私たちは",
+     "role": "« Nous, … » — tu annonces de qui tu parles.",
+     "tip": "En japonais, on enlève le « nous » quand c'est évident. Le serveur te regarde : il sait que tu parles de ton groupe. Commence directement par le nombre."
+    },
+    {
+     "chunk": "二人の人間です",
+     "role": "« Deux êtres humains. » — une traduction mot à mot qui fait sourire.",
+     "tip": "人間 (ningen) = « être humain », le mot des documentaires et de la philosophie. Au restaurant, on dit juste 二人です (futari desu). Garde l'idée : au Japon, plus c'est court, plus c'est naturel."
+    }
+   ]
+  },
+  "4": {
+   "1": [
+    {
+     "chunk": "ヘイ！",
+     "role": "« Hé ! » — un appel venu de l'anglais.",
+     "tip": "Ça sonne brusque, presque comme siffler le serveur. Au Japon, on lève la main et on dit すみません！ (sumimasen) : poli, efficace, et tout le monde se retourne."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "お願いします",
+     "role": "« S'il vous plaît. » — la demande polie universelle.",
+     "tip": "Parfait si le serveur est déjà devant toi. S'il est loin, il ne saura pas que tu l'appelles : commence par すみません (sumimasen) pour attirer son attention, puis 注文お願いします."
+    }
+   ]
+  },
+  "6": {
+   "1": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne comprends pas / je ne sais pas. »",
+     "tip": "Phrase utile, mais ici elle bloque la commande. Astuce de survie : pointe le menu et dis これをください (kore wo kudasai) — pas besoin de connaître le nom du plat."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "これ",
+     "role": "« Ça / ceci. » — en montrant le plat du doigt.",
+     "tip": "これ (kore) = ce qui est près de toi. C'est ton meilleur ami au restaurant : un doigt sur le menu + これ, et tout le monde comprend."
+    },
+    {
+     "chunk": "お願いします",
+     "role": "« S'il vous plaît. »",
+     "tip": "これ、お願いします est tout à fait correct. Il manque juste la boisson : ajoute あと、ビールを一つ (ato, biiru wo hitotsu) = « et une bière »."
+    }
+   ]
+  },
+  "8": {
+   "1": [
+    {
+     "chunk": "エビアレルギー",
+     "role": "« Allergie aux crevettes. » — エビ (ebi) = crevette.",
+     "tip": "Phrase très utile à retenir si tu as une allergie : remplace エビ par ton aliment. 卵 (tamago) = œuf, 小麦 (komugi) = blé, そば = sarrasin."
+    },
+    {
+     "chunk": "があります",
+     "role": "« J'ai… » — pour dire que tu as quelque chose.",
+     "tip": "〜があります = j'ai (une allergie, un problème, une réservation). Tu le réutiliseras partout : 予約があります = j'ai une réservation."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "何？",
+     "role": "« Quoi ? » — la version familière, entre amis.",
+     "tip": "Au restaurant, ça sonne sec et un peu impoli. Si tu n'as pas compris, dis もう一度お願いします (mou ichido onegaishimasu) = « encore une fois, s'il vous plaît »."
+    }
+   ]
+  },
+  "10": {
+   "1": [
+    {
+     "chunk": "いくら？",
+     "role": "« Combien ? » — la question du prix, en version courte.",
+     "tip": "Compris partout, mais un peu familier. Au restaurant, la formule polie pour l'addition est お会計お願いします (okaikei onegaishimasu). Garde いくらですか (ikura desu ka) pour les boutiques."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "払います",
+     "role": "« Je vais payer. » — 払う (harau) = payer.",
+     "tip": "La phrase est correcte, mais le serveur ne sait pas quoi faire : t'apporter l'addition ? Encaisser ? Demande plutôt l'addition : お会計お願いします (okaikei onegaishimasu)."
+    }
+   ]
+  }
+ },
+ "konbini": {
+  "1": {
+   "1": [
+    {
+     "chunk": "これは",
+     "role": "« Ça… » — tu montres l'article.",
+     "tip": "これ = ceci (près de toi). は annonce de quoi tu parles : « en ce qui concerne ça… »."
+    },
+    {
+     "chunk": "いくらですか？",
+     "role": "« C'est combien ? » — la question du prix, polie.",
+     "tip": "Très utile en boutique ! Au konbini le prix est souvent affiché, donc ce n'est pas toujours nécessaire. Pour acheter directement : これをください (kore wo kudasai)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "買いたいです",
+     "role": "« Je veux acheter. » — 買う (kau) = acheter + たい = vouloir.",
+     "tip": "Grammaticalement juste, mais on ne l'entend pas à la caisse : tu poses l'article et c'est clair. Si tu veux parler, これをください (kore wo kudasai) suffit."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "いいえ",
+     "role": "« Non. » — poli et clair.",
+     "tip": "Un non poli, parfait au comptoir."
+    },
+    {
+     "chunk": "大丈夫です",
+     "role": "« Ça va comme ça / non merci. »",
+     "tip": "大丈夫です (daijoubu desu) = le « non merci » le plus courant au Japon. Très bon réflexe : tu peux l'utiliser pour refuser un sac, une paille, un ticket…"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne comprends pas. »",
+     "tip": "Honnête, mais au konbini les questions sont toujours les mêmes (réchauffer, sac, carte de fidélité). Tu peux souvent répondre はい (oui) ou いいえ (non) en devinant au contexte. Si tu bloques vraiment : もう一度お願いします (encore une fois svp)."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "はい",
+     "role": "« Oui. »",
+     "tip": "Simple et clair."
+    },
+    {
+     "chunk": "ください",
+     "role": "« Donnez-m'en un, s'il vous plaît. »",
+     "tip": "Valable si tu as besoin d'un sac (il coûte quelques yens au Japon). Si tu n'en veux pas, la réponse polie est 結構です (kekkou desu) ou 大丈夫です."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "いらない",
+     "role": "« J'en veux pas. » — la version familière.",
+     "tip": "On comprend, mais ça sonne brusque face à un employé, comme « nan, pas besoin ». La version polie : 結構です (kekkou desu) ou 大丈夫です (daijoubu desu) = « non merci, ça ira »."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "いいえ",
+     "role": "« Non. »",
+     "tip": "Ça suffit tout à fait ici. Pour adoucir, tu peux ajouter 大丈夫です : いいえ、大丈夫です (iie, daijoubu desu)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "何ですか？",
+     "role": "« C'est quoi ? » — tu demandes ce que ça veut dire.",
+     "tip": "Poli, mais le caissier va devoir expliquer et la file attend. Souvent il te propose une carte de fidélité : un simple いいえ (non) règle la question."
+    }
+   ]
+  },
+  "9": {
+   "1": [
+    {
+     "chunk": "現金です",
+     "role": "« En espèces. » — 現金 (genkin) = argent liquide.",
+     "tip": "Clair et compris immédiatement. Pour la carte, tu dirais カードで (kaado de) = « par carte »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne comprends pas. »",
+     "tip": "Ici, un geste vaut mieux que des mots : montre ton billet ou ta carte et le caissier comprendra tout de suite. Le mot à retenir : 現金 (genkin) = espèces."
+    }
+   ]
+  }
+ },
+ "pharmacie": {
+  "1": {
+   "1": [
+    {
+     "chunk": "病気です",
+     "role": "« Je suis malade. » — 病気 (byouki) = maladie.",
+     "tip": "Juste, mais trop vague pour un pharmacien : il a besoin de savoir où tu as mal. Dis plutôt l'endroit : 頭が痛いです (atama ga itai desu) = j'ai mal à la tête."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "助けてください",
+     "role": "« Aidez-moi ! / Au secours ! »",
+     "tip": "C'est la phrase des vraies urgences : tout le monde va paniquer pour un simple mal de tête. À la pharmacie, décris ton symptôme : 〜が痛いです (… ga itai desu) = j'ai mal à…"
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Honnête si tu n'as pas pris ta température. Le pharmacien pourra te proposer d'en prendre une. Tu peux préciser : 測っていません (hakatte imasen) = je ne l'ai pas mesurée."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "はい",
+     "role": "« Oui. »",
+     "tip": "Bonne réponse à la question… mais la suite piège."
+    },
+    {
+     "chunk": "すごく熱いです",
+     "role": "« C'est très chaud (au toucher). » — 熱い (atsui) = brûlant.",
+     "tip": "Piège classique ! 熱い sert pour une soupe ou un bain trop chaud. Pour la fièvre, on dit 熱があります (netsu ga arimasu) = « j'ai de la fièvre »."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "はい、わかりました",
+     "role": "« Oui, j'ai compris. »",
+     "tip": "Parfait si tu as vraiment compris la posologie. Si tu as un doute, n'hésite pas : もう一度ゆっくりお願いします (mou ichido yukkuri onegaishimasu) = encore une fois, lentement svp."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "英語で",
+     "role": "« En anglais. » — で indique la langue utilisée.",
+     "tip": "英語で (eigo de) = en anglais, 日本語で = en japonais. Très utile, mais beaucoup de pharmaciens ne parlent pas anglais."
+    },
+    {
+     "chunk": "言ってください",
+     "role": "« Dites-le, s'il vous plaît. »",
+     "tip": "Ça met le pharmacien dans l'embarras. Demande plutôt de ralentir : ゆっくり言ってください (yukkuri itte kudasai) = dites-le lentement svp."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "いいえ",
+     "role": "« Non. »",
+     "tip": "Clair."
+    },
+    {
+     "chunk": "それだけです",
+     "role": "« C'est tout. » — それだけ (sore dake) = seulement ça.",
+     "tip": "Très pratique pour dire qu'il n'y a rien d'autre, ici comme à la caisse. Parfait si tu n'as vraiment pas d'autres symptômes."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Ici, c'est toi qui sais ce que tu ressens ! Essaie de décrire même simplement : 喉も痛いです (nodo mo itai desu) = j'ai aussi mal à la gorge, ou いいえ、それだけです."
+    }
+   ]
+  },
+  "9": {
+   "1": [
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci. » — poli.",
+     "tip": "Toujours bien. Mais avant de partir, il te reste à payer : いくらですか (ikura desu ka) = c'est combien ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "さようなら",
+     "role": "« Au revoir. » — mais un au revoir solennel.",
+     "tip": "さようなら sonne comme un adieu, on l'utilise peu dans la vie courante. En quittant une boutique, on dit ありがとうございました (arigatou gozaimashita) = « merci (pour ce que vous avez fait) »."
+    }
+   ]
+  }
+ },
+ "hotel": {
+  "1": {
+   "1": [
+    {
+     "chunk": "予約があります",
+     "role": "« J'ai une réservation. »",
+     "tip": "Bon début ! Ajoute ton nom pour qu'on te trouve tout de suite : 〜の名前で予約しています (… no namae de yoyaku shite imasu) = j'ai réservé au nom de …"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "部屋を",
+     "role": "« Une chambre… » — 部屋 (heya) = pièce, chambre.",
+     "tip": "部屋 est un mot très courant : 私の部屋 = ma chambre."
+    },
+    {
+     "chunk": "ください",
+     "role": "« Donnez-moi, s'il vous plaît. »",
+     "tip": "On dirait que tu arrives sans réservation. Si tu as réservé, dis-le pour qu'on trouve ta chambre : 予約しています (yoyaku shite imasu)."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "少々お待ちください",
+     "role": "« Un instant, s'il vous plaît. » — version très polie.",
+     "tip": "Phrase de pro que tu entends partout en boutique. Tu peux l'utiliser pendant que tu cherches ton passeport. Version plus simple : ちょっと待ってください (chotto matte kudasai)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "なぜ？",
+     "role": "« Pourquoi ? » — tout court.",
+     "tip": "Ça sonne comme une contestation. Au Japon, l'hôtel est obligé de copier le passeport des touristes étrangers : tends-le simplement en disant はい、どうぞ (hai, douzo) = voilà."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "はい、わかりました",
+     "role": "« D'accord, j'ai compris. »",
+     "tip": "Parfait pour montrer que tu as suivi. C'est aussi le bon moment pour poser tes questions (horaires du petit-déjeuner, wifi…)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "もう一度",
+     "role": "« Encore une fois. » — もう一度 (mou ichido).",
+     "tip": "Mot magique pour tout apprenant ! Tu peux l'utiliser seul : もう一度お願いします."
+    },
+    {
+     "chunk": "言ってください",
+     "role": "« Dites-le, s'il vous plaît. »",
+     "tip": "Très bonne réponse si tu as raté les horaires. Pour encore plus de douceur, ajoute ゆっくり (lentement) : もう一度ゆっくり言ってください."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci. »",
+     "tip": "Parfait pour clore l'échange quand tu n'as besoin de rien d'autre."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "エレベーター",
+     "role": "« L'ascenseur. » — de l'anglais elevator.",
+     "tip": "Écrit en katakana comme beaucoup de mots venus de l'anglais. Tu peux le deviner en le prononçant à voix haute !"
+    },
+    {
+     "chunk": "はどこですか？",
+     "role": "« Où est… ? » — la question pour trouver un lieu.",
+     "tip": "〜はどこですか (… wa doko desu ka) marche pour tout : トイレはどこですか = où sont les toilettes ? Une des phrases les plus utiles du voyage."
+    }
+   ]
+  }
+ },
+ "hotel-probleme": {
+  "1": {
+   "1": [
+    {
+     "chunk": "問題があります",
+     "role": "« Il y a un problème. » — 問題 (mondai) = problème.",
+     "tip": "Honnête, mais la réception va devoir te poser plein de questions. Gagne du temps : dis le numéro de chambre et ce qui ne marche pas, par exemple エアコンが壊れています (eakon ga kowarete imasu)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "部屋が",
+     "role": "« La chambre… »",
+     "tip": "部屋 (heya) = chambre."
+    },
+    {
+     "chunk": "嫌いです",
+     "role": "« Je n'aime pas / je déteste. » — 嫌い (kirai).",
+     "tip": "C'est un goût personnel, la réception ne peut rien en faire. Décris un problème concret qu'on peut réparer : 〜が壊れています (… ga kowarete imasu) = … est cassé."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord. »",
+     "tip": "Bien pour accepter calmement. Demander le délai t'aurait aidé à t'organiser : 何分くらいかかりますか (nanpun kurai kakarimasu ka) = ça prendra combien de minutes ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "早く",
+     "role": "« Vite. » — 早く (hayaku).",
+     "tip": "Mot utile, mais à manier avec douceur."
+    },
+    {
+     "chunk": "してください",
+     "role": "« Faites, s'il vous plaît. »",
+     "tip": "Même avec ください, « faites vite » sonne pressant alors qu'ils viennent de s'excuser. Au Japon, la patience compte beaucoup. Demande plutôt le délai : 何分くらいかかりますか ?"
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "大丈夫です",
+     "role": "« Ça va / pas besoin. »",
+     "tip": "Le « non merci » poli par excellence."
+    },
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci. »",
+     "tip": "Réponse parfaite si tout est réglé : calme et polie."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "全部",
+     "role": "« Tout. » — 全部 (zenbu).",
+     "tip": "全部 = tout, l'ensemble. Très utile ailleurs : 全部でいくらですか = ça fait combien en tout ?"
+    },
+    {
+     "chunk": "ダメです",
+     "role": "« C'est nul / ça ne va pas. » — ダメ (dame).",
+     "tip": "Trop brutal face à une équipe qui s'excuse. Si autre chose ne marche pas, nomme-le calmement : シャワーも壊れています (shawaa mo kowarete imasu) = la douche aussi est en panne."
+    }
+   ]
+  }
+ },
+ "gare": {
+  "1": {
+   "1": [
+    {
+     "chunk": "大阪に",
+     "role": "« À Osaka. » — に marque la destination.",
+     "tip": "Ville + に = aller à cette ville : 京都に行きます = je vais à Kyoto."
+    },
+    {
+     "chunk": "行きたいです",
+     "role": "« Je veux aller. » — 行く + たい = vouloir aller.",
+     "tip": "Compris, mais le guichetier devra te demander : aller simple ou aller-retour ? combien de billets ? La formule complète : 大阪まで片道一枚お願いします (Oosaka made katamichi ichimai onegaishimasu)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "電車を",
+     "role": "« Un train… » — 電車 (densha) = train.",
+     "tip": "電車 = le train, le véhicule, pas le billet."
+    },
+    {
+     "chunk": "ください",
+     "role": "« Donnez-moi. »",
+     "tip": "« Donnez-moi un train » fait sourire ! Tu veux un billet : 大阪まで一枚お願いします (Oosaka made ichimai onegaishimasu) = un billet pour Osaka svp. 枚 (mai) compte les objets plats comme les billets."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "新幹線です",
+     "role": "« Le Shinkansen. » — le train à grande vitesse.",
+     "tip": "Clair ! Pense à préciser le type de siège : 自由席 (jiyuuseki) = place libre, moins cher ; 指定席 (shiteiseki) = place réservée."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Honnête, et c'est bien de le dire."
+    },
+    {
+     "chunk": "どっちがいいですか？",
+     "role": "« Lequel est le mieux ? » — どっち (docchi) = lequel des deux.",
+     "tip": "Excellente question pour demander conseil, elle marche partout : どっちがおすすめですか = lequel vous recommandez ? Le guichetier t'aidera selon l'horaire."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "現金です",
+     "role": "« En espèces. » — 現金 (genkin).",
+     "tip": "Simple et clair, les guichets acceptent toujours le liquide."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "カードが",
+     "role": "« La carte… » — カード (kaado) = carte bancaire.",
+     "tip": "カード = carte, de l'anglais card."
+    },
+    {
+     "chunk": "使えますか？",
+     "role": "« Est-ce que je peux l'utiliser ? » — 使える = pouvoir utiliser.",
+     "tip": "Question très utile partout au Japon ! Attention : certaines cartes étrangères sont refusées. Tu peux aussi demander カードで払えますか (kaado de haraemasu ka) = je peux payer par carte ?"
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci. »",
+     "tip": "Poli, mais tu ne sais toujours pas sur quel quai aller. Avant de partir, demande 何番線ですか (nanbansen desu ka) = c'est quel quai ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Ici c'est à toi de poser la question ! Montre ton billet et demande : 何番線ですか (nanbansen desu ka) = c'est quel quai ? Le numéro est aussi affiché sur les écrans : 3番線 = quai 3."
+    }
+   ]
+  }
+ },
+ "bus-metro": {
+  "1": {
+   "1": [
+    {
+     "chunk": "金閣寺はどこですか",
+     "role": "« Où est le Kinkaku-ji ? » — une question claire, mais qui ne parle pas du bus.",
+     "tip": "Le chauffeur risque de te montrer la direction au lieu de te dire quel bus prendre. Pour un trajet, ajoute ce que tu veux vraiment savoir : どのバスに乗ればいいですか (dono basu ni noreba ii desu ka) = quel bus dois-je prendre ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "バスに乗りたいです",
+     "role": "« Je veux prendre le bus. »",
+     "tip": "Phrase correcte, mais la personne ne sait pas où tu vas ! La destination est l'info la plus importante. Dis plutôt : 金閣寺まで行きたいんですが (Kinkakuji made ikitain desu ga) = je voudrais aller jusqu'au Kinkaku-ji."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord, j'ai compris. »",
+     "tip": "Parfait si tu vois déjà l'arrêt. Sinon, profite que quelqu'un t'aide pour poser la question suivante : バス停はどこですか (basutei wa doko desu ka) = où est l'arrêt ?"
+    },
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci beaucoup. »",
+     "tip": "Toujours bienvenu, même quand la réponse est courte."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "バスは何時ですか",
+     "role": "« Le bus passe à quelle heure ? »",
+     "tip": "Bonne question, mais un peu tôt : trouve d'abord l'arrêt, les horaires y sont affichés. 何時 (nanji) = quelle heure, très utile partout : 何時に開きますか = ça ouvre à quelle heure ?"
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Réponse honnête, et c'est mieux que de donner une fausse info. Si tu veux être plus aimable, ajoute すみません devant : すみません、わかりません = désolé(e), je ne sais pas."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "はい",
+     "role": "« Oui. »",
+     "tip": "Attention : en disant juste はい, tu confirmes une info dont tu n'es pas sûr(e). Si tu as un doute, dis plutôt たぶん止まると思います (tabun tomaru to omoimasu) = je pense qu'il s'arrête, ou わかりません."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "止まってください",
+     "role": "« Arrêtez-vous, s'il vous plaît. »",
+     "tip": "Au Japon, le bus s'arrête quand on appuie sur le bouton 押しボタン, pas besoin de le demander au chauffeur. Crier ça dans le bus surprendrait un peu. Il suffit de te lever au bon moment avec un petit すみません pour passer."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "ここですか",
+     "role": "« C'est ici ? »",
+     "tip": "Pratique pour vérifier avec ton voisin. Mais ne reste pas assis(e) en attendant la réponse : lève-toi, les bus japonais repartent vite. Tu peux dire 金閣寺はここですか (Kinkakuji wa koko desu ka) pour être précis(e)."
+    }
+   ]
+  }
+ },
+ "chemin": {
+  "0": {
+   "1": [
+    {
+     "chunk": "コンビニはどこ",
+     "role": "« Le konbini, c'est où ? » — en version familière.",
+     "tip": "Sans ですか, la phrase sonne comme entre amis. À un inconnu dans la rue, mieux vaut dire コンビニはどこですか (konbini wa doko desu ka), ou encore mieux : この近くにコンビニはありますか = il y a un konbini près d'ici ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "コンビニ",
+     "role": "« Konbini ! » — juste le mot, sans phrase autour.",
+     "tip": "La personne comprend le sujet mais pas ta demande : tu cherches, tu en vois un, tu veux y aller ? Commence par すみません pour attirer l'attention, puis pose la question : すみません、コンビニはどこですか ?"
+    }
+   ]
+  },
+  "2": {
+   "1": [
+    {
+     "chunk": "もう一度お願いします",
+     "role": "« Encore une fois, s'il vous plaît. »",
+     "tip": "Une des phrases les plus utiles à retenir ! Personne ne s'en vexera. Pour que la personne parle plus doucement : もう少しゆっくりお願いします (mou sukoshi yukkuri onegaishimasu)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりました",
+     "role": "« J'ai compris. »",
+     "tip": "Très bien si tu as vraiment retenu le chemin. Petit conseil : répète les directions pour vérifier, par exemple まっすぐ行って、右ですね (massugu itte, migi desu ne) = tout droit puis à droite, c'est ça ?"
+    }
+   ]
+  },
+  "4": {
+   "1": [
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci beaucoup ! »",
+     "tip": "Simple et parfait pour finir. Si tu veux montrer encore plus ta reconnaissance : 助かりました (tasukarimashita) = vous m'avez bien aidé(e)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "セブン-イレブンはどこですか",
+     "role": "« Où est le 7-Eleven ? »",
+     "tip": "La personne vient juste de t'expliquer ! Reposer la même question donne l'impression que tu n'as pas écouté. Si tu n'as pas compris, dis-le franchement : すみません、もう一度お願いします."
+    }
+   ]
+  },
+  "6": {
+   "1": [
+    {
+     "chunk": "少し迷子になりました",
+     "role": "« Je me suis un peu perdu(e). »",
+     "tip": "迷子 (maigo) = perdu, au départ pour un enfant perdu, mais on l'utilise aussi en riant pour soi. C'est honnête, et la personne te proposera sûrement de t'accompagner ou de te montrer une carte."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "たぶん",
+     "role": "« Peut-être. »",
+     "tip": "Réponse floue : la personne ne sait pas si elle doit t'aider davantage. Sois clair(e) : はい、大丈夫です (oui, ça va) ou ちょっとわからないです (je ne suis pas sûr(e)), elle saura quoi faire."
+    }
+   ]
+  }
+ },
+ "supermarche": {
+  "0": {
+   "1": [
+    {
+     "chunk": "豆腐",
+     "role": "« Tofu ? » — juste le mot, avec une intonation de question.",
+     "tip": "Ça marche souvent, l'employé te montrera le rayon. Mais un mot seul peut sembler un peu sec. Ajoute deux petits morceaux et tu es parfait(e) : すみません、豆腐はどこですか ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "豆腐を探しています",
+     "role": "« Je cherche du tofu. »",
+     "tip": "Phrase naturelle et polie, très bien ! 〜を探しています (wo sagashite imasu) marche pour tout ce que tu cherches : 牛乳を探しています = je cherche du lait."
+    }
+   ]
+  },
+  "2": {
+   "1": [
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci beaucoup. »",
+     "tip": "Réponse parfaite et suffisante. Si tu veux en profiter pour préparer la caisse, tu peux ajouter une question pratique comme 袋は有料ですか (fukuro wa yuuryou desu ka) = les sacs sont payants ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "冷蔵コーナーはどこですか",
+     "role": "« Où est le rayon frais ? »",
+     "tip": "Utile si tu n'as pas compris l'indication. 冷蔵 (reizou) = réfrigéré, コーナー = rayon. Tu verras aussi 冷凍 (reitou) = surgelé, ne les confonds pas !"
+    }
+   ]
+  },
+  "4": {
+   "1": [
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci beaucoup. »",
+     "tip": "Simple et poli, il suffit ensuite de suivre l'employé."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "カードで払います",
+     "role": "« Je paie par carte. »",
+     "tip": "Bonne idée de l'annoncer. Mais au Japon, toutes les caisses ne prennent pas les cartes : demande plutôt カードは使えますか (kaado wa tsukaemasu ka) = vous acceptez les cartes ?"
+    }
+   ]
+  },
+  "6": {
+   "1": [
+    {
+     "chunk": "はい、どうぞ",
+     "role": "« Voilà. » — en tendant ta carte ou ton argent.",
+     "tip": "Très naturel ! Petit détail culturel : au Japon, on pose l'argent dans le petit plateau (トレー) au lieu de le donner directement dans la main."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "高いです",
+     "role": "« C'est cher. »",
+     "tip": "Ce n'est pas faux, mais la caissière ne fixe pas les prix et ne peut rien y faire. On ne négocie pas au supermarché japonais. Garde ce commentaire pour tes amis : 高いね (takai ne) = c'est cher, hein !"
+    }
+   ]
+  }
+ },
+ "shopping": {
+  "1": {
+   "1": [
+    {
+     "chunk": "Tシャツを探しています",
+     "role": "« Je cherche un T-shirt. »",
+     "tip": "Parfait si tu sais ce que tu veux : le vendeur va t'aider. Si tu préfères regarder tranquillement, dis plutôt 見ているだけです (mite iru dake desu) = je regarde seulement."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "大丈夫です",
+     "role": "« Ça va / non merci. »",
+     "tip": "Le vendeur comprendra que tu n'as pas besoin d'aide, mais c'est un peu flou. 見ているだけです (mite iru dake desu) dit clairement que tu regardes, c'est la formule que les Japonais utilisent en boutique."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "いいですね",
+     "role": "« C'est bien / il me plaît. »",
+     "tip": "Réaction naturelle et sympathique. いいですね s'utilise partout pour dire que quelque chose te plaît."
+    },
+    {
+     "chunk": "Lサイズはありますか",
+     "role": "« Vous l'avez en taille L ? »",
+     "tip": "Attention, les tailles japonaises taillent souvent petit : un M européen correspond parfois à un L japonais. Essayer avant d'acheter est une bonne idée : 試着できますか (shichaku dekimasu ka) ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "いらないです",
+     "role": "« Je n'en veux pas. »",
+     "tip": "C'est clair mais assez sec, surtout face à un vendeur souriant. Pour refuser gentiment, les Japonais disent 大丈夫です (daijoubu desu) ou ちょっと考えます (chotto kangaemasu) = je vais réfléchir."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "二枚です",
+     "role": "« Deux. » — 枚 est le mot qu'on utilise pour compter les vêtements fins.",
+     "tip": "Bonne réponse si tu prends deux pièces. 枚 (mai) sert à compter tout ce qui est plat : T-shirts, chemises, feuilles, billets. 一枚, 二枚, 三枚…"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Le vendeur te demande combien de vêtements tu veux essayer, tu as la réponse dans les mains ! Compte-les simplement : 一枚です (ichimai desu) = un seul."
+    }
+   ]
+  },
+  "6": {
+   "1": [
+    {
+     "chunk": "ちょうどいいです",
+     "role": "« C'est pile ma taille / c'est parfait. »",
+     "tip": "Expression très utile ! ちょうどいい (choudo ii) = juste comme il faut. Ça marche aussi pour la température d'un bain ou la cuisson d'un plat."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "きれいです",
+     "role": "« C'est beau. »",
+     "tip": "Compliment gentil, mais le vendeur veut surtout savoir si la taille va. Si ce n'est pas le cas, dis le problème : 少し大きいです (sukoshi ookii desu) = c'est un peu grand."
+    }
+   ]
+  }
+ },
+ "urgence": {
+  "0": {
+   "1": [
+    {
+     "chunk": "助けてください",
+     "role": "« Aidez-moi ! »",
+     "tip": "La bonne phrase en cas de danger immédiat, les gens réagiront vite. Mais pour un vol, la personne aura besoin de savoir quoi faire : enchaîne avec ce qui s'est passé, par exemple 財布を盗まれました (saifu wo nusumaremashita) = on m'a volé mon portefeuille."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "問題があります",
+     "role": "« Il y a un problème. »",
+     "tip": "Trop vague dans une urgence : la personne ne sait pas comment t'aider. Va droit au but avec le mot clé : 財布 (portefeuille), パスポート (passeport), 警察 (police)…"
+    }
+   ]
+  },
+  "2": {
+   "1": [
+    {
+     "chunk": "財布がありません",
+     "role": "« Je n'ai plus mon portefeuille. »",
+     "tip": "Phrase courte et claire, c'est déjà très bien en situation de stress. Si tu veux préciser : 財布を失くしました (saifu wo nakushimashita) = je l'ai perdu."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "警察はどこですか",
+     "role": "« Où est la police ? »",
+     "tip": "Bonne réaction ! Au Japon, cherche un 交番 (kouban) : un petit poste de police de quartier, il y en a partout. Les policiers aident aussi pour les objets perdus."
+    }
+   ]
+  },
+  "4": {
+   "1": [
+    {
+     "chunk": "はい、連絡しました",
+     "role": "« Oui, je les ai contactés. »",
+     "tip": "Parfait si c'est vrai. 連絡する (renraku suru) = contacter, prévenir, très utile pour le travail et l'université aussi."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Ici la question est simple : as-tu appelé l'ambassade ? C'est toi qui sais. Réponds はい ou いいえ、まだです (iie, mada desu) = non, pas encore."
+    }
+   ]
+  }
+ },
+ "universite": {
+  "1": {
+   "1": [
+    {
+     "chunk": "フランス人です",
+     "role": "« Je suis français(e). »",
+     "tip": "Correct, mais ça n'explique pas ce que tu fais à l'université. Ajoute ton statut, ça lance la conversation : フランスから来た交換留学生です (Furansu kara kita koukan ryuugakusei desu)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "こんにちは",
+     "role": "« Bonjour. »",
+     "tip": "Poli, mais la personne t'a posé deux questions ! Pour une première rencontre, les Japonais commencent par はじめまして (hajimemashite) puis se présentent, et finissent par よろしくお願いします."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "大学で勉強しました",
+     "role": "« J'ai étudié à l'université. »",
+     "tip": "Simple et clair, parfait. 〜で勉強しました = j'ai étudié à/avec… Tu peux varier : アプリで勉強しました = j'ai appris avec une appli."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "少しだけ知っています",
+     "role": "« J'en sais juste un peu. »",
+     "tip": "Modestie bien japonaise, très appréciée ! Mais attention, ça ne répond pas vraiment à la question « où ? ». Tu peux combiner : 大学で少しだけ勉強しました."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "はい、もうしました",
+     "role": "« Oui, c'est déjà fait. »",
+     "tip": "Parfait si c'est vrai. もう (mou) = déjà. Son contraire : まだです (mada desu) = pas encore."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "La personne te demande si tu l'as fait, pas une info compliquée. Si tu ne l'as pas fait, profites-en pour demander de l'aide : まだです。どこでしたらいいですか (mada desu. doko de shitara ii desu ka) = pas encore, où dois-je le faire ?"
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "2号館はどこですか",
+     "role": "« Le bâtiment 2, c'est où ? »",
+     "tip": "Très naturel ! 号館 (goukan) = bâtiment numéro… sur un campus. Tu verras aussi 棟 (tou) pour désigner un bâtiment."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord. »",
+     "tip": "Bien, tu peux y aller directement. Pour être plus chaleureux(se), ajoute un remerciement : わかりました、ありがとうございます !"
+    }
+   ]
+  }
+ },
+ "bibliotheque": {
+  "1": {
+   "1": [
+    {
+     "chunk": "はい、どうぞ",
+     "role": "« Oui, voilà. » — ce qu'on dit en tendant quelque chose à quelqu'un.",
+     "tip": "Parfait pour montrer ta carte. Mais tu t'arrêtes là : tu rates l'occasion de demander si tu as accès en tant qu'étudiante en échange. Ajoute : 留学生ですが、利用できますか？ (ryuugakusei desu ga, riyou dekimasu ka ?)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "学生証",
+     "role": "« La carte étudiante. »",
+     "tip": "Mot indispensable à l'université : 学生証 (gakuseishou). On te le demandera partout : bibliothèque, cantine, réductions."
+    },
+    {
+     "chunk": "持っていません",
+     "role": "« Je ne l'ai pas (sur moi). »",
+     "tip": "持っていません = je ne l'ai pas avec moi / je n'en ai pas. C'est honnête, mais propose une suite : 交換留学生ですが、どうすればいいですか？ (koukan ryuugakusei desu ga, dou sureba ii desu ka ?) = je suis en échange, comment je fais ?"
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "この本",
+     "role": "« Ce livre-ci. »",
+     "tip": "この + nom = ce … (près de toi). その = celui près de l'autre, あの = celui là-bas. Pratique quand tu tiens le livre en main."
+    },
+    {
+     "chunk": "借りられますか",
+     "role": "« Est-ce que je peux l'emprunter ? »",
+     "tip": "Phrase tout à fait correcte ! Le seul souci : la réponse sera juste はい (oui). Si tu veux savoir comment faire, la formule magique est どうすればいいですか？ (dou sureba ii desu ka ?) = comment je dois faire ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "本をください",
+     "role": "« Donnez-moi le livre. »",
+     "tip": "ください, c'est pour acheter ou commander, comme au restaurant. À la bibliothèque on emprunte : 借りる (kariru). Dis plutôt : この本を借りたいです (kono hon wo karitai desu) = je voudrais emprunter ce livre."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "すみません",
+     "role": "« Pardon. » — tu t'excuses d'avoir fait du bruit.",
+     "tip": "Bonne réaction, c'est poli. Mais si tu dois parler avec ton groupe, profite-en pour demander une salle : グループ学習ができる部屋はありますか？ (guruupu gakushuu ga dekiru heya wa arimasu ka ?)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord, j'ai compris. »",
+     "tip": "Réponse polie qui montre que tu respectes la règle. Elle convient si tu travailles seule. Pour un travail en groupe, demande plutôt où vous pouvez parler."
+    }
+   ]
+  }
+ },
+ "professeur": {
+  "0": {
+   "1": [
+    {
+     "chunk": "先生",
+     "role": "« Professeur ! » — on appelle le prof par son titre.",
+     "tip": "Au Japon on dit 先生 (sensei) et pas son prénom, c'est bien. Mais crier juste 先生！ sonne abrupt. Ajoute une petite formule : 先生、少しよろしいですか？ (sensei, sukoshi yoroshii desu ka ?) = vous auriez un moment ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "質問があります",
+     "role": "« J'ai une question. »",
+     "tip": "Clair et correct. Pour être plus délicate avec un prof, demande d'abord s'il a le temps : 少しよろしいですか？ (sukoshi yoroshii desu ka ?) = je peux vous déranger un instant ?"
+    }
+   ]
+  },
+  "2": {
+   "1": [
+    {
+     "chunk": "わかりませんでした",
+     "role": "« Je n'ai pas compris. »",
+     "tip": "C'est honnête, mais le prof ne sait pas QUOI réexpliquer. Précise la partie : この部分がわかりませんでした (kono bubun ga wakarimasen deshita) = je n'ai pas compris cette partie."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "もう一度",
+     "role": "« Encore une fois. »",
+     "tip": "もう一度 (mou ichido) est un mot très utile : もう一度お願いします = encore une fois svp, quand tu n'as pas entendu."
+    },
+    {
+     "chunk": "教えてください",
+     "role": "« Expliquez-moi s'il vous plaît. »",
+     "tip": "Correct et clair. Avec un prof, la version encore plus douce est 説明してもらえますか？ (setsumei shite moraemasu ka ?) = pourriez-vous m'expliquer ? — tu demandes une faveur au lieu de donner une consigne."
+    }
+   ]
+  },
+  "4": {
+   "1": [
+    {
+     "chunk": "すみません",
+     "role": "« Pardon / désolée. »",
+     "tip": "Avec un prof, on commence toujours par s'excuser quand on a fait une erreur. C'est la bonne attitude."
+    },
+    {
+     "chunk": "忘れていました",
+     "role": "« J'avais oublié. »",
+     "tip": "忘れる = oublier. Honnête et naturel. Ensuite, note la date devant le prof : 来週の金曜日ですね (raishuu no kinyoubi desu ne) = c'est vendredi prochain, c'est ça ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord. »",
+     "tip": "Ça marche, mais le prof te demandait si tu t'en souvenais. La réponse directe est はい、覚えています (hai, oboete imasu) = oui, je m'en souviens."
+    }
+   ]
+  }
+ },
+ "club-etudiant": {
+  "1": {
+   "1": [
+    {
+     "chunk": "はじめまして",
+     "role": "« Enchantée. » — la première phrase de toute rencontre.",
+     "tip": "Toujours はじめまして la première fois. Tu ne le diras plus jamais à cette personne ensuite."
+    },
+    {
+     "chunk": "見ているだけです",
+     "role": "« Je regarde juste. »",
+     "tip": "〜だけ = seulement. Tu l'utiliseras aussi en magasin quand un vendeur vient t'aider. C'est poli, mais ça ferme un peu la porte : si le club t'intéresse, dis-le !"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "どんなサークルですか",
+     "role": "« C'est quel genre de club ? »",
+     "tip": "サークル (saakuru) = club étudiant, mot indispensable à l'université. どんな〜ですか = c'est quel genre de… ? Bonne question, même si tu ne réponds pas encore à la sienne (es-tu intéressée ?)."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "初心者です",
+     "role": "« Je suis débutante. »",
+     "tip": "初心者 (shoshinsha) = débutant. Tu le verras aussi sur la voiture des jeunes conducteurs (la feuille verte et jaune). Réponse claire ; tu peux ajouter depuis combien de temps tu pratiques."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "上手ではありません",
+     "role": "« Je ne suis pas douée. »",
+     "tip": "Les Japonais adorent la modestie, donc ça passe très bien. Mais la question était « as-tu de l'expérience ? » : réponds d'abord oui ou non, par exemple 少しあります (sukoshi arimasu) = un peu."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "火曜日は難しいです",
+     "role": "« Le mardi, c'est compliqué pour moi. »",
+     "tip": "Astuce culturelle : les Japonais disent rarement « non » directement. 難しい (difficile) est la façon polie de dire « je ne peux pas »."
+    },
+    {
+     "chunk": "来てもいいですか",
+     "role": "« Est-ce que je peux venir ? »",
+     "tip": "〜てもいいですか = est-ce que j'ai le droit de… ? Formule clé pour demander la permission : 写真を撮ってもいいですか？ = je peux prendre une photo ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord, c'est noté. »",
+     "tip": "Bien pour montrer que tu as compris l'horaire. Pour montrer ton envie de venir, tu pourrais ajouter ぜひ参加したいです (zehi sanka shitai desu) = j'aimerais beaucoup participer."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "LINEのIDを教えます",
+     "role": "« Je te donne mon identifiant LINE. »",
+     "tip": "教える = enseigner, mais aussi « donner une info » (numéro, adresse). Ça marche, mais au Japon on montre le plus souvent son QR code : はい、どうぞ (hai, douzo) en tendant le téléphone."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "LINEは持っていません",
+     "role": "« Je n'ai pas LINE. »",
+     "tip": "Au Japon, LINE remplace presque les SMS : clubs, profs, colocs, tout passe par là. Sans LINE, tu rateras les messages du club. Installe-le, et réponds plutôt もちろんです！ (mochiron desu !) = bien sûr !"
+    }
+   ]
+  }
+ },
+ "coloc": {
+  "1": {
+   "1": [
+    {
+     "chunk": "こんにちは",
+     "role": "« Bonjour. »",
+     "tip": "Correct pour saluer, mais pour une première rencontre il manque le rituel : はじめまして (enchantée) + ton prénom + よろしくお願いします (je compte sur toi). Avec une future coloc, ce rituel compte beaucoup."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "フランスから来ました",
+     "role": "« Je viens de France. »",
+     "tip": "Info sympa, mais commence par l'essentiel : はじめまして、サンドリーヌです (hajimemashite, Sandorīnu desu). Le pays vient ensuite, quand on te le demande ou pour enchaîner."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "はい、お願いします",
+     "role": "« Oui, s'il te plaît. »",
+     "tip": "Simple et ouvert, ça marche très bien. Tu peux montrer encore plus d'intérêt avec 教えてください (oshiete kudasai) = explique-moi s'il te plaît."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかっています",
+     "role": "« Je sais déjà. »",
+     "tip": "Attention, ça peut sonner un peu sec, comme « pas besoin ». Et le tri des déchets change d'une ville à l'autre : même les Japonais qui déménagent doivent réapprendre ! Mieux vaut écouter : はい、教えてください."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord. »",
+     "tip": "Parfait pour montrer que tu respecteras la règle. Pour aller plus loin et éviter les malentendus : 他にルールはありますか？ (hoka ni ruuru wa arimasu ka ?) = il y a d'autres règles ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "どうして",
+     "role": "« Pourquoi ? »",
+     "tip": "Seul, どうして？ peut sonner comme une contestation. Si tu veux vraiment savoir, adoucis : どうしてですか？ちょっと気になって… (doushite desu ka ? chotto ki ni natte…) = pourquoi ? je me demandais juste…"
+    }
+   ]
+  }
+ },
+ "premiere-rencontre": {
+  "1": {
+   "1": [
+    {
+     "chunk": "少しだけ",
+     "role": "« Juste un peu. »",
+     "tip": "Modeste et naturel, les Japonais apprécient. Mais ajoute une phrase pour relancer, sinon la conversation s'arrête : まだ勉強中です (mada benkyouchuu desu) = j'apprends encore."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "日本語を話します",
+     "role": "« Je parle japonais. »",
+     "tip": "Grammaticalement juste, mais ça sonne comme « je maîtrise le japonais ». Pour une apprenante, 勉強中です (benkyouchuu desu) = je suis en train d'apprendre, est plus juste et plus sympathique."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "少しです",
+     "role": "« Un peu (de temps). »",
+     "tip": "La question était « combien de temps ? ». Donne un chiffre, c'est plus parlant : 6ヶ月くらいです (rokkagetsu kurai desu) = environ 6 mois. くらい = environ."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "Tu sais forcément depuis quand tu étudies ! わかりません peut donner l'impression que tu n'as pas compris la question. Réponds avec ton vrai chiffre : 〜ヶ月くらいです (〜kagetsu kurai desu)."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "サンドリーヌです",
+     "role": "« Je suis Sandrine. »",
+     "tip": "Exactement la bonne forme ! Il manque juste la relance : あなたのお名前は？ (anata no onamae wa ?) = et toi, comment tu t'appelles ? Sans ça, c'est l'autre qui doit relancer."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "私の名前は",
+     "role": "« Mon nom est… »",
+     "tip": "C'est la phrase des manuels, mais à l'oral personne ne la dit : ça sonne comme une fiche administrative. Les Japonais disent juste : サンドリーヌです (Sandorīnu desu)."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "ぜひ",
+     "role": "« Avec plaisir ! / volontiers ! »",
+     "tip": "ぜひ (zehi) = absolument, avec plaisir. Très enthousiaste et naturel. Pour finir en beauté, ajoute よろしくお願いします (yoroshiku onegaishimasu)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "えーと",
+     "role": "« Euh… » — le petit mot pour gagner du temps.",
+     "tip": "えーと (eeto) est très naturel quand tu cherches tes mots, les Japonais l'utilisent tout le temps. Ici, ça fait juste un peu hésitant : tends ton QR code avec はい、どうぞ et c'est réglé."
+    },
+    {
+     "chunk": "LINEはあります",
+     "role": "« J'ai LINE. »",
+     "tip": "Compris, mais ça répond à « as-tu LINE ? » alors qu'on te propose d'échanger. Dis plutôt もちろんです！ (mochiron desu !) = bien sûr !"
+    }
+   ]
+  }
+ },
+ "cafe": {
+  "1": {
+   "1": [
+    {
+     "chunk": "ホットコーヒーをください",
+     "role": "« Un café chaud, s'il vous plaît. »",
+     "tip": "Phrase parfaite… pour le serveur ! Mais là c'est ton amie qui te demande ce que tu prends. Entre amis on dit 私はホットコーヒーにします (watashi wa hotto koohii ni shimasu) = moi je prends un café chaud. 〜にします = je choisis…"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "水をください",
+     "role": "« De l'eau, s'il vous plaît. »",
+     "tip": "Au Japon, l'eau est servie gratuitement dans presque tous les cafés et restaurants, pas besoin de la commander ! Et tu réponds au serveur, pas à ton amie. Choisis une boisson : 私も〜にします (watashi mo 〜 ni shimasu)."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "大丈夫です",
+     "role": "« Ça va. »",
+     "tip": "大丈夫 (daijoubu) est très pratique, mais ici il coupe un peu la conversation. Ton amie veut des nouvelles : ajoute un détail, par exemple 日本語の授業が大変です (nihongo no jugyou ga taihen desu) = les cours de japonais sont durs."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "大変です",
+     "role": "« C'est dur. »",
+     "tip": "大変 (taihen) = difficile, épuisant. Honnête et naturel. Pour garder une note positive, les Japonais ajoutent souvent が、楽しいです (ga, tanoshii desu) = mais c'est sympa."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "寿司が好きです",
+     "role": "« J'aime les sushis. »",
+     "tip": "Correct ! Pour relancer comme une vraie conversation, retourne la question : 〇〇さんは？ (〇〇-san wa ?) = et toi ? Et 特に (toku ni) = en particulier, pour préciser ton préféré."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "全部好きです",
+     "role": "« J'aime tout. »",
+     "tip": "全部 (zenbu) = tout. Gentil et souvent vrai ! Mais ça ne donne pas de prise pour continuer. Choisis un favori : ラーメンが一番好きです (raamen ga ichiban suki desu) = c'est les ramen que je préfère."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "いいですね",
+     "role": "« Bonne idée ! »",
+     "tip": "いいですね (ii desu ne) = super, ça me plaît ! Enthousiaste. Pour vraiment accepter, ajoute l'organisation : 何時にどこで会いましょうか？ (nanji ni doko de aimashou ka ?) = on se retrouve où et à quelle heure ?"
+    }
+   ],
+   "2": [
+    {
+     "chunk": "少し考えます",
+     "role": "« Je vais réfléchir un peu. »",
+     "tip": "Attention : au Japon, « je vais réfléchir » est souvent une façon polie de dire non ! Ton amie risque de croire que tu refuses. Si tu as envie d'y aller : ぜひ行きたいです！ (zehi ikitai desu !)."
+    }
+   ]
+  }
+ },
+ "soiree": {
+  "1": {
+   "1": [
+    {
+     "chunk": "ビールをください",
+     "role": "« Une bière, s'il te plaît. » — tu demandes directement ce que tu veux.",
+     "tip": "Ça marche très bien en fête ! Petite nuance : ください sonne un peu « client au bar ». Entre amis, tu peux dire ビールある？ (biiru aru?) = « il y a de la bière ? », plus détendu."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "大丈夫です",
+     "role": "« Ça va. » — mais ici, ça peut vouloir dire « non merci ».",
+     "tip": "Piège classique : au Japon, 大丈夫です en réponse à une offre veut souvent dire « je n'en ai pas besoin ». Ton hôte risque de ne rien te servir ! Si tu veux boire : まだです (mada desu) = « pas encore »."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "サンドリーヌです",
+     "role": "« Je suis Sandrine. » — la base pour dire ton prénom.",
+     "tip": "Parfait pour commencer. Prénom + です, c'est tout ce qu'il faut."
+    },
+    {
+     "chunk": "フランス人です",
+     "role": "« Je suis française. »",
+     "tip": "Correct, mais les gens vont vouloir savoir ce que tu fais au Japon. Ajoute 留学生です (ryuugakusei desu) = « je suis étudiante en échange » : ça lance tout de suite la conversation."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "こんにちは",
+     "role": "« Bonjour. »",
+     "tip": "Gentil, mais quand on te demande de te présenter, on attend au moins ton prénom. La formule minimale : サンドリーヌです。よろしく！ (Sandoriinu desu. Yoroshiku!)."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "ありがとうございます",
+     "role": "« Merci beaucoup. » — poli, mais à côté de la situation.",
+     "tip": "Quand quelqu'un lance 乾杯しましょう, tout le monde lève son verre et crie la même chose : 乾杯！ (kanpai!). Un « merci » à ce moment-là sonne trop sérieux."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "いただきます",
+     "role": "« Je reçois avec gratitude. » — la phrase qu'on dit avant de MANGER.",
+     "tip": "Très bon réflexe, mais pas le bon moment ! いただきます = avant le repas. Pour trinquer avec un verre, c'est 乾杯！ (kanpai!). Retiens : verre levé → 乾杯, baguettes en main → いただきます."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "いいです",
+     "role": "« C'est bien. »",
+     "tip": "Positif, mais un peu court : ça peut même sonner comme « ça va, sans plus ». Ajoute du concret : 人が親切です (hito ga shinsetsu desu) = « les gens sont gentils ». Les Japonais adorent entendre ce que tu aimes chez eux."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "難しいです",
+     "role": "« C'est difficile. »",
+     "tip": "Honnête, mais ton interlocuteur ne sait pas de quoi tu parles. Précise : 日本語が難しいです (nihongo ga muzukashii desu) = « le japonais est difficile ». Et commence par un point positif, c'est plus chaleureux."
+    }
+   ]
+  }
+ },
+ "stage": {
+  "1": {
+   "1": [
+    {
+     "chunk": "はじめまして",
+     "role": "« Enchantée. » — la première phrase quand on rencontre quelqu'un.",
+     "tip": "Parfait pour ouvrir."
+    },
+    {
+     "chunk": "よろしくお願いします",
+     "role": "« Je compte sur vous / ravie de travailler avec vous. »",
+     "tip": "Bien, mais il manque ton nom ! Au travail, on se présente avec と申します : サンドリーヌと申します (Sandoriinu to moushimasu) = « je m'appelle Sandrine », en version modeste et pro."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "よろしく",
+     "role": "« Salut, ravie ! » — la version copain.",
+     "tip": "Entre étudiants, c'est parfait. Mais le premier jour au bureau, ça sonne trop familier. Dis la formule complète : よろしくお願いします (yoroshiku onegaishimasu)."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "フランスから来た学生です",
+     "role": "« Je suis une étudiante venue de France. »",
+     "tip": "Correct ! Au travail on attend juste un peu plus : ton université et ta spécialité. Par exemple : 経済学を専攻しています (keizaigaku wo senkou shite imasu) = « j'étudie l'économie »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "よろしくお願いします",
+     "role": "« Ravie de travailler avec vous. » — la formule de fin de présentation.",
+     "tip": "C'est la phrase qui CONCLUT une présentation, elle ne la remplace pas. Ton manager attend d'abord qui tu es : nom, d'où tu viens, ce que tu étudies. Puis tu termines par よろしくお願いします."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord, compris. »",
+     "tip": "Bonne réponse, tu montres que tu as entendu."
+    },
+    {
+     "chunk": "聞きます",
+     "role": "« Je demanderai. »",
+     "tip": "Positif ! Encore mieux : poser tout de suite une vraie question, ça montre ta motivation. Par exemple : 聞いてもよろしいですか？ (kiite mo yoroshii desu ka?) = « puis-je vous demander quelque chose ? »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "大丈夫です",
+     "role": "« Ça va. » — ici, ça sonne comme « je n'ai pas besoin d'aide ».",
+     "tip": "Au Japon, un stagiaire qui pose des questions est vu comme sérieux, pas comme faible. Réponds plutôt ありがとうございます (arigatou gozaimasu) et n'hésite pas à demander dès que tu bloques."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "さようなら",
+     "role": "« Au revoir. » — mais avec une idée de séparation longue.",
+     "tip": "Surprise : les Japonais disent rarement さようなら à des collègues qu'ils revoient demain, ça sonne presque comme un adieu. Au bureau, la formule du soir : お疲れ様でした (otsukaresama deshita) = « merci pour ta journée de travail »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "ありがとうございました",
+     "role": "« Merci beaucoup (pour ce qui s'est passé). »",
+     "tip": "Poli et gentil, mais au bureau le soir on attend お疲れ様でした (otsukaresama deshita). C'est LA phrase de fin de journée : elle reconnaît l'effort de chacun. Tu l'entendras des dizaines de fois."
+    }
+   ]
+  }
+ },
+ "bureau-service": {
+  "1": {
+   "1": [
+    {
+     "chunk": "何？",
+     "role": "« Quoi ? » — très direct.",
+     "tip": "Entre amis proches, ça passe. Au travail, ça sonne sec, presque agacé. Version polie : はい、どうしましたか？ (hai, dou shimashita ka?) = « oui, qu'est-ce qu'il y a ? »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "はい",
+     "role": "« Oui. »",
+     "tip": "Correct et poli. Pour montrer que tu es vraiment disponible, ajoute une relance : どうしましたか？ (dou shimashita ka?) = « qu'est-ce qu'il se passe ? ». Ton collègue se sentira bien accueilli."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord, compris. »",
+     "tip": "Parfait dans la vie de tous les jours. En entreprise, quand un supérieur te confie une tâche, on dit souvent 承知しました (shouchi shimashita) = « bien noté », plus professionnel."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "今は無理です",
+     "role": "« Là, maintenant, c'est impossible. »",
+     "tip": "Le mot 無理 (muri) est très cash. Si tu as vraiment une contrainte, adoucis et propose une solution : 今ちょっと手が離せないので、30分後でもいいですか？ (ima chotto te ga hanasenai node, sanjuppun go demo ii desu ka?) = « je suis un peu occupée, dans 30 minutes ça irait ? »."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "はい、大丈夫です",
+     "role": "« Oui, c'est bon. »",
+     "tip": "Très bien si tout est prêt ! Pour aller plus loin, propose ton aide : 何か必要なものはありますか？ (nanika hitsuyou na mono wa arimasu ka?) = « vous avez besoin de quelque chose ? »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "まだです",
+     "role": "« Pas encore. »",
+     "tip": "Honnête, et au Japon dire la vérité tôt vaut mieux que de cacher un retard."
+    },
+    {
+     "chunk": "あと10分ください",
+     "role": "« Donnez-moi encore 10 minutes. »",
+     "tip": "Clair et précis, c'est bien ! Version un peu plus douce : あと10分ほどいただけますか？ (ato juppun hodo itadakemasu ka?) = « pourrais-je avoir environ 10 minutes de plus ? »."
+    }
+   ]
+  }
+ },
+ "temple": {
+  "1": {
+   "1": [
+    {
+     "chunk": "一人分をください",
+     "role": "« Pour une personne, s'il vous plaît. »",
+     "tip": "Clair, ça marche. Pense juste au paiement : beaucoup de temples n'acceptent que le liquide. Demande : カードで払えますか？ (kaado de haraemasu ka?) = « je peux payer par carte ? »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "安くなりますか？",
+     "role": "« Ça peut être moins cher ? »",
+     "tip": "Phrase utile au marché aux puces, mais pas dans un temple : le prix d'entrée est fixe et marchander serait gênant. Si tu es étudiante, demande plutôt : 学生割引はありますか？ (gakusei waribiki wa arimasu ka?) = « il y a un tarif étudiant ? »."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "わかりました",
+     "role": "« D'accord, compris. »",
+     "tip": "Parfait, tu respectes la règle. Si tu veux quand même des photos, demande où c'est permis : 庭は撮影できますか？ (niwa wa satsuei dekimasu ka?) = « on peut photographier le jardin ? »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "どうして？",
+     "role": "« Pourquoi ? »",
+     "tip": "En France, demander pourquoi est normal. Ici, ça peut sonner comme une contestation de la règle. Accepte avec わかりました (wakarimashita) : c'est un signe de respect pour le lieu."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "英語でお願いします",
+     "role": "« En anglais, s'il vous plaît. »",
+     "tip": "Simple et efficace. Mais les grands temples de Kyoto ont souvent une brochure en français ! Demande d'abord : フランス語はありますか？ (furansugo wa arimasu ka?)."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "日本語でいいです",
+     "role": "« Le japonais, ça ira. »",
+     "tip": "Courageux et ça fait plaisir à entendre ! Ne le dis que si tu peux vraiment lire le texte. Le いいです ici veut dire « ça me convient »."
+    }
+   ]
+  }
+ },
+ "matcha": {
+  "1": {
+   "1": [
+    {
+     "chunk": "抹茶ください",
+     "role": "« Du matcha, s'il vous plaît. »",
+     "tip": "Ça se comprend, mais dans une boutique spécialisée il y a des dizaines de matchas ! Le vendeur va te demander lequel. Gagne du temps en disant à quoi il te sert : ラテ用です (rate you desu) = « c'est pour des lattes »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "一番いい抹茶",
+     "role": "« Le meilleur matcha. »",
+     "tip": "一番 (ichiban) = « numéro un, le plus ». Mais « le meilleur » dépend de l'usage : cérémonie, latte, pâtisserie… Et souvent, « le meilleur » = le plus cher ! Dis plutôt ce que tu veux en faire."
+    },
+    {
+     "chunk": "どれですか",
+     "role": "« Lequel est-ce ? »",
+     "tip": "どれ = lequel (parmi plusieurs). Très utile en boutique : おすすめはどれですか？ (osusume wa dore desu ka?) = « lequel me recommandez-vous ? »."
+    }
+   ]
+  },
+  "3": {
+   "1": [
+    {
+     "chunk": "宇治がいいです",
+     "role": "« Je voudrais de l'Uji. »",
+     "tip": "〜がいいです = « je préfère ~ ». Correct, mais le vendeur te demandait tes goûts pour bien conseiller. Ajoute ce que tu aimes : まろやかなのが好きです (maroyaka na no ga suki desu) = « j'aime ce qui est doux »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "わかりません",
+     "role": "« Je ne sais pas. »",
+     "tip": "C'est honnête, mais ça arrête la conversation. Même sans connaître les variétés, tu peux donner une piste : 詳しくないんですが、まろやかなのが好きです (kuwashiku nai n desu ga, maroyaka na no ga suki desu) = « je n'y connais pas grand-chose, mais j'aime le doux »."
+    }
+   ]
+  },
+  "5": {
+   "1": [
+    {
+     "chunk": "それをください",
+     "role": "« Je vais prendre celui-là. »",
+     "tip": "Efficace pour acheter ! Mais tu rates une belle occasion de parler avec un passionné. Les vendeurs de thé à Kyoto adorent partager leur façon de le boire."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "高いですか？",
+     "role": "« C'est cher ? »",
+     "tip": "Un peu abrupt juste après une recommandation sincère. Pour connaître le prix poliment : おいくらですか？ (oikura desu ka?) = « combien coûte-t-il ? »."
+    }
+   ]
+  },
+  "7": {
+   "1": [
+    {
+     "chunk": "フランスです",
+     "role": "« (Je viens de) France. »",
+     "tip": "Compris, mais court. Ajoute pourquoi tu es là : 京大の留学生です (Kyoudai no ryuugakusei desu) = « je suis étudiante en échange à l'université de Kyoto ». 京大 est le surnom que tout le monde utilise."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "パリ",
+     "role": "« Paris. »",
+     "tip": "Un seul mot, c'est un peu sec : le vendeur cherche à faire connaissance. Donne une phrase complète : パリから来ました (Pari kara kimashita) = « je viens de Paris »."
+    }
+   ]
+  },
+  "9": {
+   "1": [
+    {
+     "chunk": "ありがとう",
+     "role": "« Merci. » — la version familière.",
+     "tip": "Gentil, mais avec un commerçant on ajoute ございます : ありがとうございます. Et propose de revenir pour garder le lien : また来ます！ (mata kimasu!) = « je reviendrai ! »."
+    }
+   ],
+   "2": [
+    {
+     "chunk": "日本語は下手です",
+     "role": "« Mon japonais est mauvais. »",
+     "tip": "Ton intention modeste est bonne, mais c'est un peu trop dur avec toi-même. La réponse naturelle à un compliment : いいえ、まだまだです (iie, madamada desu) = « oh non, j'ai encore beaucoup à apprendre »."
+    }
+   ]
+  }
+ }
+};

@@ -33,26 +33,32 @@ export function resetTTS(){
   ttsWarmed = false; speakStatus = null;
   setTimeout(()=>{ probeVoices(); renderSoundBars(); }, 150);
 }
-export function speak(text, rate){
-  if(!('speechSynthesis' in window)) return;
+export function speak(text, rate){ speakSequence([{ text }], rate); }
+
+// Lit plusieurs répliques à la suite, sans que l'une coupe la suivante.
+// pitch différent par interlocuteur : une seule voix japonaise suffit pour distinguer deux personnes.
+export function speakSequence(parts, rate){
+  if(!('speechSynthesis' in window) || !parts.length) return;
   warmUpTTS();
   const go = ()=>{
     const voices = speechSynthesis.getVoices();
     const ja = voices.find(v => v.lang && v.lang.toLowerCase().replace('_','-').startsWith('ja')) || null;
     jaVoiceFound = ja; voiceProbed = true;
-    if(ja) console.log(`[TTS] speak("${text}") → Voice found: ${ja.name} (${ja.lang})`);
-    else console.warn(`[TTS] speak("${text}") → No Japanese voice detected (${voices.length} voix), lecture avec lang=ja-JP sans voix explicite`);
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ja-JP'; u.rate = rate || 1;
-    if(ja) u.voice = ja;
+    if(!ja) console.warn(`[TTS] No Japanese voice detected (${voices.length} voix), lecture avec lang=ja-JP sans voix explicite`);
     let started = false;
-    u.onstart = ()=>{ started = true; speakStatus = 'speaking'; renderSoundBars(); };
-    u.onend = ()=>{ speakStatus = null; renderSoundBars(); };
-    u.onerror = ()=>{ speakStatus = 'failed'; renderSoundBars(); };
+    const utterances = parts.map((p, i)=>{
+      const u = new SpeechSynthesisUtterance(p.text);
+      u.lang = 'ja-JP'; u.rate = rate || 1; u.pitch = p.pitch || 1;
+      if(ja) u.voice = ja;
+      if(i === 0) u.onstart = ()=>{ started = true; speakStatus = 'speaking'; renderSoundBars(); };
+      if(i === parts.length - 1) u.onend = ()=>{ speakStatus = null; renderSoundBars(); };
+      u.onerror = ()=>{ speakStatus = 'failed'; renderSoundBars(); };
+      return u;
+    });
     try{
       speechSynthesis.cancel(); // toujours vider la file, même si l'état "speaking" semble faux (bug connu de Chrome après inactivité)
       setTimeout(()=>{
-        try{ speechSynthesis.speak(u); }catch(e){ speakStatus='failed'; renderSoundBars(); }
+        try{ utterances.forEach(u => speechSynthesis.speak(u)); }catch(e){ speakStatus='failed'; renderSoundBars(); }
         setTimeout(()=>{ if(!started){ speakStatus = 'failed'; renderSoundBars(); } }, 1500);
       }, 30);
     }catch(e){ console.error(e); speakStatus = 'failed'; renderSoundBars(); }
