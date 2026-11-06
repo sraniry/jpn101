@@ -54,6 +54,7 @@ export function renderConversationList(){
     });
     html += `</div>`;
     area.innerHTML = html;
+    wireBreakdownToggles(area);
     area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{ convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage(); }));
     area.querySelectorAll('.conv-listen').forEach(b=> b.addEventListener('click', e=>{
       e.stopPropagation();
@@ -107,6 +108,7 @@ function renderConversationStage(){
     area.innerHTML = html;
     document.getElementById('convNext').addEventListener('click', ()=>{ speak(turn.jp,0.85); convState.turnIdx++; renderConversationStage(); });
     document.getElementById('convExit').addEventListener('click', renderConversationList);
+    wireBreakdownToggles(area);
     setTimeout(()=> speak(turn.jp, 0.85), 150);
   } else {
     html += `<div class="conv-choices" id="convChoices">`;
@@ -122,8 +124,9 @@ function renderConversationStage(){
         speak(ch.jp, 0.85);
         const cls = ch.quality === 'best' ? 'best' : (ch.quality === 'ok' ? 'ok' : 'weak');
         const label = ch.quality === 'best' ? '✓ Le plus naturel' : (ch.quality === 'ok' ? '≈ Ça marche' : '○ Trop littéral / pas idéal');
-        const fb = document.createElement('div'); fb.className = 'conv-feedback '+cls; fb.innerHTML = `<b>${label}</b><br>${escapeHtml(ch.feedback)}`;
+        const fb = document.createElement('div'); fb.className = 'conv-feedback '+cls; fb.innerHTML = `<b>${label}</b><br>${escapeHtml(ch.feedback)}${ch.breakdown && ch.breakdown.length ? '<hr class="cbd-sep">'+breakdownSnippet(ch.breakdown) : ''}`;
         document.getElementById('convChoices').appendChild(fb);
+        wireBreakdownToggles(fb);
         area.querySelectorAll('.conv-choice-btn').forEach(x=>x.disabled = true);
         conv._chosen = conv._chosen || {}; conv._chosen[convState.turnIdx] = ch;
         const nextBtn = document.createElement('button'); nextBtn.className='continue-btn'; nextBtn.style.marginTop='14px'; nextBtn.textContent='Continuer';
@@ -133,11 +136,31 @@ function renderConversationStage(){
     });
   }
 }
-function bubbleHtml(who, jp, romaji, fr){
-  return `<div class="bubble ${who}">${escapeHtml(jp)} <button class="bubble-audio" data-jp="${escapeHtml(jp)}">🔊</button><span class="b-romaji">${escapeHtml(romaji)}</span><span class="b-fr">${escapeHtml(fr)}</span></div>`;
+function breakdownSnippet(breakdown){
+  if(!breakdown || !breakdown.length) return '';
+  const rows = breakdown.map(b=>`<div class="cbd-row">
+    <span class="cbd-chunk">${escapeHtml(b.chunk)}</span>
+    <span class="cbd-role">${escapeHtml(b.role)}</span>
+    ${b.tip ? `<span class="cbd-tip">${escapeHtml(b.tip)}</span>` : ''}
+  </div>`).join('');
+  return `<div class="conv-breakdown" style="display:none">${rows}</div><button class="conv-bd-toggle" type="button">🔍 Structure</button>`;
+}
+function wireBreakdownToggles(container){
+  container.querySelectorAll('.conv-bd-toggle').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      const bd = btn.previousElementSibling;
+      const open = bd.style.display !== 'none';
+      bd.style.display = open ? 'none' : 'block';
+      btn.textContent = open ? '🔍 Structure' : '🔼 Masquer';
+    });
+  });
+}
+function bubbleHtml(who, jp, romaji, fr, breakdown){
+  return `<div class="bubble ${who}">${escapeHtml(jp)} <button class="bubble-audio" data-jp="${escapeHtml(jp)}">🔊</button><span class="b-romaji">${escapeHtml(romaji)}</span><span class="b-fr">${escapeHtml(fr)}</span>${breakdownSnippet(breakdown)}</div>`;
 }
 function renderResolvedTurn(turn, chosen){
-  if(turn.speaker === 'npc') return bubbleHtml('npc', turn.jp, turn.romaji, turn.fr);
-  if(chosen) return bubbleHtml('user', chosen.jp, chosen.romaji, chosen.fr);
+  if(turn.speaker === 'npc') return bubbleHtml('npc', turn.jp, turn.romaji, turn.fr, turn.breakdown);
+  if(chosen) return bubbleHtml('user', chosen.jp, chosen.romaji, chosen.fr, chosen.breakdown);
   return '';
 }
