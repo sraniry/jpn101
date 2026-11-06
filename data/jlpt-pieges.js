@@ -1700,39 +1700,39 @@ export const PIEGES = {
     "pieces": [
      "机の",
      "上に",
-     "本が",
-     "三冊"
+     "三冊の",
+     "本が"
     ],
     "post": "あります。",
     "fr": "Il y a trois livres sur le bureau.",
-    "romaji": "Tsukue no ue ni hon ga san-satsu arimasu.",
-    "explanation": "Le lieu vient d'abord (机の上に), puis ce qui s'y trouve (本が), puis le nombre juste avant le verbe. あります ferme la phrase. Dans ★ : 本が."
+    "romaji": "Tsukue no ue ni sansatsu no hon ga arimasu.",
+    "explanation": "Le lieu d'abord : 机の + 上に (« sur le bureau »). Puis la quantité + の devant le nom : 三冊の + 本が, et あります ferme la phrase. Dans ★ : 三冊の."
    },
    {
     "pre": "この店は",
     "pieces": [
      "あの店",
      "より",
-     "少し",
-     "安い"
+     "安くて",
+     "おいしい"
     ],
     "post": "です。",
-    "fr": "Ce magasin est un peu moins cher que celui-là.",
-    "romaji": "Kono mise wa ano mise yori sukoshi yasui desu.",
-    "explanation": "Pour comparer : A は B より + adjectif. より se colle derrière B, et le petit mot de degré (少し) passe juste avant l'adjectif. Dans ★ : 少し."
+    "fr": "Ce magasin est moins cher et meilleur que celui-là.",
+    "romaji": "Kono mise wa ano mise yori yasukute oishii desu.",
+    "explanation": "Pour comparer : A は B より + adjectif. より se colle derrière B (あの店より), puis les deux adjectifs s'enchaînent : 安くて (« bon marché et ») + おいしい. Dans ★ : 安くて."
    },
    {
-    "pre": "来年の夏、友だちと",
+    "pre": "来年の夏、",
     "pieces": [
-     "京都で",
-     "お寺を",
-     "たくさん",
-     "見たい"
+     "日本へ",
+     "行って",
+     "京都の",
+     "お寺を"
     ],
-    "post": "です。",
-    "fr": "L'été prochain, je voudrais voir plein de temples à Kyoto avec des amis.",
-    "romaji": "Rainen no natsu, tomodachi to Kyoto de otera wo takusan mitai desu.",
-    "explanation": "Le lieu avec で d'abord, puis l'objet avec を, et たくさん (« beaucoup ») se place juste avant le verbe. 見たい (« je veux voir ») ferme la phrase. Dans ★ : たくさん."
+    "post": "見たいです。",
+    "fr": "L'été prochain, je voudrais aller au Japon voir les temples de Kyoto.",
+    "romaji": "Rainen no natsu, Nihon e itte Kyoto no otera wo mitai desu.",
+    "explanation": "Les actions s'enchaînent dans l'ordre : aller (日本へ行って), puis voir. 京都の se colle devant お寺を (nom + の + nom) et le verbe 見たい ferme la phrase. Dans ★ : 京都の."
    },
    {
     "pre": "すみません、",
@@ -1791,13 +1791,13 @@ export const PIEGES = {
     "pieces": [
      "月曜日から",
      "金曜日まで",
-     "学校が",
-     "あります"
+     "働いて",
+     "います"
     ],
     "post": "。",
-    "fr": "Il y a école du lundi au vendredi.",
-    "romaji": "Getsuyoubi kara kinyoubi made gakkou ga arimasu.",
-    "explanation": "Pour « de… à… » : début + から, puis fin + まで, toujours dans cet ordre. Ensuite le sujet (学校が) et あります. Dans ★ : 学校が."
+    "fr": "Je travaille du lundi au vendredi.",
+    "romaji": "Getsuyoubi kara kinyoubi made hataraite imasu.",
+    "explanation": "Pour « de… à… » : début + から, puis fin + まで, toujours dans cet ordre. Ensuite 働いて + います (« je travaille ») ferme la phrase. Dans ★ : 働いて."
    },
    {
     "pre": "来週の日曜日に、",
@@ -1816,14 +1816,14 @@ export const PIEGES = {
     "pre": "",
     "pieces": [
      "教室に",
+     "五人の",
      "学生が",
-     "五人",
      "います"
     ],
     "post": "。",
     "fr": "Il y a cinq étudiants dans la salle de classe.",
-    "romaji": "Kyoushitsu ni gakusei ga gonin imasu.",
-    "explanation": "Lieu に, puis le sujet が, puis le nombre juste avant le verbe. Pour les personnes, on dit います (et non あります). Dans ★ : 五人."
+    "romaji": "Kyoushitsu ni gonin no gakusei ga imasu.",
+    "explanation": "Le lieu + に d'abord (教室に). La quantité vient devant le nom avec の : 五人の + 学生が, puis います pour un être vivant. Dans ★ : 学生が."
    },
    {
     "pre": "",
@@ -1932,15 +1932,15 @@ export const PIEGES = {
    {
     "pre": "",
     "pieces": [
-     "ひまな",
-     "とき",
-     "よく",
-     "本を"
+     "ごはんを",
+     "食べて",
+     "から",
+     "宿題を"
     ],
-    "post": "読みます。",
-    "fr": "Quand j'ai du temps libre, je lis souvent des livres.",
-    "romaji": "Hima na toki yoku hon wo yomimasu.",
-    "explanation": "とき se colle derrière l'adjectif en な (ひまな) pour dire « quand… ». Le mot de fréquence よく passe juste avant l'objet puis le verbe. Dans ★ : よく."
+    "post": "します。",
+    "fr": "Après avoir mangé, je fais mes devoirs.",
+    "romaji": "Gohan wo tabete kara shukudai wo shimasu.",
+    "explanation": "Verbe en て + から = « après avoir… ». On range d'abord ごはんを食べてから, puis l'objet 宿題を et le verbe します. Dans ★ : から."
    }
   ]
  },
@@ -3647,17 +3647,17 @@ export const PIEGES = {
     "explanation": "La forme potentielle (書ける « pouvoir écrire ») prend が devant l'objet : メールが書ける. Ensuite ようになる = « en arriver à ». Dans ★ : 書ける."
    },
    {
-    "pre": "",
+    "pre": "田中さんは来月",
     "pieces": [
-     "田中さんは",
-     "来月",
      "京都に",
-     "引っ越す"
+     "引っ越す",
+     "そう",
+     "です"
     ],
-    "post": "そうです。",
+    "post": "。",
     "fr": "Il paraît que M. Tanaka déménage à Kyoto le mois prochain.",
     "romaji": "Tanaka-san wa raigetsu Kyoto ni hikkosu sou desu.",
-    "explanation": "そうです se colle derrière le verbe au dictionnaire pour rapporter ce qu'on a entendu. L'information (qui, quand, où, quoi) vient avant. Dans ★ : 京都に."
+    "explanation": "Ouï-dire : verbe sous sa forme simple (引っ越す) + そうです (« il paraît que »). Le lieu avec に vient avant le verbe. Dans ★ : そう."
    },
    {
     "pre": "",
@@ -3686,17 +3686,17 @@ export const PIEGES = {
     "explanation": "と = « quand… alors… » : le déclencheur (押す + と) vient d'abord, puis ce qui se passe (お茶が出てきます). Dans ★ : お茶が."
    },
    {
-    "pre": "",
+    "pre": "明日の試合は、",
     "pieces": [
-     "明日",
      "雨が",
      "降ったら",
-     "試合は"
+     "中止に",
+     "なります"
     ],
-    "post": "中止です。",
-    "fr": "S'il pleut demain, le match est annulé.",
-    "romaji": "Ashita ame ga futtara shiai wa chuushi desu.",
-    "explanation": "たら se colle derrière le verbe au passé court (降った + ら). La condition passe avant le résultat. Le thème 試合は est juste avant la conclusion. Dans ★ : 降ったら."
+    "post": "。",
+    "fr": "S'il pleut, le match de demain sera annulé.",
+    "romaji": "Ashita no shiai wa, ame ga futtara chuushi ni narimasu.",
+    "explanation": "La condition d'abord : sujet が + verbe en たら (« s'il… »). Ensuite le résultat : 中止に + なります (« être annulé »). Dans ★ : 中止に."
    },
    {
     "pre": "",
@@ -3764,17 +3764,17 @@ export const PIEGES = {
     "explanation": "Au passif, la personne qui agit est marquée par に (人に) et le verbe prend la forme 〜れる : 踏む → 踏まれる. « Quelqu'un que je ne connais pas » : le verbe 知らない se place avant le nom 人. Dans ★ : 人に."
    },
    {
-    "pre": "",
+    "pre": "先生は学生に",
     "pieces": [
-     "先生は",
-     "学生に",
      "作文を",
-     "書か"
+     "書か",
+     "せ",
+     "ました"
     ],
-    "post": "せました。",
+    "post": "。",
     "fr": "Le professeur a fait écrire une rédaction aux étudiants.",
     "romaji": "Sensei wa gakusei ni sakubun wo kakasemashita.",
-    "explanation": "Le causatif (« faire faire ») : 書く → 書かせる. Celui qu'on force à faire est marqué par に (学生に), la chose par を (作文を). Dans ★ : 作文を."
+    "explanation": "Forme « faire faire » : verbe (書か) + せる. On range 作文を, puis 書か + せ + ました. Dans ★ : せ."
    },
    {
     "pre": "",
@@ -3829,17 +3829,17 @@ export const PIEGES = {
     "explanation": "Verbe au dictionnaire + ことにする = « décider de ». Les mots de temps (毎朝, 三十分) viennent avant le verbe. Dans ★ : 歩く."
    },
    {
-    "pre": "",
+    "pre": "田中さんは",
     "pieces": [
-     "田中さんは",
      "もう",
      "家に",
-     "着いた"
+     "着いた",
+     "はず"
     ],
-    "post": "はずです。",
+    "post": "です。",
     "fr": "M. Tanaka doit déjà être arrivé chez lui.",
     "romaji": "Tanaka-san wa mou ie ni tsuita hazu desu.",
-    "explanation": "はず = « normalement… » (une déduction). Il se colle derrière le verbe à la forme courte (着いた). Le mot もう (« déjà ») passe avant le lieu. Dans ★ : 家に."
+    "explanation": "Supposition : verbe à la forme simple (着いた) + はずです (« il doit être… »). もう (« déjà ») et le lieu 家に se placent avant le verbe. Dans ★ : 着いた."
    },
    {
     "pre": "先生に",

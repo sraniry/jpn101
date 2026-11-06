@@ -32,7 +32,7 @@ export const N4_VOCAB = [
     "jp": "着替える",
     "romaji": "kigaeru",
     "fr": "se changer",
-    "note": "着る (mettre un vêtement) + 替える (changer). Lecture parfois きがえる ou きかえる, les deux existent."
+    "note": "着る (mettre un vêtement) + 替える (changer). Se lit toujours きがえる : le が est sonore."
    },
    {
     "jp": "包む",
@@ -578,7 +578,7 @@ export const N4_VOCAB = [
     "jp": "祈る",
     "romaji": "inoru",
     "fr": "prier",
-    "note": "Dans les temples de Kyoto, on 祈る en frappant deux fois dans les mains."
+    "note": "Dans les sanctuaires shintô de Kyoto, on 祈る en frappant deux fois dans les mains ; dans un temple bouddhiste, on joint simplement les mains en silence."
    },
    {
     "jp": "願う",
@@ -1141,13 +1141,13 @@ export const N4_VOCAB = [
    {
     "jp": "以上",
     "romaji": "ijou",
-    "fr": "plus de, au moins",
+    "fr": "ou plus (valeur incluse)",
     "note": "18歳以上 = 18 ans et plus. À la fin d'un discours : 以上です = c'est tout."
    },
    {
     "jp": "以下",
     "romaji": "ika",
-    "fr": "moins de, au plus",
+    "fr": "ou moins (valeur incluse)",
     "note": "千円以下 = 1000 yens ou moins."
    },
    {
@@ -2480,7 +2480,7 @@ export const N4_VOCAB = [
     "jp": "島",
     "romaji": "shima",
     "fr": "île",
-    "note": "En fin de nom, souvent じま : 広島 (Hiroshima), 宮島 (Miyajima)."
+    "note": "En fin de nom, しま ou じま : 広島 (Hiroshima), 宮島 (Miyajima)."
    },
    {
     "jp": "森",
@@ -2534,7 +2534,7 @@ export const N4_VOCAB = [
     "jp": "湖",
     "romaji": "mizuumi",
     "fr": "lac",
-    "note": "水 (eau) + 海 (mer) à l'oreille : « la mer d'eau douce ». Le lac Biwa (琵琶湖) est à 10 min de Kyoto."
+    "note": "Le 氵 à gauche = l'eau : une grande étendue d'eau douce. Le lac Biwa (琵琶湖) est à 10 min de Kyoto."
    },
    {
     "jp": "虫",
@@ -2821,8 +2821,8 @@ export const N4_VOCAB = [
    {
     "jp": "硬い",
     "romaji": "katai",
-    "fr": "dur",
-    "note": "Contraire de 柔らかい. Pour une personne, かたい = rigide, trop sérieux."
+    "fr": "dur (matière)",
+    "note": "硬い = dur comme une matière (pain, métal, pierre). 固い (même lecture, vu plus haut) = ferme, serré : un nœud, une promesse. Contraire de 柔らかい."
    },
    {
     "jp": "焼ける",
@@ -2841,12 +2841,6 @@ export const N4_VOCAB = [
     "romaji": "koori",
     "fr": "glace (glaçon)",
     "note": "氷なしでお願いします = sans glaçons s'il vous plaît."
-   },
-   {
-    "jp": "喉",
-    "romaji": "nodo",
-    "fr": "gorge",
-    "note": "Souvent en hiragana のど. 喉が痛い = j'ai mal à la gorge."
    },
    {
     "jp": "渇く",
@@ -3087,12 +3081,6 @@ export const N4_VOCAB = [
     "romaji": "mochiron",
     "fr": "bien sûr",
     "note": "La réponse enthousiaste : もちろん ! = évidemment !"
-   },
-   {
-    "jp": "大体",
-    "romaji": "daitai",
-    "fr": "à peu près, en gros",
-    "note": "大体わかりました = j'ai compris dans les grandes lignes."
    },
    {
     "jp": "なるべく",

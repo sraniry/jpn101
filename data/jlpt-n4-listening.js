@@ -34,13 +34,13 @@ export const N4_LISTENING = [
     lines:[
       { who:'M', jp:'リサさん、今日は最初にテーブルを拭いてください。', romaji:'Risa-san, kyou wa saisho ni teeburu wo fuite kudasai.', fr:'Lisa, aujourd\'hui, essuie d\'abord les tables.' },
       { who:'F', jp:'はい。お皿も洗いますか。', romaji:'Hai. Osara mo araimasu ka.', fr:'D\'accord. Je lave aussi les assiettes ?' },
-      { who:'M', jp:'お皿は田中さんがやるから、いいよ。あ、でもその前に、お店の前を掃除しておいてくれる？', romaji:'Osara wa Tanaka-san ga yaru kara, ii yo. A, demo sono mae ni, omise no mae wo souji shite oite kureru?', fr:'Les assiettes, c\'est Tanaka qui s\'en charge. Ah, mais avant ça, tu peux balayer devant le restaurant ?' },
+      { who:'M', jp:'お皿は田中さんがやるから、いいよ。あ、でもテーブルの前に、お店の前を掃除しておいてくれる？', romaji:'Osara wa Tanaka-san ga yaru kara, ii yo. A, demo teeburu no mae ni, omise no mae wo souji shite oite kureru?', fr:'Les assiettes, c\'est Tanaka qui s\'en charge. Ah, mais avant les tables, tu peux balayer devant le restaurant ?' },
       { who:'F', jp:'わかりました。', romaji:'Wakarimashita.', fr:'Compris.' }
     ],
     q:'Que va faire Lisa en premier ?',
     choices:['Nettoyer devant le restaurant','Essuyer les tables','Laver les assiettes','Aider Tanaka'],
     ok:'Nettoyer devant le restaurant',
-    explanation:'Le patron dit d\'abord les tables, puis ajoute その前に (sono mae ni, avant ça) : お店の前を掃除 (nettoyer devant le restaurant). Les assiettes, c\'est 田中さん.' },
+    explanation:'Le patron dit d\'abord les tables, puis se reprend : テーブルの前に (teeburu no mae ni, avant les tables) お店の前を掃除 (nettoyer devant le restaurant). Les assiettes, c\'est 田中さん.' },
 
   { id:'t04', type:'tâche', setting:'Un professeur parle à la fin du cours',
     lines:[
@@ -138,7 +138,7 @@ export const N4_LISTENING = [
 
   { id:'t12', type:'tâche', setting:'Chez le médecin',
     lines:[
-      { who:'M', jp:'この薬は一日三回、ご飯の後に飲んでください。', romaji:'Kono kusuri wa ichinichi sankai, gohan no ato ni nonde kudasai.', fr:'Prenez ce médicament trois fois par jour, après les repas.' },
+      { who:'M', jp:'この薬は毎日三回、ご飯の後に飲んでください。', romaji:'Kono kusuri wa mainichi sankai, gohan no ato ni nonde kudasai.', fr:'Prenez ce médicament trois fois par jour, après les repas.' },
       { who:'F', jp:'朝ご飯を食べない日はどうしたらいいですか。', romaji:'Asagohan wo tabenai hi wa dou shitara ii desu ka.', fr:'Et les jours où je ne prends pas de petit-déjeuner ?' },
       { who:'M', jp:'その時は、何か少し食べてから飲んでください。お風呂は今日は入らないでくださいね。', romaji:'Sono toki wa, nanika sukoshi tabete kara nonde kudasai. Ofuro wa kyou wa hairanaide kudasai ne.', fr:'Dans ce cas, mangez un petit quelque chose avant de le prendre. Et pas de bain aujourd\'hui.' }
     ],
@@ -207,7 +207,7 @@ export const N4_LISTENING = [
     ok:'Le bruit du voisin',
     explanation:'隣の人がうるさくて、夜よく眠れない = le voisin est bruyant, il dort mal. Le loyer est 安かった (pas cher) ; « un peu petit » est un détail, pas le vrai problème.' },
 
-  { id:'p04', type:'point', setting:'Au café, deux amies',
+  { id:'p04', type:'point', setting:'Au café, deux amis',
     lines:[
       { who:'F', jp:'週末、何をしたの？', romaji:'Shuumatsu, nani wo shita no?', fr:'Tu as fait quoi ce week-end ?' },
       { who:'M', jp:'金閣寺に行くつもりだったんだけど、雨が降ったから、家で映画を見たよ。', romaji:'Kinkakuji ni iku tsumori datta n da kedo, ame ga futta kara, ie de eiga wo mita yo.', fr:'Je comptais aller au Kinkaku-ji, mais il a plu, alors j\'ai regardé un film à la maison.' },
@@ -244,7 +244,7 @@ export const N4_LISTENING = [
 
   { id:'p07', type:'point', setting:'Deux étudiants au téléphone',
     lines:[
-      { who:'M', jp:'ごめん、十分ぐらい遅れる。', romaji:'Gomen, juppun gurai okureru.', fr:'Désolé, j\'aurai environ dix minutes de retard.' },
+      { who:'M', jp:'ごめん、10分ぐらい遅れる。', romaji:'Gomen, juppun gurai okureru.', fr:'Désolé, j\'aurai environ dix minutes de retard.' },
       { who:'F', jp:'どうしたの？', romaji:'Doushita no?', fr:'Qu\'est-ce qui se passe ?' },
       { who:'M', jp:'バスに乗ろうと思ったら、財布を忘れたことに気がついて、家に戻ったんだ。', romaji:'Basu ni norou to omottara, saifu wo wasureta koto ni ki ga tsuite, ie ni modotta n da.', fr:'Au moment de monter dans le bus, je me suis rendu compte que j\'avais oublié mon portefeuille, je suis rentré chez moi.' },
       { who:'F', jp:'わかった。気をつけてね。', romaji:'Wakatta. Ki wo tsukete ne.', fr:'D\'accord. Fais attention.' }
@@ -291,7 +291,7 @@ export const N4_LISTENING = [
   // ── RÉPONSE ─────────────────────────────────────────────
   { id:'r01', type:'réponse', setting:'Un ami t\'offre un cadeau',
     lines:[
-      { who:'M', jp:'これ、京都のお土産。よかったら、どうぞ。', romaji:'Kore, Kyouto no omiyage. Yokattara, douzo.', fr:'Tiens, un souvenir de Kyoto. Si ça te fait plaisir.' }
+      { who:'M', jp:'これ、京都のお土産。よかったら、どうぞ。', romaji:'Kore, Kyouto no omiyage. Yokattara, douzo.', fr:'Tiens, un souvenir de Kyoto. Prends-le, si tu veux.' }
     ],
     q:'Quelle est la meilleure réponse ?',
     choices:['わあ、ありがとう。開けてもいい？ (Waa, arigatou. Akete mo ii?)','いいえ、どういたしまして。 (Iie, dou itashimashite.)','はい、どうぞ。 (Hai, douzo.)','お土産を買いましょう。 (Omiyage wo kaimashou.)'],
