@@ -43,7 +43,7 @@ export function renderSkills(){
       <div class="skill-head"><h4>${meta.icon} ${escapeHtml(meta.label)}${coreCount?`<span class="star-pill">⭐ ${coreCount}</span>`:''}</h4><span class="skill-level">Niveau ${lvl}/5</span></div>
       <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${pct}%"></div></div>
       <div class="skill-meta"><span>${mastered}/${list.length} maîtrisées</span><span>${pct}%</span></div>
-      ${lvl===3 ? `<button class="skill-challenge skill-challenge-btn" data-tag="${tag}">🎯 Mini-défi débloqué — tente une conversation sur ce thème →</button>` : ''}
+      ${lvl===3 && CONVERSATIONS.some(c=>c.skill===tag) ? `<button class="skill-challenge skill-challenge-btn" data-tag="${tag}">🎯 Mini-défi débloqué — tente une conversation sur ce thème →</button>` : ''}
       ${lvl>=5 ? `<div class="skill-challenge">🏆 Compétence maîtrisée !</div>` : ''}
     </div>`;
   });

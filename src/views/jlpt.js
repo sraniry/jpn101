@@ -32,6 +32,7 @@ function shuffleChoicePair(choices, choicesRomaji){
 let quizState = null;
 let examState = null;
 let jlptLevel = 'N5';
+export function setJlptLevel(level){ jlptLevel = level; }
 
 // ---------- Historique des examens blancs ----------
 // Stocké dans meta (via storage.js) : il suit ainsi l'export JSON et la synchro cloud,
@@ -166,7 +167,7 @@ function kanjiMakeCard(it){
 }
 
 function renderKanjiPanel(panel){
-  if(kanjiSensQuiz){ renderKanjiSensQuiz(panel); return; }
+  if(kanjiSensQuiz && kanjiSensQuiz.level === 'N5'){ renderKanjiSensQuiz(panel); return; }
   let html = `
     <div class="onkun-explain">
       <h4 class="kana-table-title" style="margin-top:0;">🤔 Pourquoi un même kanji se lit différemment ?</h4>
@@ -206,7 +207,7 @@ function renderKanjiPanel(panel){
   panel.querySelectorAll('.kj-sentence').forEach(s=> s.addEventListener('click', e=>{ e.stopPropagation(); speak(s.dataset.jpSentence, 0.85); }));
   wireAddButtons(panel, N5_KANJI, kanjiMakeCard, ()=> renderKanjiPanel(panel));
   panel.querySelector('#kanjiSensStart').addEventListener('click', ()=>{
-    kanjiSensQuiz = { deck: shuffle(N5_KANJI_ALL).slice(0,20), idx:0, correct:0 };
+    kanjiSensQuiz = { level:'N5', pool:N5_KANJI_ALL, stat:'kanji', back:()=>renderKanjiPanel(panel), deck: shuffle(N5_KANJI_ALL).slice(0,20), idx:0, correct:0 };
     renderKanjiPanel(panel);
   });
 }
@@ -219,8 +220,10 @@ function kanjiMakeCardN4(it){
 
 function renderN4KanjiPanel(panel){
   if(!panel) return;
+  if(kanjiSensQuiz && kanjiSensQuiz.level === 'N4'){ renderKanjiSensQuiz(panel); return; }
   const n4All = N4_KANJI.flatMap(g=>g.items);
-  let html = `<div class="kana-rule-note"><b>${n4All.length} kanji N4</b> — aucun doublon avec N5. Touche un kanji pour l'entendre.</div>`;
+  let html = `<div class="kana-rule-note"><b>${n4All.length} kanji N4</b> — aucun doublon avec N5. Touche un kanji pour l'entendre. 💡 = astuce mnémotechnique, 🧩 = radicaux.</div>
+    <button class="continue-btn" id="kanjiSensStartN4" style="margin-bottom:14px;">🎯 Quiz : kanji → sens (20 questions)</button>`;
   N4_KANJI.forEach((g, gi)=>{
     const st = groupAddLabel(g.items, kanjiMakeCardN4);
     html += `<div class="rg-head" style="margin-top:14px;"><h4 class="kana-table-title" style="margin:0;">${g.theme} (${g.items.length})</h4><button class="rg-add jlpt-add-n4 ${st.state==='all'?'is-added':''}" data-group="${gi}" ${st.state==='all'?'disabled':''}>${st.label}</button></div><div class="kanji-grid">`;
@@ -239,6 +242,10 @@ function renderN4KanjiPanel(panel){
   });
   panel.innerHTML = html;
   panel.querySelectorAll('.kanji-card').forEach(c=> c.addEventListener('click', ()=> speak(c.dataset.jp, 0.8)));
+  panel.querySelector('#kanjiSensStartN4').addEventListener('click', ()=>{
+    kanjiSensQuiz = { level:'N4', pool:n4All, stat:'kanji-n4', back:()=>renderN4KanjiPanel(panel), deck: shuffle(n4All).slice(0,20), idx:0, correct:0 };
+    renderN4KanjiPanel(panel);
+  });
   panel.querySelectorAll('.jlpt-add-n4').forEach(b=>{
     b.addEventListener('click', async e=>{
       e.stopPropagation();
@@ -263,8 +270,8 @@ function renderKanjiSensQuiz(panel){
   const q = kanjiSensQuiz;
   if(q.idx >= q.deck.length){
     const pct = Math.round((q.correct/q.deck.length)*100);
-    if(!q.recorded){ q.recorded = true; addQuizStat('kanji', q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
-    const best = bestQuizScore('kanji');
+    if(!q.recorded){ q.recorded = true; addQuizStat(q.stat, q.correct, q.deck.length); registerStudyActivity(); celebrateNewBadges(); }
+    const best = bestQuizScore(q.stat);
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
@@ -272,11 +279,11 @@ function renderKanjiSensQuiz(panel){
       <div class="kqd-teacher">${quizLine(pct)}</div>
       <button class="kana-quiz-restart" id="kanjiSensEnd">← Retour aux kanji</button>
     </div>`;
-    panel.querySelector('#kanjiSensEnd').addEventListener('click', ()=>{ kanjiSensQuiz = null; renderKanjiPanel(panel); });
+    panel.querySelector('#kanjiSensEnd').addEventListener('click', ()=>{ kanjiSensQuiz = null; q.back(); });
     return;
   }
   const card = q.deck[q.idx];
-  const choices = shuffle([card, ...shuffle(N5_KANJI_ALL.filter(k=>k.fr!==card.fr)).slice(0,3)]);
+  const choices = shuffle([card, ...shuffle(q.pool.filter(k=>k.fr!==card.fr)).slice(0,3)]);
   panel.innerHTML = `<div class="kana-quiz-card">
     <div class="kqc-progress">${q.idx+1} / ${q.deck.length}</div>
     <div class="kqc-question is-kana">${card.k}</div>
@@ -294,7 +301,7 @@ function renderKanjiSensQuiz(panel){
       panel.querySelector('#kanjiSensReveal').innerHTML =
         `<div class="listen-reveal"><b>${card.k}</b> = ${escapeHtml(card.fr)}<br>${escapeRj(lectures)}<br>${escapeRj(annotateFurigana(card.ex))}</div>
          <button class="continue-btn" id="kanjiSensNext" style="margin-top:12px;">Continuer</button>`;
-      panel.querySelector('#kanjiSensNext').addEventListener('click', ()=>{ q.idx++; renderKanjiPanel(panel); });
+      panel.querySelector('#kanjiSensNext').addEventListener('click', ()=>{ q.idx++; q.back(); });
     });
   });
 }

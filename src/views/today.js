@@ -2,6 +2,7 @@ import { phrases, meta, saveMeta, todayStr, getDueAll, planToday, getConvDone } 
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
 import { openConversation } from './conversation.js';
+import { setJlptLevel } from './jlpt.js';
 import { escapeHtml } from '../util.js';
 import { celebrate } from '../encouragement.js';
 
@@ -40,7 +41,7 @@ const BONUS_ROTATION = [
   { icon:'🎓', title:'Entraînement JLPT N5', time:'~10 min', view:'jlpt',
     desc:'Quiz rapide, kanji officiels ou examen blanc',
     why:'L\'examen a lieu en décembre : quelques minutes régulières valent mieux qu\'un bachotage de dernière minute.' },
-  { icon:'📖', title:'Kanji N4', time:'~10 min', view:'jlpt',
+  { icon:'📖', title:'Kanji N4', time:'~10 min', view:'jlpt', level:'N4',
     desc:'80 kanji supplémentaires pour franchir le palier N4',
     why:'Les kanji N4 reviennent dans les panneaux, les menus et les formulaires universitaires à Kyoto — un investissement direct pour ton séjour.' },
 ];
@@ -134,7 +135,7 @@ export function renderToday(){
   </div>`;
   area.innerHTML = html;
   const bonusEl = area.querySelector('.today-bonus-step');
-  if(bonusEl) bonusEl.addEventListener('click', ()=> gotoTab(bonusEl.dataset.view));
+  if(bonusEl) bonusEl.addEventListener('click', ()=>{ if(bonus.view==='jlpt') setJlptLevel(bonus.level || 'N5'); gotoTab(bonusEl.dataset.view); });
   // Étapes 1 et 2 : toute la carte est cliquable, un seul view cible.
   area.querySelectorAll('.today-step[data-view]').forEach(el=> el.addEventListener('click', ()=> gotoTab(el.dataset.view)));
   // Étape 3 : deux cibles distinctes (une par dialogue suggéré), chacune ouvre directement ce dialogue.

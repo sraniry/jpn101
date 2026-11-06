@@ -729,7 +729,7 @@ export const CONVERSATIONS = [
       { jp:'問題があります', romaji:'Mondai ga arimasu', fr:'Il y a un problème', quality:'ok', feedback:'Honnête mais vague — précise le problème pour qu\'on puisse t\'aider.' },
       { jp:'部屋が嫌いです', romaji:'Heya ga kirai desu', fr:'Je n\'aime pas ma chambre', quality:'weak', feedback:'Correct grammaticalement mais trop personnel — décris le problème technique concret.' }
     ]},
-    { speaker:'npc', jp:'大変申し訳ございません。すぐに係者を向かわせます。', romaji:'Taihen moushiwake gozaimasen. Sugu ni kakariisha wo mukawasemasu.', fr:'Nous nous en excusons sincèrement. Quelqu\'un arrive tout de suite.' },
+    { speaker:'npc', jp:'大変申し訳ございません。すぐに係の者を向かわせます。', romaji:'Taihen moushiwake gozaimasen. Sugu ni kakari no mono wo mukawasemasu.', fr:'Nous nous en excusons sincèrement. Quelqu\'un arrive tout de suite.' },
     { speaker:'user', choices:[
       { jp:'ありがとうございます。何分くらいかかりますか？', romaji:'Arigatou gozaimasu. Nanpun kurai kakarimasu ka?', fr:'Merci. Ça prendra combien de minutes ?', quality:'best', feedback:'何分くらい = environ combien de minutes ? くらい adoucit la précision demandée.' },
       { jp:'わかりました', romaji:'Wakarimashita', fr:'D\'accord', quality:'ok', feedback:'Bien pour accepter la situation — mais demander le délai est plus utile.' },
@@ -762,7 +762,7 @@ export const CONVERSATIONS = [
       { jp:'現金です', romaji:'Genkin desu', fr:'En espèces', quality:'ok', feedback:'Simple et clair — les guichets acceptent toujours le cash.' },
       { jp:'カードが使えますか？', romaji:'Kaado ga tsukaemasu ka?', fr:'Vous acceptez les cartes ?', quality:'ok', feedback:'Question valide — note que les cartes étrangères ne sont pas toujours acceptées aux guichets.' }
     ]},
-    { speaker:'npc', jp:'何番線から乗れますか？', romaji:'Nanban-sen kara noremaremasu ka?', fr:'De quel quai part mon train ?' },
+    { speaker:'npc', jp:'はい、ICカードで乗れますよ。改札にタッチしてください。', romaji:'Hai, IC kaado de noremasu yo. Kaisatsu ni tacchi shite kudasai.', fr:'Oui, la carte IC marche. Passez-la simplement sur le portique.' },
     { speaker:'user', choices:[
       { jp:'すみません、何番線ですか？教えてもらえますか？', romaji:'Sumimasen, nanban-sen desu ka? Oshiete moraemasu ka?', fr:'Excusez-moi, c\'est quel quai ? Pouvez-vous me dire ?', quality:'best', feedback:'Tu peux poser la question directement au guichetier — ～を教えてもらえますか = "pouvez-vous me dire".' },
       { jp:'ありがとうございます', romaji:'Arigatou gozaimasu', fr:'Merci', quality:'ok', feedback:'Si le guichetier t\'a déjà donné l\'info sur le billet, remercie et vérifie les panneaux.' },
@@ -943,7 +943,7 @@ export const CONVERSATIONS = [
     ]},
     { speaker:'user', choices:[
       { jp:'ありがとうございます。一緒に行きませんか？', romaji:'Arigatou gozaimasu. Issho ni ikimasen ka?', fr:'Merci. Tu veux bien venir avec moi ?', quality:'best', feedback:'一緒に行きませんか = invitation à venir ensemble. La forme négative interrogative pour inviter = forme polie typiquement japonaise.', breakdown:[
-        { chunk:'一緒に', role:'"Ensemble" — 一緒 (issho) = ensemble, に est la particule de manière.', tip:'一緒に + [verbe] = faire quelque chose ensemble. 一緒に食べましょう = mangeons ensemble.' },
+        { chunk:'一緒に', role:'"Ensemble" — 一緒 (issho) veut dire "ensemble", et on y colle presque toujours に devant un verbe.', tip:'一緒に + [verbe] = faire quelque chose ensemble. 一緒に食べましょう = mangeons ensemble.' },
         { chunk:'行きませんか', role:'"Tu ne veux pas aller ?" — forme négative interrogative pour inviter poliment.', tip:'En japonais, inviter par la négation est poli et doux. 行きませんか > 行きましょう (allons-y) > 行こう (allez viens, familier).' }
       ]},
       { jp:'ありがとうございます！2号館はどこですか？', romaji:'Arigatou gozaimasu! Nigo-kan wa doko desu ka?', fr:'Merci ! Le bâtiment 2, c\'est où ?', quality:'ok', feedback:'Très naturel de demander où est le bâtiment en même temps.' },
@@ -958,13 +958,13 @@ export const CONVERSATIONS = [
       { jp:'はい、どうぞ', romaji:'Hai, douzo', fr:'Voilà', quality:'ok', feedback:'Bien — si tu as la carte étudiante, tu as le droit d\'accès.' },
       { jp:'学生証を持っていません', romaji:'Gakuseishou wo motte imasen', fr:'Je n\'ai pas de carte étudiante', quality:'ok', feedback:'Honnête si c\'est le cas — explique que tu es en échange et demande les démarches.' }
     ]},
-    { speaker:'npc', jp:'この本を借りたいんですが、どうすればいいですか？', romaji:'Kono hon wo karitain desu ga, dou sureba ii desu ka?', fr:'Je veux emprunter ce livre — comment je fais ?' },
+    { speaker:'npc', jp:'はい、留学生の方も利用できますよ。何かお探しですか？', romaji:'Hai, ryuugakusei no kata mo riyou dekimasu yo. Nanika osagashi desu ka?', fr:'Oui, les étudiants étrangers peuvent l\'utiliser. Vous cherchez quelque chose ?' },
     { speaker:'user', choices:[
-      { jp:'カウンターに持っていってください。学生証も必要です', romaji:'Kauntaa ni motte itte kudasai. Gakuseishou mo hitsuyou desu', fr:'Apportez-le au comptoir. Il faut aussi la carte étudiante', quality:'best', feedback:'も (aussi) pour ajouter l\'info sur la carte. 必要 = nécessaire. Réponse utile si tu connais les règles.' },
-      { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne sais pas', quality:'ok', feedback:'Honnête si tu ne sais pas — mais essaie de chercher les panneaux d\'info d\'abord.' },
-      { jp:'本棚にあります', romaji:'Hondana ni arimasu', fr:'C\'est dans les rayons', quality:'weak', feedback:'Ce n\'est pas la réponse à la question sur le processus d\'emprunt.' }
+      { jp:'この本を借りたいんですが、どうすればいいですか？', romaji:'Kono hon wo karitain desu ga, dou sureba ii desu ka?', fr:'Je voudrais emprunter ce livre — comment je fais ?', quality:'best', feedback:'Parfait — 〜たいんですが annonce poliment ta demande, et どうすればいいですか demande la marche à suivre. Une formule passe-partout pour n\'importe quelle démarche.' },
+      { jp:'この本、借りられますか？', romaji:'Kono hon, kariraremasu ka?', fr:'Je peux emprunter ce livre ?', quality:'ok', feedback:'Correct et naturel — mais tu auras juste un oui ou un non, sans la marche à suivre.' },
+      { jp:'本をください', romaji:'Hon wo kudasai', fr:'Donnez-moi le livre', quality:'weak', feedback:'ください sert à acheter ou commander. À la bibliothèque, on emprunte : 借りる (kariru).' }
     ]},
-    { speaker:'npc', jp:'静かにしてください。ここは自習室です。', romaji:'Shizuka ni shite kudasai. Koko wa jishuushitsu desu.', fr:'Veuillez faire silence. Ceci est une salle d\'étude.' },
+    { speaker:'npc', jp:'カウンターで学生証を見せてください。貸出期間は二週間です。それから、ここは自習室なので、お静かにお願いします。', romaji:'Kauntaa de gakuseishou wo misete kudasai. Kashidashi kikan wa nishuukan desu. Sorekara, koko wa jishuushitsu na node, oshizuka ni onegaishimasu.', fr:'Montrez votre carte étudiante au comptoir. Le prêt dure deux semaines. Et ici c\'est une salle d\'étude, merci de rester silencieux.' },
     { speaker:'user', choices:[
       { jp:'すみません。グループ学習ができる部屋はありますか？', romaji:'Sumimasen. Guruupu gakushuu ga dekiru heya wa arimasu ka?', fr:'Pardon. Y a-t-il une salle pour travailler en groupe ?', quality:'best', feedback:'～ができる部屋 = "une salle où on peut ~". Tournure très utile pour chercher un espace.' },
       { jp:'すみません', romaji:'Sumimasen', fr:'Pardon', quality:'ok', feedback:'Bien pour s\'excuser — mais si tu as besoin d\'un espace groupe, demande-le.' },

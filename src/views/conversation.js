@@ -1,4 +1,19 @@
 import { CONVERSATIONS } from '../../data/phrases.js';
+import { CONV_BREAKDOWNS } from '../../data/conv-breakdowns.js';
+
+// Les décryptages sont rangés à part, par dialogue puis par index de tour :
+// tour PNJ → sa réplique, tour utilisateur → le meilleur choix.
+CONVERSATIONS.forEach(conv=>{
+  const byTurn = CONV_BREAKDOWNS[conv.id];
+  if(!byTurn || !Array.isArray(conv.turns)) return;
+  conv.turns.forEach((t, i)=>{
+    const bd = byTurn[i];
+    if(!bd) return;
+    if(t.speaker === 'npc'){ if(!t.breakdown) t.breakdown = bd; return; }
+    const best = (t.choices || []).find(c=>c.quality === 'best');
+    if(best && !best.breakdown) best.breakdown = bd;
+  });
+});
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
 import { planMark, registerStudyActivity, getConvDone, markConvDone } from '../storage.js';
