@@ -2,7 +2,7 @@
   "name": "日本語を学ぼう · Nihongo wo Manabou",
   "short_name": "日本語",
   "description": "Apprendre le japonais — révision SRS, conversations, grammaire A0→B1",
-  "start_url": "/index.html",
+   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f5f2ec",
   "theme_color": "#4a5568",
