@@ -142,6 +142,16 @@ export function renderListening(){
     </div>
     <div class="kana-rule-note"><b>💴 Le boss final du konbini :</b> les nombres se construisent en base 10 000 — 万 man (10 000), 千 sen (1 000), 百 hyaku (100). « 1 250 ¥ » se dit <i>sen nihyaku gojū en</i> (mille + 2×cent + 5×dix). Pièges : 300 = san<b>b</b>yaku, 600 = ro<b>pp</b>yaku, 800 = ha<b>pp</b>yaku, 3 000 = san<b>z</b>en, 8 000 = ha<b>ss</b>en.</div>
     <div id="listenQuizZone"></div>
+    <details class="kj-method" style="margin-top:18px;"><summary>🎬 Anime et programmes accessibles pour débutant</summary>
+      <p>Aucun anime n'est « 100 % N5 », mais ceux-ci parlent lentement, avec un vocabulaire du quotidien. Vise le <b>sens général</b>, pas chaque mot. La disponibilité change selon les plateformes : vérifie sur place.</p>
+      <p><b>☕ Shirokuma Café</b> (Polar Bear Café) : un café, des clients animaux. Vocabulaire de boissons et de commandes, phrases courtes.</p>
+      <p><b>🍳 Amaama to Inazuma</b> (Sweetness &amp; Lightning) : un père et sa fille qui cuisinent. Beaucoup de mots de cuisine et de nourriture.</p>
+      <p><b>🍶 Isekai Izakaya « Nobu »</b> : les plats d'un izakaya, nommés et expliqués. Pratique pour les cartes de restaurant.</p>
+      <p><b>🌾 Non Non Biyori</b> et <b>⛺ Yuru Camp△</b> : vie tranquille, voix claires, rythme lent.</p>
+      <p><b>🤖 Doraemon</b>, <b>🍊 Chibi Maruko-chan</b>, <b>🏠 Sazae-san</b> : dessins animés pour enfants, japonais très simple et très répété.</p>
+      <p><b>📻 NHK World : Easy Japanese</b> et le podcast <b>Nihongo con Teppei</b> : conçus pour apprenants.</p>
+      <p><b>Méthode :</b> regarde 5 minutes, sous-titres japonais si possible, note 3 mots ou une phrase, puis rejoue la scène en répétant à voix haute (shadowing).</p>
+    </details>
   `;
   document.getElementById('startSens').addEventListener('click', ()=> startListenQuiz('sens'));
   document.getElementById('startPrix').addEventListener('click', ()=> startListenQuiz('prix'));

@@ -8,7 +8,7 @@ import { renderReading } from './views/reading.js';
 import { renderGrammar } from './views/grammar.js';
 import { renderKana } from './views/kana.js';
 import { renderToday } from './views/today.js';
-import { renderKanji, kanjiTodayStatus } from './views/kanji.js';
+import { renderKanji, kanjiTodayStatus, openKanjiHome } from './views/kanji.js';
 import { renderMenus } from './views/menus.js';
 import { renderListening } from './views/listening.js';
 import { renderJlpt } from './views/jlpt.js';
@@ -30,7 +30,7 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'listening') renderListening();
     if(btn.dataset.view === 'reading') renderReading();
     if(btn.dataset.view === 'kana') renderKana();
-    if(btn.dataset.view === 'kanji') renderKanji();
+    if(btn.dataset.view === 'kanji'){ openKanjiHome(); renderKanji(); }
     if(btn.dataset.view === 'menus') renderMenus();
     if(btn.dataset.view === 'grammar') renderGrammar();
     if(btn.dataset.view === 'jlpt') renderJlpt();
