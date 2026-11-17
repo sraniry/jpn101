@@ -5,8 +5,25 @@ import { speak } from '../tts.js';
 import { escapeHtml, kanaToRomaji } from '../util.js';
 import { celebrate } from '../encouragement.js';
 
-let DECK_CACHE = null;
-async function deck(){ if(!DECK_CACHE){ const m = await import('../../data/kanji-joyo.js'); DECK_CACHE = new Map(m.KANJI_DECK.map(d => [d.k, d])); } return DECK_CACHE; }
+let DECK_CACHE = null, RAD_CACHE = null;
+async function deck(){ if(!DECK_CACHE){ const m = await import('../../data/kanji-joyo.js'); DECK_CACHE = new Map(m.KANJI_DECK.map(d => [d.k, d])); RAD_CACHE = new Map(m.RADICALS.map(r => [r.r, r])); } return DECK_CACHE; }
+const hira2kata = t => t.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60));
+const isKanaStr = t => /^[ぁ-ゖァ-ヺー・\s]+$/.test(t);
+// Fiche de lecture des kanji d'un mot : sens, prononciation en romaji, briques et aide-mémoire.
+function kanjiInfoHtml(jp){
+  if(!DECK_CACHE) return '';
+  const chars = [...new Set(jp.match(CJK) || [])]; if(!chars.length) return '';
+  const rows = chars.map(c => {
+    const d = DECK_CACHE.get(c); if(!d) return `<div class="ki-row"><span class="ki-g">${escapeHtml(c)}</span><div class="ki-t">Kanji hors liste</div></div>`;
+    const on = (d.on || []).slice(0, 2).map(x => `${escapeHtml(hira2kata(x))} ${rj(x)}`).join(' · ');
+    const kun = (d.kun || []).slice(0, 2).map(x => `${escapeHtml(x)} ${rj(x.replace(/[()]/g, ''))}`).join(' · ');
+    const comps = (d.c || []).map(g => `${escapeHtml(g)} ${escapeHtml(RAD_CACHE.get(g) ? RAD_CACHE.get(g).name : '')}`).join(' + ');
+    return `<div class="ki-row"><span class="ki-g">${escapeHtml(c)}</span><div class="ki-t"><b>${escapeHtml(d.fr)}</b>
+      ${on ? `<div class="ki-rd">On : ${on}</div>` : ''}${kun ? `<div class="ki-rd">Kun : ${kun}</div>` : ''}
+      ${comps ? `<div class="ki-c">Briques : ${comps}</div>` : ''}${d.st ? `<div class="ki-s">💡 ${escapeHtml(d.st)}</div>` : ''}</div></div>`;
+  }).join('');
+  return `<div class="ki-box"><span class="kj-slabel">Les kanji de ce mot</span>${rows}</div>`;
+}
 const CJK = /[㐀-䶿一-鿿]/g;
 
 // ---------- Menus : lire une carte (café, udon, ramen, sushi) et savoir commander ----------
@@ -31,8 +48,9 @@ function shuffle(a){ a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const
 const pick = (arr, n) => shuffle(arr).slice(0, n);
 const uniqBy = (arr, f) => { const seen = new Set(); return arr.filter(x => { const k = f(x); if(seen.has(k)) return false; seen.add(k); return true; }); };
 
-export function renderMenus(){
+export async function renderMenus(){
   const area = document.getElementById('menusArea');
+  if(!DECK_CACHE){ try{ await deck(); }catch(e){} }
   if(sub === 'home') return renderHome(area);
   if(sub === 'menu') return renderMenu(area);
   if(sub === 'vocab') return renderVocab(area);
@@ -95,7 +113,7 @@ function renderMenu(area){
       html += `<div class="mn-item" data-i="${escapeHtml(it.jp)}">
         <div class="mn-main"><span class="mn-jp">${escapeHtml(it.jp)}</span><span class="mn-price">${it.price ? yen(it.price) : '無料'}</span></div>
         <div class="mn-sub"><span class="mn-kana">${escapeHtml(it.kana)} · ${rj(it.kana)}</span><button class="kj-audio" data-say="${escapeHtml(it.kana)}">🔊</button></div>
-        <div class="mn-fr" style="display:${ui.reveal ? 'block' : 'none'}">${escapeHtml(it.fr)}${it.note ? ` <small>— ${escapeHtml(it.note)}</small>` : ''}</div>
+        <div class="mn-fr" style="display:${ui.reveal ? 'block' : 'none'}">${escapeHtml(it.fr)}${it.note ? ` <small>— ${escapeHtml(it.note)}</small>` : ''}${kanjiInfoHtml(it.jp)}</div>
       </div>`;
     });
   });
@@ -119,7 +137,7 @@ function renderVocab(area){
     html += `<div class="mn-item">
       <div class="mn-main"><span class="mn-jp">${escapeHtml(it.jp)}</span></div>
       <div class="mn-sub"><span class="mn-kana">${escapeHtml(it.kana)} · ${rj(it.kana)}</span><button class="kj-audio" data-say="${escapeHtml(it.kana)}">🔊</button></div>
-      <div class="mn-fr" style="display:${ui.reveal ? 'block' : 'none'}">${escapeHtml(it.fr)}${it.note ? ` <small>— ${escapeHtml(it.note)}</small>` : ''}</div>
+      <div class="mn-fr" style="display:${ui.reveal ? 'block' : 'none'}">${escapeHtml(it.fr)}${it.note ? ` <small>— ${escapeHtml(it.note)}</small>` : ''}${kanjiInfoHtml(it.jp)}</div>
     </div>`;
   });
   html += `</div><div class="mn-actions"><button class="kj-subnav-btn" id="mnReveal">${ui.reveal ? '🙈 Cacher les traductions' : '👁️ Montrer les traductions'}</button><button class="continue-btn" id="mnQuiz">Quiz →</button></div>`;
@@ -162,14 +180,14 @@ function buildMenuQuiz(m, n){
   const items = rawItems(m), priced = distinctPrices(items), qs = [];
   pick(priced, 3).forEach(it => {
     const others = pick(priced.filter(x => x.price !== it.price), 3).map(x => yen(x.price));
-    qs.push({ q: `Combien coûte « ${it.jp} » ?`, ok: yen(it.price), choices: [yen(it.price), ...others], explain: `${it.jp} (${it.fr}) : ${yen(it.price)}.`, say: it.kana });
+    qs.push({ q: `Combien coûte « ${it.jp} » ?`, ok: yen(it.price), choices: [yen(it.price), ...others], explain: `${it.jp} (${it.fr}) : ${yen(it.price)}.`, say: it.kana, word: it.jp, kana: it.kana });
   });
   pick(items, 3).forEach(it => {
     const others = pick(uniqBy(items.filter(x => x.fr !== it.fr), x => x.fr), 3).map(x => x.fr);
-    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], explain: `${it.jp} se lit ${it.kana} : ${it.fr}.${it.note ? ' ' + it.note : ''}`, say: it.kana });
+    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], explain: `${it.jp} : ${it.fr}.${it.note ? ' ' + it.note : ''}`, say: it.kana, word: it.jp, kana: it.kana });
   });
   const rev = pick(items, 1)[0];
-  if(rev){ const others = pick(items.filter(x => x.jp !== rev.jp), 3).map(x => x.jp); qs.push({ q: `Quel article est « ${rev.fr} » ?`, ok: rev.jp, choices: [rev.jp, ...others], explain: `${rev.jp} (${rev.kana}) = ${rev.fr}.`, say: rev.kana }); }
+  if(rev){ const others = pick(items.filter(x => x.jp !== rev.jp), 3).map(x => x.jp); qs.push({ q: `Quel article est « ${rev.fr} » ?`, ok: rev.jp, choices: [rev.jp, ...others], explain: `${rev.jp} = ${rev.fr}.`, say: rev.kana, word: rev.jp, kana: rev.kana }); }
   if(priced.length >= 4){
     const four = pick(priced, 4), min = four.reduce((a, b) => a.price <= b.price ? a : b);
     qs.push({ q: 'Lequel est le moins cher ?', ok: min.jp, choices: [min.jp, ...four.filter(x => x !== min).map(x => x.jp)], explain: four.map(x => `${x.jp} : ${yen(x.price)}`).join(' · ') });
@@ -183,15 +201,15 @@ function buildVocabQuiz(g, n){
   const items = g.items, qs = [];
   pick(items, Math.ceil(n * 0.5)).forEach(it => {
     const others = pick(uniqBy(items.filter(x => x.fr !== it.fr), x => x.fr), 3).map(x => x.fr);
-    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], explain: `${it.jp} se lit ${it.kana}${it.note ? ' — ' + it.note : ''}.`, say: it.kana });
+    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], explain: `${it.jp} : ${it.fr}${it.note ? ' — ' + it.note : ''}.`, say: it.kana, word: it.jp, kana: it.kana });
   });
   pick(items, Math.floor(n * 0.3)).forEach(it => {
     const others = pick(items.filter(x => x.jp !== it.jp), 3).map(x => x.jp);
-    qs.push({ q: `Comment écrit-on « ${it.fr} » ?`, ok: it.jp, choices: [it.jp, ...others], explain: `${it.fr} = ${it.jp} (${it.kana}).`, say: it.kana });
+    qs.push({ q: `Comment écrit-on « ${it.fr} » ?`, ok: it.jp, choices: [it.jp, ...others], explain: `${it.fr} = ${it.jp}.`, say: it.kana, word: it.jp, kana: it.kana });
   });
   pick(items.filter(i => /[一-鿿]/.test(i.jp)), n - qs.length).forEach(it => {
     const others = pick(uniqBy(items.filter(x => x.kana !== it.kana), x => x.kana), 3).map(x => x.kana);
-    qs.push({ q: `Comment se lit « ${it.jp} » ?`, ok: it.kana, choices: [it.kana, ...others], explain: `${it.jp} se lit ${it.kana} (${it.fr}).`, say: it.kana });
+    qs.push({ q: `Comment se lit « ${it.jp} » ?`, ok: it.kana, choices: [it.kana, ...others], explain: `${it.jp} = ${it.fr}.`, say: it.kana, word: it.jp, kana: it.kana });
   });
   return shuffle(qs).filter(q => new Set(q.choices).size === q.choices.length).slice(0, n);
 }
@@ -239,13 +257,14 @@ function renderQuiz(area){
   area.innerHTML = `<div class="kj-top"><button class="conv-back" id="mnBack">← Quitter</button><span>${ui.challenge ? ui.challenge.icon + ' ' + escapeHtml(ui.challenge.title) : escapeHtml(ui.title || '')}</span><span>${ui.i + 1} / ${z.length}</span></div>
     <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / z.length) * 100}%"></div></div>
     <div class="kj-card"><p class="mn-q">${escapeHtml(q.q)}</p>
-      <div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="mnFb"></div></div>`;
+      <div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${isKanaStr(c) ? `<span class="mn-ch-rj">${rj(c)}</span>` : ''}</button>`).join('')}</div><div id="mnFb"></div></div>`;
   wireBack();
   area.querySelectorAll('.kj-choice').forEach(b => b.addEventListener('click', () => {
     const ok = b.dataset.c === q.ok;
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === q.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else ui.right++;
-    document.getElementById('mnFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div><div class="mn-explain">${escapeHtml(q.explain || '')}</div><button class="continue-btn" id="mnNext">Continuer</button>`;
+    document.getElementById('mnFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div>${q.kana ? `<div class="mn-say-box"><b>${escapeHtml(q.word || '')}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>` : ''}<div class="mn-explain">${escapeHtml(q.explain || '')}</div>${q.word ? kanjiInfoHtml(q.word) : ''}<button class="continue-btn" id="mnNext">Continuer</button>`;
+    wireAudio(document.getElementById('mnFb'));
     document.getElementById('mnNext').addEventListener('click', () => { ui.i++; renderMenus(); });
     if(q.say) speak(q.say, 0.85);
   }));
@@ -275,12 +294,13 @@ async function renderGuess(area){
   const it = ui.queue[ui.i], D = await deck();
   const chars = [...new Set((it.jp.match(CJK) || []))];
   const hints = chars.length ? chars.map(c => { const d = D.get(c); return `<span class="gs-h"><b>${c}</b> ${d ? escapeHtml(d.fr) : '?'}</span>`; }).join('') : '<span class="gs-h">Écrit en kana : lis-le à voix haute !</span>';
+  const detail = kanjiInfoHtml(it.jp);
   const m = MENUS.find(x => x.id === ui.menuId);
   area.innerHTML = `<div class="kj-top"><button class="conv-back" id="mnBack">← Quitter</button><span>${m.icon} ${escapeHtml(m.title)}</span><span>${ui.i + 1} / ${ui.queue.length}</span></div>
     <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / ui.queue.length) * 100}%"></div></div>
     <div class="kj-card"><div class="gs-jp">${escapeHtml(it.jp)}</div><p class="kj-ask">Qu'est-ce que ça peut être ? Essaie avant de demander un indice.</p>
       ${ui.step >= 1 ? `<div class="gs-hints"><span class="kj-slabel">Indice : les kanji</span>${hints}</div>` : ''}
-      ${ui.step >= 2 ? `<div class="gs-answer"><div class="mn-fr" style="display:block;font-size:17px;">${escapeHtml(it.fr)}</div><div class="mn-kana">${escapeHtml(it.kana)} · ${rj(it.kana)} <button class="kj-audio" data-say="${escapeHtml(it.kana)}">🔊</button></div>${it.price ? `<div class="mn-kana">${yen(it.price)}</div>` : ''}${it.note ? `<div class="mn-explain">${escapeHtml(it.note)}</div>` : ''}</div>
+      ${ui.step >= 2 ? `<div class="gs-answer"><div class="mn-fr" style="display:block;font-size:17px;">${escapeHtml(it.fr)}</div><div class="mn-say-box"><b>${escapeHtml(it.jp)}</b> se dit <b>${escapeHtml(it.kana)}</b> <span class="mn-rom">${rj(it.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(it.kana)}">🔊</button></div>${detail}${it.price ? `<div class="mn-kana">${yen(it.price)}</div>` : ''}${it.note ? `<div class="mn-explain">${escapeHtml(it.note)}</div>` : ''}</div>
         <p class="kj-ask">Tu avais trouvé ?</p><div class="rate-row"><button class="rate-good" data-r="ok">Trouvé</button><button class="rate-hard" data-r="near">Presque</button><button class="rate-again" data-r="miss">Raté</button></div>`
         : `<div class="mn-actions" style="justify-content:center">${ui.step === 0 ? '<button class="kj-subnav-btn" id="gsHint">💡 Un indice</button>' : ''}<button class="continue-btn" id="gsReveal">Voir la réponse</button></div>`}
     </div>`;

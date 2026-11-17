@@ -67,24 +67,36 @@ function wireChips(root){
   root.querySelectorAll('.kj-chip').forEach(b => b.addEventListener('click', e => {
     e.stopPropagation();
     const r = BY_R.get(b.dataset.rad); const box = root.querySelector('#kjChipStory');
-    if(box && r) box.innerHTML = `<b>${escapeHtml(r.r)} — ${escapeHtml(r.name)}</b> : ${escapeHtml(r.story)}${r.meaning ? `<br><span class="kj-meaning">Apporte l'idée de : ${escapeHtml(r.meaning)}</span>` : ''}`;
+    if(box && r) box.innerHTML = `<b>${escapeHtml(r.r)} — ${escapeHtml(r.name)}</b>${r.jp ? ` (se dit <b>${escapeHtml(r.jp)}</b> ${rj(r.jp)})` : ''} : ${escapeHtml(r.story)}${r.meaning ? `<br><span class="kj-meaning">Apporte l'idée de : ${escapeHtml(r.meaning)}</span>` : ''}`;
   }));
 }
+function rdChip(shown, kana){
+  const k = kana.replace(/[()]/g, '');
+  return `<span class="kj-rd">${escapeHtml(shown)}<small>${rj(k)}</small><button type="button" class="kj-audio kj-rd-a" data-say="${escapeHtml(k)}" title="Écouter">🔊</button></span>`;
+}
 function readingsHtml(d){
-  const on = (d.on || []).map(x => `<span class="kj-rd">${escapeHtml(hira2kata(x))}<small>${rj(x)}</small></span>`).join('');
-  const kun = (d.kun || []).map(x => `<span class="kj-rd">${escapeHtml(x)}<small>${rj(x.replace(/[()]/g, ''))}</small></span>`).join('');
-  return `<div class="kj-readings">
-    ${on ? `<div><span class="kj-rlabel">On (lecture « chinoise », dans les mots composés)</span>${on}</div>` : ''}
-    ${kun ? `<div><span class="kj-rlabel">Kun (lecture « japonaise », seul ou avec des kana)</span>${kun}</div>` : ''}
+  const on = (d.on || []).map(x => rdChip(hira2kata(x), x)).join('');
+  const kun = (d.kun || []).map(x => rdChip(x, x)).join('');
+  return `<div class="kj-readings"><span class="kj-slabel">🗣️ Comment ça se prononce</span>
+    ${on ? `<div><span class="kj-rlabel">On : lecture « chinoise », dans les mots composés</span>${on}</div>` : ''}
+    ${kun ? `<div><span class="kj-rlabel">Kun : lecture « japonaise », seul ou avec des kana</span>${kun}</div>` : ''}
   </div>`;
+}
+// Prononciation d'un radical : son nom japonais (ex. さんずい) et/ou les lectures du kanji s'il en est un.
+function radSayHtml(r){
+  const k = BY_K && BY_K.get(r.r);
+  const nm = r.jp ? `<div><span class="kj-rlabel">Son nom en japonais</span>${rdChip(r.jp, r.jp)}${r.jpNote ? `<span class="kj-meaning"> ${escapeHtml(r.jpNote)}</span>` : ''}</div>` : (r.jpNote ? `<div class="kj-meaning">${escapeHtml(r.jpNote)}</div>` : '');
+  const rest = k ? readingsHtml(Object.assign({}, k, { on: (k.on || []).slice(0, 2), kun: (k.kun || []).slice(0, 2) })).replace('🗣️ Comment ça se prononce', 'Ce même signe est aussi un kanji') : '';
+  if(!nm && !rest) return '';
+  return `<div class="kj-readings"><span class="kj-slabel">🗣️ Comment ça se dit</span>${nm}</div>${rest}`;
 }
 function kanjiFront(d){ return `<div class="kj-glyph">${escapeHtml(d.k)}</div>`; }
 function kanjiBack(d, withAudio = true){
   const ex = d.ex || [];
   return `<div class="kj-fr">${escapeHtml(d.fr)}</div>
+    ${readingsHtml(d)}
     ${chipsHtml(d)}
     ${d.st ? `<div class="kj-story"><span class="kj-slabel">💡 Pour s'en souvenir</span>${escapeHtml(d.st)}</div>` : ''}
-    ${readingsHtml(d)}
     ${ex.length ? `<div class="kj-ex"><span class="kj-slabel">Un mot pour l'ancrer</span><b>${escapeHtml(ex[0])}</b> <span class="kj-exk">（${escapeHtml(ex[1])} / ${rj(ex[1])}）</span> — ${escapeHtml(ex[2])}${withAudio ? ` <button class="kj-audio" data-say="${escapeHtml(ex[1])}" title="Écouter">🔊</button>` : ''}</div>` : ''}
     <button type="button" class="kj-stroke-btn" data-k="${escapeHtml(d.k)}">✍️ Ordre des traits</button><div class="kj-stroke-box"></div>
     <div class="kj-meta">${d.s} trait${d.s>1?'s':''} · ${d.g <= 6 ? 'école primaire (année ' + d.g + ')' : 'collège / lycée'}${d.j ? ' · JLPT N' + d.j : ''} · n° ${d.n} / ${TOTAL}</div>`;
@@ -93,6 +105,7 @@ function radFront(r){ return `<div class="kj-glyph">${escapeHtml(r.r)}</div><div
 function radBack(r){
   const use = (RAD_USE.get(r.r) || []).map(k => BY_K.get(k)).filter(Boolean);
   return `<div class="kj-fr">${escapeHtml(r.name)}</div>
+    ${radSayHtml(r)}
     <div class="kj-story"><span class="kj-slabel">💡 Pour le reconnaître</span>${escapeHtml(r.story)}</div>
     ${r.meaning ? `<div class="kj-meaning">Dans un kanji, il apporte l'idée de : ${escapeHtml(r.meaning)}</div>` : ''}
     ${use.length ? `<div class="kj-ex"><span class="kj-slabel">On le retrouve dans</span>${use.map(u => `<b class="kj-use">${escapeHtml(u.k)}</b> ${escapeHtml(u.fr)}`).join(' · ')}</div>` : ''}`;
@@ -288,7 +301,8 @@ function renderQuizQ(area){
     if(!ok) b.classList.add('ko');
     ui.results = ui.results || {}; ui.results[key] = ok; if(ok) ui.right++;
     const data = itemData(it);
-    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ C\'était : ' + escapeHtml(labelOf(it))}</div><button class="continue-btn" id="kjQn">Continuer</button>`;
+    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ C\'était : ' + escapeHtml(labelOf(it))}</div>${it.kind === 'k' ? readingsHtml(data.d) : radSayHtml(data.r)}<button class="continue-btn" id="kjQn">Continuer</button>`;
+    wireAudio(document.getElementById('kjFb'));
     document.getElementById('kjQn').addEventListener('click', () => { ui.qi++; renderKanji(); });
     if(it.kind === 'k' && data.d.ex) speak(data.d.ex[1], 0.85);
   }));
@@ -411,9 +425,9 @@ function renderWords(area){
   document.getElementById('wq').addEventListener('click', () => {
     const qs = shuffle(list).slice(0, 10).map((w, i) => {
       const others = shuffle(list.filter(x => x.fr !== w.fr)).slice(0, 3);
-      if(i % 2 === 0) return { q: `Que veut dire « ${w.jp} » ?`, ok: w.fr, choices: [w.fr, ...others.map(x => x.fr)], explain: `${w.jp} se lit ${w.kana}.`, say: w.kana };
+      if(i % 2 === 0) return { q: `Que veut dire « ${w.jp} » ?`, ok: w.fr, choices: [w.fr, ...others.map(x => x.fr)], explain: `${w.jp} = ${w.fr}.`, say: w.kana, word: w.jp, kana: w.kana };
       const o2 = shuffle(list.filter(x => x.kana !== w.kana)).slice(0, 3);
-      return { q: `Comment se lit « ${w.jp} » ?`, ok: w.kana, choices: [w.kana, ...o2.map(x => x.kana)], explain: `${w.jp} = ${w.fr}.`, say: w.kana };
+      return { q: `Comment se lit « ${w.jp} » ?`, ok: w.kana, choices: [w.kana, ...o2.map(x => x.kana)], explain: `${w.jp} = ${w.fr}.`, say: w.kana, word: w.jp, kana: w.kana };
     });
     go('wquiz', { qs, i: 0, right: 0 });
   });
@@ -430,13 +444,13 @@ function renderWordQuiz(area){
   const q = ui.qs[ui.i], choices = shuffle(q.choices);
   area.innerHTML = `<div class="kj-top"><button class="conv-back" id="kjBack">← Quitter</button><span>${ui.i + 1} / ${ui.qs.length}</span></div>
     <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / ui.qs.length) * 100}%"></div></div>
-    <div class="kj-card"><p class="mn-q">${escapeHtml(q.q)}</p><div class="kj-choices">${choices.map(c => `<button class="kj-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="kjFb"></div></div>`;
+    <div class="kj-card"><p class="mn-q">${escapeHtml(q.q)}</p><div class="kj-choices">${choices.map(c => `<button class="kj-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${/^[ぁ-ゖァ-ヺー・\s]+$/.test(c) ? `<span class="mn-ch-rj">${rj(c)}</span>` : ''}</button>`).join('')}</div><div id="kjFb"></div></div>`;
   document.getElementById('kjBack').addEventListener('click', () => go('words', { list: false }));
   area.querySelectorAll('.kj-choice').forEach(b => b.addEventListener('click', () => {
     const ok = b.dataset.c === q.ok;
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === q.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else ui.right++;
-    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div><div class="mn-explain">${escapeHtml(q.explain)}</div><button class="continue-btn" id="kjQn">Continuer</button>`;
+    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div><div class="mn-say-box"><b>${escapeHtml(q.word)}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span></div><div class="mn-explain">${escapeHtml(q.explain)}</div><button class="continue-btn" id="kjQn">Continuer</button>`;
     document.getElementById('kjQn').addEventListener('click', () => { ui.i++; renderKanji(); });
     speak(q.say, 0.85);
   }));
