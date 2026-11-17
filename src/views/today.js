@@ -7,6 +7,7 @@ import { escapeHtml } from '../util.js';
 import { celebrate } from '../encouragement.js';
 import { kanjiTodayStatus } from './kanji.js';
 import { todayChallenge } from './menus.js';
+import { reminderHtml, wireReminder } from '../reminder.js';
 
 // ---------- Onglet Aujourd'hui : parcours guidé quotidien ----------
 // Trois étapes fixes (~30-45 min) : kana → révisions SRS → un dialogue.
@@ -168,7 +169,9 @@ export function renderToday(){
     <div class="ts-why">${bonus.why}</div>
     <span class="ts-go">Y aller →</span>
   </div>`;
+  html += reminderHtml();
   area.innerHTML = html;
+  wireReminder(area);
   const bonusEl = area.querySelector('.today-bonus-step');
   if(bonusEl) bonusEl.addEventListener('click', ()=>{ if(bonus.view==='jlpt') setJlptLevel(bonus.level || 'N5'); gotoTab(bonusEl.dataset.view); });
   // Étapes 1 et 2 : toute la carte est cliquable, un seul view cible.

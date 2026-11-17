@@ -1,17 +1,26 @@
 import { MENUS, MENU_VOCAB, MENU_PHRASES, MENU_ASK, MENU_CHALLENGES } from '../../data/menus.js';
+import { KIT_VOCAB, KIT_PHRASES, KIT_ASK, KIT_TIPS, KIT_CHALLENGES } from '../../data/kyoto-kit.js';
 import { planMark, registerStudyActivity, addQuizStat } from '../storage.js';
 import { speak } from '../tts.js';
 import { escapeHtml, kanaToRomaji } from '../util.js';
 import { celebrate } from '../encouragement.js';
+
+let DECK_CACHE = null;
+async function deck(){ if(!DECK_CACHE){ const m = await import('../../data/kanji-joyo.js'); DECK_CACHE = new Map(m.KANJI_DECK.map(d => [d.k, d])); } return DECK_CACHE; }
+const CJK = /[㐀-䶿一-鿿]/g;
 
 // ---------- Menus : lire une carte (café, udon, ramen, sushi) et savoir commander ----------
 let sub = 'home';   // home | menu | vocab | phrases | ask | quiz
 let ui = {};
 
 const dayNumber = () => Math.floor(Date.now() / 86400000);
-export const todayChallenge = () => MENU_CHALLENGES[dayNumber() % MENU_CHALLENGES.length];
+const ALL_CHALLENGES = [];
+(function(){ const a = MENU_CHALLENGES, b = KIT_CHALLENGES; for(let i = 0; i < Math.max(a.length, b.length); i++){ if(a[i]) ALL_CHALLENGES.push(a[i]); if(b[i]) ALL_CHALLENGES.push(b[i]); } })();
+const KIT_IDS = new Set(KIT_CHALLENGES.map(c => c.id));
+const ALL_VOCAB = [...MENU_VOCAB, ...KIT_VOCAB];
+export const todayChallenge = () => ALL_CHALLENGES[dayNumber() % ALL_CHALLENGES.length];
 export function openMenuChallenge(id){
-  const ch = MENU_CHALLENGES.find(c => c.id === id) || todayChallenge();
+  const ch = ALL_CHALLENGES.find(c => c.id === id) || todayChallenge();
   sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch };
   renderMenus();
 }
@@ -30,6 +39,9 @@ export function renderMenus(){
   if(sub === 'phrases') return renderPhrases(area);
   if(sub === 'ask') return renderAsk(area);
   if(sub === 'quiz') return renderQuiz(area);
+  if(sub === 'kit') return renderKit(area);
+  if(sub === 'guess') return renderGuess(area);
+  if(sub === 'photo') return renderPhoto(area);
 }
 function go(s, extra){ sub = s; ui = extra || {}; renderMenus(); }
 const backBtn = `<button class="conv-back" id="mnBack">← Menus</button>`;
@@ -43,7 +55,12 @@ function renderHome(area){
   <div class="mn-challenge" id="mnChallenge"><span class="mn-ch-tag">Défi du jour</span><b>${ch.icon} ${escapeHtml(ch.title)}</b><span>${escapeHtml(ch.goal)}</span><span class="ts-go">Relever le défi →</span></div>
   <h4 class="kj-h">📜 Lire une vraie carte</h4><div class="mn-grid">`;
   MENUS.forEach(m => { html += `<button class="mn-tile" data-menu="${m.id}"><span class="mn-ico">${m.icon}</span><b>${escapeHtml(m.title)}</b><small>${escapeHtml(m.shop)}</small></button>`; });
-  html += `</div><h4 class="kj-h">📖 Les mots à connaître</h4><div class="mn-grid">`;
+  html += `</div><h4 class="kj-h">📷 Lire une carte « en vrai »</h4><div class="mn-grid">
+    <button class="mn-tile" data-go="guessPick"><span class="mn-ico">🕵️</span><b>Devine le plat</b><small>Tu vois le nom, tu devines, puis correction avec les kanji</small></button>
+    <button class="mn-tile" data-go="photo"><span class="mn-ico">📷</span><b>Ma photo de menu</b><small>Ta photo + un lecteur de mots</small></button>
+  </div><h4 class="kj-h">🚉 Kit survie Kyoto</h4><div class="mn-grid">${KIT_VOCAB.map(g => `<button class="mn-tile" data-kit="${g.id}"><span class="mn-ico">${g.icon}</span><b>${escapeHtml(g.title)}</b><small>${g.items.length} mots, conseils, mises en situation</small></button>`).join('')}
+    <button class="mn-tile" data-go="panneaux"><span class="mn-ico">🪧</span><b>Lire les panneaux</b><small>14 panneaux à décoder</small></button>
+    <button class="mn-tile" data-go="kitphrases"><span class="mn-ico">💬</span><b>Phrases utiles en ville</b><small>${KIT_PHRASES.length} phrases avec audio</small></button></div><h4 class="kj-h">📖 Les mots à connaître</h4><div class="mn-grid">`;
   MENU_VOCAB.forEach(g => { html += `<button class="mn-tile" data-vocab="${g.id}"><span class="mn-ico">${g.icon}</span><b>${escapeHtml(g.title)}</b><small>${g.items.length} mots</small></button>`; });
   html += `</div><h4 class="kj-h">🗣️ Parler</h4><div class="mn-grid">
     <button class="mn-tile" data-go="phrases"><span class="mn-ico">💬</span><b>Phrases pour commander</b><small>${MENU_PHRASES.length} phrases avec audio</small></button>
@@ -59,8 +76,10 @@ function renderHome(area){
   area.innerHTML = html;
   document.getElementById('mnChallenge').addEventListener('click', () => openMenuChallenge(ch.id));
   area.querySelectorAll('[data-menu]').forEach(b => b.addEventListener('click', () => go('menu', { id: b.dataset.menu, reveal: false })));
+  area.querySelectorAll('[data-kit]').forEach(b => b.addEventListener('click', () => go('kit', { id: b.dataset.kit })));
   area.querySelectorAll('[data-vocab]').forEach(b => b.addEventListener('click', () => go('vocab', { id: b.dataset.vocab, reveal: false })));
-  area.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go, {})));
+  area.querySelectorAll('[data-go="panneaux"]').forEach(b => b.addEventListener('click', () => go('quiz', { quiz: buildAskQuiz('panneau', 8), title: 'Panneaux', backTo: 'home', backUi: {} })));
+  area.querySelectorAll('[data-go]:not([data-go="panneaux"])').forEach(b => b.addEventListener('click', () => go(b.dataset.go === 'guessPick' ? 'guess' : (b.dataset.go === 'kitphrases' ? 'phrases' : b.dataset.go), b.dataset.go === 'kitphrases' ? { kit: true } : {})));
 }
 
 // ---------- une carte ----------
@@ -68,7 +87,8 @@ function renderMenu(area){
   const m = MENUS.find(x => x.id === ui.id);
   let html = `<div class="kj-top">${backBtn}<span>${m.icon} ${escapeHtml(m.title)}</span></div>
     <div class="skills-intro">${escapeHtml(m.intro)}</div>
-    <div class="mn-board"><div class="mn-shop">${escapeHtml(m.shop)}</div>`;
+    <div class="mn-styles">Style : <button data-st="paper" class="${(ui.style||'paper')==='paper'?'on':''}">Papier</button><button data-st="chalk" class="${ui.style==='chalk'?'on':''}">Tableau</button><button data-st="vertical" class="${ui.style==='vertical'?'on':''}">Vertical</button></div>
+    <div class="mn-board b-${ui.style || 'paper'}"><div class="mn-shop">${escapeHtml(m.shop)}</div>`;
   m.sections.forEach(sec => {
     html += `<div class="mn-sec"><span>${escapeHtml(sec.title)}</span><small>${escapeHtml(sec.titleFr || '')}</small></div>`;
     sec.items.forEach(it => {
@@ -82,6 +102,7 @@ function renderMenu(area){
   html += `</div><div class="mn-actions"><button class="kj-subnav-btn" id="mnReveal">${ui.reveal ? '🙈 Cacher les traductions' : '👁️ Montrer les traductions'}</button><button class="continue-btn" id="mnQuiz">Quiz sur cette carte →</button></div>
     <p class="kj-tip">Touche un article pour voir sa traduction. Essaie de deviner d'abord.</p>`;
   area.innerHTML = html;
+  area.querySelectorAll('.mn-styles button').forEach(b => b.addEventListener('click', () => { ui.style = b.dataset.st; renderMenus(); }));
   wireBack(); wireAudio(area);
   area.querySelectorAll('.mn-item').forEach(el => el.addEventListener('click', () => { const f = el.querySelector('.mn-fr'); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }));
   document.getElementById('mnReveal').addEventListener('click', () => { ui.reveal = !ui.reveal; renderMenus(); });
@@ -90,7 +111,7 @@ function renderMenu(area){
 
 // ---------- vocabulaire ----------
 function renderVocab(area){
-  const g = MENU_VOCAB.find(x => x.id === ui.id);
+  const g = ALL_VOCAB.find(x => x.id === ui.id);
   let html = `<div class="kj-top">${backBtn}<span>${g.icon} ${escapeHtml(g.title)}</span></div>
     <div class="skills-intro">${escapeHtml(g.intro)}</div>
     <div class="mn-board">`;
@@ -111,15 +132,16 @@ function renderVocab(area){
 
 // ---------- phrases ----------
 function renderPhrases(area){
-  let html = `<div class="kj-top">${backBtn}<span>💬 Phrases pour commander</span></div>
+  const src = ui.kit ? KIT_PHRASES : MENU_PHRASES;
+  let html = `<div class="kj-top">${backBtn}<span>💬 ${ui.kit ? 'Phrases utiles en ville' : 'Phrases pour commander'}</span></div>
     <div class="skills-intro">Écoute, répète à voix haute, puis choisis les 5 que tu utiliseras vraiment. La structure qui sert partout : <b>ce que tu veux + を + ください</b>.</div>`;
-  MENU_PHRASES.forEach(p => {
+  src.forEach(p => {
     html += `<div class="mn-phrase"><div class="mn-ph-top"><span class="mn-jp-s">${escapeHtml(p.jp)}</span><button class="kj-audio" data-say="${escapeHtml(p.jp)}">🔊</button></div>
       <div class="mn-kana">${rj(p.kana)}</div><div class="mn-ph-fr">${escapeHtml(p.fr)}</div><div class="mn-when">${escapeHtml(p.when)}</div></div>`;
   });
   html += `<div class="mn-actions"><span></span><button class="continue-btn" id="mnQuiz">Quiz →</button></div>`;
   area.innerHTML = html; wireBack(); wireAudio(area);
-  document.getElementById('mnQuiz').addEventListener('click', () => go('quiz', { quiz: buildPhrasesQuiz(8), title: 'Phrases', backTo: 'phrases', backUi: {} }));
+  document.getElementById('mnQuiz').addEventListener('click', () => go('quiz', { quiz: buildPhrasesQuiz(8, src), title: 'Phrases', backTo: 'phrases', backUi: { kit: ui.kit } }));
 }
 
 // ---------- mises en situation ----------
@@ -173,20 +195,21 @@ function buildVocabQuiz(g, n){
   });
   return shuffle(qs).filter(q => new Set(q.choices).size === q.choices.length).slice(0, n);
 }
-function buildPhrasesQuiz(n){
-  return pick(MENU_PHRASES, n).map(p => {
-    const others = pick(MENU_PHRASES.filter(x => x.jp !== p.jp), 3).map(x => x.jp);
+function buildPhrasesQuiz(n, src = MENU_PHRASES){
+  return pick(src, n).map(p => {
+    const others = pick(src.filter(x => x.jp !== p.jp), 3).map(x => x.jp);
     return { q: `Comment dire : « ${p.fr} » ?`, ok: p.jp, choices: [p.jp, ...others], explain: `${p.jp} — ${p.when}.`, say: p.kana };
   });
 }
 function buildAskQuiz(topic, n){
-  const pool = topic === 'all' ? MENU_ASK : MENU_ASK.filter(q => q.topic === topic);
+  const all = [...MENU_ASK, ...KIT_ASK];
+  const pool = topic === 'all' ? all : all.filter(q => q.topic === topic);
   return pick(pool, n).map(a => ({ q: a.q, ok: a.ok, choices: a.choices, explain: a.explanation, say: a.ok }));
 }
 function buildChallengeQuiz(ch){
   if(ch.kind === 'menu') return buildMenuQuiz(MENUS.find(m => m.id === ch.ref), 6);
-  if(ch.kind === 'vocab') return buildVocabQuiz(MENU_VOCAB.find(g => g.id === ch.ref), 8);
-  if(ch.kind === 'phrases') return buildPhrasesQuiz(6);
+  if(ch.kind === 'vocab') return buildVocabQuiz(ALL_VOCAB.find(g => g.id === ch.ref), 8);
+  if(ch.kind === 'phrases') return buildPhrasesQuiz(6, KIT_IDS.has(ch.id) ? KIT_PHRASES : MENU_PHRASES);
   return buildAskQuiz(ch.ref, 5);
 }
 
@@ -226,4 +249,111 @@ function renderQuiz(area){
     document.getElementById('mnNext').addEventListener('click', () => { ui.i++; renderMenus(); });
     if(q.say) speak(q.say, 0.85);
   }));
+}
+
+// ---------- « Devine le plat » : deviner à partir des kanji, puis correction ----------
+async function renderGuess(area){
+  if(!ui.menuId){
+    area.innerHTML = `<div class="kj-top">${backBtn}<span>🕵️ Devine le plat</span></div>
+      <div class="skills-intro">Sur une vraie carte, tu n'as pas de traduction. Ici, tu vois le nom tel qu'il est écrit. Tu cherches ce que ça peut être, tu demandes un indice (les kanji un par un), puis tu vérifies.</div>
+      <div class="mn-grid">${MENUS.map(m => `<button class="mn-tile" data-m="${m.id}"><span class="mn-ico">${m.icon}</span><b>${escapeHtml(m.title)}</b><small>${rawItems(m).length} plats</small></button>`).join('')}</div>`;
+    wireBack();
+    area.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => go('guess', { menuId: b.dataset.m })));
+    return;
+  }
+  if(!ui.queue){ const m = MENUS.find(x => x.id === ui.menuId); ui.queue = pick(rawItems(m), 10); ui.i = 0; ui.score = { ok: 0, near: 0, miss: 0 }; ui.step = 0; }
+  if(ui.i >= ui.queue.length){
+    const sc = ui.score; addQuizStat('menus-guess', sc.ok, ui.queue.length); registerStudyActivity();
+    if(ui.challenge) planMark('challenge', 1);
+    area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${sc.ok} trouvés, ${sc.near} presque, ${sc.miss} ratés</h3>
+      <p style="color:#7a7268;font-size:13.5px;">Ce qui compte : repérer les kanji connus. Chaque kanji appris rend la carte plus lisible.</p>
+      <button class="continue-btn" id="mnAgain" style="margin-top:16px;">Rejouer</button> <button class="conv-back" id="mnHome" style="margin-top:16px;">← Menus</button></div>`;
+    document.getElementById('mnHome').addEventListener('click', () => go('home'));
+    document.getElementById('mnAgain').addEventListener('click', () => go('guess', { menuId: ui.menuId }));
+    return;
+  }
+  const it = ui.queue[ui.i], D = await deck();
+  const chars = [...new Set((it.jp.match(CJK) || []))];
+  const hints = chars.length ? chars.map(c => { const d = D.get(c); return `<span class="gs-h"><b>${c}</b> ${d ? escapeHtml(d.fr) : '?'}</span>`; }).join('') : '<span class="gs-h">Écrit en kana : lis-le à voix haute !</span>';
+  const m = MENUS.find(x => x.id === ui.menuId);
+  area.innerHTML = `<div class="kj-top"><button class="conv-back" id="mnBack">← Quitter</button><span>${m.icon} ${escapeHtml(m.title)}</span><span>${ui.i + 1} / ${ui.queue.length}</span></div>
+    <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / ui.queue.length) * 100}%"></div></div>
+    <div class="kj-card"><div class="gs-jp">${escapeHtml(it.jp)}</div><p class="kj-ask">Qu'est-ce que ça peut être ? Essaie avant de demander un indice.</p>
+      ${ui.step >= 1 ? `<div class="gs-hints"><span class="kj-slabel">Indice : les kanji</span>${hints}</div>` : ''}
+      ${ui.step >= 2 ? `<div class="gs-answer"><div class="mn-fr" style="display:block;font-size:17px;">${escapeHtml(it.fr)}</div><div class="mn-kana">${escapeHtml(it.kana)} · ${rj(it.kana)} <button class="kj-audio" data-say="${escapeHtml(it.kana)}">🔊</button></div>${it.price ? `<div class="mn-kana">${yen(it.price)}</div>` : ''}${it.note ? `<div class="mn-explain">${escapeHtml(it.note)}</div>` : ''}</div>
+        <p class="kj-ask">Tu avais trouvé ?</p><div class="rate-row"><button class="rate-good" data-r="ok">Trouvé</button><button class="rate-hard" data-r="near">Presque</button><button class="rate-again" data-r="miss">Raté</button></div>`
+        : `<div class="mn-actions" style="justify-content:center">${ui.step === 0 ? '<button class="kj-subnav-btn" id="gsHint">💡 Un indice</button>' : ''}<button class="continue-btn" id="gsReveal">Voir la réponse</button></div>`}
+    </div>`;
+  const back = document.getElementById('mnBack'); back.addEventListener('click', () => go('home'));
+  wireAudio(area);
+  const h = document.getElementById('gsHint'); if(h) h.addEventListener('click', () => { ui.step = 1; renderMenus(); });
+  const r = document.getElementById('gsReveal'); if(r) r.addEventListener('click', () => { ui.step = 2; renderMenus(); });
+  area.querySelectorAll('[data-r]').forEach(b => b.addEventListener('click', () => { ui.score[b.dataset.r]++; ui.i++; ui.step = 0; renderMenus(); }));
+}
+
+// ---------- Ma photo de menu : ta photo + lecteur de mots ----------
+let lexCache = null;
+async function lexicon(){
+  if(lexCache) return lexCache;
+  const D = await deck(); const lex = new Map();
+  const add = (jp, kana, fr) => { if(jp && !lex.has(jp)) lex.set(jp, { kana, fr }); };
+  MENUS.forEach(m => rawItems(m).forEach(i => { add(i.jp, i.kana, i.fr); add(i.jp.replace(/（[^）]*）/g, ''), i.kana, i.fr); }));
+  MENU_VOCAB.forEach(g => g.items.forEach(i => { add(i.jp, i.kana, i.fr); add(i.jp.replace(/（[^）]*）/g, ''), i.kana, i.fr); }));
+  try{ const kit = await import('../../data/kyoto-kit.js'); kit.KIT_VOCAB.forEach(g => g.items.forEach(i => add(i.jp, i.kana, i.fr))); }catch(e){}
+  try{ const w = await import('../../data/kanji-words.js'); w.KANJI_WORDS.forEach(i => add(i.jp, i.kana, i.fr)); }catch(e){}
+  D.forEach(d => { if(d.ex) add(d.ex[0], d.ex[1], d.ex[2]); });
+  lexCache = { D, lex, max: Math.max(...[...lex.keys()].map(k => k.length)) };
+  return lexCache;
+}
+function segment(text, L){
+  const out = []; let i = 0;
+  while(i < text.length){
+    let hit = null;
+    for(let n = Math.min(L.max, text.length - i); n >= 1; n--){ const sub = text.slice(i, i + n); if(L.lex.has(sub) && (n > 1 || /[㐀-䶿一-鿿]/.test(sub) || true)){ hit = [sub, L.lex.get(sub)]; break; } }
+    if(hit){ out.push({ t: hit[0], e: hit[1] }); i += hit[0].length; }
+    else { out.push({ t: text[i] }); i++; }
+  }
+  return out;
+}
+function renderPhoto(area){
+  area.innerHTML = `<div class="kj-top">${backBtn}<span>📷 Ma photo de menu</span></div>
+    <div class="skills-intro">Prends en photo une vraie carte. <b>Elle reste sur ton appareil</b> : rien n'est envoyé nulle part. Essaie de deviner les plats, puis tape ou colle un mot que tu vois pour le décoder.</div>
+    <label class="mn-file"><input type="file" accept="image/*" id="phFile"> 📷 Choisir ou prendre une photo</label>
+    <div id="phImg" class="ph-img"></div>
+    <div class="kj-card kj-learn"><span class="kj-slabel">Lecteur de mots</span>
+      <textarea id="phText" class="ph-text" rows="2" placeholder="Écris ou colle ici ce que tu lis sur la carte (ex. 抹茶ラテ 780円)"></textarea>
+      <button class="continue-btn" id="phGo">Décoder</button><div id="phOut"></div>
+      <p class="kj-tip" style="text-align:left">Astuce iPhone / Mac : dans la photo, appuie longtemps sur le texte japonais (« Texte en direct ») pour le copier, puis colle-le ici. Sur la carte, la ligne du bas est souvent le prix : le chiffre suivi de 円.</p></div>`;
+  wireBack();
+  document.getElementById('phFile').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; if(!f) return;
+    const box = document.getElementById('phImg'); if(ui.url) URL.revokeObjectURL(ui.url);
+    ui.url = URL.createObjectURL(f); box.innerHTML = `<img src="${ui.url}" alt="Ta photo de menu"><button class="kj-subnav-btn" id="phZoom">🔍 Agrandir</button>`;
+    document.getElementById('phZoom').addEventListener('click', () => box.classList.toggle('zoom'));
+  });
+  document.getElementById('phGo').addEventListener('click', async () => {
+    const text = document.getElementById('phText').value.trim(); if(!text) return;
+    const out = document.getElementById('phOut'); out.innerHTML = 'Analyse…';
+    const L = await lexicon(); const seg = segment(text, L);
+    const rows = [];
+    seg.forEach(s => {
+      if(s.e){ rows.push(`<div class="ph-row ok"><b>${escapeHtml(s.t)}</b> <span class="mn-kana">${escapeHtml(s.e.kana)} · ${rj(s.e.kana)}</span><div>${escapeHtml(s.e.fr)}</div></div>`); return; }
+      if(/[㐀-䶿一-鿿]/.test(s.t)){ const d = L.D.get(s.t); rows.push(d ? `<div class="ph-row"><b>${escapeHtml(s.t)}</b> <span class="mn-kana">${escapeHtml((d.on || []).slice(0, 2).join('・') )} / ${escapeHtml((d.kun || []).slice(0, 2).join('・'))}</span><div>${escapeHtml(d.fr)} (kanji seul)</div></div>` : `<div class="ph-row"><b>${escapeHtml(s.t)}</b> <div>Kanji hors liste</div></div>`); }
+    });
+    const nums = [...text.matchAll(/(\d[\d,]*)\s*円/g)].map(m => `${m[1]} 円`);
+    out.innerHTML = (nums.length ? `<div class="ph-row ok">💴 Prix repérés : ${nums.join(', ')}</div>` : '') + (rows.join('') || '<div class="ph-row">Je ne reconnais rien dans ce texte. Essaie un mot à la fois.</div>');
+  });
+}
+
+// ---------- une scène du kit Kyoto ----------
+function renderKit(area){
+  const g = KIT_VOCAB.find(x => x.id === ui.id), tips = KIT_TIPS[g.id] || [];
+  const asks = [...KIT_ASK].filter(q => q.topic === g.id).length;
+  area.innerHTML = `<div class="kj-top">${backBtn}<span>${g.icon} ${escapeHtml(g.title)}</span></div>
+    <div class="skills-intro">${escapeHtml(g.intro)}</div>
+    ${tips.length ? `<div class="kit-tips"><span class="kj-slabel">À savoir à Kyoto</span><ul>${tips.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ul></div>` : ''}
+    <div class="kj-actions"><button class="kj-big primary" id="kitVocab">📖 Les ${g.items.length} mots</button><button class="kj-big ${asks ? 'primary' : ''}" id="kitAsk" ${asks ? '' : 'disabled'}>❓ Mises en situation (${asks})</button></div>`;
+  wireBack();
+  document.getElementById('kitVocab').addEventListener('click', () => go('vocab', { id: g.id, reveal: false }));
+  document.getElementById('kitAsk').addEventListener('click', () => go('quiz', { quiz: buildAskQuiz(g.id, 8), title: g.title, backTo: 'kit', backUi: { id: g.id } }));
 }
