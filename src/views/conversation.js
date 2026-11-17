@@ -1,5 +1,9 @@
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { CONV_BREAKDOWNS, CONV_ALT_BREAKDOWNS } from '../../data/conv-breakdowns.js';
+import { BEGINNER_CONVS } from '../../data/beginner-convs.js';
+
+// Dialogues très courts pour grand débutant (ids « b-… ») : ajoutés en tête de la liste partagée.
+if(!CONVERSATIONS.some(c=>c.id && c.id.startsWith('b-'))) CONVERSATIONS.unshift(...BEGINNER_CONVS);
 
 // Les décryptages sont rangés à part, par dialogue puis par index de tour :
 // tour PNJ → sa réplique, tour utilisateur → le meilleur choix ; les autres choix sont
@@ -63,15 +67,19 @@ export function renderConversationList(){
       <div class="conv-progress-head"><span><b>${doneHere}</b> / ${valid.length} dialogues terminés</span><span>${Math.round((doneHere/valid.length)*100)} %</span></div>
       <div class="today-track"><div class="today-track-fill" style="width:${(doneHere/valid.length)*100}%"></div></div>
     </div>`;
-    html += `<div class="conv-list">`;
-    valid.forEach(c=>{
+    const card = c=>{
       const isDone = done.includes(c.id);
-      html += `<div class="conv-pick ${isDone?'is-done':''}" data-id="${c.id}">
+      return `<div class="conv-pick ${isDone?'is-done':''}" data-id="${c.id}">
         <div><h4>${isDone?'✓ ':''}${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
         <div class="conv-actions"><button class="conv-listen" data-id="${c.id}" title="Écouter le dialogue en entier">🎧</button><span class="conv-badge">${isDone?'Rejouer':'Commencer'}</span></div>
       </div>`;
-    });
-    html += `</div>`;
+    };
+    const beg = valid.filter(c=>c.id.startsWith('b-')), adv = valid.filter(c=>!c.id.startsWith('b-'));
+    if(beg.length){
+      html += `<h4 class="conv-group">🌱 Pour commencer — très courts, phrases simples</h4><div class="conv-list">${beg.map(card).join('')}</div>`;
+      html += `<h4 class="conv-group">📚 Plus avancés — quand les premiers te semblent faciles</h4>`;
+    }
+    html += `<div class="conv-list">${adv.map(card).join('')}</div>`;
     area.innerHTML = html;
     wireBreakdownToggles(area);
     area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{ convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage(); }));

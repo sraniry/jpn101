@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v27';
+const CACHE = 'nihongo-v28';
 const ASSETS = [
   './',
   './index.html',
@@ -21,6 +21,8 @@ const ASSETS = [
   './src/views/today.js',
   './src/views/listening.js',
   './src/views/jlpt.js',
+  './src/views/kanji.js',
+  './src/views/menus.js',
   './data/jlpt-n5.js',
   './data/jlpt-n4.js',
   './data/jlpt-n4-vocab.js',
@@ -31,6 +33,9 @@ const ASSETS = [
   './data/jlpt-kanji-sentences.js',
   './data/kanji-radicals.js',
   './data/phrases.js',
+  './data/kanji-joyo.js',
+  './data/menus.js',
+  './data/beginner-convs.js',
   './data/grammar.js',
   './data/grammar-drills.js',
   './data/kana.js',

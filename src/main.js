@@ -8,6 +8,8 @@ import { renderReading } from './views/reading.js';
 import { renderGrammar } from './views/grammar.js';
 import { renderKana } from './views/kana.js';
 import { renderToday } from './views/today.js';
+import { renderKanji, kanjiTodayStatus } from './views/kanji.js';
+import { renderMenus } from './views/menus.js';
 import { renderListening } from './views/listening.js';
 import { renderJlpt } from './views/jlpt.js';
 import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
@@ -28,6 +30,8 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     if(btn.dataset.view === 'listening') renderListening();
     if(btn.dataset.view === 'reading') renderReading();
     if(btn.dataset.view === 'kana') renderKana();
+    if(btn.dataset.view === 'kanji') renderKanji();
+    if(btn.dataset.view === 'menus') renderMenus();
     if(btn.dataset.view === 'grammar') renderGrammar();
     if(btn.dataset.view === 'jlpt') renderJlpt();
     // « Mes phrases » n'a pas de fonction renderXxx dédiée : sans ceci, un archivage ou un
@@ -47,7 +51,11 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-export function renderHeader(){ document.getElementById('dueCount').textContent = getDueAll().length; }
+export function renderHeader(){
+  document.getElementById('dueCount').textContent = getDueAll().length;
+  const kd = document.getElementById('kanjiDue'), n = kanjiTodayStatus().due;
+  if(kd){ kd.textContent = n; kd.style.display = n ? '' : 'none'; }
+}
 
 // Rafraîchit le badge « à revoir », les stats et la liste de « Mes phrases », SANS toucher
 // à la vue actuellement affichée. render() ci-dessous fait ça + re-rend la vue active — mais
