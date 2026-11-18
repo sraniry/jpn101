@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v34';
+const CACHE = 'nihongo-v35';
 const ASSETS = [
   './',
   './index.html',

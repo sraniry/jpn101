@@ -65,19 +65,20 @@ function newCardRec(){ return { interval: 0, ease: 2.5, reps: 0, due: nowTs(), l
 const hira2kata = s => s.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60));
 const rj = kana => `<span class="rj-inline">${escapeHtml(kanaToRomaji(kana))}</span>`;
 
+function chipName(c){ const r = BY_R.get(c); if(r) return r.name; const k = BY_K.get(c); return k ? k.fr : null; }
 function chipsHtml(d){
-  if(!d.c || !d.c.length) return '';
+  const shown = (d.c || []).filter(c => chipName(c));
+  if(!shown.length) return '';
   const known = srs();
-  return `<div class="kj-chips">` + d.c.map(c => {
-    const r = BY_R.get(c);
-    const star = known[keyR(c)] ? ' is-known' : '';
-    return `<button type="button" class="kj-chip${star}" data-rad="${escapeHtml(c)}"><span class="kj-chip-g">${escapeHtml(c)}</span><span class="kj-chip-n">${escapeHtml(r ? r.name : '?')}</span></button>`;
+  return `<div class="kj-chips">` + shown.map(c => {
+    const star = known[keyR(c)] || known[keyK(c)] ? ' is-known' : '';
+    return `<button type="button" class="kj-chip${star}" data-rad="${escapeHtml(c)}"><span class="kj-chip-g">${escapeHtml(c)}</span><span class="kj-chip-n">${escapeHtml(chipName(c))}</span></button>`;
   }).join('<span class="kj-plus">+</span>') + `</div><div class="kj-chip-story" id="kjChipStory"></div>`;
 }
 function wireChips(root){
   root.querySelectorAll('.kj-chip').forEach(b => b.addEventListener('click', e => {
     e.stopPropagation();
-    const r = BY_R.get(b.dataset.rad); const box = root.querySelector('#kjChipStory');
+    const r = BY_R.get(b.dataset.rad) || (BY_K.get(b.dataset.rad) ? { r: b.dataset.rad, name: BY_K.get(b.dataset.rad).fr, story: BY_K.get(b.dataset.rad).st || '' } : null); const box = root.querySelector('#kjChipStory');
     if(box && r) box.innerHTML = `<b>${escapeHtml(r.r)} — ${escapeHtml(r.name)}</b>${r.jp ? ` (se dit <b>${escapeHtml(r.jp)}</b> ${rj(r.jp)})` : ''} : ${escapeHtml(r.story)}${r.meaning ? `<br><span class="kj-meaning">Apporte l'idée de : ${escapeHtml(r.meaning)}</span>` : ''}`;
   }));
 }
