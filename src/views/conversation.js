@@ -23,7 +23,7 @@ CONVERSATIONS.forEach(conv=>{
 });
 import { speak, speakSequence } from '../tts.js';
 import { escapeHtml } from '../util.js';
-import { planMark, registerStudyActivity, getConvDone, markConvDone } from '../storage.js';
+import { planMark, registerStudyActivity, getConvDone, markConvDone, recordAnswer } from '../storage.js';
 import { celebrate } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
 
@@ -149,6 +149,10 @@ function renderConversationStage(){
       b.addEventListener('click', ()=>{
         const ch = turn.choices[parseInt(b.dataset.idx,10)];
         speak(ch.jp, 0.85);
+        {
+          const best = turn.choices.find(c => c.quality === 'best') || turn.choices[0], prev = conv.turns[convState.turnIdx - 1];
+          recordAnswer('dialogue', conv.id + ':' + convState.turnIdx, ch.quality === 'best', { q: `${conv.title} : ${prev && prev.fr ? '« ' + prev.fr + ' » — ' : ''}que réponds-tu ?`, ok: best.jp, choices: turn.choices.map(c => c.jp), explain: ch.feedback, say: best.jp, chosen: ch.jp });
+        }
         const cls = ch.quality === 'best' ? 'best' : (ch.quality === 'ok' ? 'ok' : 'weak');
         const label = ch.quality === 'best' ? '✓ Le plus naturel' : (ch.quality === 'ok' ? '≈ Ça marche' : '○ Trop littéral / pas idéal');
         const fb = document.createElement('div'); fb.className = 'conv-feedback '+cls; fb.innerHTML = `<b>${label}</b><br>${escapeHtml(ch.feedback)}${ch.breakdown && ch.breakdown.length ? '<hr class="cbd-sep">'+breakdownSnippet(ch.breakdown) : ''}`;

@@ -2,6 +2,7 @@ import { phrases, meta, todayStr, getConvDone, getQuizStats, openMistakes, maste
 import { kanjiTodayStatus } from './kanji.js';
 import { badgesHtml } from '../badges.js';
 import { speak } from '../tts.js';
+import { LESSONS } from '../../data/lessons.js';
 import { showView } from '../nav.js';
 import { escapeHtml } from '../util.js';
 
@@ -45,7 +46,7 @@ export function renderProgress(){
     <div class="kj-stat"><b>${rr.length}/51</b><span>radicaux</span></div>
     <div class="kj-stat"><b>${mastered}</b><span>phrases maîtrisées</span></div>
     <div class="kj-stat"><b>${convs}</b><span>dialogues faits</span></div>
-    <div class="kj-stat"><b>${(meta.lessonsDone || []).length}/11</b><span>leçons de grammaire</span></div>
+    <div class="kj-stat"><b>${(meta.lessonsDone || []).length}/${LESSONS.length}</b><span>leçons de grammaire</span></div>
   </div>
   <h4 class="kj-h">Les 30 derniers jours</h4>
   <div class="cal" role="img" aria-label="${studied30} jours étudiés sur les 30 derniers jours">${days.map(d => `<span class="cal-d ${log[d] ? (log[d] > 15 ? 'l3' : log[d] > 5 ? 'l2' : 'l1') : ''}" title="${d}${log[d] ? ' : ' + log[d] + ' actions' : ''}"></span>`).join('')}</div>

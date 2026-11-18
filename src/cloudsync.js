@@ -5,7 +5,7 @@
 // la vraie protection reste le code lui-même : à traiter comme un mot de passe, ne pas le partager.
 // Tant qu'aucun code n'est renseigné, ce module ne fait strictement rien (aucun appel réseau).
 
-import { phrases, meta, storageSet, loadAll, nowTs } from './storage.js';
+import { phrases, meta, storageSet, loadAll, nowTs, cardKey } from './storage.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXm8d0Q4Y3225jz1h_5GPRoxIbZ6HlvM4",
@@ -24,6 +24,7 @@ const AUTH_SDK = 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 let fb = null;        // { doc, getDoc, setDoc, serverTimestamp, db } une fois chargé
 let fbReadyPromise = null;
 let pushTimer = null;
+let syncReady = false;   // tant que le premier pull n'est pas fini, aucun push (sinon un appareil en retard écrase le cloud)
 let fbLastError = null; // dernier message d'erreur Firebase, pour l'afficher à l'utilisatrice
 
 export function getSyncCode(){
@@ -110,7 +111,7 @@ export async function pushToCloud(){
 // Débounce : une sauvegarde locale déclenche un push groupé 1,5 s plus tard,
 // pour ne pas spammer Firestore si plusieurs cartes sont notées coup sur coup.
 export function schedulePush(){
-  if(!isSyncConfigured()) return;
+  if(!isSyncConfigured() || !syncReady) return;
   clearTimeout(pushTimer);
   pushTimer = setTimeout(() => { pushToCloud(); }, 1500);
 }
@@ -118,7 +119,7 @@ export function schedulePush(){
 // ---------- Pull + FUSION au démarrage ----------
 // Avant : « la version la plus récente écrase tout » → un appareil neuf ou resté hors-ligne pouvait
 // effacer la progression des autres. Maintenant on FUSIONNE : rien n'est perdu.
-const UNION_KEYS = ['convDone', 'readingKnown', 'badgesSeen', 'grammarDrills', 'masteredSkillsSeen'];
+const UNION_KEYS = ['convDone', 'readingKnown', 'badgesSeen', 'grammarDrills', 'masteredSkillsSeen', 'lessonsDone', 'textsDone'];
 function unionArr(a, b){ return [...new Set([...(a || []), ...(b || [])])]; }
 function mergeByKey(a, b, pick){
   const out = Object.assign({}, a || {});
@@ -126,12 +127,13 @@ function mergeByKey(a, b, pick){
   return out;
 }
 export function mergePhrases(a, b){
+  // Clé = contenu de la carte (jp|romaji), pas l'id aléatoire : le pack importé sur deux appareils ne doit pas être doublé.
   const m = new Map();
   [...(a || []), ...(b || [])].forEach(c => {
-    const o = m.get(c.id);
-    if(!o){ m.set(c.id, c); return; }
+    const k = cardKey(c.jp, c.romaji), o = m.get(k);
+    if(!o){ m.set(k, c); return; }
     const better = (c.reps || 0) > (o.reps || 0) || ((c.reps || 0) === (o.reps || 0) && (c.due || 0) > (o.due || 0));
-    m.set(c.id, better ? c : o);
+    m.set(k, better ? c : o);
   });
   return [...m.values()];
 }
@@ -223,7 +225,7 @@ export function initCloudSyncUI(){
 // ---------- Appelé une fois au démarrage de l'app (après le chargement local) ----------
 export async function initCloudSync(){
   updateSyncIndicator();
-  if(!isSyncConfigured()) return;
+  if(!isSyncConfigured()){ syncReady = true; return false; }
   // Le premier rendu part du local ; le résultat de la fusion déclenche un nouveau rendu (voir main.js).
-  return pullAndMerge();
+  try{ return await pullAndMerge(); } finally { syncReady = true; }
 }

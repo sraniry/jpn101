@@ -1,3 +1,4 @@
+import { showView } from '../nav.js';
 import { N5_KANJI, N5_KANJI_ALL, N5_VOCAB, N5_VOCAB_ALL, N5_GRAMMAR, N5_GRAMMAR_QUIZ } from '../../data/jlpt-n5.js';
 import { N4_KANJI } from '../../data/jlpt-n4.js';
 import { N4_VOCAB, N4_VOCAB_ALL } from '../../data/jlpt-n4-vocab.js';
@@ -324,6 +325,10 @@ function renderKanjiSensQuiz(panel){
 const KANJI_FR_BY_CHAR = Object.fromEntries(N5_KANJI_ALL.map(it => [it.k, it.fr]));
 
 function renderRadicalsPanel(panel){
+  panel.innerHTML = `<div class="skills-intro">Les radicaux ont maintenant leur propre parcours, plus complet : <b>51 radicaux de base</b>, leurs noms japonais, des histoires et leur usage dans les 2136 kanji.</div><button type="button" class="continue-btn" id="radToKanji">Ouvrir Apprendre → Kanji</button>`;
+  panel.querySelector('#radToKanji').addEventListener('click', () => showView('kanji'));
+}
+function renderRadicalsPanelOld(panel){
   const totalKanjiCovered = new Set(KANJI_RADICALS.flatMap(r => r.k)).size;
   let html = `
     <div class="onkun-explain">
@@ -520,12 +525,11 @@ function renderTipsPanel(panel){
       <li>Apporte ta <b>convocation</b> + une <b>pièce d'identité</b> valide.</li>
     </ul>
 
-    <h4 class="kana-table-title" style="margin-top:20px;">🇫🇷 Inscription en France</h4>
+    <h4 class="kana-table-title" style="margin-top:20px;">📝 S'inscrire (infos à vérifier)</h4>
     <ul class="tips-list">
-      <li>Inscription à l'<b>INALCO Paris</b>, généralement en septembre/octobre.</li>
-      <li>Examen en <b>décembre</b>.</li>
-      <li>Frais d'inscription : <b>65 €</b>.</li>
-      <li>Résultats communiqués par courrier <b>courant mars</b>.</li>
+      <li>Le JLPT a lieu deux fois par an (en général <b>juillet</b> et <b>décembre</b>) ; les dates et les frais changent chaque année.</li>
+      <li>Au Japon, l'inscription se fait par les organismes officiels : <b>vérifie toujours sur jlpt.jp</b> avant de t'inscrire.</li>
+      <li>Garde ta convocation et une pièce d'identité pour le jour J.</li>
     </ul>
 
     <h4 class="kana-table-title" style="margin-top:20px;">🔍 Ton point faible</h4>

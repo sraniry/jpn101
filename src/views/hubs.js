@@ -2,6 +2,7 @@ import { phrases, meta, getDueAll, getConvDone, openMistakes } from '../storage.
 import { kanaPathState } from './kana.js';
 import { kanjiTodayStatus } from './kanji.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
+import { LESSONS } from '../../data/lessons.js';
 import { showView } from '../nav.js';
 import { escapeHtml } from '../util.js';
 
@@ -29,7 +30,7 @@ export function renderLearnHub(){
   <div class="hub-grid">
     ${card('kana', 'あ', 'Alphabet (kana)', 'Hiragana et katakana : la base de tout.', `${k.done}/${k.total} leçons`)}
     ${card('kanji', '漢', 'Kanji', '6 par jour, avec radicaux, histoires et ordre des traits.', kj.learnedTotal ? `${kj.learnedTotal} / 2136` : 'à commencer')}
-    ${card('lessons', '📘', 'Leçons de grammaire', 'こそあど, は/が, て-form… une leçon courte à la fois.', `${lessonsDone}/11`)}
+    ${card('lessons', '📘', 'Leçons de grammaire', 'こそあど, は/が, て-form… une leçon courte à la fois.', `${lessonsDone}/${LESSONS.length}`)}
     ${card('texts', '📰', 'Petits textes', 'Lire un message du logeur, une affiche, un menu.', '')}
     ${card('reading', '🪧', 'Panneaux & formulaires', 'Reconnaître 出口, 入口, 禁止… d\'un coup d\'œil.', '')}
     ${card('tips', '💡', 'Kanji qui se ressemblent', '右/左, 大/犬/太… ne plus les confondre.', '', { tab: 'confusables' })}

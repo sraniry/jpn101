@@ -1,3 +1,4 @@
+import { recordAnswer } from '../storage.js';
 import { GRAMMAR_HTML } from '../../data/grammar.js';
 import { GRAMMAR_DRILLS } from '../../data/grammar-drills.js';
 import { speak } from '../tts.js';
@@ -134,6 +135,7 @@ function answerDrill(btn){
   const q = s.questions[s.idx];
   s.answered = true;
   const ok = btn.dataset.ok === 'true';
+  recordAnswer('grammar', (s.key || '') + ':' + q.q.slice(0, 30), ok, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explanation, say: q.say, chosen: ok ? '' : btn.textContent.trim() });
   if(ok){ btn.classList.add('correct'); s.correct++; }
   else {
     btn.classList.add('wrong');

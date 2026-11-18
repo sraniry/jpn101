@@ -1,5 +1,5 @@
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-import { loadAll, meta, getDueAll, updateStreak, migrateLegacyStores } from './storage.js';
+import { loadAll, meta, getDueAll, getReviewDue, updateStreak, migrateLegacyStores } from './storage.js';
 import { speak, renderSoundBars } from './tts.js';
 import { renderSkills } from './views/skills.js';
 import { startReviewSession, renderReview } from './views/review.js';
@@ -11,7 +11,6 @@ import { renderToday } from './views/today.js';
 import { renderKanji, kanjiTodayStatus, openKanjiHome } from './views/kanji.js';
 import { renderMenus } from './views/menus.js';
 import { renderListening } from './views/listening.js';
-import { renderJlpt } from './views/jlpt.js';
 import { updateImportBanner, renderTagChips, renderList, renderStats, initManage, importFromURL } from './views/manage.js';
 import { initCloudSync, initCloudSyncUI } from './cloudsync.js';
 import { initRomajiToggle } from './romajiToggle.js';
@@ -36,7 +35,7 @@ registerView('kana', ()=> renderKana());
 registerView('kanji', (o)=>{ if(!o || !o.keep) openKanjiHome(); renderKanji(); });
 registerView('menus', ()=> renderMenus());
 registerView('grammar', ()=> renderGrammar());
-registerView('jlpt', ()=> renderJlpt());
+registerView('jlpt', async ()=>{ const m = await import('./views/jlpt.js'); m.renderJlpt(); });
 registerView('add', ()=> refreshCounters());
 registerView('path', ()=> renderPath());
 registerView('learn', ()=> renderLearnHub());
@@ -63,7 +62,7 @@ document.addEventListener('click', (e)=>{
 });
 
 export function renderHeader(){
-  const nd = getDueAll().length, dc = document.getElementById('dueCount');
+  const nd = getReviewDue().length, dc = document.getElementById('dueCount');
   if(dc){ dc.textContent = nd; dc.style.display = nd ? '' : 'none'; }
   const kd = document.getElementById('kanjiDue'), n = kanjiTodayStatus().due;
   if(kd){ kd.textContent = n; kd.style.display = n ? '' : 'none'; }
@@ -115,3 +114,13 @@ async function init(){
   }
 }
 init();
+
+// ---------- Clavier : les cartes cliquables (div) deviennent de vrais boutons pour le clavier et les lecteurs d'écran ----------
+const CLICKABLES = '.today-step[data-view], .today-bonus-step, .mn-item, .conv-pick, .skill-card, .tag-chip';
+function enhanceClickables(){
+  document.querySelectorAll(CLICKABLES).forEach(el => { if(el.getAttribute('role') !== 'button'){ el.setAttribute('role', 'button'); el.tabIndex = 0; } });
+}
+document.addEventListener('keydown', e => {
+  if((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches(CLICKABLES)){ e.preventDefault(); e.target.click(); }
+});
+{ let t = null; new MutationObserver(() => { clearTimeout(t); t = setTimeout(enhanceClickables, 80); }).observe(document.getElementById('main-content'), { childList: true, subtree: true }); }

@@ -1,7 +1,7 @@
 import { HIRAGANA, KATAKANA, KANA_BASE, KANA_DAKUTEN, KANA_HANDAKUTEN, KANA_YOON, KATAKANA_ONLY } from '../../data/kana.js';
 import { speak } from '../tts.js';
 import { planMark, phrases, newCard, savePhrases, existingKeySet, cardKey,
-         registerStudyActivity, getKanaPath, markKanaLesson, addQuizStat, bestQuizScore } from '../storage.js';
+         registerStudyActivity, recordAnswer, getKanaPath, markKanaLesson, addQuizStat, bestQuizScore } from '../storage.js';
 import { celebrate, quizLine } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
 
@@ -171,6 +171,7 @@ function renderQuizCard() {
   area.querySelectorAll('.kqc-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const isCorrect = btn.dataset.correct === 'true';
+      recordAnswer('kana', card.kana, isCorrect, { q: isKanaToRomaji ? `Comment se lit ${card.kana} ?` : `Quel kana se lit « ${card.romaji} » ?`, ok: isKanaToRomaji ? card.romaji : card.kana, choices: choices.map(c => isKanaToRomaji ? c.romaji : c.kana), explain: `${card.kana} = ${card.romaji}. Dis-le à voix haute 3 fois.`, say: card.kana, chosen: isCorrect ? '' : (isKanaToRomaji ? (choices.find(c => c.kana === btn.dataset.kana) || {}).romaji : btn.dataset.kana) });
       if (isCorrect) {
         btn.classList.add('correct');
         quizState.correct++;
@@ -217,7 +218,7 @@ function renderPath(){
 function renderLesson(panel){
   const lesson = KANA_LESSONS[lessonState.lessonIdx];
   if(lessonState.quiz){ renderLessonQuiz(panel, lesson); return; }
-  let html = `<button class="conv-back" id="lessonBack">← Parcours</button>
+  let html = `<button class="conv-back" id="lessonBack">← Leçons</button>
     <h4 class="kana-table-title">Leçon ${lessonState.lessonIdx+1} — ${lesson.row}</h4>
     <p class="kana-vocab-note">Touche chaque caractère pour l'entendre. Répète à voix haute, puis lance le quiz.</p>
     <div class="kana-lesson-grid">`;
@@ -291,14 +292,14 @@ export function renderKana() {
 
   area.innerHTML = `
     <div class="kana-intro">
-      <b>Hiragana</b> (gauche) : mots japonais natifs, particules, conjugaisons.<br>
+      <b>Hiragana</b> (gauche) : mots japonais d'origine japonaise et petits mots de liaison (は, を, に…).<br>
       <b>Katakana</b> (droite) : mots étrangers (コーヒー = café, バス = bus).<br>
       Clique sur un caractère pour l'entendre et voir son moyen mnémotechnique. Entraîne-toi avec le quiz.<br>
-      <span class="xref-note">漢字 Les kanji ont leur propre section : <b>JLPT N5 → 漢字</b> réunit les 103 caractères officiels avec lectures on/kun, mnémotechniques, radicaux et deux quiz (sens et lecture).</span>
+      <span class="xref-note">漢字 Les kanji ont leur propre section : <b>Apprendre → Kanji</b> t'en donne 6 par jour, avec radicaux, histoires, ordre des traits et révisions.</span>
     </div>
 
     <div class="kana-tabs">
-      <button class="kana-tab active" data-tab="path">📅 Parcours</button>
+      <button class="kana-tab active" data-tab="path">📅 Leçons</button>
       <button class="kana-tab" data-tab="hiragana">あ Hiragana</button>
       <button class="kana-tab" data-tab="katakana">ア Katakana</button>
       <button class="kana-tab" data-tab="base">あ/ア Tableau</button>

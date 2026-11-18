@@ -2,6 +2,7 @@ import { phrases, meta, getConvDone, getQuizStats } from '../storage.js';
 import { kanaPathState } from './kana.js';
 import { kanjiTodayStatus } from './kanji.js';
 import { CONVERSATIONS, CORE_SET } from '../../data/phrases.js';
+import { LESSONS } from '../../data/lessons.js';
 import { showView } from '../nav.js';
 import { escapeHtml } from '../util.js';
 
@@ -24,7 +25,7 @@ export function pathSteps(){
     { id: 'kana', icon: 'あ', title: 'Lire les kana', goal: 'Tu lis hiragana et katakana sans hésiter.', crit: '12 leçons validées', done: k.done, total: k.total, min: '10 min/jour', view: 'kana' },
     { id: 'survie', icon: '🙏', title: 'Phrases de survie', goal: 'Bonjour, merci, s\'il vous plaît, « c\'est combien ? ».', crit: `${survivalTotal} phrases essentielles apprises`, done: Math.min(survival, survivalTotal), total: survivalTotal, min: '5 min/jour', view: 'review' },
     { id: 'briques', icon: '🧱', title: 'Les briques : radicaux de base', goal: 'Tu reconnais les 51 briques qui composent les kanji.', crit: '51 radicaux vus', done: Math.min(51, Object.keys(S).filter(x => x.startsWith('r:')).length), total: 51, min: '8 par jour', view: 'kanji' },
-    { id: 'gram', icon: '📘', title: 'Grammaire de base', goal: 'こそあど, mots interrogatifs, は/が, particules, て-form…', crit: '11 leçons courtes', done: lessons, total: 11, min: '1 leçon par jour', view: 'lessons' },
+    { id: 'gram', icon: '📘', title: 'Grammaire de base', goal: 'こそあど, mots interrogatifs, は/が, particules, て-form…', crit: LESSONS.length + ' leçons courtes', done: lessons, total: LESSONS.length, min: '1 leçon par jour', view: 'lessons' },
     { id: 'k100', icon: '漢', title: '100 premiers kanji', goal: 'Tu débloques « Mots que tu sais lire ».', crit: '100 kanji appris', done: Math.min(100, kanjiKnown), total: 100, min: '6 par jour', view: 'kanji' },
     { id: 'parler', icon: '💬', title: 'Parler au café, au resto, en ville', goal: 'Tu commandes et tu poses des questions.', crit: 'Dialogues débutants terminés', done: convDone, total: begin.length || 18, min: '1 à 2 par jour', view: 'conversation' },
     { id: 'lire', icon: '🍜', title: 'Lire une carte, un panneau', goal: 'Tu lis un menu de ramen et un panneau de gare.', crit: '5 défis ou quiz de menus', done: Math.min(5, readTries), total: 5, min: '5 min/jour', view: 'menus' },

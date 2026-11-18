@@ -1,8 +1,7 @@
-import { phrases, meta, saveMeta, todayStr, getDueAll, planToday, getConvDone } from '../storage.js';
+import { phrases, meta, saveMeta, todayStr, getDueAll, getReviewDue, planToday, getConvDone } from '../storage.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
 import { openConversation } from './conversation.js';
-import { setJlptLevel } from './jlpt.js';
 import { escapeHtml } from '../util.js';
 import { celebrate } from '../encouragement.js';
 import { kanjiTodayStatus } from './kanji.js';
@@ -52,7 +51,13 @@ const BONUS_ROTATION = [
     desc:'80 kanji supplémentaires pour franchir le palier N4',
     why:'Les kanji N4 reviennent dans les panneaux, les menus et les formulaires universitaires à Kyoto — un investissement direct pour ton séjour.' },
 ];
-function bonusOfTheDay(){ return BONUS_ROTATION[dayNumber() % BONUS_ROTATION.length]; }
+function bonusOfTheDay(){
+  // Pas de JLPT ni de « Kanji N4 » à une débutante : ils n'apparaissent qu'une fois les kana validés et 100 kanji appris.
+  let learned = 0, kanaOk = false;
+  try{ learned = kanjiTodayStatus().learnedTotal; const k = kanaPathState(); kanaOk = k.done >= k.total; }catch(e){}
+  const pool = (kanaOk && learned >= 100) ? BONUS_ROTATION : BONUS_ROTATION.filter(b => b.view === 'listening' || b.view === 'reading');
+  return pool[dayNumber() % pool.length];
+}
 
 // Objectifs quotidiens dimensionnés pour ~30 min réelles (et non ~10) : le plafond de
 // révisions était le vrai goulot (10 cartes ≈ 5 min). Remonté à 30 (≈ 15 min), et un
@@ -97,13 +102,15 @@ export function renderToday(){
     : `Prochaine leçon : <b>${escapeHtml(kana.next.row)}</b> (${kana.done}/${kana.total} leçons validées)`;
 
   const gap = meta.lastStudyDate ? Math.round((new Date(todayStr()) - new Date(meta.lastStudyDate)) / 86400000) : 0;
-  const dueK = kj.due + due;
+  const dueK = kj.due + getReviewDue().length;
   let html = gap >= 2 ? `<div class="resume-banner" role="status">👋 <b>Content de te revoir !</b> Dernière séance il y a ${gap} jours : ce n'est pas grave. ${dueK ? `${dueK} carte${dueK > 1 ? 's' : ''} t'attend${dueK > 1 ? 'ent' : ''} : commence par elles, doucement.` : 'Reprends avec une petite séance de 10 minutes.'}</div>` : '';
   html += `<div class="today-head">
     <h3>${doneCount === total ? '🎉 Programme du jour terminé !' : `Programme du jour — ${doneCount}/${total} étapes`}</h3>
     <p>~${meta.minutes || 20} minutes, dans l'ordre. La régularité bat l'intensité : mieux vaut un peu chaque jour que 3 h le dimanche.</p>
     <div class="today-track"><div class="today-track-fill" style="width:${(doneCount/total)*100}%"></div></div>
-  </div><div class="today-steps">`;
+  </div>`;
+  const tip = tipOfTheDay();
+  html += `<div class="tip-today"><span class="kj-slabel">💡 Astuce de prof du jour</span>${escapeHtml(tip.text)} <button type="button" class="kj-link" id="tipMore">Plus d'astuces</button></div><div class="today-steps">`;
 
   const steps = [];
   // Étape 1 — Kana
@@ -139,7 +146,7 @@ export function renderToday(){
       <div class="ts-title"><span class="ts-icon">🔁</span>Révisions des phrases<span class="ts-time">~10 min</span></div>
       <div class="ts-desc">${phrases.length === 0
         ? 'Importe d\'abord le pack A0 → A2 dans « Mes phrases »'
-        : `${plan.reviews||0}/${reviewGoal} cartes revues aujourd'hui${due>0?` · ${due} en attente`:''}`}</div>
+        : `${plan.reviews||0}/${reviewGoal} cartes revues aujourd'hui${getReviewDue().length>0?` · ${getReviewDue().length} en retard`:''}`}</div>
       <div class="ts-why">Répétition espacée : chaque carte revient pile au moment où tu commences à l'oublier. Rappel actif : tape ta réponse avant de révéler.</div>
     </div>
     <span class="ts-go">${reviewDone ? 'Revoir' : 'Commencer'} →</span>
@@ -184,13 +191,11 @@ export function renderToday(){
     <span class="ts-go">Y aller →</span>
   </div>`;
   html += reminderHtml();
-  const tip = tipOfTheDay();
-  html += `<div class="tip-today"><span class="kj-slabel">💡 Astuce de prof du jour</span>${escapeHtml(tip.text)} <button type="button" class="kj-link" id="tipMore">Plus d'astuces</button></div>`;
   area.innerHTML = html;
   const tm = area.querySelector('#tipMore'); if(tm) tm.addEventListener('click', () => showView('tips'));
   wireReminder(area);
   const bonusEl = area.querySelector('.today-bonus-step');
-  if(bonusEl) bonusEl.addEventListener('click', ()=>{ if(bonus.view==='jlpt') setJlptLevel(bonus.level || 'N5'); gotoTab(bonusEl.dataset.view); });
+  if(bonusEl) bonusEl.addEventListener('click', ()=>{ if(bonus.view==='jlpt') import('./jlpt.js').then(m=>{ m.setJlptLevel(bonus.level || 'N5'); gotoTab('jlpt'); }); else gotoTab(bonusEl.dataset.view); });
   // Étapes 1 et 2 : toute la carte est cliquable, un seul view cible.
   area.querySelectorAll('.today-step[data-view]').forEach(el=> el.addEventListener('click', ()=>{ gotoTab(el.dataset.view); if(el.dataset.view==='menus') import('./menus.js').then(m=>m.openMenuChallenge(ch.id)); }));
   // Étape 3 : deux cibles distinctes (une par dialogue suggéré), chacune ouvre directement ce dialogue.

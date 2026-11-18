@@ -44,7 +44,7 @@ export function renderList(){
   // Tri par niveau (A0 → A1 → A2) en priorité, échéance en second critère : on apprend
   // dans l'ordre plutôt que de sauter du vocabulaire A2 avant d'avoir vu tout le A0.
   items = items.slice().sort((a,b)=> levelRank(a.level) - levelRank(b.level) || a.due-b.due);
-  if(items.length === 0){ list.innerHTML = `<p style="font-size:13px;color:#9a9184;text-align:center;padding:20px;">${listFilterTag==='archivées' ? "Rien d'archivé pour l'instant — marque une phrase « Je connais déjà » pendant une révision, ou avec le bouton 🎓 ci-dessous." : 'Aucune phrase pour le moment.'}</p>`; return; }
+  if(items.length === 0){ list.innerHTML = `<p style="font-size:13px;color:#6b6358;text-align:center;padding:20px;">${listFilterTag==='archivées' ? "Rien d'archivé pour l'instant — marque une phrase « Je connais déjà » pendant une révision, ou avec le bouton 🎓 ci-dessous." : 'Aucune phrase pour le moment.'}</p>`; return; }
   let lastLevel = null;
   list.innerHTML = items.map(p=>{
     const isDue = p.due <= nowTs();
@@ -55,7 +55,7 @@ export function renderList(){
       <div class="pi-mid"><div class="pi-romaji">${escapeHtml(p.romaji||'')}</div><div class="pi-fr">${escapeHtml(p.fr||'')}</div></div>
       ${p.level ? `<div class="pi-level">${escapeHtml(p.level)}</div>` : ''}
       <div class="pi-tag">${escapeHtml(p.tag)}</div>
-      <div class="pi-due" style="color:${isDue&&!p.archived?'#b8401f':'#9a9184'}">${dueLabel}</div>
+      <div class="pi-due" style="color:${isDue&&!p.archived?'#b8401f':'#6b6358'}">${dueLabel}</div>
       <button class="pi-restore" data-id="${p.id}">${p.archived?'↩ Remettre':'🎓 Je sais déjà'}</button>
       <button class="pi-del" data-id="${p.id}" title="Supprimer">✕</button>
     </div>`;
@@ -95,7 +95,7 @@ function renderCoreList(list){
         <div class="pi-mid"><div class="pi-romaji">${escapeHtml(r.romaji||'')}</div><div class="pi-fr">${escapeHtml(r.fr||'')}</div></div>
         ${r.level ? `<div class="pi-level">${escapeHtml(r.level)}</div>` : ''}
         <div class="pi-tag">${escapeHtml(r.tag)}</div>
-        <div class="pi-due" style="color:${added?'#5c7a4f':'#9a9184'}">${added?'dans tes révisions ✓':'pas encore importée'}</div>
+        <div class="pi-due" style="color:${added?'#5c7a4f':'#6b6358'}">${added?'dans tes révisions ✓':'pas encore importée'}</div>
       </div>`;
     }).join('');
 }

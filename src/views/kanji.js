@@ -37,13 +37,24 @@ const keyK = k => k, keyR = r => 'r:' + r;
 const isRadKey = key => key.startsWith('r:');
 
 // Résumé lisible sans charger le paquet (utilisé par l'onglet Aujourd'hui).
+// Phase du parcours : radicaux d'abord ; le passage aux kanji ne se fait qu'AU LENDEMAIN de la fin des radicaux
+// (sinon la journée en cours repartirait de 0/6 et l'étape du jour ne pourrait jamais se valider).
+const RAD_TOTAL = 51;
+function currentPhase(){
+  if(meta.kanjiPhase === 'kanji') return 'kanji';
+  if(meta.radDoneOn && meta.radDoneOn < todayStr()) meta.kanjiPhase = 'kanji';
+  return meta.kanjiPhase === 'kanji' ? 'kanji' : 'radicals';
+}
 export function kanjiTodayStatus(){
   const s = srs(), now = nowTs(), d = daily();
   const due = Object.values(s).filter(c => c.due <= now).length;
-  const phase = meta.kanjiPhase === 'kanji' ? 'kanji' : 'radicals';
+  const phase = currentPhase();
   const goal = phase === 'radicals' ? cfg().radPerDay : cfg().perDay;
   const introduced = phase === 'radicals' ? d.newR.length : d.newK.length;
-  const lessonDone = introduced >= goal ? d.newK.concat(d.newR).every(k => s[k]) : false;
+  const radSeen = Object.keys(s).filter(k => isRadKey(k)).length;
+  const radLeft = RAD_TOTAL - radSeen - d.newR.filter(r => !s[keyR(r)]).length;
+  const quotaMet = introduced >= goal || (phase === 'radicals' && radLeft <= 0);
+  const lessonDone = quotaMet ? d.newK.concat(d.newR).every(k => s[k]) : false;
   const learnedTotal = Object.keys(s).filter(k => !isRadKey(k)).length;
   return { due, phase, goal, introduced, lessonDone, reviewed: d.reviewed, learnedTotal, started: Object.keys(s).length > 0 || introduced > 0 };
 }
@@ -75,11 +86,13 @@ function rdChip(shown, kana){
   return `<span class="kj-rd">${escapeHtml(shown)}<small>${rj(k)}</small><button type="button" class="kj-audio kj-rd-a" data-say="${escapeHtml(k)}" title="Écouter">🔊</button></span>`;
 }
 function readingsHtml(d){
-  const on = (d.on || []).map(x => rdChip(hira2kata(x), x)).join('');
-  const kun = (d.kun || []).map(x => rdChip(x, x)).join('');
+  const on = d.on || [], kun = d.kun || [];
+  const main = [on[0] && rdChip(hira2kata(on[0]), on[0]), kun[0] && rdChip(kun[0], kun[0])].filter(Boolean);
+  const others = [...on.slice(1).map(x => rdChip(hira2kata(x), x)), ...kun.slice(1).map(x => rdChip(x, x))];
   return `<div class="kj-readings"><span class="kj-slabel">🗣️ Comment ça se prononce</span>
-    ${on ? `<div><span class="kj-rlabel">On : lecture « chinoise », dans les mots composés</span>${on}</div>` : ''}
-    ${kun ? `<div><span class="kj-rlabel">Kun : lecture « japonaise », seul ou avec des kana</span>${kun}</div>` : ''}
+    <div>${on[0] ? `<span class="kj-rlabel">On (dans les mots composés)</span>${rdChip(hira2kata(on[0]), on[0])}` : ''}</div>
+    <div>${kun[0] ? `<span class="kj-rlabel">Kun (seul, avec des kana)</span>${rdChip(kun[0], kun[0])}` : ''}</div>
+    ${others.length ? `<details class="kj-more"><summary>Autres lectures (plus rares)</summary>${others.join('')}</details>` : ''}
   </div>`;
 }
 // Prononciation d'un radical : son nom japonais (ex. さんずい) et/ou les lectures du kanji s'il en est un.
@@ -90,14 +103,18 @@ function radSayHtml(r){
   if(!nm && !rest) return '';
   return `<div class="kj-readings"><span class="kj-slabel">🗣️ Comment ça se dit</span>${nm}</div>${rest}`;
 }
+function futureKanji(word, d){
+  if(!BY_K) return false;
+  return [...word].some(c => { const x = BY_K.get(c); return x && x.n > d.n; });
+}
 function kanjiFront(d){ return `<div class="kj-glyph">${escapeHtml(d.k)}</div>`; }
 function kanjiBack(d, withAudio = true){
   const ex = d.ex || [];
   return `<div class="kj-fr">${escapeHtml(d.fr)}</div>
     ${readingsHtml(d)}
     ${chipsHtml(d)}
-    ${d.st ? `<div class="kj-story"><span class="kj-slabel">💡 Pour s'en souvenir</span>${escapeHtml(d.st)}</div>` : ''}
-    ${ex.length ? `<div class="kj-ex"><span class="kj-slabel">Un mot pour l'ancrer</span><b>${escapeHtml(ex[0])}</b> <span class="kj-exk">（${escapeHtml(ex[1])} / ${rj(ex[1])}）</span> — ${escapeHtml(ex[2])}${withAudio ? ` <button class="kj-audio" data-say="${escapeHtml(ex[1])}" title="Écouter">🔊</button>` : ''}</div>` : ''}
+    ${d.st ? `<div class="kj-story"><span class="kj-slabel">💡 Image pour retenir</span>${escapeHtml(d.st)}</div>` : ''}
+    ${ex.length ? `<div class="kj-ex"><span class="kj-slabel">Un mot pour l'ancrer${futureKanji(ex[0], d) ? ' <em class="kj-soon">(contient un kanji que tu verras plus tard)</em>' : ''}</span><b>${escapeHtml(ex[0])}</b> <span class="kj-exk">（${escapeHtml(ex[1])} / ${rj(ex[1])}）</span> — ${escapeHtml(ex[2])}${withAudio ? ` <button class="kj-audio" data-say="${escapeHtml(ex[1])}" title="Écouter">🔊</button>` : ''}</div>` : ''}
     <button type="button" class="kj-stroke-btn" data-k="${escapeHtml(d.k)}">✍️ Ordre des traits</button><div class="kj-stroke-box"></div>
     <div class="kj-meta">${d.s} trait${d.s>1?'s':''} · ${d.g <= 6 ? 'école primaire (année ' + d.g + ')' : 'collège / lycée'}${d.j ? ' · JLPT N' + d.j : ''} · n° ${d.n} / ${TOTAL}</div>`;
 }
@@ -118,7 +135,7 @@ function wireAudio(root){
 // ---------- sélection des nouveaux éléments du jour ----------
 function pickNew(){
   const d = daily(), s = srs();
-  const phase = meta.kanjiPhase === 'kanji' ? 'kanji' : 'radicals';
+  const phase = currentPhase();
   if(phase === 'radicals'){
     const starters = RADS.filter(r => r.starter).sort((a, b) => a.order - b.order);
     const pool = starters.filter(r => !s[keyR(r.r)] && !d.newR.includes(r.r));
@@ -133,9 +150,9 @@ function pickNew(){
   return d.newK.map(k => ({ kind: 'k', id: k }));
 }
 function maybeAdvancePhase(){
-  if(meta.kanjiPhase === 'kanji') return;
+  if(meta.kanjiPhase === 'kanji' || meta.radDoneOn) return;
   const s = srs();
-  if(RADS.filter(r => r.starter).every(r => s[keyR(r.r)])){ meta.kanjiPhase = 'kanji'; saveMeta(); }
+  if(RADS.filter(r => r.starter).every(r => s[keyR(r.r)])){ meta.radDoneOn = todayStr(); saveMeta(); }
 }
 
 // ---------- rendu principal ----------
@@ -303,7 +320,7 @@ function renderQuizQ(area){
     ui.results = ui.results || {}; ui.results[key] = ok; if(ok) ui.right++;
     const data = itemData(it);
     recordAnswer(it.kind === 'r' ? 'radical' : 'kanji', key, ok, { q: `Que veut dire ${g} ?`, ok: labelOf(it), choices, explain: it.kind === 'r' ? (data.r.story || '') : (data.d.st || ''), say: it.kind === 'k' && data.d.ex ? data.d.ex[1] : '', chosen: b.dataset.c });
-    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ C\'était : ' + escapeHtml(labelOf(it))}</div>${it.kind === 'k' ? readingsHtml(data.d) : radSayHtml(data.r)}<button class="continue-btn" id="kjQn">Continuer</button>`;
+    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ C\'était : ' + escapeHtml(labelOf(it))}</div>${it.kind === 'k' ? readingsHtml(data.d) : radSayHtml(data.r)}${!ok ? `<div class="kj-story"><span class="kj-slabel">💡 Image pour retenir</span>${escapeHtml(it.kind === 'k' ? (data.d.st || '') : (data.r.story || ''))}</div>` : ''}<button class="continue-btn" id="kjQn">Continuer</button>`;
     wireAudio(document.getElementById('kjFb'));
     document.getElementById('kjQn').addEventListener('click', () => { ui.qi++; renderKanji(); });
     if(it.kind === 'k' && data.d.ex) speak(data.d.ex[1], 0.85);

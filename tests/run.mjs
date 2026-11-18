@@ -29,7 +29,7 @@ const { KANJI_WORDS } = await imp('data/kanji-words.js'); const set = new Set(KA
 ok(KANJI_WORDS.every(w => [...w.jp].filter(c => /[㐀-䶿一-鿿]/.test(c)).every(c => set.has(c))), 'mots : tous les kanji sont dans le paquet');
 for(const [f, ex] of [['data/menus.js', 'MENU_ASK'], ['data/kyoto-kit.js', 'KIT_ASK']]){ const m = await imp(f); ok(m[ex].every(q => q.choices[0] === q.ok && new Set(q.choices).size === q.choices.length), `${ex} : ok en premier, choix distincts`); }
 const { LESSONS } = await imp('data/lessons.js');
-ok(LESSONS.length === 11 && LESSONS.every(l => l.drill.length === 6 && l.drill.every(q => q.choices[0] === q.ok && new Set(q.choices).size === 4)), '11 leçons, 6 questions valides chacune');
+ok(LESSONS.length === 12 && LESSONS.every(l => l.drill.length === 6 && l.drill.every(q => q.choices[0] === q.ok && new Set(q.choices).size === 4)), '12 leçons, 6 questions valides chacune');
 const { MISTAKES } = await imp('data/mistakes.js'); ok(MISTAKES.length === 30 && MISTAKES.every(m => m.drill.choices[0] === m.drill.ok), '30 erreurs classiques valides');
 
 // 4. Service worker : tous les fichiers précachés existent

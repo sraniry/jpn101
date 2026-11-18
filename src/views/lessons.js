@@ -20,7 +20,7 @@ export function renderLessons(opts){
 
 function renderList(area){
   const done = meta.lessonsDone || [];
-  area.innerHTML = `<div class="hub-intro"><h2>Leçons de grammaire</h2><p>11 petites leçons dans l'ordre. Chacune : la règle en quelques lignes, des exemples avec audio, l'erreur classique des francophones, puis 6 questions. Valide-la avec 5 bonnes réponses.</p></div>
+  area.innerHTML = `<div class="hub-intro"><h2>Leçons de grammaire</h2><p>${LESSONS.length} petites leçons dans l'ordre. Chacune : la règle en quelques lignes, des exemples avec audio, l'erreur classique des francophones, puis 6 questions. Valide-la avec 5 bonnes réponses.</p></div>
     <ol class="path-list">${LESSONS.map((l, i) => `<li class="path-step ${done.includes(l.id) ? 'done' : (i === done.length ? 'now' : 'next')}"><button type="button" class="path-btn" data-id="${l.id}">
       <span class="path-num">${done.includes(l.id) ? '✓' : i + 1}</span><span class="path-body"><b>${l.icon} ${escapeHtml(l.title)}</b><small>${escapeHtml(l.why)}</small></span></button></li>`).join('')}</ol>`;
   area.querySelectorAll('[data-id]').forEach(b => b.addEventListener('click', () => { st = { id: b.dataset.id, i: 0, right: 0, answered: false, done: false, quiz: false }; renderLessons(); window.scrollTo({ top: 0 }); }));

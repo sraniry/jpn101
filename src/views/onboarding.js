@@ -21,7 +21,17 @@ function show(){
   const box = document.getElementById('onboarding'); if(!box) return;
   const st = { step: 1, goal: meta.goal || 'kyoto', level: 'zero', minutes: meta.minutes || 20, romaji: true };
   box.hidden = false;
-  const close = () => { box.hidden = true; box.innerHTML = ''; };
+  const prevFocus = document.activeElement;
+  const close = () => { box.hidden = true; box.innerHTML = ''; box.onkeydown = null; if(prevFocus && prevFocus.focus) prevFocus.focus(); };
+  // Modale accessible : Échap ferme (= « Passer »), Tab reste dans la fenêtre.
+  box.onkeydown = e => {
+    if(e.key === 'Escape'){ meta.onboarded = true; saveMeta(); close(); return; }
+    if(e.key !== 'Tab') return;
+    const f = [...box.querySelectorAll('button, input')].filter(x => !x.disabled); if(!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  };
   const render = () => {
     const dots = `<div class="ob-dots" aria-hidden="true">${[1, 2, 3].map(i => `<span class="${i === st.step ? 'on' : ''}"></span>`).join('')}</div>`;
     let body = '';
@@ -51,7 +61,7 @@ function show(){
       if(st.step < 3){ st.step++; render(); return; }
       meta.onboarded = true; meta.goal = st.goal; meta.minutes = st.minutes; meta.level = st.level;
       if(st.level !== 'zero') meta.kanjiPhase = 'kanji';
-      if(!st.romaji){ meta.romajiHidden = true; }
+      meta.romajiPrefs = Object.assign({ pages: {}, sections: {}, words: {} }, meta.romajiPrefs || {}, { global: st.romaji });
       await saveMeta();
       await importSeed(['A0', 'A1']);
       close(); window.dispatchEvent(new CustomEvent('nihongo:changed'));

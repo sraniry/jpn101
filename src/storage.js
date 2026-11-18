@@ -39,7 +39,7 @@ export async function savePhrases(){
 export async function saveMeta(touch = true){
   if(touch) meta.lastModified = nowTs();
   await storageSet(META_KEY, JSON.stringify(meta));
-  window.dispatchEvent(new CustomEvent('nihongo:changed'));
+  if(touch) window.dispatchEvent(new CustomEvent('nihongo:changed'));   // une écriture technique ne déclenche pas de push cloud
 }
 
 export function nowTs(){ return Date.now(); }
@@ -76,12 +76,14 @@ export function recordAnswer(src, key, ok, q){
     const e = m[id]; if(!e) return;
     e.streak = (e.streak || 0) + 1;
     if(e.streak >= 3){ e.mastered = true; e.masteredOn = todayStr(); }
+    saveMeta();
     return;
   }
   const e = m[id] || { src, key, n: 0 };
   Object.assign(e, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain || '', say: q.say || '', chosen: q.chosen || '', last: todayStr(), streak: 0, mastered: false });
   e.n = (e.n || 0) + 1; m[id] = e;
   const ids = Object.keys(m); if(ids.length > 300){ ids.sort((a, b) => (m[a].last || '').localeCompare(m[b].last || '')).slice(0, ids.length - 300).forEach(i => delete m[i]); }
+  saveMeta();
 }
 export function openMistakes(){ return Object.values(meta.mistakes || {}).filter(e => !e.mastered); }
 export function masteredMistakes(){ return Object.values(meta.mistakes || {}).filter(e => e.mastered); }
@@ -134,6 +136,8 @@ export function archiveCard(card, archived){
 }
 
 export function getDueAll(){ return phrases.filter(p => p.due <= nowTs() && !p.archived); }
+// Révisions réellement en retard (cartes déjà vues) : les cartes jamais vues sont des « nouvelles », pas du retard.
+export function getReviewDue(){ return phrases.filter(p => p.due <= nowTs() && !p.archived && p.reps > 0); }
 
 const LEVEL_ORDER = { 'A0':0, 'A1':1, 'A2':2, 'B1':3 };
 export function levelRank(level){ return LEVEL_ORDER.hasOwnProperty(level) ? LEVEL_ORDER[level] : 99; }
