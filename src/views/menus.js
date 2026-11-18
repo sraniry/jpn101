@@ -1,6 +1,7 @@
 import { MENUS, MENU_VOCAB, MENU_PHRASES, MENU_ASK, MENU_CHALLENGES } from '../../data/menus.js';
 import { KIT_VOCAB, KIT_PHRASES, KIT_ASK, KIT_TIPS, KIT_CHALLENGES } from '../../data/kyoto-kit.js';
-import { planMark, registerStudyActivity, addQuizStat } from '../storage.js';
+import { planMark, registerStudyActivity, addQuizStat, recordAnswer, meta } from '../storage.js';
+import { kanaPathState } from './kana.js';
 import { speak } from '../tts.js';
 import { escapeHtml, kanaToRomaji } from '../util.js';
 import { celebrate } from '../encouragement.js';
@@ -35,7 +36,14 @@ const ALL_CHALLENGES = [];
 (function(){ const a = MENU_CHALLENGES, b = KIT_CHALLENGES; for(let i = 0; i < Math.max(a.length, b.length); i++){ if(a[i]) ALL_CHALLENGES.push(a[i]); if(b[i]) ALL_CHALLENGES.push(b[i]); } })();
 const KIT_IDS = new Set(KIT_CHALLENGES.map(c => c.id));
 const ALL_VOCAB = [...MENU_VOCAB, ...KIT_VOCAB];
-export const todayChallenge = () => ALL_CHALLENGES[dayNumber() % ALL_CHALLENGES.length];
+export const todayChallenge = () => {
+  // Tant que les kana ne sont pas acquis, pas de défi qui demande de lire des kanji : on propose
+  // les défis de phrases à dire (aucune lecture requise) ou de situations.
+  let pool = ALL_CHALLENGES;
+  try{ const k = kanaPathState(); if(k.done < k.total) pool = ALL_CHALLENGES.filter(c => c.kind === 'phrases' || c.kind === 'ask'); }catch(e){}
+  if(!pool.length) pool = ALL_CHALLENGES;
+  return pool[dayNumber() % pool.length];
+};
 export function openMenuChallenge(id){
   const ch = ALL_CHALLENGES.find(c => c.id === id) || todayChallenge();
   sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch };
@@ -263,6 +271,7 @@ function renderQuiz(area){
     const ok = b.dataset.c === q.ok;
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === q.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else ui.right++;
+    recordAnswer(KIT_IDS.has((ui.challenge || {}).id) || ui.backTo === 'kit' ? 'kit' : 'menu', (q.word || q.q).slice(0, 40) + ':' + q.q.slice(0, 10), ok, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain, say: q.say, chosen: b.dataset.c });
     document.getElementById('mnFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div>${q.kana ? `<div class="mn-say-box"><b>${escapeHtml(q.word || '')}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>` : ''}<div class="mn-explain">${escapeHtml(q.explain || '')}</div>${q.word ? kanjiInfoHtml(q.word) : ''}<button class="continue-btn" id="mnNext">Continuer</button>`;
     wireAudio(document.getElementById('mnFb'));
     document.getElementById('mnNext').addEventListener('click', () => { ui.i++; renderMenus(); });

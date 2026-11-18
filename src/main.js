@@ -16,31 +16,41 @@ import { updateImportBanner, renderTagChips, renderList, renderStats, initManage
 import { initCloudSync, initCloudSyncUI } from './cloudsync.js';
 import { initRomajiToggle } from './romajiToggle.js';
 import { initReminderLoop } from './reminder.js';
+import { showView, registerView, currentView } from './nav.js';
+import { renderLearnHub, renderSpeakHub, renderMeHub } from './views/hubs.js';
+import { renderPath } from './views/path.js';
+import { renderProgress, renderMistakes } from './views/progress.js';
+import { renderTips, renderHelp } from './views/tips.js';
+import { renderLessons, renderTexts } from './views/lessons.js';
+import { maybeShowOnboarding } from './views/onboarding.js';
 
-// ---------- tabs ----------
-document.querySelectorAll('nav.tabs button').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('section.view').forEach(s=>s.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('view-'+btn.dataset.view).classList.add('active');
-    if(btn.dataset.view === 'today') renderToday();
-    if(btn.dataset.view === 'skills') renderSkills();
-    if(btn.dataset.view === 'review'){ renderSoundBars(); startReviewSession(); }
-    if(btn.dataset.view === 'conversation'){ renderSoundBars(); renderConversationList(); }
-    if(btn.dataset.view === 'listening') renderListening();
-    if(btn.dataset.view === 'reading') renderReading();
-    if(btn.dataset.view === 'kana') renderKana();
-    if(btn.dataset.view === 'kanji'){ openKanjiHome(); renderKanji(); }
-    if(btn.dataset.view === 'menus') renderMenus();
-    if(btn.dataset.view === 'grammar') renderGrammar();
-    if(btn.dataset.view === 'jlpt') renderJlpt();
-    // « Mes phrases » n'a pas de fonction renderXxx dédiée : sans ceci, un archivage ou un
-    // ajout fait ailleurs (Réviser, Lire, JLPT) n'apparaissait qu'après une action qui
-    // redéclenchait un render() complet — la liste pouvait donc rester périmée.
-    if(btn.dataset.view === 'add') refreshCounters();
-  });
-});
+// ---------- navigation : 5 entrées, écrans enfants ouverts depuis les hubs ----------
+document.querySelectorAll('nav.tabs button').forEach(btn=> btn.addEventListener('click', ()=> showView(btn.dataset.view)));
+registerView('today', ()=> renderToday());
+registerView('skills', ()=> renderSkills());
+registerView('review', ()=>{ renderSoundBars(); startReviewSession(); });
+registerView('conversation', ()=>{ renderSoundBars(); renderConversationList(); });
+registerView('listening', ()=> renderListening());
+registerView('reading', ()=> renderReading());
+registerView('kana', ()=> renderKana());
+registerView('kanji', (o)=>{ if(!o || !o.keep) openKanjiHome(); renderKanji(); });
+registerView('menus', ()=> renderMenus());
+registerView('grammar', ()=> renderGrammar());
+registerView('jlpt', ()=> renderJlpt());
+registerView('add', ()=> refreshCounters());
+registerView('path', ()=> renderPath());
+registerView('learn', ()=> renderLearnHub());
+registerView('speak', ()=> renderSpeakHub());
+registerView('me', ()=> renderMeHub());
+registerView('progress', ()=> renderProgress());
+registerView('mistakes', (o)=> renderMistakes(o));
+registerView('tips', (o)=> renderTips(o));
+registerView('lessons', (o)=> renderLessons(o));
+registerView('texts', ()=> renderTexts());
+registerView('help', ()=> renderHelp());
+
+let hdrT = null; const hdrRefresh = ()=>{ clearTimeout(hdrT); hdrT = setTimeout(renderHeader, 250); };
+window.addEventListener('nihongo:badge', hdrRefresh); window.addEventListener('nihongo:changed', hdrRefresh);
 
 // delegate audio clicks inside conversation bubbles & grammar reference
 document.addEventListener('click', (e)=>{
@@ -53,7 +63,8 @@ document.addEventListener('click', (e)=>{
 });
 
 export function renderHeader(){
-  document.getElementById('dueCount').textContent = getDueAll().length;
+  const nd = getDueAll().length, dc = document.getElementById('dueCount');
+  if(dc){ dc.textContent = nd; dc.style.display = nd ? '' : 'none'; }
   const kd = document.getElementById('kanjiDue'), n = kanjiTodayStatus().due;
   if(kd){ kd.textContent = n; kd.style.display = n ? '' : 'none'; }
 }
@@ -69,15 +80,17 @@ export function refreshCounters(){
 
 export function render(){
   refreshCounters();
-  const activeView = document.querySelector('section.view.active');
-  if(activeView && activeView.id === 'view-today') renderToday();
-  if(activeView && activeView.id === 'view-skills') renderSkills();
-  if(activeView && activeView.id === 'view-review') startReviewSession();
-  if(activeView && activeView.id === 'view-conversation') renderConversationList();
-  if(activeView && activeView.id === 'view-listening') renderListening();
-  if(activeView && activeView.id === 'view-reading') renderReading();
-  if(activeView && activeView.id === 'view-kana') renderKana();
-  if(activeView && activeView.id === 'view-grammar') renderGrammar();
+  const v = currentView();
+  if(v === 'today') renderToday();
+  else if(v === 'skills') renderSkills();
+  else if(v === 'review') startReviewSession();
+  else if(v === 'conversation') renderConversationList();
+  else if(v === 'listening') renderListening();
+  else if(v === 'reading') renderReading();
+  else if(v === 'kana') renderKana();
+  else if(v === 'grammar') renderGrammar();
+  else if(v === 'path') renderPath();
+  else if(v === 'me') renderMeHub();
 }
 
 async function init(){
@@ -85,10 +98,16 @@ async function init(){
   initCloudSyncUI();
   const synced = await importFromURL();
   if(!synced) await loadAll();
-  await initCloudSync(); // fusionne avec le cloud (si un code personnel est configuré) avant le premier rendu
   migrateLegacyStores(); // rapatrie parcours kana + historique d'examens dans meta (donc dans la sauvegarde et la synchro)
-  document.getElementById('dailyLimit').value = meta.dailyLimit || 40;
-  updateImportBanner(); updateStreak(); render();
+  document.getElementById('dailyLimit').value = meta.dailyLimit || 10;
+  updateImportBanner(); updateStreak();
+  const start = (location.hash || '').slice(1);
+  showView(document.getElementById('view-' + start) ? start : 'today', { push: false, scroll: false });
+  render();
+  try{ navigator.storage?.persist?.(); }catch(e){}   // demande au navigateur de ne pas effacer la progression
+  // Synchro cloud en arrière-plan : le premier rendu n'attend plus le réseau, puis on re-rend si la fusion a changé quelque chose.
+  initCloudSync().then(changed => { if(changed){ updateImportBanner(); updateStreak(); render(); } }).catch(()=>{});
+  maybeShowOnboarding();
   initReminderLoop();
   initRomajiToggle(); // après render() : meta est chargé (préférences romaji) et le DOM initial existe
   if(synced){

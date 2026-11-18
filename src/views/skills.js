@@ -6,6 +6,7 @@ import { setReviewFilterTag } from './review.js';
 import { openConversation } from './conversation.js';
 import { badgesHtml } from '../badges.js';
 import { celebrate } from '../encouragement.js';
+import { showView } from '../nav.js';
 
 // ---------- skills dashboard ----------
 const SKILL_META = {
@@ -39,11 +40,11 @@ export function renderSkills(){
     const meta = SKILL_META[tag] || {icon:'📁', label:tag};
     const coreCount = list.filter(p=>CORE_SET.has(p.jp)).length;
     if(lvl >= 5 && !seenMastered.includes(tag) && !newlyMastered) newlyMastered = { tag, label: meta.label };
-    html += `<div class="skill-card" data-tag="${tag}">
+    html += `<div class="skill-card" data-tag="${escapeHtml(tag)}">
       <div class="skill-head"><h4>${meta.icon} ${escapeHtml(meta.label)}${coreCount?`<span class="star-pill">⭐ ${coreCount}</span>`:''}</h4><span class="skill-level">Niveau ${lvl}/5</span></div>
       <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${pct}%"></div></div>
       <div class="skill-meta"><span>${mastered}/${list.length} maîtrisées</span><span>${pct}%</span></div>
-      ${lvl===3 && CONVERSATIONS.some(c=>c.skill===tag) ? `<button class="skill-challenge skill-challenge-btn" data-tag="${tag}">🎯 Mini-défi débloqué — tente une conversation sur ce thème →</button>` : ''}
+      ${lvl===3 && CONVERSATIONS.some(c=>c.skill===tag) ? `<button class="skill-challenge skill-challenge-btn" data-tag="${escapeHtml(tag)}">🎯 Mini-défi débloqué — tente une conversation sur ce thème →</button>` : ''}
       ${lvl>=5 ? `<div class="skill-challenge">🏆 Compétence maîtrisée !</div>` : ''}
     </div>`;
   });
@@ -58,7 +59,7 @@ export function renderSkills(){
     c.addEventListener('click', e=>{
       if(e.target.closest('.skill-challenge-btn')) return; // handled separately
       setReviewFilterTag(c.dataset.tag); setListFilterTag(c.dataset.tag);
-      document.querySelector('nav.tabs button[data-view="review"]').click();
+      showView('review');
     });
   });
   area.querySelectorAll('.skill-challenge-btn').forEach(btn=>{
@@ -67,7 +68,7 @@ export function renderSkills(){
       const tag = btn.dataset.tag;
       const conv = CONVERSATIONS.find(c => c.skill === tag && Array.isArray(c.turns));
       if(!conv) return;
-      document.querySelector('nav.tabs button[data-view="conversation"]').click();
+      showView('conversation');
       openConversation(conv.id);
     });
   });

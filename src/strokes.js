@@ -3,7 +3,7 @@
 let DATA = null, loading = null;
 export function loadStrokes(){
   if(DATA) return Promise.resolve(DATA);
-  if(!loading) loading = fetch('data/kanji-strokes.json').then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(d => (DATA = d));
+  if(!loading) loading = fetch('data/kanji-strokes.json').then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(d => (DATA = d)).catch(e => { loading = null; throw e; });
   return loading;
 }
 

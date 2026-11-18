@@ -1,3 +1,4 @@
+import { showView } from '../nav.js';
 import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity, planMark, saveMeta } from '../storage.js';
 import { CORE_SET } from '../../data/phrases.js';
 import { speak } from '../tts.js';
@@ -174,7 +175,7 @@ export function renderReview(){
     const btn = document.createElement('button');
     btn.className = 'continue-btn'; btn.style.marginTop = '16px';
     btn.textContent = '→ Aller dans « Mes phrases »';
-    btn.addEventListener('click', ()=> document.querySelector('nav.tabs button[data-view="list"]').click());
+    btn.addEventListener('click', ()=> showView('add'));
     area.querySelector('.empty-state')?.appendChild(btn);
     return;
   }

@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v32';
+const CACHE = 'nihongo-v33';
 const ASSETS = [
   './',
   './index.html',
@@ -44,6 +44,18 @@ const ASSETS = [
   './data/grammar.js',
   './data/grammar-drills.js',
   './data/kana.js',
+  './src/nav.js',
+  './src/views/hubs.js',
+  './src/views/path.js',
+  './src/views/progress.js',
+  './src/views/tips.js',
+  './src/views/lessons.js',
+  './src/views/onboarding.js',
+  './data/tips.js',
+  './data/mistakes.js',
+  './data/lessons.js',
+  './data/confusables.js',
+  './data/reading-texts.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -62,9 +74,13 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network-first, en contournant le cache HTTP (GitLab Pages le garde ~10 min :
-  // sans ça, une mise en ligne reste invisible tant que Safari sert l'ancien JS)
+  // Réseau d'abord (pour voir les mises à jour tout de suite), mais avec un délai de 3 s : sur un réseau
+  // lent (« lie-fi »), on sert le cache au lieu de laisser l'appli se figer.
+  if(e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request, { cache: 'no-cache' }).catch(() => caches.match(e.request))
+    Promise.race([
+      fetch(e.request, { cache: 'no-cache' }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000)),
+    ]).catch(() => caches.match(e.request).then(r => r || fetch(e.request)))
   );
 });

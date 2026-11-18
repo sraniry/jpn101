@@ -4,7 +4,8 @@ const STORAGE_KEY = 'phrases-v2';
 const META_KEY = 'meta-v2';
 
 export let phrases = [];
-export let meta = { streak:0, lastStudyDate:null, newIntroducedDate:null, newIntroducedCount:0, dailyLimit:40 };
+const META_DEFAULTS = () => ({ streak:0, lastStudyDate:null, newIntroducedDate:null, newIntroducedCount:0, dailyLimit:10 });
+export let meta = META_DEFAULTS();
 
 // ---------- storage abstraction : localStorage en priorité (fonctionne en fichier local Chrome),
 // window.storage utilisé seulement si présent (aperçu Claude). Corrige le bug de ré-import permanent.
@@ -33,14 +34,17 @@ export async function savePhrases(){
   await storageSet(META_KEY, JSON.stringify(meta));
   window.dispatchEvent(new CustomEvent('nihongo:changed'));
 }
-export async function saveMeta(){
-  meta.lastModified = nowTs();
+// touch=false : écriture technique (migration, remise à zéro du jour) qui ne doit PAS faire croire
+// à la synchro cloud que cet appareil a de la progression plus récente que les autres.
+export async function saveMeta(touch = true){
+  if(touch) meta.lastModified = nowTs();
   await storageSet(META_KEY, JSON.stringify(meta));
   window.dispatchEvent(new CustomEvent('nihongo:changed'));
 }
 
 export function nowTs(){ return Date.now(); }
-export function todayStr(){ return new Date().toISOString().slice(0,10); }
+// Date LOCALE (et non UTC) : à Kyoto, le « jour » doit changer à minuit, pas à 9 h.
+export function todayStr(){ const d = new Date(), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; }
 export function daysToMs(d){ return d*24*60*60*1000; }
 
 export function updateStreak(){
@@ -49,15 +53,47 @@ export function updateStreak(){
     const diff = (new Date(today) - new Date(meta.lastStudyDate)) / 86400000;
     if(diff > 1.5) meta.streak = 0;
   }
-  document.getElementById('streakBadge').textContent = '🔥 ' + (meta.streak||0) + ' jour' + (meta.streak===1?'':'s');
+  setStreakBadge();
 }
+// Jamais de « 0 jour » sec : après une pause, on invite à reprendre plutôt que de punir.
+export function setStreakBadge(){
+  const el = document.getElementById('streakBadge'); if(!el) return;
+  const n = meta.streak || 0;
+  el.textContent = n > 0 ? '🔥 ' + n + ' jour' + (n===1?'':'s') : (meta.lastStudyDate ? '🌱 On reprend ?' : '🌱 Jour 1');
+}
+// ---------- Journal d'étude (calendrier des progrès) ----------
+function bumpStudyLog(){
+  const d = todayStr(), log = meta.studyLog = meta.studyLog || {};
+  log[d] = (log[d] || 0) + 1;
+  const keys = Object.keys(log).sort(); if(keys.length > 400) keys.slice(0, keys.length - 400).forEach(k => delete log[k]);
+}
+// ---------- Journal d'erreurs ----------
+// Chaque mauvaise réponse est gardée avec sa question complète : on peut la rejouer à l'identique.
+export function recordAnswer(src, key, ok, q){
+  const m = meta.mistakes = meta.mistakes || {};
+  const id = src + '|' + key;
+  if(ok){
+    const e = m[id]; if(!e) return;
+    e.streak = (e.streak || 0) + 1;
+    if(e.streak >= 3){ e.mastered = true; e.masteredOn = todayStr(); }
+    return;
+  }
+  const e = m[id] || { src, key, n: 0 };
+  Object.assign(e, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain || '', say: q.say || '', chosen: q.chosen || '', last: todayStr(), streak: 0, mastered: false });
+  e.n = (e.n || 0) + 1; m[id] = e;
+  const ids = Object.keys(m); if(ids.length > 300){ ids.sort((a, b) => (m[a].last || '').localeCompare(m[b].last || '')).slice(0, ids.length - 300).forEach(i => delete m[i]); }
+}
+export function openMistakes(){ return Object.values(meta.mistakes || {}).filter(e => !e.mastered); }
+export function masteredMistakes(){ return Object.values(meta.mistakes || {}).filter(e => e.mastered); }
+
 export function registerStudyActivity(){
+  bumpStudyLog();
   const today = todayStr();
   if(meta.lastStudyDate !== today){
     const gapDays = meta.lastStudyDate ? (new Date(today)-new Date(meta.lastStudyDate))/86400000 : 0;
     meta.streak = (meta.lastStudyDate && gapDays <= 1.5) ? (meta.streak||0)+1 : 1;
     meta.lastStudyDate = today; saveMeta();
-    document.getElementById('streakBadge').textContent = '🔥 ' + meta.streak + ' jour' + (meta.streak===1?'':'s');
+    setStreakBadge();
     // Import statique (en tête de fichier) plutôt que dynamique : un import() différé
     // résolvait APRÈS des toasts synchrones déclenchés dans le même clic (ex: « file vidée »
     // en Réviser), et l'écrasait par accident selon l'ordre de résolution des promesses.
@@ -79,10 +115,16 @@ export function newCard(jp, romaji, fr, note, tag, level){
 }
 
 export function rate(card, grade){
-  if(grade === 0){ card.interval = 0; card.ease = Math.max(1.3, card.ease-0.2); card.due = nowTs()+1000*60*10; }
-  else if(grade === 1){ card.interval = Math.max(1, Math.round(card.interval*1.2)||1); card.due = nowTs()+daysToMs(card.interval); }
-  else if(grade === 2){ card.interval = card.reps===0?1:(card.reps===1?3:Math.round(card.interval*card.ease)); card.due = nowTs()+daysToMs(card.interval); }
-  else if(grade === 3){ card.ease = Math.min(3, card.ease+0.15); card.interval = card.reps===0?4:Math.round(card.interval*card.ease*1.3); card.due = nowTs()+daysToMs(card.interval); }
+  if(grade === 0){
+    // Oubli : retour à l'échelle d'apprentissage (10 min, puis 1 j, 3 j…). reps repart à 0 pour que
+    // « Bien » donne ensuite 1 jour et non 0 (bug d'avant : la carte restait due pour toujours).
+    card.interval = 0; card.ease = Math.max(1.3, card.ease-0.2); card.due = nowTs()+1000*60*10;
+    card.lapses = (card.lapses||0) + 1; card.reps = 0;
+    return;
+  }
+  if(grade === 1){ card.interval = Math.max(1, Math.round(card.interval*1.2)||1); card.due = nowTs()+daysToMs(card.interval); }
+  else if(grade === 2){ card.interval = Math.max(1, card.reps===0?1:(card.reps===1?3:Math.round(card.interval*card.ease))); card.due = nowTs()+daysToMs(card.interval); }
+  else if(grade === 3){ card.ease = Math.min(3, card.ease+0.15); card.interval = Math.max(2, card.reps===0?4:Math.round(card.interval*card.ease*1.3)); card.due = nowTs()+daysToMs(card.interval); }
   card.reps += 1;
 }
 export function archiveCard(card, archived){
@@ -98,7 +140,7 @@ export function levelRank(level){ return LEVEL_ORDER.hasOwnProperty(level) ? LEV
 
 export function buildQueue(){
   const today = todayStr();
-  if(meta.newIntroducedDate !== today){ meta.newIntroducedDate = today; meta.newIntroducedCount = 0; saveMeta(); }
+  if(meta.newIntroducedDate !== today){ meta.newIntroducedDate = today; meta.newIntroducedCount = 0; saveMeta(false); }
   const limit = meta.dailyLimit || 40;
   const due = getDueAll();
   const seen = due.filter(p => p.reps > 0);
@@ -119,7 +161,7 @@ export function buildQueue(){
 // meta.plan = {date, kana:bool, reviews:int, conv:bool} — remis à zéro chaque jour
 export function planToday(){
   const today = todayStr();
-  if(!meta.plan || meta.plan.date !== today){ meta.plan = { date:today, kana:false, reviews:0, conv:0 }; saveMeta(); }
+  if(!meta.plan || meta.plan.date !== today){ meta.plan = { date:today, kana:false, reviews:0, conv:0, challenge:0 }; saveMeta(false); }
   return meta.plan;
 }
 export function planMark(field, inc){
@@ -167,7 +209,7 @@ export function migrateLegacyStores(){
   if(!meta.masteredSkillsSeen){ meta.masteredSkillsSeen = []; changed = true; }
   if(!meta.quizStats){ meta.quizStats = {}; changed = true; }
   if(!meta.badgesSeen){ meta.badgesSeen = []; changed = true; }
-  if(changed) saveMeta();
+  if(changed) saveMeta(false);
 }
 
 export function getKanaPath(){ return meta.kanaPath || { done: [] }; }
@@ -178,7 +220,7 @@ export function markKanaLesson(idx){
 
 export function getExamHistory(){ return meta.examHistory || []; }
 export function addExamRecord(record){
-  meta.examHistory = [...getExamHistory(), record];
+  meta.examHistory = [...getExamHistory(), record].slice(-100);
   saveMeta();
 }
 
@@ -258,8 +300,12 @@ export async function importProgressionJSON(file){
       try {
         const data = JSON.parse(e.target.result);
         if(!data.phrases || !Array.isArray(data.phrases)) throw new Error('Format invalide.');
+        try{ localStorage.setItem('backup-before-restore', JSON.stringify({ phrases, meta, at: new Date().toISOString() })); }catch(_){}
+        meta = META_DEFAULTS();
+        if(data.meta && typeof data.meta === 'object') Object.assign(meta, data.meta);
+        meta.lastModified = nowTs(); // la restauration doit gagner sur le cloud
         await storageSet(STORAGE_KEY, JSON.stringify(data.phrases));
-        if(data.meta) await storageSet(META_KEY, JSON.stringify(data.meta));
+        await storageSet(META_KEY, JSON.stringify(meta));
         await loadAll();
         resolve(data.phrases.length);
       } catch(err) { reject(err); }

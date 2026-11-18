@@ -1,4 +1,4 @@
-import { meta, saveMeta, todayStr, nowTs, rate, registerStudyActivity } from '../storage.js';
+import { meta, saveMeta, todayStr, nowTs, rate, registerStudyActivity, recordAnswer } from '../storage.js';
 import { speak } from '../tts.js';
 import { escapeHtml, escapeRj, rjMark, kanaToRomaji } from '../util.js';
 import { celebrate } from '../encouragement.js';
@@ -281,10 +281,11 @@ function renderQuizQ(area){
     });
     registerStudyActivity(); maybeAdvancePhase(); saveMeta();
     const total = ui.items.length, right = ui.right;
-    area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${total} nouveau${total > 1 ? 'x' : ''} appris !</h3>
-      <p style="color:#7a7268;font-size:13.5px;">${right} / ${total} du premier coup. Ils reviendront en révision : demain pour ceux que tu connais, dans 10 minutes pour ceux qui ont résisté.</p>
+    const good = right * 2 >= total;
+    area.innerHTML = `<div class="conv-done">${good ? '<div class="stamp" style="margin:0 auto 14px;">合格</div>' : ''}<h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${good ? `${total} nouveau${total > 1 ? 'x' : ''} vu${total > 1 ? 's' : ''} !` : 'On les revoit bientôt !'}</h3>
+      <p style="color:#5f564a;font-size:13.5px;">${right} / ${total} du premier coup. ${good ? '' : 'Ce n\'est pas grave : c\'est le premier contact. '}Ceux que tu connais reviennent demain ; ceux qui ont résisté reviennent dans 10 minutes, et se trouvent dans « Mes erreurs ».</p>
       <button class="continue-btn" id="kjDone" style="margin-top:16px;">Terminer</button></div>`;
-    celebrate('reviewCount', { emoji: '🈁', title: 'Nouveaux kanji appris', params: { n: total } });
+    if(good) celebrate('reviewCount', { emoji: '🈁', title: 'Nouveaux kanji vus', params: { n: total } });
     document.getElementById('kjDone').addEventListener('click', () => go('home'));
     return;
   }
@@ -301,6 +302,7 @@ function renderQuizQ(area){
     if(!ok) b.classList.add('ko');
     ui.results = ui.results || {}; ui.results[key] = ok; if(ok) ui.right++;
     const data = itemData(it);
+    recordAnswer(it.kind === 'r' ? 'radical' : 'kanji', key, ok, { q: `Que veut dire ${g} ?`, ok: labelOf(it), choices, explain: it.kind === 'r' ? (data.r.story || '') : (data.d.st || ''), say: it.kind === 'k' && data.d.ex ? data.d.ex[1] : '', chosen: b.dataset.c });
     document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ C\'était : ' + escapeHtml(labelOf(it))}</div>${it.kind === 'k' ? readingsHtml(data.d) : radSayHtml(data.r)}<button class="continue-btn" id="kjQn">Continuer</button>`;
     wireAudio(document.getElementById('kjFb'));
     document.getElementById('kjQn').addEventListener('click', () => { ui.qi++; renderKanji(); });
@@ -341,10 +343,15 @@ function renderReviewStep(area){
   area.querySelectorAll('.rate-row button').forEach(b => b.addEventListener('click', () => {
     const grade = parseInt(b.dataset.grade, 10), c = srs()[key];
     const before = c.interval;
-    rate(c, grade); if(grade === 0) c.lapses = (c.lapses || 0) + 1;
+    rate(c, grade);
+    if(grade === 0){
+      const lbl = labelOf({ kind: rad ? 'r' : 'k', id: rad ? key.slice(2) : key });
+      const ch = shuffle([lbl, ...distractors({ kind: rad ? 'r' : 'k', id: rad ? key.slice(2) : key }, 3)]);
+      recordAnswer(rad ? 'radical' : 'kanji', key, false, { q: `Que veut dire ${rad ? key.slice(2) : key} ?`, ok: lbl, choices: ch, explain: rad ? (data.story || '') : (data.st || ''), say: !rad && data.ex ? data.ex[1] : '', chosen: '' });
+    } else recordAnswer(rad ? 'radical' : 'kanji', key, true, {});
     ui.queue.shift(); ui.done++;
     if(grade === 0) ui.queue.push(key); else ui.ok++;
-    daily().reviewed++; registerStudyActivity(); saveMeta();
+    daily().reviewed++; registerStudyActivity(); saveMeta(); window.dispatchEvent(new CustomEvent('nihongo:badge'));
     ui.revealed = false; renderKanji();
   }));
 }
@@ -450,6 +457,7 @@ function renderWordQuiz(area){
     const ok = b.dataset.c === q.ok;
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === q.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else ui.right++;
+    recordAnswer('word', q.word + ':' + q.q.slice(0, 6), ok, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain, say: q.say, chosen: b.dataset.c });
     document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div><div class="mn-say-box"><b>${escapeHtml(q.word)}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span></div><div class="mn-explain">${escapeHtml(q.explain)}</div><button class="continue-btn" id="kjQn">Continuer</button>`;
     document.getElementById('kjQn').addEventListener('click', () => { ui.i++; renderKanji(); });
     speak(q.say, 0.85);

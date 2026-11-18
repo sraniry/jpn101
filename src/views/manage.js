@@ -31,7 +31,7 @@ export function renderTagChips(){
   // se perd parmi les tags de contenu (café, verbes, voyage…) au fur et à mesure qu'ils s'accumulent.
   const tags = ['core', 'all', 'archivées', ...new Set(phrases.map(p=>p.tag))];
   const label = t => t==='core' ? '⭐ Essentiels' : t==='all' ? 'Toutes' : t==='archivées' ? '🎓 Déjà sues' : t;
-  chipsEl.innerHTML = tags.map(t=>`<span class="tag-chip ${t===listFilterTag?'active':''}" data-tag="${t}">${label(t)}</span>`).join('');
+  chipsEl.innerHTML = tags.map(t=>`<span class="tag-chip ${t===listFilterTag?'active':''}" data-tag="${escapeHtml(t)}">${escapeHtml(label(t))}</span>`).join('');
   chipsEl.querySelectorAll('.tag-chip').forEach(c=> c.addEventListener('click', ()=>{ listFilterTag = c.dataset.tag; renderList(); renderTagChips(); }));
 }
 export function renderList(){
@@ -124,13 +124,35 @@ export async function importFromURL(){
   if(!hash.startsWith('#sync=')) return false;
   try {
     const encoded = hash.slice(6);
-    const data = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-    if(data.phrases) localStorage.setItem('phrases-v2', JSON.stringify(data.phrases));
+    if(encoded.length > 2_500_000) throw new Error('Lien trop gros');
+    const bin = atob(encoded), bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    const data = JSON.parse(new TextDecoder().decode(bytes));
+    const okPhrases = Array.isArray(data.phrases) && data.phrases.every(p => p && typeof p.jp === 'string' && typeof p.fr === 'string');
+    if(!okPhrases || (data.meta && typeof data.meta !== 'object')) throw new Error('Format invalide');
+    history.replaceState(null, '', location.pathname); // nettoie l'URL dans tous les cas
+    // Jamais d'écrasement silencieux : on demande, et on garde une sauvegarde de l'état actuel.
+    const ok = confirm(`Ce lien contient une progression (${data.phrases.length} phrases). La charger REMPLACE ta progression actuelle sur cet appareil. Continuer ?`);
+    if(!ok) return false;
+    try{ localStorage.setItem('backup-before-import', JSON.stringify({ phrases: localStorage.getItem('phrases-v2'), meta: localStorage.getItem('meta-v2'), at: new Date().toISOString() })); }catch(_){}
+    localStorage.setItem('phrases-v2', JSON.stringify(data.phrases));
     if(data.meta) localStorage.setItem('meta-v2', JSON.stringify(data.meta));
-    history.replaceState(null, '', location.pathname); // nettoie l'URL
     await loadAll();
     return true;
   } catch(e) { return false; }
+}
+
+// Import programmatique du pack (onboarding : plus de blocage « importe d'abord dans Mes phrases »).
+export async function importSeed(levels){
+  const existing = existingKeySet(); let added = 0;
+  SEED_PACK.forEach(row=>{
+    if(!levels.includes(row.level)) return;
+    const key = cardKey(row.jp, row.romaji);
+    if(existing.has(key)) return;
+    phrases.push(newCard(row.jp, row.romaji, row.fr, row.ex, row.tag, row.level));
+    existing.add(key); added++;
+  });
+  if(added > 0) await savePhrases();
+  return added;
 }
 
 export function initManage(){

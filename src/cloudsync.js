@@ -115,35 +115,85 @@ export function schedulePush(){
   pushTimer = setTimeout(() => { pushToCloud(); }, 1500);
 }
 
-// ---------- Pull + fusion au démarrage (la version la plus récente gagne) ----------
+// ---------- Pull + FUSION au démarrage ----------
+// Avant : « la version la plus récente écrase tout » → un appareil neuf ou resté hors-ligne pouvait
+// effacer la progression des autres. Maintenant on FUSIONNE : rien n'est perdu.
+const UNION_KEYS = ['convDone', 'readingKnown', 'badgesSeen', 'grammarDrills', 'masteredSkillsSeen'];
+function unionArr(a, b){ return [...new Set([...(a || []), ...(b || [])])]; }
+function mergeByKey(a, b, pick){
+  const out = Object.assign({}, a || {});
+  Object.entries(b || {}).forEach(([k, v]) => { out[k] = (k in out) ? pick(out[k], v) : v; });
+  return out;
+}
+export function mergePhrases(a, b){
+  const m = new Map();
+  [...(a || []), ...(b || [])].forEach(c => {
+    const o = m.get(c.id);
+    if(!o){ m.set(c.id, c); return; }
+    const better = (c.reps || 0) > (o.reps || 0) || ((c.reps || 0) === (o.reps || 0) && (c.due || 0) > (o.due || 0));
+    m.set(c.id, better ? c : o);
+  });
+  return [...m.values()];
+}
+export function mergeMeta(a, b){
+  a = a || {}; b = b || {};
+  const newer = (a.lastModified || 0) >= (b.lastModified || 0) ? a : b, older = newer === a ? b : a;
+  const out = Object.assign({}, older, newer);
+  UNION_KEYS.forEach(k => { out[k] = unionArr(a[k], b[k]); });
+  out.kanjiSrs = mergeByKey(a.kanjiSrs, b.kanjiSrs, (x, y) => ((y.reps || 0) > (x.reps || 0) || ((y.reps || 0) === (x.reps || 0) && (y.due || 0) > (x.due || 0))) ? y : x);
+  out.studyLog = mergeByKey(a.studyLog, b.studyLog, (x, y) => Math.max(x, y));
+  out.mistakes = mergeByKey(a.mistakes, b.mistakes, (x, y) => ((y.last || '') > (x.last || '')) ? y : x);
+  const qs = {}; new Set([...Object.keys(a.quizStats || {}), ...Object.keys(b.quizStats || {})]).forEach(k => {
+    const seen = new Set(), list = [];
+    [...((a.quizStats || {})[k] || []), ...((b.quizStats || {})[k] || [])].forEach(e => { const j = JSON.stringify(e); if(!seen.has(j)){ seen.add(j); list.push(e); } });
+    qs[k] = list.sort((x, y) => (x.date || '').localeCompare(y.date || '')).slice(-50);
+  }); out.quizStats = qs;
+  { const seen = new Set(), list = []; [...(a.examHistory || []), ...(b.examHistory || [])].forEach(e => { const j = JSON.stringify(e); if(!seen.has(j)){ seen.add(j); list.push(e); } }); out.examHistory = list.slice(-100); }
+  out.kanaPath = { done: unionArr((a.kanaPath || {}).done, (b.kanaPath || {}).done) };
+  const lastA = a.lastStudyDate || '', lastB = b.lastStudyDate || '';
+  const fresher = lastA >= lastB ? a : b;
+  out.lastStudyDate = fresher.lastStudyDate || null; out.streak = fresher.streak || 0;
+  out.lastModified = Math.max(a.lastModified || 0, b.lastModified || 0);
+  return out;
+}
+function isEmptyLocal(){
+  return phrases.length === 0 && !Object.keys(meta.kanjiSrs || {}).length && !(meta.convDone || []).length && !meta.lastStudyDate;
+}
+
 export async function pullAndMerge(){
   const code = getSyncCode();
-  if(!code) return;
+  if(!code) return false;
   setIndicator('syncing');
   const f = await ensureFirebase();
-  if(!f){ setIndicator('error', fbLastError); return; }
+  if(!f){ setIndicator('error', fbLastError); return false; }
   try {
     const snap = await f.getDoc(docRef(f, code));
+    const emptyBefore = isEmptyLocal();
     if(!snap.exists()){
-      // Rien sur le cloud pour ce code : on initialise avec la version locale actuelle.
-      await pushToCloud();
-      return;
+      if(!emptyBefore) await pushToCloud();   // jamais d'écrasement du cloud par un état vide
+      else setIndicator('synced');
+      return false;
     }
     const remote = snap.data();
-    const remoteTs = remote.lastModified || 0;
-    const localTs = meta.lastModified || 0;
-    if(remoteTs > localTs){
+    if(emptyBefore){
+      // Appareil neuf : on adopte simplement le cloud, sans rien pousser.
       await storageSet('phrases-v2', JSON.stringify(remote.phrases || []));
       await storageSet('meta-v2', JSON.stringify(remote.meta || {}));
       await loadAll();
-    } else if(localTs > remoteTs){
-      await pushToCloud();
-      return; // pushToCloud met déjà l'indicateur à jour
+      setIndicator('synced');
+      return true;
     }
-    setIndicator('synced');
+    const mergedPhrases = mergePhrases(phrases, remote.phrases);
+    const mergedMeta = mergeMeta(meta, remote.meta);
+    await storageSet('phrases-v2', JSON.stringify(mergedPhrases));
+    await storageSet('meta-v2', JSON.stringify(mergedMeta));
+    await loadAll();
+    await pushToCloud();   // le cloud reçoit la fusion
+    return true;
   } catch(e) {
     console.error('Pull cloud échoué :', e);
     setIndicator('error', e && e.message);
+    return false;
   }
 }
 
@@ -174,6 +224,6 @@ export function initCloudSyncUI(){
 export async function initCloudSync(){
   updateSyncIndicator();
   if(!isSyncConfigured()) return;
-  // Garde-fou : le premier rendu ne doit jamais attendre le réseau plus de 4 s.
-  await Promise.race([ pullAndMerge(), new Promise(resolve => setTimeout(resolve, 4000)) ]);
+  // Le premier rendu part du local ; le résultat de la fusion déclenche un nouveau rendu (voir main.js).
+  return pullAndMerge();
 }

@@ -24,28 +24,32 @@
     <div class="noren-strip"><span>う</span></div>
   </div>
 
-  <header class="title">
-    <h1>日本語を学ぼう · Nihongo wo Manabou</h1>
-    <p>Réviser · Converser · Lire les panneaux · Grammaire — guidé de A0 à A2</p>
-    <div class="streak-badge" id="streakBadge">🔥 0 jour</div>
+  <a class="skip-link" href="#main-content">Aller au contenu</a>
+  <header class="title compact">
+    <div class="brand"><span class="brand-jp">日本語</span><span class="brand-name">Nihongo Kyoto</span></div>
+    <div class="streak-badge" id="streakBadge" aria-live="polite">🌱 Jour 1</div>
   </header>
 
-  <nav class="tabs">
-    <button data-view="today" class="active">Aujourd'hui</button>
-    <button data-view="skills">Compétences</button>
-    <button data-view="review">Réviser <span class="count" id="dueCount">0</span></button>
-    <button data-view="conversation">Conversation</button>
-    <button data-view="listening">Écoute</button>
-    <button data-view="reading">Lire</button>
-    <button data-view="kana">Alphabet</button>
-    <button data-view="kanji">Kanji <span class="count kj-count" id="kanjiDue" style="display:none">0</span></button>
-    <button data-view="menus">Menus</button>
-    <button data-view="grammar">Grammaire</button>
-    <button data-view="jlpt">JLPT N5 · N4</button>
-    <button data-view="add">Mes phrases</button>
+  <nav class="tabs" aria-label="Navigation principale">
+    <button data-view="today" class="active" aria-current="page"><span class="tab-ico" aria-hidden="true">🏠</span><span>Aujourd'hui <span class="count" id="dueCount" style="display:none">0</span></span></button>
+    <button data-view="path"><span class="tab-ico" aria-hidden="true">🗺️</span><span>Parcours</span></button>
+    <button data-view="learn"><span class="tab-ico" aria-hidden="true">📖</span><span>Apprendre <span class="count kj-count" id="kanjiDue" style="display:none">0</span></span></button>
+    <button data-view="speak"><span class="tab-ico" aria-hidden="true">💬</span><span>Parler</span></button>
+    <button data-view="me"><span class="tab-ico" aria-hidden="true">👤</span><span>Moi</span></button>
   </nav>
 
+  <main id="main-content" tabindex="-1">
   <section class="view active" id="view-today"><div class="panel"><div id="todayArea"></div></div></section>
+  <section class="view" id="view-path"><div class="panel"><div id="pathArea"></div></div></section>
+  <section class="view" id="view-learn"><div class="panel"><div id="learnArea"></div></div></section>
+  <section class="view" id="view-speak"><div class="panel"><div id="speakArea"></div></div></section>
+  <section class="view" id="view-me"><div class="panel"><div id="meArea"></div></div></section>
+  <section class="view" id="view-progress"><div class="panel"><div id="progressArea"></div></div></section>
+  <section class="view" id="view-mistakes"><div class="panel"><div id="mistakesArea"></div></div></section>
+  <section class="view" id="view-tips"><div class="panel"><div id="tipsArea"></div></div></section>
+  <section class="view" id="view-lessons"><div class="panel"><div id="lessonsArea"></div></div></section>
+  <section class="view" id="view-texts"><div class="panel"><div id="textsArea"></div></div></section>
+  <section class="view" id="view-help"><div class="panel"><div id="helpArea"></div></div></section>
   <section class="view" id="view-skills"><div class="panel"><div id="skillsArea"></div></div></section>
   <section class="view" id="view-review"><div class="panel"><div id="soundBarReview"></div>
     <div class="particle-legend" title="Légende des particules japonaises">
@@ -150,6 +154,8 @@
     </div>
   </section>
 
+  </main>
+  <div id="onboarding" class="ob-overlay" hidden role="dialog" aria-modal="true" aria-label="Bienvenue"></div>
   <footer class="note">頑張ってね — les données restent uniquement sur ton compte.</footer>
 </div>
 <script type="module" src="src/main.js"></script>

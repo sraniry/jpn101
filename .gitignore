@@ -1,1 +1,4 @@
 .DS_Store
+_archive/
+.claude/
+node_modules/
