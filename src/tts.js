@@ -23,8 +23,12 @@ if('speechSynthesis' in window){
   setTimeout(probeVoices, 300);
   setTimeout(probeVoices, 1200);
 }
+// iPhone/iPad : la voix ne démarre que si speak() est appelé directement dans le geste (tap),
+// sans délai ni utterance « d'échauffement ». On évite donc setTimeout/cancel inutile.
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 let ttsWarmed = false;
 function warmUpTTS(){
+  if(IS_IOS) return;
   if(ttsWarmed || !('speechSynthesis' in window)) return;
   try{ const u = new SpeechSynthesisUtterance('あ'); u.volume = 0; speechSynthesis.speak(u); ttsWarmed = true; }catch(e){}
 }
@@ -56,6 +60,12 @@ export function speakSequence(parts, rate){
       return u;
     });
     try{
+      if(IS_IOS){
+        if(speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+        if(speechSynthesis.paused) speechSynthesis.resume();
+        utterances.forEach(u => speechSynthesis.speak(u));
+        return;
+      }
       speechSynthesis.cancel(); // toujours vider la file, même si l'état "speaking" semble faux (bug connu de Chrome après inactivité)
       setTimeout(()=>{
         try{ utterances.forEach(u => speechSynthesis.speak(u)); }catch(e){ speakStatus='failed'; renderSoundBars(); }
@@ -63,7 +73,7 @@ export function speakSequence(parts, rate){
       }, 30);
     }catch(e){ console.error(e); speakStatus = 'failed'; renderSoundBars(); }
   };
-  if(speechSynthesis.getVoices().length === 0){ speechSynthesis.onvoiceschanged = go; setTimeout(go, 250); }
+  if(speechSynthesis.getVoices().length === 0 && !IS_IOS){ speechSynthesis.onvoiceschanged = go; setTimeout(go, 250); }
   else go();
 }
 
@@ -84,7 +94,7 @@ export function soundBarHTML(){
   </div>
   <div class="sound-help ${(voiceProbed && !jaVoiceFound) || speakStatus==='failed' ?'show':''}">
     <b>Pas de son ?</b> 1) Touche d'abord ⟳ Réinitialiser (Chrome bloque parfois la voix après quelques minutes d'inactivité de l'onglet). 2) Si ça persiste : la voix japonaise est une donnée de ton <b>appareil</b>, pas de l'appli.
-    <b>iPhone :</b> Réglages → Accessibilité → Contenu énoncé → Voix → ajouter une voix japonaise.
+    <b>iPhone :</b> vérifie que l'interrupteur de sonnerie (sur le côté) n'est pas en mode silencieux et que le volume est monté ; sinon Réglages → Accessibilité → Contenu énoncé → Voix → ajouter une voix japonaise.
     <b>Android :</b> installe « Synthèse vocale Google » + le pack de langue japonaise.
     <b>Ordinateur :</b> ouvre l'appli dans Chrome ou Edge, et vérifie que l'onglet n'est pas en mode silencieux (clic droit sur l'onglet).
   </div>`;

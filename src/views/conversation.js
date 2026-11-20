@@ -22,7 +22,7 @@ CONVERSATIONS.forEach(conv=>{
   });
 });
 import { speak, speakSequence } from '../tts.js';
-import { escapeHtml } from '../util.js';
+import { escapeHtml, kanaToRomaji } from '../util.js';
 import { planMark, registerStudyActivity, getConvDone, markConvDone, recordAnswer } from '../storage.js';
 import { celebrate } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
@@ -30,8 +30,7 @@ import { celebrateNewBadges } from '../badges.js';
 // Lecture audio d'un dialogue entier (entraînement de l'oreille). Retoucher 🎧 arrête la lecture.
 let listeningId = null;
 function playFullDialogue(conv){
-  window.speechSynthesis.cancel();
-  if(listeningId === conv.id){ listeningId = null; return; }
+  if(listeningId === conv.id){ window.speechSynthesis.cancel(); listeningId = null; return; }
   listeningId = conv.id;
   const parts = conv.turns.map(t=>{
     if(t.speaker === 'npc') return { text:t.jp, pitch:0.9 };
@@ -115,7 +114,7 @@ function renderConversationStage(){
       celebrate(context, { emoji:'💬', title: 'Dialogue terminé' });
     }
     celebrateNewBadges();
-    area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">Dialogue terminé !</h3><p style="color:#7a7268;font-size:13.5px;">Rejoue-le pour essayer d'autres réponses, ou choisis un autre dialogue.</p><button class="continue-btn" id="convBackBtn" style="margin-top:16px;">← Tous les dialogues</button></div>`;
+    area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">Dialogue terminé !</h3><p style="color:#7a7268;font-size:13.5px;">Rejoue-le pour essayer d'autres réponses, ou choisis un autre dialogue.</p></div>${recapHtml(conv)}<div class="conv-done" style="border:none;box-shadow:none;background:none;padding-top:0"><button class="continue-btn" id="convBackBtn" style="margin-top:16px;">← Tous les dialogues</button></div>`;
     document.getElementById('convBackBtn').addEventListener('click', renderConversationList);
     return;
   }
@@ -167,14 +166,34 @@ function renderConversationStage(){
     });
   }
 }
+function chunkRomaji(ch){
+  if(!/^[\u3040-\u30ffー・、。？！ ]+$/.test(ch || '')) return '';
+  // sépare les petits mots collés (です, か, particules finales) pour que le romaji se lise
+  let t = ch.replace(/(です|でした|ですか|ますか|ません|ます)$/,' $1').replace(/([^\sはをがもにでのへと])(は|を|が|も|に|で|の|へ|と)(?=$|\s)/g,(m,a,b)=>a+' '+b).replace(/([^\s])(か)$/,'$1 $2');
+  t = t.trim().split(/\s+/).map(w => w === 'は' ? 'wa' : (w === 'を' ? 'o' : (w === 'へ' ? 'e' : kanaToRomaji(w)))).join(' ');
+  try{ const r = t; return r ? `<small class="cbd-rj">${escapeHtml(r)}</small>` : ''; }catch(e){ return ''; }
+}
+// Récapitulatif de fin : tous les mots / structures vus dans le dialogue, sans doublon.
+function recapHtml(conv){
+  const seen = new Set(), rows = [];
+  const add = bd => (bd || []).forEach(b => { if(b && b.chunk && !seen.has(b.chunk)){ seen.add(b.chunk); rows.push(b); } });
+  conv.turns.forEach((t, i) => {
+    if(t.speaker === 'npc') add(t.breakdown);
+    else { const ch = conv._chosen && conv._chosen[i]; const best = (t.choices || []).find(c => c.quality === 'best'); add((ch && ch.breakdown) || (best && best.breakdown)); }
+  });
+  if(!rows.length) return '';
+  return `<div class="conv-recap"><h4>📝 Ce que tu as appris dans ce dialogue</h4>
+    <p class="conv-recap-sub">${rows.length} mots ou structures. Relis-les : c'est ça que tu pourras réutiliser ailleurs.</p>
+    ${rows.map(b => `<div class="cbd-row"><span class="cbd-chunk">${escapeHtml(b.chunk)}${chunkRomaji(b.chunk)}</span><span class="cbd-role">${escapeHtml(b.role)}</span>${b.tip ? `<span class="cbd-tip">${escapeHtml(b.tip)}</span>` : ''}</div>`).join('')}</div>`;
+}
 function breakdownSnippet(breakdown){
   if(!breakdown || !breakdown.length) return '';
   const rows = breakdown.map(b=>`<div class="cbd-row">
-    <span class="cbd-chunk">${escapeHtml(b.chunk)}</span>
+    <span class="cbd-chunk">${escapeHtml(b.chunk)}${chunkRomaji(b.chunk)}</span>
     <span class="cbd-role">${escapeHtml(b.role)}</span>
     ${b.tip ? `<span class="cbd-tip">${escapeHtml(b.tip)}</span>` : ''}
   </div>`).join('');
-  return `<div class="conv-breakdown" style="display:none">${rows}</div><button class="conv-bd-toggle" type="button">🔍 Structure</button>`;
+  return `<div class="conv-breakdown"><div class="cbd-title">🔍 Mot à mot : vocabulaire et grammaire</div>${rows}</div><button class="conv-bd-toggle" type="button">🔼 Masquer l'explication</button>`;
 }
 function wireBreakdownToggles(container){
   container.querySelectorAll('.conv-bd-toggle').forEach(btn=>{
@@ -183,7 +202,7 @@ function wireBreakdownToggles(container){
       const bd = btn.previousElementSibling;
       const open = bd.style.display !== 'none';
       bd.style.display = open ? 'none' : 'block';
-      btn.textContent = open ? '🔍 Structure' : '🔼 Masquer';
+      btn.textContent = open ? '🔍 Voir l\'explication' : '🔼 Masquer l\'explication';
     });
   });
 }
