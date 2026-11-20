@@ -6,7 +6,7 @@ export const N4_LISTENING = [
   { id:'t01', type:'tâche', setting:'Au bureau des étudiants étrangers',
     lines:[
       { who:'F', jp:'留学生の方ですね。奨学金の申し込みですか。', romaji:'Ryuugakusei no kata desu ne. Shougakukin no moushikomi desu ka.', fr:'Vous êtes étudiante étrangère ? C\'est pour la demande de bourse ?' },
-      { who:'M', jp:'はい。何を持ってくればいいですか。', romaji:'Hai. Nani wo motte kureba ii desu ka.', fr:'Oui. Qu\'est-ce que je dois apporter ?' },
+      { who:'M', jp:'はい。何を持ってくればいいですか。', romaji:'Hai. Nani o motte kureba ii desu ka.', fr:'Oui. Qu\'est-ce que je dois apporter ?' },
       { who:'F', jp:'学生証と、この申込書です。写真はもういただいていますので、大丈夫です。', romaji:'Gakuseishou to, kono moushikomisho desu. Shashin wa mou itadaite imasu node, daijoubu desu.', fr:'La carte étudiante et ce formulaire. La photo, on l\'a déjà, donc c\'est bon.' },
       { who:'M', jp:'パスポートはいりませんか。', romaji:'Pasupooto wa irimasen ka.', fr:'Pas besoin du passeport ?' },
       { who:'F', jp:'はい、今回はいりません。', romaji:'Hai, konkai wa irimasen.', fr:'Non, pas cette fois.' }
@@ -32,9 +32,9 @@ export const N4_LISTENING = [
 
   { id:'t03', type:'tâche', setting:'Au restaurant où l\'étudiante travaille',
     lines:[
-      { who:'M', jp:'リサさん、今日は最初にテーブルを拭いてください。', romaji:'Risa-san, kyou wa saisho ni teeburu wo fuite kudasai.', fr:'Lisa, aujourd\'hui, essuie d\'abord les tables.' },
+      { who:'M', jp:'リサさん、今日は最初にテーブルを拭いてください。', romaji:'Risa-san, kyou wa saisho ni teeburu o fuite kudasai.', fr:'Lisa, aujourd\'hui, essuie d\'abord les tables.' },
       { who:'F', jp:'はい。お皿も洗いますか。', romaji:'Hai. Osara mo araimasu ka.', fr:'D\'accord. Je lave aussi les assiettes ?' },
-      { who:'M', jp:'お皿は田中さんがやるから、いいよ。あ、でもテーブルの前に、お店の前を掃除しておいてくれる？', romaji:'Osara wa Tanaka-san ga yaru kara, ii yo. A, demo teeburu no mae ni, omise no mae wo souji shite oite kureru?', fr:'Les assiettes, c\'est Tanaka qui s\'en charge. Ah, mais avant les tables, tu peux balayer devant le restaurant ?' },
+      { who:'M', jp:'お皿は田中さんがやるから、いいよ。あ、でもテーブルの前に、お店の前を掃除しておいてくれる？', romaji:'Osara wa Tanaka-san ga yaru kara, ii yo. A, demo teeburu no mae ni, omise no mae o souji shite oite kureru?', fr:'Les assiettes, c\'est Tanaka qui s\'en charge. Ah, mais avant les tables, tu peux balayer devant le restaurant ?' },
       { who:'F', jp:'わかりました。', romaji:'Wakarimashita.', fr:'Compris.' }
     ],
     q:'Que va faire Lisa en premier ?',
@@ -45,7 +45,7 @@ export const N4_LISTENING = [
   { id:'t04', type:'tâche', setting:'Un professeur parle à la fin du cours',
     lines:[
       { who:'M', jp:'来週は試験です。教科書の三課から五課までです。', romaji:'Raishuu wa shiken desu. Kyoukasho no sanka kara goka made desu.', fr:'La semaine prochaine, c\'est l\'examen, leçons 3 à 5 du manuel.' },
-      { who:'F', jp:'先生、辞書を使ってもいいですか。', romaji:'Sensei, jisho wo tsukatte mo ii desu ka.', fr:'Professeur, on peut utiliser le dictionnaire ?' },
+      { who:'F', jp:'先生、辞書を使ってもいいですか。', romaji:'Sensei, jisho o tsukatte mo ii desu ka.', fr:'Professeur, on peut utiliser le dictionnaire ?' },
       { who:'M', jp:'辞書はだめです。でも、ノートは見てもいいですよ。', romaji:'Jisho wa dame desu. Demo, nooto wa mite mo ii desu yo.', fr:'Pas le dictionnaire. Mais vous pouvez regarder vos notes.' }
     ],
     q:'Qu\'est-ce que les étudiants peuvent utiliser pendant l\'examen ?',
@@ -57,7 +57,7 @@ export const N4_LISTENING = [
     lines:[
       { who:'F', jp:'もしもし、今日は何時ごろ帰る？', romaji:'Moshimoshi, kyou wa nanji goro kaeru?', fr:'Allô, tu rentres vers quelle heure aujourd\'hui ?' },
       { who:'M', jp:'七時ごろです。何か買って帰りましょうか。', romaji:'Shichiji goro desu. Nanika katte kaerimashou ka.', fr:'Vers 19 h. Je rapporte quelque chose ?' },
-      { who:'F', jp:'じゃあ、牛乳と卵をお願い。あ、卵はまだあったわ。牛乳だけでいいよ。', romaji:'Jaa, gyuunyuu to tamago wo onegai. A, tamago wa mada atta wa. Gyuunyuu dake de ii yo.', fr:'Alors du lait et des œufs. Ah, il reste des œufs. Juste le lait, ça ira.' },
+      { who:'F', jp:'じゃあ、牛乳と卵をお願い。あ、卵はまだあったわ。牛乳だけでいいよ。', romaji:'Jaa, gyuunyuu to tamago o onegai. A, tamago wa mada atta wa. Gyuunyuu dake de ii yo.', fr:'Alors du lait et des œufs. Ah, il reste des œufs. Juste le lait, ça ira.' },
       { who:'M', jp:'わかりました。パンはいいですか。', romaji:'Wakarimashita. Pan wa ii desu ka.', fr:'D\'accord. Pas de pain ?' },
       { who:'F', jp:'パンもいらないよ。ありがとう。', romaji:'Pan mo iranai yo. Arigatou.', fr:'Pas besoin de pain non plus. Merci.' }
     ],
@@ -68,10 +68,10 @@ export const N4_LISTENING = [
 
   { id:'t06', type:'tâche', setting:'À la bibliothèque universitaire',
     lines:[
-      { who:'M', jp:'すみません、この本を借りたいんですが。', romaji:'Sumimasen, kono hon wo karitai n desu ga.', fr:'Excusez-moi, je voudrais emprunter ce livre.' },
+      { who:'M', jp:'すみません、この本を借りたいんですが。', romaji:'Sumimasen, kono hon o karitai n desu ga.', fr:'Excusez-moi, je voudrais emprunter ce livre.' },
       { who:'F', jp:'その本は辞書なので、図書館の外には持って出られません。', romaji:'Sono hon wa jisho na node, toshokan no soto ni wa motte deraremasen.', fr:'C\'est un dictionnaire, il ne peut pas sortir de la bibliothèque.' },
       { who:'M', jp:'そうですか。じゃあ、コピーはできますか。', romaji:'Sou desu ka. Jaa, kopii wa dekimasu ka.', fr:'Ah bon. Je peux faire des photocopies alors ?' },
-      { who:'F', jp:'はい、二階のコピー機を使ってください。一枚十円です。', romaji:'Hai, nikai no kopiiki wo tsukatte kudasai. Ichimai juu-en desu.', fr:'Oui, utilisez la photocopieuse du 1er étage. C\'est 10 yens la page.' }
+      { who:'F', jp:'はい、二階のコピー機を使ってください。一枚十円です。', romaji:'Hai, nikai no kopiiki o tsukatte kudasai. Ichimai juu-en desu.', fr:'Oui, utilisez la photocopieuse du 1er étage. C\'est 10 yens la page.' }
     ],
     q:'Que va faire l\'étudiant ?',
     choices:['Photocopier des pages au 1er étage','Emprunter le dictionnaire','Lire le livre chez lui','Acheter le dictionnaire'],
@@ -82,7 +82,7 @@ export const N4_LISTENING = [
     lines:[
       { who:'F', jp:'すみません、中に入ってもいいですか。', romaji:'Sumimasen, naka ni haitte mo ii desu ka.', fr:'Excusez-moi, on peut entrer ?' },
       { who:'M', jp:'はい、どうぞ。でも、靴はここで脱いでください。', romaji:'Hai, douzo. Demo, kutsu wa koko de nuide kudasai.', fr:'Oui, je vous en prie. Mais retirez vos chaussures ici.' },
-      { who:'F', jp:'写真を撮ってもいいですか。', romaji:'Shashin wo totte mo ii desu ka.', fr:'On peut prendre des photos ?' },
+      { who:'F', jp:'写真を撮ってもいいですか。', romaji:'Shashin o totte mo ii desu ka.', fr:'On peut prendre des photos ?' },
       { who:'M', jp:'庭はいいですが、建物の中はご遠慮ください。', romaji:'Niwa wa ii desu ga, tatemono no naka wa goenryo kudasai.', fr:'Le jardin oui, mais pas à l\'intérieur des bâtiments, s\'il vous plaît.' }
     ],
     q:'Que doit faire la visiteuse avant d\'entrer ?',
@@ -104,9 +104,9 @@ export const N4_LISTENING = [
   { id:'t09', type:'tâche', setting:'Deux étudiants préparent un exposé',
     lines:[
       { who:'M', jp:'発表の資料、僕が作ろうか。', romaji:'Happyou no shiryou, boku ga tsukurou ka.', fr:'Les documents de l\'exposé, je m\'en occupe ?' },
-      { who:'F', jp:'ありがとう。じゃあ、私は写真を集めておくね。', romaji:'Arigatou. Jaa, watashi wa shashin wo atsumete oku ne.', fr:'Merci. Alors moi, je rassemble les photos.' },
+      { who:'F', jp:'ありがとう。じゃあ、私は写真を集めておくね。', romaji:'Arigatou. Jaa, watashi wa shashin o atsumete oku ne.', fr:'Merci. Alors moi, je rassemble les photos.' },
       { who:'M', jp:'あ、写真は先生がくれるって。', romaji:'A, shashin wa sensei ga kureru tte.', fr:'Ah, le prof a dit qu\'il nous donnerait les photos.' },
-      { who:'F', jp:'そうなんだ。じゃあ、私は発表の練習の時間を決めておくよ。', romaji:'Sou nan da. Jaa, watashi wa happyou no renshuu no jikan wo kimete oku yo.', fr:'Ah bon. Alors je fixe l\'heure de répétition de l\'exposé.' }
+      { who:'F', jp:'そうなんだ。じゃあ、私は発表の練習の時間を決めておくよ。', romaji:'Sou nan da. Jaa, watashi wa happyou no renshuu no jikan o kimete oku yo.', fr:'Ah bon. Alors je fixe l\'heure de répétition de l\'exposé.' }
     ],
     q:'Que va faire l\'étudiante ?',
     choices:['Fixer l\'heure de la répétition','Rassembler les photos','Préparer les documents','Demander les photos au professeur'],
@@ -115,10 +115,10 @@ export const N4_LISTENING = [
 
   { id:'t10', type:'tâche', setting:'À la poste',
     lines:[
-      { who:'F', jp:'この荷物をフランスに送りたいんですが。', romaji:'Kono nimotsu wo Furansu ni okuritai n desu ga.', fr:'Je voudrais envoyer ce colis en France.' },
+      { who:'F', jp:'この荷物をフランスに送りたいんですが。', romaji:'Kono nimotsu o Furansu ni okuritai n desu ga.', fr:'Je voudrais envoyer ce colis en France.' },
       { who:'M', jp:'船便なら二か月、航空便なら一週間ぐらいかかります。', romaji:'Funabin nara nikagetsu, koukuubin nara isshuukan gurai kakarimasu.', fr:'Par bateau, deux mois ; par avion, environ une semaine.' },
       { who:'F', jp:'母の誕生日が来月なので、航空便でお願いします。', romaji:'Haha no tanjoubi ga raigetsu na node, koukuubin de onegaishimasu.', fr:'L\'anniversaire de ma mère est le mois prochain, donc par avion s\'il vous plaît.' },
-      { who:'M', jp:'では、この紙に住所を書いてください。', romaji:'Dewa, kono kami ni juusho wo kaite kudasai.', fr:'Alors écrivez l\'adresse sur ce papier.' }
+      { who:'M', jp:'では、この紙に住所を書いてください。', romaji:'Dewa, kono kami ni juusho o kaite kudasai.', fr:'Alors écrivez l\'adresse sur ce papier.' }
     ],
     q:'Que doit faire l\'étudiante maintenant ?',
     choices:['Écrire l\'adresse sur un papier','Payer l\'envoi par bateau','Revenir le mois prochain','Choisir entre bateau et avion'],
@@ -139,7 +139,7 @@ export const N4_LISTENING = [
   { id:'t12', type:'tâche', setting:'Chez le médecin',
     lines:[
       { who:'M', jp:'この薬は毎日三回、ご飯の後に飲んでください。', romaji:'Kono kusuri wa mainichi sankai, gohan no ato ni nonde kudasai.', fr:'Prenez ce médicament trois fois par jour, après les repas.' },
-      { who:'F', jp:'朝ご飯を食べない日はどうしたらいいですか。', romaji:'Asagohan wo tabenai hi wa dou shitara ii desu ka.', fr:'Et les jours où je ne prends pas de petit-déjeuner ?' },
+      { who:'F', jp:'朝ご飯を食べない日はどうしたらいいですか。', romaji:'Asagohan o tabenai hi wa dou shitara ii desu ka.', fr:'Et les jours où je ne prends pas de petit-déjeuner ?' },
       { who:'M', jp:'その時は、何か少し食べてから飲んでください。お風呂は今日は入らないでくださいね。', romaji:'Sono toki wa, nanika sukoshi tabete kara nonde kudasai. Ofuro wa kyou wa hairanaide kudasai ne.', fr:'Dans ce cas, mangez un petit quelque chose avant de le prendre. Et pas de bain aujourd\'hui.' }
     ],
     q:'Que doit faire la patiente les jours sans petit-déjeuner ?',
@@ -149,10 +149,10 @@ export const N4_LISTENING = [
 
   { id:'t13', type:'tâche', setting:'Au club de l\'université',
     lines:[
-      { who:'F', jp:'明日の練習、何を持っていけばいい？', romaji:'Ashita no renshuu, nani wo motte ikeba ii?', fr:'Pour l\'entraînement de demain, j\'apporte quoi ?' },
+      { who:'F', jp:'明日の練習、何を持っていけばいい？', romaji:'Ashita no renshuu, nani o motte ikeba ii?', fr:'Pour l\'entraînement de demain, j\'apporte quoi ?' },
       { who:'M', jp:'ラケットは貸してあげるから、靴だけ持ってきて。', romaji:'Raketto wa kashite ageru kara, kutsu dake motte kite.', fr:'Je te prête une raquette, apporte juste tes chaussures.' },
       { who:'F', jp:'タオルは？', romaji:'Taoru wa?', fr:'Et une serviette ?' },
-      { who:'M', jp:'あ、タオルも持ってきたほうがいいよ。汗をかくから。', romaji:'A, taoru mo motte kita hou ga ii yo. Ase wo kaku kara.', fr:'Ah, mieux vaut apporter une serviette aussi. On transpire.' }
+      { who:'M', jp:'あ、タオルも持ってきたほうがいいよ。汗をかくから。', romaji:'A, taoru mo motte kita hou ga ii yo. Ase o kaku kara.', fr:'Ah, mieux vaut apporter une serviette aussi. On transpire.' }
     ],
     q:'Qu\'est-ce que l\'étudiante va apporter ?',
     choices:['Des chaussures et une serviette','Une raquette et des chaussures','Seulement des chaussures','Une raquette et une serviette'],
@@ -209,8 +209,8 @@ export const N4_LISTENING = [
 
   { id:'p04', type:'point', setting:'Au café, deux amis',
     lines:[
-      { who:'F', jp:'週末、何をしたの？', romaji:'Shuumatsu, nani wo shita no?', fr:'Tu as fait quoi ce week-end ?' },
-      { who:'M', jp:'金閣寺に行くつもりだったんだけど、雨が降ったから、家で映画を見たよ。', romaji:'Kinkakuji ni iku tsumori datta n da kedo, ame ga futta kara, ie de eiga wo mita yo.', fr:'Je comptais aller au Kinkaku-ji, mais il a plu, alors j\'ai regardé un film à la maison.' },
+      { who:'F', jp:'週末、何をしたの？', romaji:'Shuumatsu, nani o shita no?', fr:'Tu as fait quoi ce week-end ?' },
+      { who:'M', jp:'金閣寺に行くつもりだったんだけど、雨が降ったから、家で映画を見たよ。', romaji:'Kinkakuji ni iku tsumori datta n da kedo, ame ga futta kara, ie de eiga o mita yo.', fr:'Je comptais aller au Kinkaku-ji, mais il a plu, alors j\'ai regardé un film à la maison.' },
       { who:'F', jp:'そうか。じゃあ、来週一緒に行こうよ。', romaji:'Sou ka. Jaa, raishuu issho ni ikou yo.', fr:'Ah bon. Alors on y va ensemble la semaine prochaine.' }
     ],
     q:'Qu\'a fait la personne ce week-end ?',
@@ -233,7 +233,7 @@ export const N4_LISTENING = [
   { id:'p06', type:'point', setting:'Au comptoir d\'un restaurant de soba',
     lines:[
       { who:'M', jp:'いらっしゃいませ。ご注文は？', romaji:'Irasshaimase. Gochuumon wa?', fr:'Bienvenue. Vous désirez ?' },
-      { who:'F', jp:'天ぷらそばをお願いします。', romaji:'Tenpura soba wo onegaishimasu.', fr:'Un soba tempura, s\'il vous plaît.' },
+      { who:'F', jp:'天ぷらそばをお願いします。', romaji:'Tenpura soba o onegaishimasu.', fr:'Un soba tempura, s\'il vous plaît.' },
       { who:'M', jp:'すみません、天ぷらは今日はもう終わってしまいました。', romaji:'Sumimasen, tenpura wa kyou wa mou owatte shimaimashita.', fr:'Désolé, il n\'y a plus de tempura aujourd\'hui.' },
       { who:'F', jp:'そうですか。じゃあ、きつねそばにします。', romaji:'Sou desu ka. Jaa, kitsune soba ni shimasu.', fr:'Ah bon. Alors je prends un kitsune soba.' }
     ],
@@ -246,13 +246,13 @@ export const N4_LISTENING = [
     lines:[
       { who:'M', jp:'ごめん、10分ぐらい遅れる。', romaji:'Gomen, juppun gurai okureru.', fr:'Désolé, j\'aurai environ dix minutes de retard.' },
       { who:'F', jp:'どうしたの？', romaji:'Doushita no?', fr:'Qu\'est-ce qui se passe ?' },
-      { who:'M', jp:'バスに乗ろうと思ったら、財布を忘れたことに気がついて、家に戻ったんだ。', romaji:'Basu ni norou to omottara, saifu wo wasureta koto ni ki ga tsuite, ie ni modotta n da.', fr:'Au moment de monter dans le bus, je me suis rendu compte que j\'avais oublié mon portefeuille, je suis rentré chez moi.' },
-      { who:'F', jp:'わかった。気をつけてね。', romaji:'Wakatta. Ki wo tsukete ne.', fr:'D\'accord. Fais attention.' }
+      { who:'M', jp:'バスに乗ろうと思ったら、財布を忘れたことに気がついて、家に戻ったんだ。', romaji:'Basu ni norou to omottara, saifu o wasureta koto ni ki ga tsuite, ie ni modotta n da.', fr:'Au moment de monter dans le bus, je me suis rendu compte que j\'avais oublié mon portefeuille, je suis rentré chez moi.' },
+      { who:'F', jp:'わかった。気をつけてね。', romaji:'Wakatta. Ki o tsukete ne.', fr:'D\'accord. Fais attention.' }
     ],
     q:'Pourquoi l\'étudiant est-il en retard ?',
     choices:['Il est retourné chercher son portefeuille','Le bus était en retard','Il s\'est réveillé tard','Il s\'est trompé de bus'],
     ok:'Il est retourné chercher son portefeuille',
-    explanation:'財布を忘れた (saifu wo wasureta, oublié son portefeuille) → 家に戻った (rentré à la maison). Le bus n\'est pas en cause.' },
+    explanation:'財布を忘れた (saifu o wasureta, oublié son portefeuille) → 家に戻った (rentré à la maison). Le bus n\'est pas en cause.' },
 
   { id:'p08', type:'point', setting:'Une étudiante parle de ses vacances',
     lines:[
@@ -268,8 +268,8 @@ export const N4_LISTENING = [
   { id:'p09', type:'point', setting:'À l\'accueil d\'un musée',
     lines:[
       { who:'F', jp:'学生は割引がありますか。', romaji:'Gakusei wa waribiki ga arimasu ka.', fr:'Il y a une réduction étudiante ?' },
-      { who:'M', jp:'はい、学生証を見せていただければ、八百円が五百円になります。', romaji:'Hai, gakuseishou wo misete itadakereba, happyaku-en ga gohyaku-en ni narimasu.', fr:'Oui, si vous montrez votre carte étudiante, ça passe de 800 à 500 yens.' },
-      { who:'F', jp:'あ、学生証を寮に置いてきてしまいました。', romaji:'A, gakuseishou wo ryou ni oite kite shimaimashita.', fr:'Ah, j\'ai laissé ma carte étudiante au dortoir.' },
+      { who:'M', jp:'はい、学生証を見せていただければ、八百円が五百円になります。', romaji:'Hai, gakuseishou o misete itadakereba, happyaku-en ga gohyaku-en ni narimasu.', fr:'Oui, si vous montrez votre carte étudiante, ça passe de 800 à 500 yens.' },
+      { who:'F', jp:'あ、学生証を寮に置いてきてしまいました。', romaji:'A, gakuseishou o ryou ni oite kite shimaimashita.', fr:'Ah, j\'ai laissé ma carte étudiante au dortoir.' },
       { who:'M', jp:'それでは、申し訳ありませんが、普通の料金になります。', romaji:'Soredewa, moushiwake arimasen ga, futsuu no ryoukin ni narimasu.', fr:'Dans ce cas, je suis désolé, ce sera le tarif normal.' }
     ],
     q:'Combien l\'étudiante va-t-elle payer ?',
@@ -280,7 +280,7 @@ export const N4_LISTENING = [
   { id:'p10', type:'point', setting:'Un employé de supérette parle à une nouvelle',
     lines:[
       { who:'M', jp:'この仕事で一番大切なのは何だと思う？', romaji:'Kono shigoto de ichiban taisetsu na no wa nan da to omou?', fr:'À ton avis, qu\'est-ce qui compte le plus dans ce travail ?' },
-      { who:'F', jp:'早くレジを打つことですか。', romaji:'Hayaku reji wo utsu koto desu ka.', fr:'Encaisser vite ?' },
+      { who:'F', jp:'早くレジを打つことですか。', romaji:'Hayaku reji o utsu koto desu ka.', fr:'Encaisser vite ?' },
       { who:'M', jp:'それも大切だけど、一番はお客さんに笑顔であいさつすることだよ。', romaji:'Sore mo taisetsu da kedo, ichiban wa okyakusan ni egao de aisatsu suru koto da yo.', fr:'C\'est important aussi, mais le plus important, c\'est de saluer les clients avec le sourire.' }
     ],
     q:'Selon l\'employé, qu\'est-ce qui compte le plus ?',
@@ -294,7 +294,7 @@ export const N4_LISTENING = [
       { who:'M', jp:'これ、京都のお土産。よかったら、どうぞ。', romaji:'Kore, Kyouto no omiyage. Yokattara, douzo.', fr:'Tiens, un souvenir de Kyoto. Prends-le, si tu veux.' }
     ],
     q:'Quelle est la meilleure réponse ?',
-    choices:['わあ、ありがとう。開けてもいい？ (Waa, arigatou. Akete mo ii?)','いいえ、どういたしまして。 (Iie, dou itashimashite.)','はい、どうぞ。 (Hai, douzo.)','お土産を買いましょう。 (Omiyage wo kaimashou.)'],
+    choices:['わあ、ありがとう。開けてもいい？ (Waa, arigatou. Akete mo ii?)','いいえ、どういたしまして。 (Iie, dou itashimashite.)','はい、どうぞ。 (Hai, douzo.)','お土産を買いましょう。 (Omiyage o kaimashou.)'],
     ok:'わあ、ありがとう。開けてもいい？ (Waa, arigatou. Akete mo ii?)',
     explanation:'On remercie, et demander 開けてもいい？ (je peux l\'ouvrir ?) est très naturel. どういたしまして répond à un merci, pas à un cadeau.' },
 
@@ -312,7 +312,7 @@ export const N4_LISTENING = [
       { who:'F', jp:'お水、もう一杯いかがですか。', romaji:'Omizu, mou ippai ikaga desu ka.', fr:'Un autre verre d\'eau ?' }
     ],
     q:'Tu as assez bu. Quelle est la meilleure réponse ?',
-    choices:['いえ、大丈夫です。ありがとうございます。 (Ie, daijoubu desu. Arigatou gozaimasu.)','はい、いかがです。 (Hai, ikaga desu.)','お水をあげます。 (Omizu wo agemasu.)','いいえ、飲みませんでした。 (Iie, nomimasen deshita.)'],
+    choices:['いえ、大丈夫です。ありがとうございます。 (Ie, daijoubu desu. Arigatou gozaimasu.)','はい、いかがです。 (Hai, ikaga desu.)','お水をあげます。 (Omizu o agemasu.)','いいえ、飲みませんでした。 (Iie, nomimasen deshita.)'],
     ok:'いえ、大丈夫です。ありがとうございます。 (Ie, daijoubu desu. Arigatou gozaimasu.)',
     explanation:'大丈夫です est la façon polie de refuser une offre. いかが sert à proposer, pas à répondre.' },
 
@@ -321,7 +321,7 @@ export const N4_LISTENING = [
       { who:'F', jp:'昨日から熱があって、今日の授業は休むね。', romaji:'Kinou kara netsu ga atte, kyou no jugyou wa yasumu ne.', fr:'J\'ai de la fièvre depuis hier, je ne viendrai pas en cours aujourd\'hui.' }
     ],
     q:'Quelle est la meilleure réponse ?',
-    choices:['大丈夫？ゆっくり休んでね。 (Daijoubu? Yukkuri yasunde ne.)','おめでとう！ (Omedetou!)','じゃあ、一緒に行こう。 (Jaa, issho ni ikou.)','熱をあげようか。 (Netsu wo ageyou ka.)'],
+    choices:['大丈夫？ゆっくり休んでね。 (Daijoubu? Yukkuri yasunde ne.)','おめでとう！ (Omedetou!)','じゃあ、一緒に行こう。 (Jaa, issho ni ikou.)','熱をあげようか。 (Netsu o ageyou ka.)'],
     ok:'大丈夫？ゆっくり休んでね。 (Daijoubu? Yukkuri yasunde ne.)',
     explanation:'On montre de l\'inquiétude (大丈夫？) et on souhaite du repos : ゆっくり休んでね (repose-toi bien).' },
 
@@ -330,7 +330,7 @@ export const N4_LISTENING = [
       { who:'M', jp:'すみません、この席、空いていますか。', romaji:'Sumimasen, kono seki, aite imasu ka.', fr:'Excusez-moi, cette place est libre ?' }
     ],
     q:'La place est libre. Quelle est la meilleure réponse ?',
-    choices:['はい、どうぞ。 (Hai, douzo.)','いいえ、空いています。 (Iie, aite imasu.)','はい、すみません。 (Hai, sumimasen.)','席を開けてください。 (Seki wo akete kudasai.)'],
+    choices:['はい、どうぞ。 (Hai, douzo.)','いいえ、空いています。 (Iie, aite imasu.)','はい、すみません。 (Hai, sumimasen.)','席を開けてください。 (Seki o akete kudasai.)'],
     ok:'はい、どうぞ。 (Hai, douzo.)',
     explanation:'はい (oui, elle est libre) + どうぞ (je vous en prie, asseyez-vous). Court et parfait.' },
 

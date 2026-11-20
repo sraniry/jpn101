@@ -118,7 +118,8 @@ function renderConversationStage(){
     document.getElementById('convBackBtn').addEventListener('click', renderConversationList);
     return;
   }
-  let html = `<div class="conv-stage-head">
+  let html = (convState.turnIdx === 0 && (conv.grammar || []).length) ? `<details class="conv-preview" open><summary>👀 Avant de commencer : ce que tu vas voir</summary>${conv.grammar.map(g => `<div class="gram-card"><b>${escapeHtml(g.pattern)}</b><span>${escapeHtml(g.explain)}</span></div>`).join('')}</details>` : '';
+  html += `<div class="conv-stage-head">
     <span>${conv.icon} ${escapeHtml(conv.title)}</span>
     <span class="conv-turn-count">tour ${convState.turnIdx+1} / ${conv.turns.length}</span>
   </div>
@@ -169,11 +170,15 @@ function renderConversationStage(){
 function chunkRomaji(ch){
   if(!/^[\u3040-\u30ffー・、。？！ ]+$/.test(ch || '')) return '';
   // sépare les petits mots collés (です, か, particules finales) pour que le romaji se lise
-  let t = ch.replace(/(です|でした|ですか|ますか|ません|ます)$/,' $1').replace(/([^\sはをがもにでのへと])(は|を|が|も|に|で|の|へ|と)(?=$|\s)/g,(m,a,b)=>a+' '+b).replace(/([^\s])(か)$/,'$1 $2');
+  let t = ch.replace(/(ください|です|でした|ですか|ますか|ません|ます)$/,' $1').replace(/([^\sはをがもにでのへと])(は|を|が|も|に|で|の|へ|と)(?=$|\s)/g,(m,a,b)=>a+' '+b).replace(/([^\s])(か)$/,'$1 $2');
   t = t.trim().split(/\s+/).map(w => w === 'は' ? 'wa' : (w === 'を' ? 'o' : (w === 'へ' ? 'e' : kanaToRomaji(w)))).join(' ');
   try{ const r = t; return r ? `<small class="cbd-rj">${escapeHtml(r)}</small>` : ''; }catch(e){ return ''; }
 }
 // Récapitulatif de fin : tous les mots / structures vus dans le dialogue, sans doublon.
+function grammarHtml(conv){
+  if(!(conv.grammar || []).length) return '';
+  return `<h4>🧩 La grammaire de ce dialogue</h4>` + conv.grammar.map(g => `<div class="gram-card"><b>${escapeHtml(g.pattern)}</b><span>${escapeHtml(g.explain)}</span>${g.example ? `<em>${escapeHtml(g.example)}</em>` : ''}</div>`).join('') + `<h4 style="margin-top:14px">📝 Le vocabulaire</h4>`;
+}
 function recapHtml(conv){
   const seen = new Set(), rows = [];
   const add = bd => (bd || []).forEach(b => { if(b && b.chunk && !seen.has(b.chunk)){ seen.add(b.chunk); rows.push(b); } });
@@ -181,9 +186,9 @@ function recapHtml(conv){
     if(t.speaker === 'npc') add(t.breakdown);
     else { const ch = conv._chosen && conv._chosen[i]; const best = (t.choices || []).find(c => c.quality === 'best'); add((ch && ch.breakdown) || (best && best.breakdown)); }
   });
-  if(!rows.length) return '';
-  return `<div class="conv-recap"><h4>📝 Ce que tu as appris dans ce dialogue</h4>
-    <p class="conv-recap-sub">${rows.length} mots ou structures. Relis-les : c'est ça que tu pourras réutiliser ailleurs.</p>
+  (conv.vocab || []).forEach(b => { if(!seen.has(b.chunk)){ seen.add(b.chunk); rows.push(b); } });
+  if(!rows.length && !(conv.grammar || []).length) return '';
+  return `<div class="conv-recap">${grammarHtml(conv)}<p class="conv-recap-sub">${rows.length} mots ou structures. Relis-les : c'est ça que tu pourras réutiliser ailleurs.</p>
     ${rows.map(b => `<div class="cbd-row"><span class="cbd-chunk">${escapeHtml(b.chunk)}${chunkRomaji(b.chunk)}</span><span class="cbd-role">${escapeHtml(b.role)}</span>${b.tip ? `<span class="cbd-tip">${escapeHtml(b.tip)}</span>` : ''}</div>`).join('')}</div>`;
 }
 function breakdownSnippet(breakdown){

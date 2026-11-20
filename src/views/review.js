@@ -55,7 +55,7 @@ function findParticleForDrill(jp){
 // Le drill doit rester lisible sans savoir lire les kanji : on affiche le romaji, mais en
 // masquant la particule cherchée (sinon la réponse est donnée). は se lit « wa » quand c'est
 // la particule thème, を se transcrit « wo » ou « o » selon les packs : on couvre les deux.
-const PARTICLE_ROMAJI = { 'は':['wa'], 'が':['ga'], 'を':['wo','o'], 'に':['ni'], 'で':['de'], 'の':['no'] };
+const PARTICLE_ROMAJI = { 'は':['wa'], 'が':['ga'], 'を':['o','o'], 'に':['ni'], 'で':['de'], 'の':['no'] };
 function maskParticleInRomaji(romaji, particle){
   if(!romaji) return '';
   let out = romaji;

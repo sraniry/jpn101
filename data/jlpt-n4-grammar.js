@@ -8,32 +8,32 @@ export const N4_GRAMMAR = [
     { jp:'納豆は食べられません', romaji:'Nattou wa taberaremasen', fr:'Je ne peux pas manger de natto' },
     { jp:'ここから清水寺が見えますか？', romaji:'Koko kara Kiyomizu-dera ga miemasu ka?', fr:'On voit le Kiyomizu-dera d\'ici ?' } ]},
   { s:'〜ことができる', sRomaji:'koto ga dekiru', fr:'Même sens que la forme potentielle (« pouvoir faire »), un peu plus posé : on le lit sur les règlements et les panneaux.', covered:false, ex:[
-    { jp:'図書館で本を十冊借りることができます', romaji:'Toshokan de hon wo jussatsu kariru koto ga dekimasu', fr:'On peut emprunter dix livres à la bibliothèque' },
+    { jp:'図書館で本を十冊借りることができます', romaji:'Toshokan de hon o jussatsu kariru koto ga dekimasu', fr:'On peut emprunter dix livres à la bibliothèque' },
     { jp:'このカードでバスに乗ることができますか？', romaji:'Kono kaado de basu ni noru koto ga dekimasu ka?', fr:'Je peux prendre le bus avec cette carte ?' } ]},
   { s:'〜たことがある', sRomaji:'-ta koto ga aru', fr:'Raconter une expérience vécue au moins une fois : « j\'ai déjà… ». Au négatif : « je n\'ai jamais… ».', covered:false, ex:[
-    { jp:'抹茶を点てたことがあります', romaji:'Matcha wo tateta koto ga arimasu', fr:'J\'ai déjà préparé du matcha' },
+    { jp:'抹茶を点てたことがあります', romaji:'Matcha o tateta koto ga arimasu', fr:'J\'ai déjà préparé du matcha' },
     { jp:'富士山に登ったことがありません', romaji:'Fujisan ni nobotta koto ga arimasen', fr:'Je n\'ai jamais gravi le mont Fuji' } ]},
   { s:'〜たり〜たりする', sRomaji:'-tari -tari suru', fr:'Donner quelques exemples d\'activités sans faire une liste complète : « je fais des choses comme ceci, cela… ».', covered:false, ex:[
-    { jp:'週末は寺を見たり、カフェで勉強したりします', romaji:'Shuumatsu wa tera wo mitari, kafe de benkyou shitari shimasu', fr:'Le week-end, je visite des temples, je travaille dans des cafés…' },
+    { jp:'週末は寺を見たり、カフェで勉強したりします', romaji:'Shuumatsu wa tera o mitari, kafe de benkyou shitari shimasu', fr:'Le week-end, je visite des temples, je travaille dans des cafés…' },
     { jp:'雨が降ったり止んだりしています', romaji:'Ame ga futtari yandari shite imasu', fr:'Il pleut par intermittence' } ]},
   { s:'〜つもりだ', sRomaji:'tsumori da', fr:'Annoncer une intention personnelle déjà décidée : « je compte faire… ».', covered:false, ex:[
     { jp:'夏休みに東京へ行くつもりです', romaji:'Natsuyasumi ni Toukyou e iku tsumori desu', fr:'Je compte aller à Tokyo pendant les vacances d\'été' },
-    { jp:'今日はお酒を飲まないつもりです', romaji:'Kyou wa osake wo nomanai tsumori desu', fr:'Aujourd\'hui, je compte ne pas boire d\'alcool' } ]},
+    { jp:'今日はお酒を飲まないつもりです', romaji:'Kyou wa osake o nomanai tsumori desu', fr:'Aujourd\'hui, je compte ne pas boire d\'alcool' } ]},
   { s:'〜予定だ', sRomaji:'yotei da', fr:'Parler d\'un programme fixé, d\'un planning : plus officiel que つもり, on l\'emploie pour les horaires et les événements.', covered:false, ex:[
     { jp:'六ヶ月間京都にいる予定です', romaji:'Rokkagetsukan Kyouto ni iru yotei desu', fr:'Je dois rester six mois à Kyoto' },
     { jp:'授業は九時に始まる予定です', romaji:'Jugyou wa kuji ni hajimaru yotei desu', fr:'Le cours est prévu pour commencer à 9 h' } ]},
   { s:'〜（よ）うと思う', sRomaji:'-(y)ou to omou', fr:'Partager une idée qu\'on a en tête : « je pense faire… », moins ferme que つもり.', covered:false, ex:[
     { jp:'明日、嵐山へ行こうと思います', romaji:'Ashita, Arashiyama e ikou to omoimasu', fr:'Je pense aller à Arashiyama demain' },
-    { jp:'日本語の勉強を続けようと思っています', romaji:'Nihongo no benkyou wo tsuzukeyou to omotte imasu', fr:'J\'ai l\'intention de continuer le japonais' } ]},
+    { jp:'日本語の勉強を続けようと思っています', romaji:'Nihongo no benkyou o tsuzukeyou to omotte imasu', fr:'J\'ai l\'intention de continuer le japonais' } ]},
   { s:'〜なければならない', sRomaji:'-nakereba naranai', fr:'Exprimer une obligation : « je dois… ». À l\'oral, on raccourcit souvent en 〜なきゃ.', covered:true, ex:[
-    { jp:'明日までにレポートを出さなければなりません', romaji:'Ashita made ni repooto wo dasanakereba narimasen', fr:'Je dois rendre mon rapport avant demain' },
+    { jp:'明日までにレポートを出さなければなりません', romaji:'Ashita made ni repooto o dasanakereba narimasen', fr:'Je dois rendre mon rapport avant demain' },
     { jp:'もう帰らなきゃ', romaji:'Mou kaeranakya', fr:'Il faut que je rentre' } ]},
   { s:'〜なくてもいい', sRomaji:'-nakute mo ii', fr:'Dire que quelque chose n\'est pas obligatoire : « pas besoin de… ».', covered:false, ex:[
-    { jp:'靴を脱がなくてもいいですよ', romaji:'Kutsu wo nuganakute mo ii desu yo', fr:'Pas besoin d\'enlever vos chaussures' },
+    { jp:'靴を脱がなくてもいいですよ', romaji:'Kutsu o nuganakute mo ii desu yo', fr:'Pas besoin d\'enlever vos chaussures' },
     { jp:'予約しなくてもいいですか？', romaji:'Yoyaku shinakute mo ii desu ka?', fr:'On n\'a pas besoin de réserver ?' } ]},
   { s:'〜たほうがいい', sRomaji:'-ta hou ga ii', fr:'Donner un conseil : « tu ferais mieux de… ». Au négatif : 〜ないほうがいい (« mieux vaut ne pas… »).', covered:false, ex:[
     { jp:'早く寝たほうがいいですよ', romaji:'Hayaku neta hou ga ii desu yo', fr:'Tu ferais mieux de te coucher tôt' },
-    { jp:'夏の京都では無理をしないほうがいいです', romaji:'Natsu no Kyouto de wa muri wo shinai hou ga ii desu', fr:'Mieux vaut ne pas forcer pendant l\'été à Kyoto' } ]},
+    { jp:'夏の京都では無理をしないほうがいいです', romaji:'Natsu no Kyouto de wa muri o shinai hou ga ii desu', fr:'Mieux vaut ne pas forcer pendant l\'été à Kyoto' } ]},
   { s:'〜かもしれない', sRomaji:'kamoshirenai', fr:'Exprimer une possibilité : « peut-être que… ». Les Japonais l\'utilisent beaucoup pour ne pas trop affirmer.', covered:false, ex:[
     { jp:'午後、雨が降るかもしれません', romaji:'Gogo, ame ga furu kamoshiremasen', fr:'Il va peut-être pleuvoir cet après-midi' },
     { jp:'先生はもう帰ったかもしれない', romaji:'Sensei wa mou kaetta kamoshirenai', fr:'Le professeur est peut-être déjà parti' } ]},
@@ -51,7 +51,7 @@ export const N4_GRAMMAR = [
     { jp:'まるで夢みたい！', romaji:'Marude yume mitai!', fr:'On dirait un rêve !' } ]},
   { s:'〜と（si / quand, automatique）', sRomaji:'to', fr:'Dire qu\'une chose entraîne toujours l\'autre : « quand on fait A, B arrive ». Idéal pour les itinéraires et les modes d\'emploi.', covered:false, ex:[
     { jp:'まっすぐ行くと、駅があります', romaji:'Massugu iku to, eki ga arimasu', fr:'Si vous allez tout droit, vous trouverez la gare' },
-    { jp:'このボタンを押すと、お湯が出ます', romaji:'Kono botan wo osu to, oyu ga demasu', fr:'Quand on appuie sur ce bouton, l\'eau chaude sort' } ]},
+    { jp:'このボタンを押すと、お湯が出ます', romaji:'Kono botan o osu to, oyu ga demasu', fr:'Quand on appuie sur ce bouton, l\'eau chaude sort' } ]},
   { s:'〜ば', sRomaji:'-ba', fr:'Poser une condition : « si… ». Souvent pour dire ce qu\'il faut faire pour obtenir un résultat.', covered:false, ex:[
     { jp:'毎日練習すれば、上手になります', romaji:'Mainichi renshuu sureba, jouzu ni narimasu', fr:'Si tu t\'entraînes tous les jours, tu vas progresser' },
     { jp:'安ければ、買います', romaji:'Yasukereba, kaimasu', fr:'Si c\'est pas cher, je l\'achète' } ]},
@@ -71,30 +71,30 @@ export const N4_GRAMMAR = [
     { jp:'この部屋は広いし、駅から近いし、最高です', romaji:'Kono heya wa hiroi shi, eki kara chikai shi, saikou desu', fr:'Cette chambre est grande, en plus proche de la gare : parfait' },
     { jp:'お金もないし、今日は家にいます', romaji:'Okane mo nai shi, kyou wa ie ni imasu', fr:'En plus je n\'ai pas d\'argent, donc je reste chez moi' } ]},
   { s:'〜てしまう', sRomaji:'-te shimau', fr:'Dire qu\'une action est terminée complètement, ou qu\'on l\'a faite sans le vouloir et qu\'on le regrette. À l\'oral : 〜ちゃう.', covered:false, ex:[
-    { jp:'財布を忘れてしまいました', romaji:'Saifu wo wasurete shimaimashita', fr:'J\'ai oublié mon portefeuille (zut)' },
-    { jp:'ケーキを全部食べちゃった', romaji:'Keeki wo zenbu tabechatta', fr:'J\'ai mangé tout le gâteau' } ]},
+    { jp:'財布を忘れてしまいました', romaji:'Saifu o wasurete shimaimashita', fr:'J\'ai oublié mon portefeuille (zut)' },
+    { jp:'ケーキを全部食べちゃった', romaji:'Keeki o zenbu tabechatta', fr:'J\'ai mangé tout le gâteau' } ]},
   { s:'〜ておく', sRomaji:'-te oku', fr:'Faire quelque chose à l\'avance, pour être prêt plus tard.', covered:false, ex:[
-    { jp:'旅行の前にホテルを予約しておきます', romaji:'Ryokou no mae ni hoteru wo yoyaku shite okimasu', fr:'Je réserve l\'hôtel avant le voyage' },
-    { jp:'窓を開けておいてください', romaji:'Mado wo akete oite kudasai', fr:'Laissez la fenêtre ouverte, s\'il vous plaît' } ]},
+    { jp:'旅行の前にホテルを予約しておきます', romaji:'Ryokou no mae ni hoteru o yoyaku shite okimasu', fr:'Je réserve l\'hôtel avant le voyage' },
+    { jp:'窓を開けておいてください', romaji:'Mado o akete oite kudasai', fr:'Laissez la fenêtre ouverte, s\'il vous plaît' } ]},
   { s:'〜てみる', sRomaji:'-te miru', fr:'Essayer quelque chose pour voir ce que ça donne : « je vais goûter », « essaie de… ».', covered:false, ex:[
-    { jp:'この着物を着てみてもいいですか？', romaji:'Kono kimono wo kite mite mo ii desu ka?', fr:'Je peux essayer ce kimono ?' },
-    { jp:'一度、納豆を食べてみてください', romaji:'Ichido, nattou wo tabete mite kudasai', fr:'Goûte le natto au moins une fois' } ]},
+    { jp:'この着物を着てみてもいいですか？', romaji:'Kono kimono o kite mite mo ii desu ka?', fr:'Je peux essayer ce kimono ?' },
+    { jp:'一度、納豆を食べてみてください', romaji:'Ichido, nattou o tabete mite kudasai', fr:'Goûte le natto au moins une fois' } ]},
   { s:'〜てある', sRomaji:'-te aru', fr:'Décrire le résultat visible d\'une action que quelqu\'un a faite exprès : « c\'est écrit », « c\'est préparé ».', covered:false, ex:[
     { jp:'黒板に名前が書いてあります', romaji:'Kokuban ni namae ga kaite arimasu', fr:'Le nom est écrit au tableau' },
     { jp:'テーブルにお茶が用意してあります', romaji:'Teeburu ni ocha ga youi shite arimasu', fr:'Le thé est déjà prêt sur la table' } ]},
   { s:'あげる / くれる / もらう', sRomaji:'ageru / kureru / morau', fr:'Les trois verbes du don : あげる = je donne à quelqu\'un, くれる = quelqu\'un me donne, もらう = je reçois.', covered:false, ex:[
-    { jp:'友達にお土産をあげました', romaji:'Tomodachi ni omiyage wo agemashita', fr:'J\'ai offert un souvenir à un(e) ami(e)' },
-    { jp:'先生が辞書をくれました', romaji:'Sensei ga jisho wo kuremashita', fr:'Le professeur m\'a donné un dictionnaire' },
-    { jp:'母から手紙をもらいました', romaji:'Haha kara tegami wo moraimashita', fr:'J\'ai reçu une lettre de ma mère' } ]},
+    { jp:'友達にお土産をあげました', romaji:'Tomodachi ni omiyage o agemashita', fr:'J\'ai offert un souvenir à un(e) ami(e)' },
+    { jp:'先生が辞書をくれました', romaji:'Sensei ga jisho o kuremashita', fr:'Le professeur m\'a donné un dictionnaire' },
+    { jp:'母から手紙をもらいました', romaji:'Haha kara tegami o moraimashita', fr:'J\'ai reçu une lettre de ma mère' } ]},
   { s:'〜てあげる / 〜てくれる / 〜てもらう', sRomaji:'-te ageru / -te kureru / -te morau', fr:'Les mêmes verbes, mais pour un service rendu : « faire pour quelqu\'un », « quelqu\'un fait pour moi », « je me fais aider ».', covered:false, ex:[
     { jp:'ルームメイトが駅まで送ってくれました', romaji:'Ruumumeito ga eki made okutte kuremashita', fr:'Ma coloc m\'a accompagné(e) jusqu\'à la gare' },
-    { jp:'日本人の友達に作文を直してもらいました', romaji:'Nihonjin no tomodachi ni sakubun wo naoshite moraimashita', fr:'Je me suis fait corriger ma rédaction par un ami japonais' },
-    { jp:'妹に京都を案内してあげました', romaji:'Imouto ni Kyouto wo annai shite agemashita', fr:'J\'ai fait visiter Kyoto à ma petite sœur' } ]},
+    { jp:'日本人の友達に作文を直してもらいました', romaji:'Nihonjin no tomodachi ni sakubun o naoshite moraimashita', fr:'Je me suis fait corriger ma rédaction par un ami japonais' },
+    { jp:'妹に京都を案内してあげました', romaji:'Imouto ni Kyouto o annai shite agemashita', fr:'J\'ai fait visiter Kyoto à ma petite sœur' } ]},
   { s:'Passif（〜られる）', sRomaji:'-rareru', fr:'Dire ce qu\'on subit : « je me suis fait gronder », « mon vélo a été volé ». Souvent quand c\'est désagréable pour nous.', covered:false, ex:[
     { jp:'先生に褒められました', romaji:'Sensei ni homeraremashita', fr:'J\'ai été félicité(e) par le professeur' },
-    { jp:'電車で足を踏まれました', romaji:'Densha de ashi wo fumaremashita', fr:'On m\'a marché sur le pied dans le train' } ]},
+    { jp:'電車で足を踏まれました', romaji:'Densha de ashi o fumaremashita', fr:'On m\'a marché sur le pied dans le train' } ]},
   { s:'Causatif（〜させる）', sRomaji:'-saseru', fr:'Faire faire ou laisser faire quelque chose à quelqu\'un. 〜させてください = « permettez-moi de… », très utile et très poli.', covered:false, ex:[
-    { jp:'母は弟に野菜を食べさせます', romaji:'Haha wa otouto ni yasai wo tabesasemasu', fr:'Ma mère fait manger des légumes à mon petit frère' },
+    { jp:'母は弟に野菜を食べさせます', romaji:'Haha wa otouto ni yasai o tabesasemasu', fr:'Ma mère fait manger des légumes à mon petit frère' },
     { jp:'少し考えさせてください', romaji:'Sukoshi kangaesasete kudasai', fr:'Laissez-moi réfléchir un peu' } ]},
   { s:'〜やすい / 〜にくい', sRomaji:'-yasui / -nikui', fr:'Dire si une chose est facile ou difficile à faire : « facile à lire », « difficile à comprendre ».', covered:false, ex:[
     { jp:'この辞書は使いやすいです', romaji:'Kono jisho wa tsukaiyasui desu', fr:'Ce dictionnaire est facile à utiliser' },
@@ -103,10 +103,10 @@ export const N4_GRAMMAR = [
     { jp:'昨日は飲みすぎました', romaji:'Kinou wa nomisugimashita', fr:'J\'ai trop bu hier' },
     { jp:'この部屋は高すぎます', romaji:'Kono heya wa takasugimasu', fr:'Cette chambre est trop chère' } ]},
   { s:'〜場合（は）', sRomaji:'baai (wa)', fr:'« En cas de… » : la formule des consignes, des règlements et des panneaux.', covered:false, ex:[
-    { jp:'地震の場合は、エレベーターを使わないでください', romaji:'Jishin no baai wa, erebeetaa wo tsukawanaide kudasai', fr:'En cas de séisme, n\'utilisez pas l\'ascenseur' },
+    { jp:'地震の場合は、エレベーターを使わないでください', romaji:'Jishin no baai wa, erebeetaa o tsukawanaide kudasai', fr:'En cas de séisme, n\'utilisez pas l\'ascenseur' },
     { jp:'遅れる場合は、連絡してください', romaji:'Okureru baai wa, renraku shite kudasai', fr:'Si vous êtes en retard, prévenez-nous' } ]},
   { s:'〜ために', sRomaji:'tame ni', fr:'Dire le but d\'une action que l\'on contrôle : « pour… », « afin de… ».', covered:false, ex:[
-    { jp:'日本語を勉強するために、京都に来ました', romaji:'Nihongo wo benkyou suru tame ni, Kyouto ni kimashita', fr:'Je suis venu(e) à Kyoto pour étudier le japonais' },
+    { jp:'日本語を勉強するために、京都に来ました', romaji:'Nihongo o benkyou suru tame ni, Kyouto ni kimashita', fr:'Je suis venu(e) à Kyoto pour étudier le japonais' },
     { jp:'健康のために、毎朝歩きます', romaji:'Kenkou no tame ni, maiasa arukimasu', fr:'Je marche tous les matins pour ma santé' } ]},
   { s:'〜ように', sRomaji:'you ni', fr:'Dire un but qui ne dépend pas complètement de nous : « pour pouvoir… », « pour ne pas… ».', covered:false, ex:[
     { jp:'忘れないように、メモします', romaji:'Wasurenai you ni, memo shimasu', fr:'Je note pour ne pas oublier' },
@@ -116,7 +116,7 @@ export const N4_GRAMMAR = [
     { jp:'納豆が食べられるようになりました', romaji:'Nattou ga taberareru you ni narimashita', fr:'J\'ai fini par réussir à manger du natto' } ]},
   { s:'〜ことにする', sRomaji:'koto ni suru', fr:'Annoncer une décision qu\'on prend soi-même : « j\'ai décidé de… ».', covered:false, ex:[
     { jp:'来年も京都に住むことにしました', romaji:'Rainen mo Kyouto ni sumu koto ni shimashita', fr:'J\'ai décidé de vivre encore à Kyoto l\'an prochain' },
-    { jp:'毎晩、日記を書くことにしています', romaji:'Maiban, nikki wo kaku koto ni shite imasu', fr:'Je me suis fixé d\'écrire un journal chaque soir' } ]},
+    { jp:'毎晩、日記を書くことにしています', romaji:'Maiban, nikki o kaku koto ni shite imasu', fr:'Je me suis fixé d\'écrire un journal chaque soir' } ]},
   { s:'〜ことになる', sRomaji:'koto ni naru', fr:'Annoncer une décision prise par d\'autres ou par les circonstances : « il a été décidé que… ».', covered:false, ex:[
     { jp:'来月、大阪で働くことになりました', romaji:'Raigetsu, Oosaka de hataraku koto ni narimashita', fr:'Il a été décidé que je travaillerai à Osaka le mois prochain' },
     { jp:'授業はオンラインで行うことになりました', romaji:'Jugyou wa onrain de okonau koto ni narimashita', fr:'Les cours se feront finalement en ligne' } ]},
@@ -132,17 +132,17 @@ export const N4_GRAMMAR = [
     { jp:'どうぞ召し上がってください', romaji:'Douzo meshiagatte kudasai', fr:'Je vous en prie, servez-vous' } ]},
   { s:'お〜になる', sRomaji:'o- ni naru', fr:'La recette pour rendre presque n\'importe quel verbe respectueux quand on parle de ce que fait l\'autre.', covered:false, ex:[
     { jp:'先生はもうお帰りになりました', romaji:'Sensei wa mou okaeri ni narimashita', fr:'Le professeur est déjà rentré' },
-    { jp:'この本をお読みになりましたか？', romaji:'Kono hon wo oyomi ni narimashita ka?', fr:'Avez-vous lu ce livre ?' } ]},
+    { jp:'この本をお読みになりましたか？', romaji:'Kono hon o oyomi ni narimashita ka?', fr:'Avez-vous lu ce livre ?' } ]},
   { s:'Keigo modeste（お〜します・参る・いたす…）', sRomaji:'o- shimasu / mairu / itasu', fr:'Se faire tout petit en parlant de ce que JE fais pour quelqu\'un : « je vais vous porter ça », « je m\'appelle… ».', covered:false, ex:[
-    { jp:'荷物をお持ちします', romaji:'Nimotsu wo omochi shimasu', fr:'Je vais porter vos bagages' },
+    { jp:'荷物をお持ちします', romaji:'Nimotsu o omochi shimasu', fr:'Je vais porter vos bagages' },
     { jp:'フランスから参りました', romaji:'Furansu kara mairimashita', fr:'Je viens de France' },
     { jp:'よろしくお願いいたします', romaji:'Yoroshiku onegai itashimasu', fr:'Je compte sur vous (très poli)' } ]},
   { s:'〜ても', sRomaji:'-te mo', fr:'Dire « même si… » : le résultat ne change pas malgré la condition.', covered:false, ex:[
     { jp:'雨が降っても、行きます', romaji:'Ame ga futte mo, ikimasu', fr:'J\'irai même s\'il pleut' },
     { jp:'何回聞いても、わかりません', romaji:'Nankai kiite mo, wakarimasen', fr:'J\'ai beau écouter plusieurs fois, je ne comprends pas' } ]},
   { s:'〜ないで', sRomaji:'-naide', fr:'Dire « sans faire… » ou demander gentiment de ne pas faire : 〜ないでください.', covered:false, ex:[
-    { jp:'朝ご飯を食べないで、学校に来ました', romaji:'Asagohan wo tabenaide, gakkou ni kimashita', fr:'Je suis venu(e) en cours sans petit-déjeuner' },
-    { jp:'ここで写真を撮らないでください', romaji:'Koko de shashin wo toranaide kudasai', fr:'Ne prenez pas de photos ici, s\'il vous plaît' } ]},
+    { jp:'朝ご飯を食べないで、学校に来ました', romaji:'Asagohan o tabenaide, gakkou ni kimashita', fr:'Je suis venu(e) en cours sans petit-déjeuner' },
+    { jp:'ここで写真を撮らないでください', romaji:'Koko de shashin o toranaide kudasai', fr:'Ne prenez pas de photos ici, s\'il vous plaît' } ]},
   { s:'〜はずだ', sRomaji:'hazu da', fr:'Dire ce qui devrait logiquement être vrai : « normalement… », « il devrait… ».', covered:false, ex:[
     { jp:'バスはもうすぐ来るはずです', romaji:'Basu wa mou sugu kuru hazu desu', fr:'Le bus devrait arriver d\'une minute à l\'autre' },
     { jp:'彼女は今日休みのはずです', romaji:'Kanojo wa kyou yasumi no hazu desu', fr:'Normalement, elle ne travaille pas aujourd\'hui' } ]},
@@ -150,12 +150,12 @@ export const N4_GRAMMAR = [
 
 export const N4_GRAMMAR_QUIZ = [
   { q:'漢字が少し読＿＿ます。', qRomaji:'Kanji ga sukoshi yo___ masu.', choices:['め','む','ま','も'], choicesRomaji:['me','mu','ma','mo'], ok:'め', explanation:'読む → 読める : la forme potentielle (« je peux lire ») change le u final en e + る.' },
-  { q:'抹茶を点てた＿＿があります。', qRomaji:'Matcha wo tateta ___ ga arimasu.', choices:['こと','もの','の','ところ'], choicesRomaji:['koto','mono','no','tokoro'], ok:'こと', explanation:'〜たことがある = « j\'ai déjà fait… », pour raconter une expérience vécue.' },
-  { q:'週末は寺を見＿＿、カフェで勉強したりします。', qRomaji:'Shuumatsu wa tera wo mi___, kafe de benkyou shitari shimasu.', choices:['たり','たら','ても','て'], choicesRomaji:['tari','tara','temo','te'], ok:'たり', explanation:'〜たり〜たりする : on cite quelques activités en exemple. Les deux verbes prennent たり.' },
+  { q:'抹茶を点てた＿＿があります。', qRomaji:'Matcha o tateta ___ ga arimasu.', choices:['こと','もの','の','ところ'], choicesRomaji:['koto','mono','no','tokoro'], ok:'こと', explanation:'〜たことがある = « j\'ai déjà fait… », pour raconter une expérience vécue.' },
+  { q:'週末は寺を見＿＿、カフェで勉強したりします。', qRomaji:'Shuumatsu wa tera o mi___, kafe de benkyou shitari shimasu.', choices:['たり','たら','ても','て'], choicesRomaji:['tari','tara','temo','te'], ok:'たり', explanation:'〜たり〜たりする : on cite quelques activités en exemple. Les deux verbes prennent たり.' },
   { q:'私は夏休みに東京へ行く＿＿です。', qRomaji:'Watashi wa natsuyasumi ni Toukyou e iku ___ desu.', choices:['つもり','ため','ほう','はず'], choicesRomaji:['tsumori','tame','hou','hazu'], ok:'つもり', explanation:'〜つもりです = « je compte faire… », une intention personnelle déjà décidée.' },
   { q:'明日、嵐山へ行＿＿と思います。', qRomaji:'Ashita, Arashiyama e i___ to omoimasu.', choices:['こう','く','け','った'], choicesRomaji:['kou','ku','ke','tta'], ok:'こう', explanation:'行こう（ikou）+ と思います = « je pense aller… ». La forme en -ou exprime l\'intention.' },
-  { q:'明日までにレポートを出さなければ＿＿＿＿。', qRomaji:'Ashita made ni repooto wo dasanakereba ___.', choices:['なりません','いけます','できません','ありません'], choicesRomaji:['narimasen','ikemasu','dekimasen','arimasen'], ok:'なりません', explanation:'〜なければなりません = « je dois… ». On retient le bloc entier.' },
-  { q:'靴を脱がなくても＿＿ですよ。', qRomaji:'Kutsu wo nuganakute mo ___ desu yo.', choices:['いい','だめ','いけない','ならない'], choicesRomaji:['ii','dame','ikenai','naranai'], ok:'いい', explanation:'〜なくてもいい = « pas besoin de… » : ce n\'est pas obligatoire.' },
+  { q:'明日までにレポートを出さなければ＿＿＿＿。', qRomaji:'Ashita made ni repooto o dasanakereba ___.', choices:['なりません','いけます','できません','ありません'], choicesRomaji:['narimasen','ikemasu','dekimasen','arimasen'], ok:'なりません', explanation:'〜なければなりません = « je dois… ». On retient le bloc entier.' },
+  { q:'靴を脱がなくても＿＿ですよ。', qRomaji:'Kutsu o nuganakute mo ___ desu yo.', choices:['いい','だめ','いけない','ならない'], choicesRomaji:['ii','dame','ikenai','naranai'], ok:'いい', explanation:'〜なくてもいい = « pas besoin de… » : ce n\'est pas obligatoire.' },
   { q:'早く寝た＿＿がいいですよ。', qRomaji:'Hayaku neta ___ ga ii desu yo.', choices:['ほう','こと','もの','ところ'], choicesRomaji:['hou','koto','mono','tokoro'], ok:'ほう', explanation:'〜たほうがいい = « tu ferais mieux de… », pour donner un conseil.' },
   { q:'午後、雨が降る＿＿＿＿＿。', qRomaji:'Gogo, ame ga furu ___.', choices:['かもしれません','ましょう','ようにします','ことにします'], choicesRomaji:['kamoshiremasen','mashou','you ni shimasu','koto ni shimasu'], ok:'かもしれません', explanation:'かもしれません = « peut-être ». Ici : il va peut-être pleuvoir.' },
   { q:'明日は晴れる＿＿＿＿。', qRomaji:'Ashita wa hareru ___.', choices:['でしょう','ましょう','ください','ません'], choicesRomaji:['deshou','mashou','kudasai','masen'], ok:'でしょう', explanation:'でしょう = « sans doute », la supposition de la météo. ましょう, lui, propose de faire quelque chose ensemble.' },
@@ -169,18 +169,18 @@ export const N4_GRAMMAR_QUIZ = [
   { q:'たくさん勉強した＿＿、試験に落ちました。', qRomaji:'Takusan benkyou shita ___, shiken ni ochimashita.', choices:['のに','ので','から','ために'], choicesRomaji:['noni','node','kara','tame ni'], ok:'のに', explanation:'〜のに = « et pourtant ». Le résultat (rater l\'examen) va contre ce qu\'on attendait.' },
   { q:'熱がある＿＿、今日は休みます。', qRomaji:'Netsu ga aru ___, kyou wa yasumimasu.', choices:['ので','のに','でも','ても'], choicesRomaji:['node','noni','demo','temo'], ok:'ので', explanation:'〜ので = « comme… », une raison donnée poliment. Idéal pour s\'excuser auprès d\'un professeur.' },
   { q:'この部屋は広い＿、駅から近いし、最高です。', qRomaji:'Kono heya wa hiroi ___, eki kara chikai shi, saikou desu.', choices:['し','と','が','も'], choicesRomaji:['shi','to','ga','mo'], ok:'し', explanation:'〜し、〜し = on empile les raisons : « grande, en plus proche de la gare… ».' },
-  { q:'財布を忘れて＿＿＿＿ました。', qRomaji:'Saifu wo wasurete ___ mashita.', choices:['しまい','おき','あり','み'], choicesRomaji:['shimai','oki','ari','mi'], ok:'しまい', explanation:'〜てしまいました = « j\'ai fait… (et c\'est embêtant) ». Ici : zut, j\'ai oublié mon portefeuille.' },
-  { q:'旅行の前に、自分でホテルを予約して＿＿ます。', qRomaji:'Ryokou no mae ni, jibun de hoteru wo yoyaku shite ___ masu.', choices:['おき','しまい','くれ','もらい'], choicesRomaji:['oki','shimai','kure','morai'], ok:'おき', explanation:'〜ておきます = faire à l\'avance pour être prêt. 前に (avant) est l\'indice.' },
-  { q:'この着物をちょっと着て＿＿もいいですか？', qRomaji:'Kono kimono wo chotto kite ___ mo ii desu ka?', choices:['みて','あって','くれて','あげて'], choicesRomaji:['mite','atte','kurete','agete'], ok:'みて', explanation:'〜てみる = essayer pour voir. 着てみてもいいですか = « je peux l\'essayer ? ».' },
+  { q:'財布を忘れて＿＿＿＿ました。', qRomaji:'Saifu o wasurete ___ mashita.', choices:['しまい','おき','あり','み'], choicesRomaji:['shimai','oki','ari','mi'], ok:'しまい', explanation:'〜てしまいました = « j\'ai fait… (et c\'est embêtant) ». Ici : zut, j\'ai oublié mon portefeuille.' },
+  { q:'旅行の前に、自分でホテルを予約して＿＿ます。', qRomaji:'Ryokou no mae ni, jibun de hoteru o yoyaku shite ___ masu.', choices:['おき','しまい','くれ','もらい'], choicesRomaji:['oki','shimai','kure','morai'], ok:'おき', explanation:'〜ておきます = faire à l\'avance pour être prêt. 前に (avant) est l\'indice.' },
+  { q:'この着物をちょっと着て＿＿もいいですか？', qRomaji:'Kono kimono o chotto kite ___ mo ii desu ka?', choices:['みて','あって','くれて','あげて'], choicesRomaji:['mite','atte','kurete','agete'], ok:'みて', explanation:'〜てみる = essayer pour voir. 着てみてもいいですか = « je peux l\'essayer ? ».' },
   { q:'黒板に名前が書いて＿＿ます。', qRomaji:'Kokuban ni namae ga kaite ___ masu.', choices:['あり','い','おき','しまい'], choicesRomaji:['ari','i','oki','shimai'], ok:'あり', explanation:'Objet + が + 〜てあります = le résultat visible d\'une action faite exprès : « c\'est écrit ».' },
-  { q:'先生が私に辞書を＿＿＿ました。', qRomaji:'Sensei ga watashi ni jisho wo ___ mashita.', choices:['くれ','あげ','もらい','やり'], choicesRomaji:['kure','age','morai','yari'], ok:'くれ', explanation:'Quelqu\'un me donne → くれる. あげる, c\'est quand moi je donne à quelqu\'un.' },
-  { q:'日本人の友達に私の作文を直して＿＿＿ました。', qRomaji:'Nihonjin no tomodachi ni watashi no sakubun wo naoshite ___ mashita.', choices:['もらい','くれ','あげ','おき'], choicesRomaji:['morai','kure','age','oki'], ok:'もらい', explanation:'〜てもらう = « je me fais aider par… ». La personne qui aide est marquée par に.' },
-  { q:'電車で知らない人に足を踏＿＿＿ました。', qRomaji:'Densha de shiranai hito ni ashi wo fu___ mashita.', choices:['まれ','ませ','め','み'], choicesRomaji:['mare','mase','me','mi'], ok:'まれ', explanation:'踏む → 踏まれる : on subit l\'action (on m\'a marché sur le pied).' },
+  { q:'先生が私に辞書を＿＿＿ました。', qRomaji:'Sensei ga watashi ni jisho o ___ mashita.', choices:['くれ','あげ','もらい','やり'], choicesRomaji:['kure','age','morai','yari'], ok:'くれ', explanation:'Quelqu\'un me donne → くれる. あげる, c\'est quand moi je donne à quelqu\'un.' },
+  { q:'日本人の友達に私の作文を直して＿＿＿ました。', qRomaji:'Nihonjin no tomodachi ni watashi no sakubun o naoshite ___ mashita.', choices:['もらい','くれ','あげ','おき'], choicesRomaji:['morai','kure','age','oki'], ok:'もらい', explanation:'〜てもらう = « je me fais aider par… ». La personne qui aide est marquée par に.' },
+  { q:'電車で知らない人に足を踏＿＿＿ました。', qRomaji:'Densha de shiranai hito ni ashi o fu___ mashita.', choices:['まれ','ませ','め','み'], choicesRomaji:['mare','mase','me','mi'], ok:'まれ', explanation:'踏む → 踏まれる : on subit l\'action (on m\'a marché sur le pied).' },
   { q:'少し考え＿＿＿ください。', qRomaji:'Sukoshi kangae___ kudasai.', choices:['させて','られて','ない','たり'], choicesRomaji:['sasete','rarete','nai','tari'], ok:'させて', explanation:'〜させてください = « laissez-moi… », une demande de permission très polie.' },
   { q:'この辞書は使い＿＿＿です。', qRomaji:'Kono jisho wa tsukai___ desu.', choices:['やすい','ながら','ましょう','ます'], choicesRomaji:['yasui','nagara','mashou','masu'], ok:'やすい', explanation:'Racine du verbe + やすい = facile à faire. 使いやすい = facile à utiliser.' },
   { q:'昨日は飲み＿＿＿ました。', qRomaji:'Kinou wa nomi___ mashita.', choices:['すぎ','やすい','たい','ながら'], choicesRomaji:['sugi','yasui','tai','nagara'], ok:'すぎ', explanation:'Racine du verbe + すぎる = faire trop. 飲みすぎました = j\'ai trop bu.' },
-  { q:'地震の＿＿＿は、エレベーターを使わないでください。', qRomaji:'Jishin no ___ wa, erebeetaa wo tsukawanaide kudasai.', choices:['場合','ため','から','より'], choicesRomaji:['baai','tame','kara','yori'], ok:'場合', explanation:'〜の場合は = « en cas de… », la tournure des consignes de sécurité.' },
-  { q:'日本語を勉強する＿＿＿、京都に来ました。', qRomaji:'Nihongo wo benkyou suru ___, Kyouto ni kimashita.', choices:['ために','ように','のに','まで'], choicesRomaji:['tame ni','you ni','noni','made'], ok:'ために', explanation:'〜ために = « pour / afin de », un but que tu contrôles toi-même (venir étudier).' },
+  { q:'地震の＿＿＿は、エレベーターを使わないでください。', qRomaji:'Jishin no ___ wa, erebeetaa o tsukawanaide kudasai.', choices:['場合','ため','から','より'], choicesRomaji:['baai','tame','kara','yori'], ok:'場合', explanation:'〜の場合は = « en cas de… », la tournure des consignes de sécurité.' },
+  { q:'日本語を勉強する＿＿＿、京都に来ました。', qRomaji:'Nihongo o benkyou suru ___, Kyouto ni kimashita.', choices:['ために','ように','のに','まで'], choicesRomaji:['tame ni','you ni','noni','made'], ok:'ために', explanation:'〜ために = « pour / afin de », un but que tu contrôles toi-même (venir étudier).' },
   { q:'忘れない＿＿＿、メモします。', qRomaji:'Wasurenai ___, memo shimasu.', choices:['ように','ほど','のに','ので'], choicesRomaji:['you ni','hodo','noni','node'], ok:'ように', explanation:'Avec un verbe qu\'on ne contrôle pas vraiment (oublier), le but se dit avec ように : « pour ne pas oublier ».' },
   { q:'箸が上手に使える＿＿＿なりました。', qRomaji:'Hashi ga jouzu ni tsukaeru ___ narimashita.', choices:['ように','ことに','ために','そうに'], choicesRomaji:['you ni','koto ni','tame ni','sou ni'], ok:'ように', explanation:'〜ようになりました = « j\'arrive maintenant à… », un progrès qui s\'est fait petit à petit.' },
   { q:'来年も京都に住む＿＿＿しました。', qRomaji:'Rainen mo Kyouto ni sumu ___ shimashita.', choices:['ことに','まえに','ために','つもりに'], choicesRomaji:['koto ni','mae ni','tame ni','tsumori ni'], ok:'ことに', explanation:'〜ことにしました = « j\'ai décidé de… », une décision que tu prends toi-même.' },
@@ -188,7 +188,7 @@ export const N4_GRAMMAR_QUIZ = [
   { q:'明日来られる＿＿＿＿、わかりません。', qRomaji:'Ashita korareru ___, wakarimasen.', choices:['かどうか','かもしれない','ので','のに'], choicesRomaji:['ka dou ka','kamoshirenai','node','noni'], ok:'かどうか', explanation:'〜かどうか = « si oui ou non ». On glisse une question oui/non dans la phrase.' },
   { q:'何＿飲みませんか？', qRomaji:'Nani___ nomimasen ka?', choices:['か','が','の','に'], choicesRomaji:['ka','ga','no','ni'], ok:'か', explanation:'何か = « quelque chose ». Ajouter か à un mot interrogatif donne un mot indéfini : いつか, どこか, 誰か.' },
   { q:'先生は研究室に＿＿＿＿＿か？', qRomaji:'Sensei wa kenkyuushitsu ni ___ ka?', choices:['いらっしゃいます','まいります','おります','いたします'], choicesRomaji:['irasshaimasu','mairimasu','orimasu','itashimasu'], ok:'いらっしゃいます', explanation:'On parle du professeur avec respect : いらっしゃる. まいる, おる, いたす servent à parler modestement de soi.' },
-  { q:'私がお客様の荷物をお持ち＿＿＿。', qRomaji:'Watashi ga okyakusama no nimotsu wo omochi ___.', choices:['します','になります','されます','ください'], choicesRomaji:['shimasu','ni narimasu','saremasu','kudasai'], ok:'します', explanation:'お + racine + します = je fais ça pour vous, en me faisant modeste. お〜になります, c\'est pour ce que fait l\'autre.' },
+  { q:'私がお客様の荷物をお持ち＿＿＿。', qRomaji:'Watashi ga okyakusama no nimotsu o omochi ___.', choices:['します','になります','されます','ください'], choicesRomaji:['shimasu','ni narimasu','saremasu','kudasai'], ok:'します', explanation:'お + racine + します = je fais ça pour vous, en me faisant modeste. お〜になります, c\'est pour ce que fait l\'autre.' },
   { q:'雨が降って＿、行きます。', qRomaji:'Ame ga futte ___, ikimasu.', choices:['も','は','から','ので'], choicesRomaji:['mo','wa','kara','node'], ok:'も', explanation:'〜ても = « même si ». J\'irai même s\'il pleut.' },
   { q:'バスはもうすぐ来る＿＿です。', qRomaji:'Basu wa mou sugu kuru ___ desu.', choices:['はず','つもり','ため','ほう'], choicesRomaji:['hazu','tsumori','tame','hou'], ok:'はず', explanation:'〜はずです = « normalement, ça devrait… ». On déduit à partir de ce qu\'on sait (les horaires).' },
 ];

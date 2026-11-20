@@ -476,12 +476,12 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "切符を二枚ください",
-      "romaji": "kippu wo nimai kudasai",
+      "romaji": "kippu o nimai kudasai",
       "fr": "Deux billets, s'il vous plaît (objets plats : 枚)"
      },
      {
       "jp": "本を三冊借りました",
-      "romaji": "hon wo sansatsu karimashita",
+      "romaji": "hon o sansatsu karimashita",
       "fr": "J'ai emprunté trois livres (livres : 冊)"
      },
      {
@@ -530,7 +530,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "図書館で本を読みます",
-      "romaji": "toshokan de hon wo yomimasu",
+      "romaji": "toshokan de hon o yomimasu",
       "fr": "Je lis un livre à la bibliothèque (action)"
      },
      {
@@ -616,7 +616,7 @@ export const PIEGES = {
      },
      {
       "jp": "日曜日に買い物をします",
-      "romaji": "nichiyoubi ni kaimono wo shimasu",
+      "romaji": "nichiyoubi ni kaimono o shimasu",
       "fr": "Je fais les courses le dimanche (jour → に)"
      },
      {
@@ -746,17 +746,17 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "友達に花をあげました",
-      "romaji": "tomodachi ni hana wo agemashita",
+      "romaji": "tomodachi ni hana o agemashita",
       "fr": "J'ai donné des fleurs à mon amie"
      },
      {
       "jp": "友達に本をもらいました",
-      "romaji": "tomodachi ni hon wo moraimashita",
+      "romaji": "tomodachi ni hon o moraimashita",
       "fr": "J'ai reçu un livre de mon amie"
      },
      {
       "jp": "母にプレゼントをあげました",
-      "romaji": "haha ni purezento wo agemashita",
+      "romaji": "haha ni purezento o agemashita",
       "fr": "J'ai offert un cadeau à ma mère"
      }
     ]
@@ -886,7 +886,7 @@ export const PIEGES = {
      },
      {
       "jp": "食べた後で、お茶を飲みます",
-      "romaji": "tabeta ato de, ocha wo nomimasu",
+      "romaji": "tabeta ato de, ocha o nomimasu",
       "fr": "Après avoir mangé, je bois du thé"
      }
     ]
@@ -923,7 +923,7 @@ export const PIEGES = {
    {
     "cat": "Particules",
     "q": "図書館＿本を読みます。",
-    "qRomaji": "Toshokan ___ hon wo yomimasu.",
+    "qRomaji": "Toshokan ___ hon o yomimasu.",
     "choices": [
      "で",
      "に",
@@ -1189,7 +1189,7 @@ export const PIEGES = {
    {
     "cat": "Verbes",
     "q": "私は友達＿花をもらいました。",
-    "qRomaji": "Watashi wa tomodachi ___ hana wo moraimashita.",
+    "qRomaji": "Watashi wa tomodachi ___ hana o moraimashita.",
     "choices": [
      "に",
      "を",
@@ -1208,7 +1208,7 @@ export const PIEGES = {
    {
     "cat": "Verbes",
     "q": "誕生日に、母＿プレゼントをあげました。",
-    "qRomaji": "Tanjoubi ni, haha ___ purezento wo agemashita.",
+    "qRomaji": "Tanjoubi ni, haha ___ purezento o agemashita.",
     "choices": [
      "に",
      "から",
@@ -1227,7 +1227,7 @@ export const PIEGES = {
    {
     "cat": "Temps",
     "q": "A：もう昼ごはんを食べましたか。B：いいえ、＿＿食べていません。",
-    "qRomaji": "A: Mou hirugohan wo tabemashita ka. B: Iie, ___ tabete imasen.",
+    "qRomaji": "A: Mou hirugohan o tabemashita ka. B: Iie, ___ tabete imasen.",
     "choices": [
      "まだ",
      "もう",
@@ -1246,7 +1246,7 @@ export const PIEGES = {
    {
     "cat": "Temps",
     "q": "A：宿題をしましたか。B：はい、＿＿しました。",
-    "qRomaji": "A: Shukudai wo shimashita ka. B: Hai, ___ shimashita.",
+    "qRomaji": "A: Shukudai o shimashita ka. B: Hai, ___ shimashita.",
     "choices": [
      "もう",
      "まだ",
@@ -1341,7 +1341,7 @@ export const PIEGES = {
    {
     "cat": "Grammaire",
     "q": "ここに名前を＿＿ください。",
-    "qRomaji": "Koko ni namae wo ___ kudasai.",
+    "qRomaji": "Koko ni namae o ___ kudasai.",
     "choices": [
      "書いて",
      "書き",
@@ -1360,7 +1360,7 @@ export const PIEGES = {
    {
     "cat": "Grammaire",
     "q": "今、ごはんを＿＿＿＿。（Je suis en train de manger.）",
-    "qRomaji": "Ima, gohan wo ___.",
+    "qRomaji": "Ima, gohan o ___.",
     "choices": [
      "食べています",
      "食べます",
@@ -1379,7 +1379,7 @@ export const PIEGES = {
    {
     "cat": "Grammaire",
     "q": "いっしょに映画を＿＿＿。（On regarde un film ensemble ?）",
-    "qRomaji": "Issho ni eiga wo ___.",
+    "qRomaji": "Issho ni eiga o ___.",
     "choices": [
      "見ませんか",
      "見ましたか",
@@ -1417,7 +1417,7 @@ export const PIEGES = {
    {
     "cat": "Grammaire",
     "q": "寝る＿＿＿、歯をみがきます。",
-    "qRomaji": "Neru ___, ha wo migakimasu.",
+    "qRomaji": "Neru ___, ha o migakimasu.",
     "choices": [
      "前に",
      "後で",
@@ -1436,7 +1436,7 @@ export const PIEGES = {
    {
     "cat": "Compteurs",
     "q": "切符を三＿＿ください。",
-    "qRomaji": "Kippu wo san ___ kudasai.",
+    "qRomaji": "Kippu o san ___ kudasai.",
     "choices": [
      "枚",
      "本",
@@ -1731,7 +1731,7 @@ export const PIEGES = {
     ],
     "post": "見たいです。",
     "fr": "L'été prochain, je voudrais aller au Japon voir les temples de Kyoto.",
-    "romaji": "Rainen no natsu, Nihon e itte Kyoto no otera wo mitai desu.",
+    "romaji": "Rainen no natsu, Nihon e itte Kyoto no otera o mitai desu.",
     "explanation": "Les actions s'enchaînent dans l'ordre : aller (日本へ行って), puis voir. 京都の se colle devant お寺を (nom + の + nom) et le verbe 見たい ferme la phrase. Dans ★ : 京都の."
    },
    {
@@ -1744,7 +1744,7 @@ export const PIEGES = {
     ],
     "post": "。",
     "fr": "Excusez-moi, écrivez votre nom ici, s'il vous plaît.",
-    "romaji": "Sumimasen, koko ni namae wo kaite kudasai.",
+    "romaji": "Sumimasen, koko ni namae o kaite kudasai.",
     "explanation": "Pour demander quelque chose : [lieu に] [objet を] + verbe en て + ください. ください est toujours le dernier mot. Dans ★ : 書いて."
    },
    {
@@ -1757,7 +1757,7 @@ export const PIEGES = {
     ],
     "post": "。",
     "fr": "J'étudie toujours en écoutant de la musique.",
-    "romaji": "Watashi wa itsumo ongaku wo kikinagara benkyou shimasu.",
+    "romaji": "Watashi wa itsumo ongaku o kikinagara benkyou shimasu.",
     "explanation": "ながら se colle derrière le verbe sans ます (聞き) : « en écoutant ». L'action principale (勉強します) vient après et termine la phrase. Dans ★ : ながら."
    },
    {
@@ -1783,7 +1783,7 @@ export const PIEGES = {
     ],
     "post": "。",
     "fr": "Hier, j'ai fait du shopping avec ma mère au grand magasin.",
-    "romaji": "Kinou wa haha to depaato de kaimono wo shimashita.",
+    "romaji": "Kinou wa haha to depaato de kaimono o shimashita.",
     "explanation": "Avec qui (と), où (で), quoi (を), et le verbe en dernier. Le verbe est TOUJOURS à la fin d'une phrase japonaise. Dans ★ : 買い物を."
    },
    {
@@ -1835,7 +1835,7 @@ export const PIEGES = {
     ],
     "post": "？",
     "fr": "Et si on allait voir un film ensemble demain ?",
-    "romaji": "Ashita issho ni eiga wo mimasen ka?",
+    "romaji": "Ashita issho ni eiga o mimasen ka?",
     "explanation": "Le moment (あした), puis « ensemble » (いっしょに), puis l'objet (映画を), puis le verbe à la forme ませんか qui sert à inviter. Dans ★ : 映画を."
    },
    {
@@ -1887,7 +1887,7 @@ export const PIEGES = {
     ],
     "post": "いいですか。",
     "fr": "Professeur, est-ce que je peux prendre des photos ici ?",
-    "romaji": "Sensei, koko de shashin wo totte mo ii desu ka?",
+    "romaji": "Sensei, koko de shashin o totte mo ii desu ka?",
     "explanation": "Pour demander la permission : verbe en て + も + いいですか. も doit rester collé juste derrière le verbe. Dans ★ : とって."
    },
    {
@@ -1926,7 +1926,7 @@ export const PIEGES = {
     ],
     "post": "洗います。",
     "fr": "Je me lave les mains avant de manger.",
-    "romaji": "Gohan wo taberu mae ni te wo araimasu.",
+    "romaji": "Gohan o taberu mae ni te o araimasu.",
     "explanation": "Pour « avant de… » : verbe au dictionnaire + 前に. L'action qui vient en premier dans le temps (食べる) est cachée dans la partie 前に, et l'action principale (洗います) termine la phrase. Dans ★ : 前に."
    },
    {
@@ -1939,7 +1939,7 @@ export const PIEGES = {
     ],
     "post": "します。",
     "fr": "Après avoir mangé, je fais mes devoirs.",
-    "romaji": "Gohan wo tabete kara shukudai wo shimasu.",
+    "romaji": "Gohan o tabete kara shukudai o shimasu.",
     "explanation": "Verbe en て + から = « après avoir… ». On range d'abord ごはんを食べてから, puis l'objet 宿題を et le verbe します. Dans ★ : から."
    }
   ]
@@ -2244,7 +2244,7 @@ export const PIEGES = {
      },
      {
       "jp": "寒いから、窓を閉めましょう。",
-      "romaji": "Samui kara, mado wo shimemashou.",
+      "romaji": "Samui kara, mado o shimemashou.",
       "fr": "Il fait froid, alors fermons la fenêtre."
      },
      {
@@ -2261,7 +2261,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "薬を飲んだのに、熱が下がりません。",
-      "romaji": "Kusuri wo nonda noni, netsu ga sagarimasen.",
+      "romaji": "Kusuri o nonda noni, netsu ga sagarimasen.",
       "fr": "J'ai pris des médicaments et pourtant la fièvre ne baisse pas."
      },
      {
@@ -2278,7 +2278,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "このボタンを押すと、お湯が出ます。",
-      "romaji": "Kono botan wo osu to, oyu ga demasu.",
+      "romaji": "Kono botan o osu to, oyu ga demasu.",
       "fr": "Si tu appuies sur ce bouton, l'eau chaude sort."
      },
      {
@@ -2334,7 +2334,7 @@ export const PIEGES = {
      },
      {
       "jp": "辞書を買うなら、駅の前の店が安いですよ。",
-      "romaji": "Jisho wo kau nara, eki no mae no mise ga yasui desu yo.",
+      "romaji": "Jisho o kau nara, eki no mae no mise ga yasui desu yo.",
       "fr": "Si tu achètes un dictionnaire, le magasin devant la gare est moins cher."
      }
     ]
@@ -2346,17 +2346,17 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "友達が私に本をくれました。",
-      "romaji": "Tomodachi ga watashi ni hon wo kuremashita.",
+      "romaji": "Tomodachi ga watashi ni hon o kuremashita.",
       "fr": "Une amie m'a donné un livre."
      },
      {
       "jp": "私は友達に本をあげました。",
-      "romaji": "Watashi wa tomodachi ni hon wo agemashita.",
+      "romaji": "Watashi wa tomodachi ni hon o agemashita.",
       "fr": "J'ai donné un livre à une amie."
      },
      {
       "jp": "私は友達に本をもらいました。",
-      "romaji": "Watashi wa tomodachi ni hon wo moraimashita.",
+      "romaji": "Watashi wa tomodachi ni hon o moraimashita.",
       "fr": "J'ai reçu un livre d'une amie."
      }
     ]
@@ -2390,12 +2390,12 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "母は弟に野菜を食べさせました。",
-      "romaji": "Haha wa otouto ni yasai wo tabesasemashita.",
+      "romaji": "Haha wa otouto ni yasai o tabesasemashita.",
       "fr": "Ma mère a fait manger des légumes à mon petit frère."
      },
      {
       "jp": "私は子どものとき、母にピアノを習わされました。",
-      "romaji": "Watashi wa kodomo no toki, haha ni piano wo narawasaremashita.",
+      "romaji": "Watashi wa kodomo no toki, haha ni piano o narawasaremashita.",
       "fr": "Enfant, ma mère m'a obligée à apprendre le piano."
      },
      {
@@ -2417,7 +2417,7 @@ export const PIEGES = {
      },
      {
       "jp": "窓を開けてください。",
-      "romaji": "Mado wo akete kudasai.",
+      "romaji": "Mado o akete kudasai.",
       "fr": "Ouvrez la fenêtre, s'il vous plaît."
      },
      {
@@ -2427,7 +2427,7 @@ export const PIEGES = {
      },
      {
       "jp": "電気をつけました。",
-      "romaji": "Denki wo tsukemashita.",
+      "romaji": "Denki o tsukemashita.",
       "fr": "J'ai allumé la lumière."
      }
     ]
@@ -2439,7 +2439,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "私の趣味は写真を撮ることです。",
-      "romaji": "Watashi no shumi wa shashin wo toru koto desu.",
+      "romaji": "Watashi no shumi wa shashin o toru koto desu.",
       "fr": "Mon passe-temps est de prendre des photos."
      },
      {
@@ -2461,7 +2461,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "日本語を勉強するために、京都に来ました。",
-      "romaji": "Nihongo wo benkyou suru tame ni, Kyouto ni kimashita.",
+      "romaji": "Nihongo o benkyou suru tame ni, Kyouto ni kimashita.",
       "fr": "Je suis venue à Kyoto pour étudier le japonais."
      },
      {
@@ -2505,7 +2505,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "日本へ行くとき、パスポートを持っていきます。",
-      "romaji": "Nihon e iku toki, pasupooto wo motte ikimasu.",
+      "romaji": "Nihon e iku toki, pasupooto o motte ikimasu.",
       "fr": "Quand je pars pour le Japon, j'emporte mon passeport."
      },
      {
@@ -2522,12 +2522,12 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "駅で友達を待ちます。",
-      "romaji": "Eki de tomodachi wo machimasu.",
+      "romaji": "Eki de tomodachi o machimasu.",
       "fr": "J'attends un ami à la gare."
      },
      {
       "jp": "かばんを持ちます。",
-      "romaji": "Kaban wo mochimasu.",
+      "romaji": "Kaban o mochimasu.",
       "fr": "Je tiens un sac."
      }
     ]
@@ -2539,22 +2539,22 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "図書館で本を借ります。",
-      "romaji": "Toshokan de hon wo karimasu.",
+      "romaji": "Toshokan de hon o karimasu.",
       "fr": "J'emprunte un livre à la bibliothèque."
      },
      {
       "jp": "友達にお金を貸しました。",
-      "romaji": "Tomodachi ni okane wo kashimashita.",
+      "romaji": "Tomodachi ni okane o kashimashita.",
       "fr": "J'ai prêté de l'argent à un ami."
      },
      {
       "jp": "店で服を買います。",
-      "romaji": "Mise de fuku wo kaimasu.",
+      "romaji": "Mise de fuku o kaimasu.",
       "fr": "J'achète des vêtements dans un magasin."
      },
      {
       "jp": "古い本を売ります。",
-      "romaji": "Furui hon wo urimasu.",
+      "romaji": "Furui hon o urimasu.",
       "fr": "Je vends de vieux livres."
      }
     ]
@@ -2571,7 +2571,7 @@ export const PIEGES = {
      },
      {
       "jp": "二十歳の誕生日に、友達が果物をくれました。",
-      "romaji": "Hatachi no tanjoubi ni, tomodachi ga kudamono wo kuremashita.",
+      "romaji": "Hatachi no tanjoubi ni, tomodachi ga kudamono o kuremashita.",
       "fr": "Pour mes vingt ans, une amie m'a offert des fruits."
      }
     ]
@@ -2588,7 +2588,7 @@ export const PIEGES = {
      },
      {
       "jp": "美容院で髪を切りました。",
-      "romaji": "Biyouin de kami wo kirimashita.",
+      "romaji": "Biyouin de kami o kirimashita.",
       "fr": "Je me suis fait couper les cheveux chez le coiffeur."
      },
      {
@@ -2605,7 +2605,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "ご飯を食べてから、薬を飲みます。",
-      "romaji": "Gohan wo tabete kara, kusuri wo nomimasu.",
+      "romaji": "Gohan o tabete kara, kusuri o nomimasu.",
       "fr": "Je prends mes médicaments après avoir mangé."
      },
      {
@@ -2627,7 +2627,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "もう昼ごはんを食べましたか。 ー いいえ、まだです。",
-      "romaji": "Mou hirugohan wo tabemashita ka. - Iie, mada desu.",
+      "romaji": "Mou hirugohan o tabemashita ka. - Iie, mada desu.",
       "fr": "As-tu déjà déjeuné ? - Non, pas encore."
      },
      {
@@ -2671,17 +2671,17 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "先生が私に辞書をくださいました。",
-      "romaji": "Sensei ga watashi ni jisho wo kudasaimashita.",
+      "romaji": "Sensei ga watashi ni jisho o kudasaimashita.",
       "fr": "Le professeur m'a donné un dictionnaire."
      },
      {
       "jp": "私は先生に辞書をいただきました。",
-      "romaji": "Watashi wa sensei ni jisho wo itadakimashita.",
+      "romaji": "Watashi wa sensei ni jisho o itadakimashita.",
       "fr": "J'ai reçu un dictionnaire du professeur."
      },
      {
       "jp": "先生に日本語を教えていただきました。",
-      "romaji": "Sensei ni nihongo wo oshiete itadakimashita.",
+      "romaji": "Sensei ni nihongo o oshiete itadakimashita.",
       "fr": "Le professeur a bien voulu m'enseigner le japonais."
      }
     ]
@@ -2730,7 +2730,7 @@ export const PIEGES = {
      },
      {
       "jp": "昨日、ケーキを食べすぎました。",
-      "romaji": "Kinou, keeki wo tabesugimashita.",
+      "romaji": "Kinou, keeki o tabesugimashita.",
       "fr": "Hier, j'ai trop mangé de gâteau."
      },
      {
@@ -2747,7 +2747,7 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "旅行の前に、ホテルを予約しておきます。",
-      "romaji": "Ryokou no mae ni, hoteru wo yoyaku shite okimasu.",
+      "romaji": "Ryokou no mae ni, hoteru o yoyaku shite okimasu.",
       "fr": "Je réserve l'hôtel avant le voyage."
      },
      {
@@ -2764,12 +2764,12 @@ export const PIEGES = {
     "examples": [
      {
       "jp": "宿題を全部してしまいました。",
-      "romaji": "Shukudai wo zenbu shite shimaimashita.",
+      "romaji": "Shukudai o zenbu shite shimaimashita.",
       "fr": "J'ai fini tous mes devoirs."
      },
      {
       "jp": "財布を忘れてしまいました。",
-      "romaji": "Saifu wo wasurete shimaimashita.",
+      "romaji": "Saifu o wasurete shimaimashita.",
       "fr": "J'ai oublié mon portefeuille (zut !)."
      }
     ]
@@ -2874,7 +2874,7 @@ export const PIEGES = {
    {
     "cat": "Particules",
     "q": "留学する＿＿＿、アルバイトをしてお金をためています。",
-    "qRomaji": "Ryuugaku suru ___, arubaito wo shite okane wo tamete imasu.",
+    "qRomaji": "Ryuugaku suru ___, arubaito o shite okane o tamete imasu.",
     "choices": [
      "ために",
      "ように",
@@ -2893,7 +2893,7 @@ export const PIEGES = {
    {
     "cat": "Particules",
     "q": "薬を飲んだ＿＿＿、まだ熱が下がりません。",
-    "qRomaji": "Kusuri wo nonda ___, mada netsu ga sagarimasen.",
+    "qRomaji": "Kusuri o nonda ___, mada netsu ga sagarimasen.",
     "choices": [
      "のに",
      "ので",
@@ -2931,7 +2931,7 @@ export const PIEGES = {
    {
     "cat": "Conditions",
     "q": "このボタンを押す＿＿＿、ドアが開きます。",
-    "qRomaji": "Kono botan wo osu ___, doa ga akimasu.",
+    "qRomaji": "Kono botan o osu ___, doa ga akimasu.",
     "choices": [
      "と",
      "ように",
@@ -3007,7 +3007,7 @@ export const PIEGES = {
    {
     "cat": "Verbes",
     "q": "大切な本を電車に忘れて＿＿＿。",
-    "qRomaji": "Taisetsu na hon wo densha ni wasurete ___.",
+    "qRomaji": "Taisetsu na hon o densha ni wasurete ___.",
     "choices": [
      "しまいました",
      "おきました",
@@ -3026,7 +3026,7 @@ export const PIEGES = {
    {
     "cat": "Verbes",
     "q": "友達が来る前に、部屋を掃除して＿＿＿。",
-    "qRomaji": "Tomodachi ga kuru mae ni, heya wo souji shite ___.",
+    "qRomaji": "Tomodachi ga kuru mae ni, heya o souji shite ___.",
     "choices": [
      "おきます",
      "しまいます",
@@ -3064,7 +3064,7 @@ export const PIEGES = {
    {
     "cat": "Verbes",
     "q": "誕生日に友達が私に本を＿＿＿。",
-    "qRomaji": "Tanjoubi ni tomodachi ga watashi ni hon wo ___.",
+    "qRomaji": "Tanjoubi ni tomodachi ga watashi ni hon o ___.",
     "choices": [
      "くれました",
      "あげました",
@@ -3083,7 +3083,7 @@ export const PIEGES = {
    {
     "cat": "Verbes",
     "q": "私は先生に日本語を教えて＿＿＿。",
-    "qRomaji": "Watashi wa sensei ni nihongo wo oshiete ___.",
+    "qRomaji": "Watashi wa sensei ni nihongo o oshiete ___.",
     "choices": [
      "もらいました",
      "くれました",
@@ -3102,7 +3102,7 @@ export const PIEGES = {
    {
     "cat": "Passif",
     "q": "電車の中で隣の人に足を＿＿＿。",
-    "qRomaji": "Densha no naka de tonari no hito ni ashi wo ___.",
+    "qRomaji": "Densha no naka de tonari no hito ni ashi o ___.",
     "choices": [
      "踏まれました",
      "踏みました",
@@ -3121,7 +3121,7 @@ export const PIEGES = {
    {
     "cat": "Passif",
     "q": "母は弟に野菜を＿＿＿。",
-    "qRomaji": "Haha wa otouto ni yasai wo ___.",
+    "qRomaji": "Haha wa otouto ni yasai o ___.",
     "choices": [
      "食べさせました",
      "食べられました",
@@ -3140,7 +3140,7 @@ export const PIEGES = {
    {
     "cat": "Passif",
     "q": "子どものとき、母に毎日ピアノを＿＿＿。",
-    "qRomaji": "Kodomo no toki, haha ni mainichi piano wo ___.",
+    "qRomaji": "Kodomo no toki, haha ni mainichi piano o ___.",
     "choices": [
      "練習させられました",
      "練習させました",
@@ -3273,7 +3273,7 @@ export const PIEGES = {
    {
     "cat": "Keigo",
     "q": "重そうですね。荷物を＿＿＿しましょうか。",
-    "qRomaji": "Omosou desu ne. Nimotsu wo ___ shimashou ka.",
+    "qRomaji": "Omosou desu ne. Nimotsu o ___ shimashou ka.",
     "choices": [
      "お持ち",
      "お持ちに",
@@ -3311,7 +3311,7 @@ export const PIEGES = {
    {
     "cat": "Keigo",
     "q": "先生が私に辞書を＿＿＿。",
-    "qRomaji": "Sensei ga watashi ni jisho wo ___.",
+    "qRomaji": "Sensei ga watashi ni jisho o ___.",
     "choices": [
      "くださいました",
      "いただきました",
@@ -3349,7 +3349,7 @@ export const PIEGES = {
    {
     "cat": "Vocabulaire",
     "q": "A：もう昼ごはんを食べましたか。B：いいえ、＿＿＿食べていません。",
-    "qRomaji": "A: Mou hirugohan wo tabemashita ka. B: Iie, ___ tabete imasen.",
+    "qRomaji": "A: Mou hirugohan o tabemashita ka. B: Iie, ___ tabete imasen.",
     "choices": [
      "まだ",
      "もう",
@@ -3444,7 +3444,7 @@ export const PIEGES = {
    {
     "cat": "Écriture",
     "q": "図書館で本を「かりる」。「かりる」を漢字で書くとどれですか。",
-    "qRomaji": "Toshokan de hon wo \"kariru\". Kariru wo kanji de kaku to dore desu ka.",
+    "qRomaji": "Toshokan de hon o \"kariru\". Kariru o kanji de kaku to dore desu ka.",
     "choices": [
      "借りる",
      "貸りる",
@@ -3463,7 +3463,7 @@ export const PIEGES = {
    {
     "cat": "Écriture",
     "q": "「へや」を漢字で書くとどれですか。",
-    "qRomaji": "\"Heya\" wo kanji de kaku to dore desu ka.",
+    "qRomaji": "\"Heya\" o kanji de kaku to dore desu ka.",
     "choices": [
      "部屋",
      "都屋",
@@ -3482,7 +3482,7 @@ export const PIEGES = {
    {
     "cat": "Écriture",
     "q": "友達を「まつ」を漢字で書くとどれですか。",
-    "qRomaji": "Tomodachi wo \"matsu\" wo kanji de kaku to dore desu ka.",
+    "qRomaji": "Tomodachi o \"matsu\" o kanji de kaku to dore desu ka.",
     "choices": [
      "待つ",
      "持つ",
@@ -3501,7 +3501,7 @@ export const PIEGES = {
    {
     "cat": "Vocabulaire",
     "q": "熱があるので、病院で＿＿＿をしてもらいました。",
-    "qRomaji": "Netsu ga aru node, byouin de ___ wo shite moraimashita.",
+    "qRomaji": "Netsu ga aru node, byouin de ___ o shite moraimashita.",
     "choices": [
      "注射",
      "運動",
@@ -3520,7 +3520,7 @@ export const PIEGES = {
    {
     "cat": "Vocabulaire",
     "q": "部屋を＿＿＿ので、友達を呼ぶことができます。",
-    "qRomaji": "Heya wo ___ node, tomodachi wo yobu koto ga dekimasu.",
+    "qRomaji": "Heya o ___ node, tomodachi o yobu koto ga dekimasu.",
     "choices": [
      "片付けた",
      "急いだ",
@@ -3588,7 +3588,7 @@ export const PIEGES = {
      "Ichijikan matte, yatto basu ga kimashita.",
      "Yatto kinou, ame ga furimashita.",
      "Watashi wa yatto mainichi gakkou e ikimasu.",
-     "Yatto terebi wo mimashita ka."
+     "Yatto terebi o mimashita ka."
     ],
     "ok": "一時間待って、やっとバスが来ました。",
     "explanation": "やっと = enfin, après un long effort ou une attente. L'attente d'une heure justifie le soulagement du bus qui arrive."
@@ -3615,7 +3615,7 @@ export const PIEGES = {
    {
     "cat": "Écriture",
     "q": "電車で京都に「つきました」を漢字で書くとどれですか。",
-    "qRomaji": "Densha de Kyouto ni \"tsukimashita\" wo kanji de kaku to dore desu ka.",
+    "qRomaji": "Densha de Kyouto ni \"tsukimashita\" o kanji de kaku to dore desu ka.",
     "choices": [
      "着きました",
      "付きました",
@@ -3669,7 +3669,7 @@ export const PIEGES = {
     ],
     "post": "学校を休みました。",
     "fr": "Hier, j'avais de la fièvre, donc je suis resté(e) à la maison.",
-    "romaji": "Kinou wa netsu ga atta node gakkou wo yasumimashita.",
+    "romaji": "Kinou wa netsu ga atta node gakkou o yasumimashita.",
     "explanation": "La raison vient AVANT la conséquence. ので se colle derrière le verbe à la forme courte (あった). Dans ★ : あった."
    },
    {
@@ -3682,7 +3682,7 @@ export const PIEGES = {
     ],
     "post": "きます。",
     "fr": "Si on appuie sur ce bouton, du thé sort.",
-    "romaji": "Kono botan wo osu to ocha ga dete kimasu.",
+    "romaji": "Kono botan o osu to ocha ga dete kimasu.",
     "explanation": "と = « quand… alors… » : le déclencheur (押す + と) vient d'abord, puis ce qui se passe (お茶が出てきます). Dans ★ : お茶が."
    },
    {
@@ -3721,7 +3721,7 @@ export const PIEGES = {
     ],
     "post": "いいです。",
     "fr": "Avant le voyage, il vaut mieux réserver l'hôtel à l'avance.",
-    "romaji": "Ryokou no mae ni, hoteru wo yoyaku shite oita hou ga ii desu.",
+    "romaji": "Ryokou no mae ni, hoteru o yoyaku shite oita hou ga ii desu.",
     "explanation": "Verbe en て + おく = « faire à l'avance ». Puis le conseil : verbe au passé court + ほうがいい = « il vaut mieux ». Ici おいた + ほうが. Dans ★ : おいた."
    },
    {
@@ -3734,7 +3734,7 @@ export const PIEGES = {
     ],
     "post": "です。",
     "fr": "Hier, j'étais content(e) que ma sœur me prête son dictionnaire.",
-    "romaji": "Kinou, ane ni jisho wo kashite moratte ureshikatta desu.",
+    "romaji": "Kinou, ane ni jisho o kashite moratte ureshikatta desu.",
     "explanation": "もらう s'attache à la forme て (貸して + もらう) : « recevoir le service de prêter ». La personne qui rend service est marquée par に (姉に). On enchaîne avec le sentiment. Dans ★ : もらって."
    },
    {
@@ -3747,7 +3747,7 @@ export const PIEGES = {
     ],
     "post": "あげました。",
     "fr": "J'ai aidé mon petit frère à faire ses devoirs.",
-    "romaji": "Watashi wa otouto no shukudai wo tetsudatte agemashita.",
+    "romaji": "Watashi wa otouto no shukudai o tetsudatte agemashita.",
     "explanation": "Verbe en て + あげる = « faire une faveur à quelqu'un ». Le の relie 弟 à 宿題 : « les devoirs de mon petit frère ». Dans ★ : 宿題を."
    },
    {
@@ -3760,7 +3760,7 @@ export const PIEGES = {
     ],
     "post": "踏まれました。",
     "fr": "Dans le train, quelqu'un que je ne connaissais pas m'a marché sur le pied.",
-    "romaji": "Densha no naka de shiranai hito ni ashi wo fumaremashita.",
+    "romaji": "Densha no naka de shiranai hito ni ashi o fumaremashita.",
     "explanation": "Au passif, la personne qui agit est marquée par に (人に) et le verbe prend la forme 〜れる : 踏む → 踏まれる. « Quelqu'un que je ne connais pas » : le verbe 知らない se place avant le nom 人. Dans ★ : 人に."
    },
    {
@@ -3773,7 +3773,7 @@ export const PIEGES = {
     ],
     "post": "。",
     "fr": "Le professeur a fait écrire une rédaction aux étudiants.",
-    "romaji": "Sensei wa gakusei ni sakubun wo kakasemashita.",
+    "romaji": "Sensei wa gakusei ni sakubun o kakasemashita.",
     "explanation": "Forme « faire faire » : verbe (書か) + せる. On range 作文を, puis 書か + せ + ました. Dans ★ : せ."
    },
    {
@@ -3864,7 +3864,7 @@ export const PIEGES = {
     ],
     "post": "早く寝たほうがいいです。",
     "fr": "Quand on a un rhume, il vaut mieux se coucher tôt.",
-    "romaji": "Kaze wo hiita toki wa hayaku neta hou ga ii desu.",
+    "romaji": "Kaze o hiita toki wa hayaku neta hou ga ii desu.",
     "explanation": "とき se colle derrière un verbe à la forme courte : 風邪をひいた + とき = « quand on a un rhume ». は ajoute « en ce qui concerne ce moment ». Ensuite le conseil. Dans ★ : とき."
    },
    {

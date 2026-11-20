@@ -2,7 +2,7 @@ export const GRAMMAR_HTML = `
     <div class="gram-section">
       <h3>La règle d'or : le verbe à la fin</h3>
       <p>En français : Sujet–Verbe–Complément. En japonais : Sujet–Complément–Verbe. Le verbe (ou です) ferme toujours la phrase.</p>
-      <div class="gram-callout">FR : « Je mange du ramen au restaurant. »<br>JP : <span class="jp jp-say" data-jp="私はレストランでラーメンを食べます">私は レストランで ラーメンを 食べます 🔊</span><br><span class="romaji-line">Watashi wa resutoran de raamen wo tabemasu</span><br>(moi / restaurant-au / ramen / mange). Si tu ne comprends pas le début d'une phrase, <b>attends la fin</b> : c'est là qu'est l'action.</div>
+      <div class="gram-callout">FR : « Je mange du ramen au restaurant. »<br>JP : <span class="jp jp-say" data-jp="私はレストランでラーメンを食べます">私は レストランで ラーメンを 食べます 🔊</span><br><span class="romaji-line">Watashi wa resutoran de raamen o tabemasu</span><br>(moi / restaurant-au / ramen / mange). Si tu ne comprends pas le début d'une phrase, <b>attends la fin</b> : c'est là qu'est l'action.</div>
     </div>
 
     <div class="gram-section">
@@ -12,7 +12,7 @@ export const GRAMMAR_HTML = `
         <tr><th>Particule</th><th>Rôle</th><th>Exemple</th></tr>
         <tr><td class="jpc">は <span class="romaji-sm">(wa)</span></td><td>Le thème : « quant à… »</td><td>私は学生です <span class="romaji-sm">Watashi wa gakusei desu</span><br>— Moi, je suis étudiant</td></tr>
         <tr><td class="jpc">が <span class="romaji-sm">(ga)</span></td><td>Sujet grammatical, emphase</td><td>日本語がわかります <span class="romaji-sm">Nihongo ga wakarimasu</span><br>— Je comprends le japonais</td></tr>
-        <tr><td class="jpc">を <span class="romaji-sm">(o)</span></td><td>Objet direct (ce qu'on manipule)</td><td>ビールを飲む <span class="romaji-sm">Biiru wo nomu</span><br>— Boire de la bière</td></tr>
+        <tr><td class="jpc">を <span class="romaji-sm">(o)</span></td><td>Objet direct (ce qu'on manipule)</td><td>ビールを飲む <span class="romaji-sm">Biiru o nomu</span><br>— Boire de la bière</td></tr>
         <tr><td class="jpc">に <span class="romaji-sm">(ni)</span></td><td>Destination, moment précis</td><td>京都に行く <span class="romaji-sm">Kyouto ni iku</span><br>— Aller à Kyoto</td></tr>
         <tr><td class="jpc">で <span class="romaji-sm">(de)</span></td><td>Lieu de l'action, moyen</td><td>バスで行く <span class="romaji-sm">Basu de iku</span><br>— Y aller en bus</td></tr>
         <tr><td class="jpc">の <span class="romaji-sm">(no)</span></td><td>Possession (≈ « de »)</td><td>私の友達 <span class="romaji-sm">Watashi no tomodachi</span><br>— Mon ami</td></tr>
@@ -84,7 +84,7 @@ export const GRAMMAR_HTML = `
         <tr><td class="jpc">[verbe-て]ください</td><td>待ってください <span class="romaji-sm">Matte kudasai</span> — Attendez s'il vous plaît</td></tr>
         <tr><td class="jpc">[lieu]に行きたいです</td><td>大阪に行きたいです <span class="romaji-sm">Oosaka ni ikitai desu</span> — Je veux aller à Osaka</td></tr>
         <tr><td class="jpc">[action]ませんか？</td><td>食べませんか？ <span class="romaji-sm">Tabemasen ka?</span> — On mange (ensemble) ?</td></tr>
-        <tr><td class="jpc">[chose]をください</td><td>水をください <span class="romaji-sm">Mizu wo kudasai</span> — De l'eau, s'il vous plaît</td></tr>
+        <tr><td class="jpc">[chose]をください</td><td>水をください <span class="romaji-sm">Mizu o kudasai</span> — De l'eau, s'il vous plaît</td></tr>
       </table>
     </div>
 
@@ -104,7 +104,7 @@ export const GRAMMAR_HTML = `
       <div class="gram-callout"><b>Au restaurant, la serveuse demande où tu manges :</b><br><span class="jp jp-say" data-jp="店内でお召し上がりですか">店内でお召し上がりですか？ 🔊</span> <span class="romaji-sm">Tennai de omeshiagari desu ka?</span> — Vous mangez sur place ?<br>Réponse : <span class="jp jp-say" data-jp="持ち帰りでお願いします">持ち帰りでお願いします 🔊</span> <span class="romaji-sm">Mochikaeri de onegaishimasu</span> — À emporter, s'il vous plaît <span class="romaji-sm">(で = moyen/manière, pas seulement lieu)</span></div>
       <div class="gram-callout"><b>Tu es perdu près de Fushimi Inari :</b><br><span class="jp jp-say" data-jp="伏見稲荷はどこですか">伏見稲荷はどこですか？ 🔊</span> <span class="romaji-sm">Fushimi Inari wa doko desu ka?</span> — Où est Fushimi Inari ? <span class="romaji-sm">(squelette [lieu]はどこですか)</span></div>
       <div class="gram-callout"><b>À l'auberge, tu demandes le Wi-Fi (chose, pas personne → あります) :</b><br><span class="jp jp-say" data-jp="Wi-Fiはありますか">Wi-Fiはありますか？ 🔊</span> <span class="romaji-sm">Wi-Fi wa arimasu ka?</span> — Il y a du Wi-Fi ?<br>Réponse possible : <span class="jp jp-say" data-jp="ロビーにあります">ロビーにあります 🔊</span> <span class="romaji-sm">Robii ni arimasu</span> — Il y en a dans le hall <span class="romaji-sm">(に = lieu où ça existe)</span></div>
-      <div class="gram-callout"><b>Au temple, tu demandes si tu peux prendre une photo :</b><br><span class="jp jp-say" data-jp="写真を撮ってもいいですか">写真を撮ってもいいですか？ 🔊</span> <span class="romaji-sm">Shashin wo tottemo ii desu ka?</span> — Je peux prendre une photo ? <span class="romaji-sm">(~てもいいですか = demander la permission, variante de ~てください)</span></div>
+      <div class="gram-callout"><b>Au temple, tu demandes si tu peux prendre une photo :</b><br><span class="jp jp-say" data-jp="写真を撮ってもいいですか">写真を撮ってもいいですか？ 🔊</span> <span class="romaji-sm">Shashin o tottemo ii desu ka?</span> — Je peux prendre une photo ? <span class="romaji-sm">(~てもいいですか = demander la permission, variante de ~てください)</span></div>
       <div class="gram-callout"><b>Au marché de Nishiki, tu demandes à goûter :</b><br><span class="jp jp-say" data-jp="味見できますか">味見できますか？ 🔊</span> <span class="romaji-sm">Ajimi dekimasu ka?</span> — Je peux goûter ? <span class="romaji-sm">(できます = ことができます raccourci, très courant à l'oral)</span></div>
       <div class="gram-callout"><b>Tu rates ton bus et veux savoir le suivant :</b><br><span class="jp jp-say" data-jp="次のバスは何時に来ますか">次のバスは何時に来ますか？ 🔊</span> <span class="romaji-sm">Tsugi no basu wa nanji ni kimasu ka?</span> — Le prochain bus arrive à quelle heure ? <span class="romaji-sm">(の = possession/lien : « le bus de la suite », に = moment précis)</span></div>
       <div class="gram-callout"><b>Au izakaya le soir, proposer de trinquer :</b><br><span class="jp jp-say" data-jp="一緒に飲みませんか">一緒に飲みませんか？ 🔊</span> <span class="romaji-sm">Issho ni nomimasen ka?</span> — On boit un coup ensemble ? <span class="romaji-sm">(forme négative = invitation polie, vu plus haut)</span></div>

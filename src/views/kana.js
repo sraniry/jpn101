@@ -31,9 +31,9 @@ const DERIVED_WORDS = {
   ],
   yoon: [
     { jp:'今日は何曜日ですか', romaji:'Kyou wa nan youbi desu ka', fr:'Quel jour sommes-nous aujourd\'hui ?' },
-    { jp:'写真を撮ってもいいですか', romaji:'Shashin wo tottemo ii desu ka', fr:'Puis-je prendre une photo ?' },
+    { jp:'写真を撮ってもいいですか', romaji:'Shashin o tottemo ii desu ka', fr:'Puis-je prendre une photo ?' },
     { jp:'電車に乗ります', romaji:'Densha ni norimasu', fr:'Je monte dans le train.' },
-    { jp:'お茶をください', romaji:'Ocha wo kudasai', fr:'Du thé, s\'il vous plaît.' },
+    { jp:'お茶をください', romaji:'Ocha o kudasai', fr:'Du thé, s\'il vous plaît.' },
     { jp:'病院はどこですか', romaji:'Byouin wa doko desu ka', fr:'Où est l\'hôpital ?' },
     { jp:'旅行が好きです', romaji:'Ryokou ga suki desu', fr:'J\'aime voyager.' },
     { jp:'じゃあね', romaji:'Jaa ne', fr:'À plus ! (familier)' },
@@ -370,7 +370,7 @@ export function renderKana() {
         <p class="kana-vocab-note">Le hiragana sert pour les particules grammaticales (invisibles en français mais omniprésentes), et pour des mots courants écrits sans kanji.</p>
         <div class="kana-vocab-grid">
           ${[
-            ['は','wa','particule thème'],['が','ga','particule sujet'],['を','wo','particule objet'],
+            ['は','wa','particule thème'],['が','ga','particule sujet'],['を','o','particule objet'],
             ['に','ni','à / vers / dans'],['で','de','lieu / moyen'],['の','no','de / possession'],
             ['と','to','avec / et'],['も','mo','aussi'],['から','kara','depuis / de'],
             ['まで','made','jusqu\'à'],['ここ','koko','ici'],['そこ','soko','là'],

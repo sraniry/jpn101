@@ -1018,3 +1018,8 @@
 .conv-bd-toggle{ opacity:1; font-size:12.5px; padding:6px 0; min-height:32px; }
 .conv-recap{ margin:16px 0; padding:14px; border:1px solid var(--line); border-radius:12px; background:#fffdf8; }
 .conv-recap h4{ margin:0 0 4px; color:var(--indigo-deep); } .conv-recap-sub{ margin:0 0 10px; font-size:12.5px; color:#6b6358; }
+
+.gram-card{ display:flex; flex-direction:column; gap:2px; padding:8px 10px; margin:6px 0; border-left:3px solid var(--indigo); background:#f6f3ec; border-radius:6px; font-size:13px; }
+.gram-card b{ color:var(--indigo-deep); font-size:14px; } .gram-card em{ color:#6b6358; font-size:12.5px; }
+.conv-preview{ margin:0 0 12px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:#fffdf8; font-size:13px; }
+.conv-preview summary{ cursor:pointer; font-weight:600; color:var(--indigo-deep); min-height:32px; }

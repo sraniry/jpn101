@@ -41,7 +41,7 @@ export const SEED_PACK = [
     {jp:`学生です`,romaji:`Gakusei desu`,fr:`Je suis étudiant(e)`,tag:`étude`,level:`A1`,ex:`学生 (étudiant) + です. です = « c'est / je suis », invariable en genre et nombre.`},
     {jp:`交換留学生です`,romaji:`Koukan ryuugakusei desu`,fr:`Je suis en échange`,tag:`étude`,level:`A1`,ex:`交換 (échange) + 留学生 (étudiant à l'étranger). Deux mots collés = un seul concept.`},
     {jp:`大学`,romaji:`Daigaku`,fr:`Université`,tag:`étude`,level:`A1`,ex:`大 (grand) + 学 (étude). 高校 = lycée, 中学 = collège. Le 学 (étude) revient partout.`},
-    {jp:`〜を専攻しています`,romaji:`~ wo senkou shite imasu`,fr:`Je me spécialise en ~`,tag:`étude`,level:`A1`,ex:`を (particule d'objet) + 専攻 (spécialité) + しています (forme -te iru = état/action en cours).`},
+    {jp:`〜を専攻しています`,romaji:`~ o senkou shite imasu`,fr:`Je me spécialise en ~`,tag:`étude`,level:`A1`,ex:`を (particule d'objet) + 専攻 (spécialité) + しています (forme -te iru = état/action en cours).`},
     {jp:`授業`,romaji:`Jugyou`,fr:`Cours`,tag:`étude`,level:`A1`,ex:`授業に出る = assister au cours. 授業中 = pendant le cours.`},
     {jp:`先生`,romaji:`Sensei`,fr:`Professeur`,tag:`étude`,level:`A1`,ex:`Litt. « né avant ». Désigne aussi médecins, maîtres, mentors. Jamais pour parler de soi.`},
     {jp:`宿題`,romaji:`Shukudai`,fr:`Devoirs`,tag:`étude`,level:`A1`,ex:`宿題をする = faire ses devoirs.`},
@@ -75,7 +75,7 @@ export const SEED_PACK = [
     {jp:`道に迷いました`,romaji:`Michi ni mayoimashita`,fr:`Je me suis perdu(e)`,tag:`voyage`,level:`A2`,ex:`道 (chemin) + に + 迷う (se perdre) au passé poli. に marque ici le « dans quoi » on se perd.`},
     {jp:`〜行きの電車はどれですか？`,romaji:`~ iki no densha wa dore desu ka?`,fr:`Quel train va à ~ ?`,tag:`voyage`,level:`A2`,ex:`〜行き (à destination de) + の (lien) + 電車 + は + どれ (lequel, parmi plusieurs) + ですか.`},
     {jp:`乗り換えが必要ですか？`,romaji:`Norikae ga hitsuyou desu ka?`,fr:`Faut-il changer ?`,tag:`voyage`,level:`A2`,ex:`乗り換え (correspondance) + が + 必要 (nécessaire) + ですか. 必要 est un adjectif-な.`},
-    {jp:`忘れ物をしました`,romaji:`Wasuremono wo shimashita`,fr:`J'ai oublié quelque chose`,tag:`voyage`,level:`A2`,ex:`忘れ物 (objet oublié) + を + しました. Litt. « j'ai fait un oubli ».`},
+    {jp:`忘れ物をしました`,romaji:`Wasuremono o shimashita`,fr:`J'ai oublié quelque chose`,tag:`voyage`,level:`A2`,ex:`忘れ物 (objet oublié) + を + しました. Litt. « j'ai fait un oubli ».`},
     {jp:`返金できますか？`,romaji:`Henkin dekimasu ka?`,fr:`Puis-je être remboursé ?`,tag:`voyage`,level:`A2`,ex:`返金 (remboursement) + できますか (potentiel de する = « est-ce faisable ? »).`},
     {jp:`故障しています`,romaji:`Koshou shite imasu`,fr:`C'est en panne`,tag:`voyage`,level:`A2`,ex:`故障 (panne) + しています. -te iru décrit l'état actuel résultant.`},
     {jp:`具合が悪いです`,romaji:`Guai ga warui desu`,fr:`Je ne me sens pas bien`,tag:`voyage`,level:`A2`,ex:`具合 (état de santé) + が + 悪い (mauvais, adjectif-i) + です.`},
@@ -87,14 +87,14 @@ export const SEED_PACK = [
     {jp:`確認させてください`,romaji:`Kakunin sasete kudasai`,fr:`Laissez-moi vérifier`,tag:`travail`,level:`A2`,ex:`確認 (vérification) + させて (causatif-て de する) + ください. させてください = « permettez que je fasse ».`},
     {jp:`〜について相談したいです`,romaji:`~ ni tsuite soudan shitai desu`,fr:`Je voudrais discuter de ~`,tag:`travail`,level:`A2`,ex:`について (au sujet de) + 相談 (consultation) + したい (vouloir faire). について s'accroche à un thème.`},
     {jp:`締め切り`,romaji:`Shimekiri`,fr:`Date limite`,tag:`travail`,level:`A2`,ex:`Litt. « fermer-couper ». Plus formel : 期限 (kigen).`},
-    {jp:`休みを取りたいです`,romaji:`Yasumi wo toritai desu`,fr:`Je voudrais un congé`,tag:`travail`,level:`A2`,ex:`休み (repos/congé) + を + 取りたい (vouloir prendre : 取る + たい).`},
+    {jp:`休みを取りたいです`,romaji:`Yasumi o toritai desu`,fr:`Je voudrais un congé`,tag:`travail`,level:`A2`,ex:`休み (repos/congé) + を + 取りたい (vouloir prendre : 取る + たい).`},
     {jp:`出張`,romaji:`Shucchou`,fr:`Déplacement pro`,tag:`travail`,level:`A2`,ex:`出 (sortir) + 張 (étendre). 出張する = partir en déplacement.`},
     {jp:`サークルに入りたいんですが`,romaji:`Saakuru ni hairitain desu ga`,fr:`Je voudrais rejoindre un club`,tag:`étude`,level:`A2`,ex:`サークル (club étudiant) + に + 入りたい (vouloir entrer) + んですが (ouverture polie). LA phrase pour se faire des amis à la fac.`},
     {jp:`一緒に勉強しない？`,romaji:`Issho ni benkyou shinai?`,fr:`On révise ensemble ?`,tag:`étude`,level:`A2`,ex:`勉強しない ? = négatif familier de 勉強する. La négation interrogative = invitation douce.`},
     {jp:`課題いつまでですか？`,romaji:`Kadai itsu made desu ka?`,fr:`Le devoir est pour quand ?`,tag:`étude`,level:`A2`,ex:`課題 (devoir/tâche) + いつまで (jusqu'à quand) + ですか.`},
-    {jp:`出席を取ります`,romaji:`Shusseki wo torimasu`,fr:`On fait l'appel`,tag:`étude`,level:`A2`,ex:`出席 (présence) + を + 取ります (prendre). 欠席 = absence.`},
+    {jp:`出席を取ります`,romaji:`Shusseki o torimasu`,fr:`On fait l'appel`,tag:`étude`,level:`A2`,ex:`出席 (présence) + を + 取ります (prendre). 欠席 = absence.`},
     {jp:`奨学金`,romaji:`Shougakukin`,fr:`Bourse d'études`,tag:`étude`,level:`A2`,ex:`奨学 (encouragement à l'étude) + 金 (argent).`},
-    {jp:`レポートを書かなければなりません`,romaji:`Repooto wo kakanakereba narimasen`,fr:`Je dois écrire un rapport`,tag:`étude`,level:`A2`,ex:`Structure clé de l'obligation : 書く → 書かなければなりません, litt. « si je n'écris pas, ça ne va pas » = je dois écrire.`},
+    {jp:`レポートを書かなければなりません`,romaji:`Repooto o kakanakereba narimasen`,fr:`Je dois écrire un rapport`,tag:`étude`,level:`A2`,ex:`Structure clé de l'obligation : 書く → 書かなければなりません, litt. « si je n'écris pas, ça ne va pas » = je dois écrire.`},
     {jp:`図書館で勉強します`,romaji:`Toshokan de benkyou shimasu`,fr:`J'étudie à la bibliothèque`,tag:`étude`,level:`A2`,ex:`図書館 (bibliothèque) + で (lieu de l'action) + 勉強します.`},
     {jp:`今週末、一緒に出かけない？`,romaji:`Konshuumatsu, issho ni dekakenai?`,fr:`Ce week-end, on sort ?`,tag:`relation`,level:`A2`,ex:`今週末 (ce week-end) + 一緒に + 出かけない ? (négatif familier de 出かける = sortir). Encore l'invitation par la négation.`},
     {jp:`めっちゃ楽しい！`,romaji:`Meccha tanoshii!`,fr:`C'est trop fun !`,tag:`relation`,level:`A2`,ex:`めっちゃ (argot Kansai = « trop », au lieu du standard すごく) + 楽しい (amusant, adjectif-i). À Kyoto, めっちゃ te fait passer pour un local.`},
@@ -109,15 +109,15 @@ export const SEED_PACK = [
     {jp:`予定が変わったので、変更できますか？`,romaji:`Yotei ga kawatta node, henkou dekimasu ka?`,fr:`Mes plans ont changé, je peux modifier ?`,tag:`voyage`,level:`A2`,ex:`予定 (plan) + が + 変わった (passé de 変わる, changer) + ので (« parce que », lien causal soutenu) + 変更できますか (potentiel). ので relie deux propositions par la cause.`},
     {jp:`もう少し安いプランはありますか？`,romaji:`Mou sukoshi yasui puran wa arimasu ka?`,fr:`Une option moins chère ?`,tag:`voyage`,level:`A2`,ex:`もう少し (un peu plus) + 安い (bon marché) + プラン + は + ありますか. もう少し + adjectif = « un peu plus ~ ».`},
     {jp:`〜の場合はどうすればいいですか？`,romaji:`~ no baai wa dou sureba ii desu ka?`,fr:`Que faire dans le cas de ~ ?`,tag:`voyage`,level:`A2`,ex:`場合 (cas) + どうすれば (conditionnel de する) + いい. どうすればいい = « comment faire pour que ce soit bien » = « que dois-je faire ? ».`},
-    {jp:`個人的な事情で予定を変更したいです`,romaji:`Kojinteki na jijou de yotei wo henkou shitai desu`,fr:`Changer mes plans pour raisons perso`,tag:`voyage`,level:`A2`,ex:`個人的な (personnel, adjectif-な → な devant un nom) + 事情 (circonstances) + で (cause) + 変更したい.`},
+    {jp:`個人的な事情で予定を変更したいです`,romaji:`Kojinteki na jijou de yotei o henkou shitai desu`,fr:`Changer mes plans pour raisons perso`,tag:`voyage`,level:`A2`,ex:`個人的な (personnel, adjectif-な → な devant un nom) + 事情 (circonstances) + で (cause) + 変更したい.`},
     {jp:`旅行保険に入っています`,romaji:`Ryokou hoken ni haitte imasu`,fr:`J'ai une assurance voyage`,tag:`voyage`,level:`A2`,ex:`保険に入る = litt. « entrer dans une assurance » = être assuré. に marque ce dans quoi on entre.`},
     {jp:`私の意見では〜と思います`,romaji:`Watashi no iken de wa ~ to omoimasu`,fr:`À mon avis, je pense que ~`,tag:`travail`,level:`A2`,ex:`意見では (du point de vue de l'opinion) + [contenu] + と (guillemet de citation/pensée) + 思います. と思う = la structure nº1 pour donner un avis.`},
     {jp:`〜という点に賛成です`,romaji:`~ to iu ten ni sansei desu`,fr:`Je suis d'accord sur ce point`,tag:`travail`,level:`A2`,ex:`という (« le fait que / qu'on appelle ») + 点 (point) + に + 賛成 (accord). という transforme une idée en groupe nominal.`},
     {jp:`〜という点に反対です`,romaji:`~ to iu ten ni hantai desu`,fr:`Je ne suis pas d'accord sur ce point`,tag:`travail`,level:`A2`,ex:`Même structure que ci-dessus avec 反対 (opposition). Désaccord poli et précis.`},
     {jp:`もう少し詳しく説明していただけますか？`,romaji:`Mou sukoshi kuwashiku setsumei shite itadakemasu ka?`,fr:`Plus en détail svp ?`,tag:`travail`,level:`A2`,ex:`詳しく (adverbe de 詳しい = détaillé) + 説明して + いただけますか (potentiel de いただく = encore plus poli que もらえますか). Registre soigné pour un supérieur.`},
     {jp:`期限内に終わらせるのは難しいかもしれません`,romaji:`Kigen-nai ni owaraseru no wa muzukashii kamoshiremasen`,fr:`Difficile de finir à temps`,tag:`travail`,level:`A2`,ex:`終わらせる (causatif de 終わる = faire finir) + のは (の nominalise le verbe : « le fait de finir ») + 難しい + かもしれません (« il se peut que »). Annonce un problème en douceur.`},
-    {jp:`〜という提案をしたいです`,romaji:`~ to iu teian wo shitai desu`,fr:`Je voudrais proposer ~`,tag:`travail`,level:`A2`,ex:`という + 提案 (proposition) + を + したい. 提案をする = faire une proposition.`},
-    {jp:`キャリアアップを考えています`,romaji:`Kyaria appu wo kangaete imasu`,fr:`J'envisage une évolution`,tag:`travail`,level:`A2`,ex:`キャリアアップ (« career up », wasei-eigo = anglais inventé au Japon) + を + 考えています (réfléchir, état en cours).`},
+    {jp:`〜という提案をしたいです`,romaji:`~ to iu teian o shitai desu`,fr:`Je voudrais proposer ~`,tag:`travail`,level:`A2`,ex:`という + 提案 (proposition) + を + したい. 提案をする = faire une proposition.`},
+    {jp:`キャリアアップを考えています`,romaji:`Kyaria appu o kangaete imasu`,fr:`J'envisage une évolution`,tag:`travail`,level:`A2`,ex:`キャリアアップ (« career up », wasei-eigo = anglais inventé au Japon) + を + 考えています (réfléchir, état en cours).`},
     {jp:`〜と比べてどう思いますか？`,romaji:`~ to kurabete dou omoimasu ka?`,fr:`Qu'en pensez-vous par rapport à ~ ?`,tag:`travail`,level:`A2`,ex:`と (avec) + 比べて (forme -て de 比べる = comparer) + どう思いますか (qu'en pensez-vous). [X]と比べて = « comparé à X ».`},
     {jp:`この研究テーマに興味があります`,romaji:`Kono kenkyuu teema ni kyoumi ga arimasu`,fr:`Ce sujet de recherche m'intéresse`,tag:`étude`,level:`A2`,ex:`興味がある = avoir de l'intérêt. に marque l'objet de l'intérêt : « j'ai de l'intérêt envers ce thème ».`},
     {jp:`〜という観点から考えると`,romaji:`~ to iu kanten kara kangaeru to`,fr:`Du point de vue de ~`,tag:`étude`,level:`A2`,ex:`観点 (point de vue) + から (depuis) + 考えると (と ici = « quand/si on considère »). Sert à introduire une analyse.`},
@@ -132,7 +132,7 @@ export const SEED_PACK = [
     {jp:`将来について話したいことがあります`,romaji:`Shourai ni tsuite hanashitai koto ga arimasu`,fr:`J'ai des choses à dire sur l'avenir`,tag:`relation`,level:`A2`,ex:`将来 (avenir) + について + 話したいこと (こと nominalise : « des choses que je veux dire ») + があります.`},
     {jp:`誤解しないでほしいんですが`,romaji:`Gokai shinaide hoshiin desu ga`,fr:`Ne te méprends pas, mais…`,tag:`relation`,level:`A2`,ex:`誤解しないで (forme -て négative = « ne fais pas ») + ほしい (vouloir que l'AUTRE fasse) + んですが. [-ないで]+ほしい = « j'aimerais que tu ne… ».`},
     {jp:`〜には感謝しています`,romaji:`~ ni wa kansha shite imasu`,fr:`Je suis reconnaissant pour ~`,tag:`relation`,level:`A2`,ex:`には (に + は pour insister sur la cible) + 感謝しています (être reconnaissant, état durable).`},
-    {jp:`距離を置きたいわけじゃないんです`,romaji:`Kyori wo okitai wake janain desu`,fr:`Ce n'est pas que je veux prendre mes distances`,tag:`relation`,level:`A2`,ex:`距離を置く (prendre ses distances) + たい + わけじゃない (« ce n'est pas comme si / pas que… ») + んです. わけじゃない nuance et adoucit une affirmation.`},
+    {jp:`距離を置きたいわけじゃないんです`,romaji:`Kyori o okitai wake janain desu`,fr:`Ce n'est pas que je veux prendre mes distances`,tag:`relation`,level:`A2`,ex:`距離を置く (prendre ses distances) + たい + わけじゃない (« ce n'est pas comme si / pas que… ») + んです. わけじゃない nuance et adoucit une affirmation.`},
     {jp:`兄弟はいますか？`,romaji:`Kyoudai wa imasu ka?`,fr:`Tu as des frères et sœurs ?`,tag:`relation`,level:`A2`,ex:`兄弟 désigne génériquement les frères/sœurs (même si on parle d'une sœur). います car ce sont des êtres vivants.`},
     {jp:`兄が一人います`,romaji:`Ani ga hitori imasu`,fr:`J'ai un grand frère`,tag:`relation`,level:`A2`,ex:`兄 = grand frère, 弟 = petit frère. Le japonais distingue toujours l'âge relatif, contrairement au français.`},
     {jp:`妹が二人います`,romaji:`Imouto ga futari imasu`,fr:`J'ai deux petites sœurs`,tag:`relation`,level:`A2`,ex:`妹 = petite sœur, 姉 = grande sœur. Même logique de distinction d'âge que pour les frères.`},
@@ -155,10 +155,10 @@ export const SEED_PACK = [
     {jp:`別々に払えますか？`,romaji:`Betsubetsu ni haraemasu ka?`,fr:`On peut payer séparément ?`,tag:`voyage`,level:`A2`,ex:`別々 = "séparément/chacun de son côté". 払えます = forme potentielle de 払う (payer).`},
     {jp:`とてもおいしかったです`,romaji:`Totemo oishikatta desu`,fr:`C'était très bon`,tag:`voyage`,level:`A1`,ex:`Passé de l'adjectif-い : おいしい → おいしかった (révise la section Grammaire pour la règle complète).`},
     {jp:`お腹がいっぱいです`,romaji:`Onaka ga ippai desu`,fr:`Je suis rassasié(e)`,tag:`voyage`,level:`A1`,ex:`お腹 = ventre, いっぱい = plein. Littéralement "mon ventre est plein".`},
-    {jp:`メニューを見せてください`,romaji:`Menyuu wo misete kudasai`,fr:`Montrez-moi le menu, s'il vous plaît`,tag:`voyage`,level:`A1`,ex:`見せて = forme -て de 見せる (montrer) + ください.`},
-    {jp:`これをお願いします`,romaji:`Kore wo onegaishimasu`,fr:`Ceci, s'il vous plaît (en commandant)`,tag:`voyage`,level:`A0`,ex:`Formule universelle pour commander en pointant sur le menu — fonctionne même sans connaître le nom du plat.`},
+    {jp:`メニューを見せてください`,romaji:`Menyuu o misete kudasai`,fr:`Montrez-moi le menu, s'il vous plaît`,tag:`voyage`,level:`A1`,ex:`見せて = forme -て de 見せる (montrer) + ください.`},
+    {jp:`これをお願いします`,romaji:`Kore o onegaishimasu`,fr:`Ceci, s'il vous plaît (en commandant)`,tag:`voyage`,level:`A0`,ex:`Formule universelle pour commander en pointant sur le menu — fonctionne même sans connaître le nom du plat.`},
     {jp:`飲み物は何がありますか？`,romaji:`Nomimono wa nani ga arimasu ka?`,fr:`Quelles boissons avez-vous ?`,tag:`voyage`,level:`A2`,ex:`あります car les boissons sont des objets inanimés (révise あります vs います en Grammaire).`},
-    {jp:`水をください`,romaji:`Mizu wo kudasai`,fr:`De l'eau, s'il vous plaît`,tag:`voyage`,level:`A0`,ex:`Au Japon, l'eau/thé glacé est généralement gratuite et servie automatiquement au restaurant.`},
+    {jp:`水をください`,romaji:`Mizu o kudasai`,fr:`De l'eau, s'il vous plaît`,tag:`voyage`,level:`A0`,ex:`Au Japon, l'eau/thé glacé est généralement gratuite et servie automatiquement au restaurant.`},
     {jp:`片道ですか、往復ですか？`,romaji:`Katamichi desu ka, ouhuku desu ka?`,fr:`Aller simple ou aller-retour ?`,tag:`voyage`,level:`A2`,ex:`片道 = aller simple (片 = "un côté"), 往復 = aller-retour (往 = aller, 復 = retour).`},
     {jp:`片道一枚お願いします`,romaji:`Katamichi ichimai onegaishimasu`,fr:`Un aller simple, s'il vous plaît`,tag:`voyage`,level:`A2`,ex:`枚 = compteur pour les objets plats et fins (billets, tickets, feuilles).`},
     {jp:`ICカードはありますか？`,romaji:`IC kaado wa arimasu ka?`,fr:`Vous avez une carte IC (Suica/Icoca) ?`,tag:`voyage`,level:`A1`,ex:`Indispensable à Kyoto : carte rechargeable utilisable bus/train/konbini. Icoca est la version locale Kansai.`},
@@ -176,43 +176,43 @@ export const SEED_PACK = [
     {jp:`お仕事は何ですか？`,romaji:`Oshigoto wa nan desu ka?`,fr:`Quel est votre métier ?`,tag:`relation`,level:`A2`,ex:`お仕事 : le お est honorifique, réservé au métier d'AUTRUI. On dit juste 仕事 pour parler du sien.`},
     {jp:`会社員です`,romaji:`Kaishain desu`,fr:`Je suis salarié(e) (en entreprise)`,tag:`relation`,level:`A1`,ex:`会社員 = 会社 (entreprise) + 員 (membre). Réponse la plus courante et la plus neutre.`},
     {jp:`エンジニアです`,romaji:`Enjinia desu`,fr:`Je suis ingénieur(e)`,tag:`relation`,level:`A1`,ex:`Emprunt direct à l'anglais, très répandu pour les métiers techniques modernes.`},
-    {jp:`先生をしています`,romaji:`Sensei wo shite imasu`,fr:`Je suis enseignant(e)`,tag:`relation`,level:`A2`,ex:`〜をしています = "je fais (le métier de) ~", variante plus naturelle que です pour parler d'une activité/profession.`},
+    {jp:`先生をしています`,romaji:`Sensei o shite imasu`,fr:`Je suis enseignant(e)`,tag:`relation`,level:`A2`,ex:`〜をしています = "je fais (le métier de) ~", variante plus naturelle que です pour parler d'une activité/profession.`},
     {jp:`いつから日本にいますか？`,romaji:`Itsu kara nihon ni imasu ka?`,fr:`Depuis quand es-tu au Japon ?`,tag:`relation`,level:`A2`,ex:`いつから = "depuis quand", から marque le point de départ dans le temps.`},
     {jp:`三ヶ月前から京都にいます`,romaji:`Sankagetsu mae kara Kyouto ni imasu`,fr:`Je suis à Kyoto depuis 3 mois`,tag:`relation`,level:`A2`,ex:`ヶ月 = compteur pour les mois. 前 (avant) + から (depuis) = "il y a ~, depuis".`},
     {jp:`どんな音楽が好きですか？`,romaji:`Donna ongaku ga suki desu ka?`,fr:`Quel genre de musique aimes-tu ?`,tag:`relation`,level:`A2`,ex:`どんな = "quel genre de" devant un nom. 好き reste un adjectif-な, jamais un verbe "aimer".`},
-    {jp:`休みの日は何をしますか？`,romaji:`Yasumi no hi wa nani wo shimasu ka?`,fr:`Qu'est-ce que tu fais pendant tes jours de repos ?`,tag:`relation`,level:`A2`,ex:`休みの日 = "jour de repos" (の relie comme un possessif). Excellente question pour relancer une conversation sur les passions.`},
+    {jp:`休みの日は何をしますか？`,romaji:`Yasumi no hi wa nani o shimasu ka?`,fr:`Qu'est-ce que tu fais pendant tes jours de repos ?`,tag:`relation`,level:`A2`,ex:`休みの日 = "jour de repos" (の relie comme un possessif). Excellente question pour relancer une conversation sur les passions.`},
 
     // ---- 30 verbes essentiels ----
     {jp:`行く（行きます）`,romaji:`iku (ikimasu)`,fr:`aller`,tag:`verbes`,level:`A0`,ex:`どこに行きますか？(Doko ni ikimasu ka?) = Vous allez où ? に marque la destination.`},
     {jp:`来る（来ます）`,romaji:`kuru (kimasu)`,fr:`venir`,tag:`verbes`,level:`A0`,ex:`明日来ますか？(Ashita kimasu ka?) = Vous venez demain ? Irrégulier : kuru → kimasu (radical change complet).`},
     {jp:`買う（買います）`,romaji:`kau (kaimasu)`,fr:`acheter`,tag:`verbes`,level:`A0`,ex:`コンビニで買います (Konbini de kaimasu) = J'achète au konbini. で marque le lieu de l'action.`},
-    {jp:`食べる（食べます）`,romaji:`taberu (tabemasu)`,fr:`manger`,tag:`verbes`,level:`A0`,ex:`寿司を食べます (Sushi wo tabemasu) = Je mange des sushis. を marque l'objet direct.`},
-    {jp:`飲む（飲みます）`,romaji:`nomu (nomimasu)`,fr:`boire`,tag:`verbes`,level:`A0`,ex:`お茶を飲みます (Ocha wo nomimasu) = Je bois du thé. Même structure : objet + を + verbe.`},
+    {jp:`食べる（食べます）`,romaji:`taberu (tabemasu)`,fr:`manger`,tag:`verbes`,level:`A0`,ex:`寿司を食べます (Sushi o tabemasu) = Je mange des sushis. を marque l'objet direct.`},
+    {jp:`飲む（飲みます）`,romaji:`nomu (nomimasu)`,fr:`boire`,tag:`verbes`,level:`A0`,ex:`お茶を飲みます (Ocha o nomimasu) = Je bois du thé. Même structure : objet + を + verbe.`},
     {jp:`乗る・撮る（乗ります・撮ります）`,romaji:`noru / toru`,fr:`prendre (train / photo)`,tag:`verbes`,level:`A0`,ex:`電車に乗ります = prendre le train (に = monter dans). 写真を撮ります = prendre une photo (を = objet).`},
     {jp:`わかる（わかります）`,romaji:`wakaru (wakarimasu)`,fr:`comprendre`,tag:`verbes`,level:`A0`,ex:`日本語がわかります (Nihongo ga wakarimasu) = Je comprends le japonais. Attention : が (pas を) — wakaru décrit un état de compréhension.`},
-    {jp:`話す（話します）`,romaji:`hanasu (hanashimasu)`,fr:`parler`,tag:`verbes`,level:`A0`,ex:`日本語を話します (Nihongo wo hanashimasu) = Je parle japonais. Groupe 1 : -su → -shimasu.`},
-    {jp:`聞く（聞きます）`,romaji:`kiku (kikimasu)`,fr:`demander / écouter`,tag:`verbes`,level:`A0`,ex:`道を聞きます (Michi wo kikimasu) = Je demande mon chemin. Même kanji pour écouter : 音楽を聞く = écouter de la musique.`},
+    {jp:`話す（話します）`,romaji:`hanasu (hanashimasu)`,fr:`parler`,tag:`verbes`,level:`A0`,ex:`日本語を話します (Nihongo o hanashimasu) = Je parle japonais. Groupe 1 : -su → -shimasu.`},
+    {jp:`聞く（聞きます）`,romaji:`kiku (kikimasu)`,fr:`demander / écouter`,tag:`verbes`,level:`A0`,ex:`道を聞きます (Michi o kikimasu) = Je demande mon chemin. Même kanji pour écouter : 音楽を聞く = écouter de la musique.`},
     {jp:`待つ（待ちます）`,romaji:`matsu (machimasu)`,fr:`attendre`,tag:`verbes`,level:`A0`,ex:`ここで待ってください (Koko de matte kudasai) = Attendez ici s'il vous plaît. Forme -て de 待つ = 待って.`},
-    {jp:`探す（探します）`,romaji:`sagasu (sagashimasu)`,fr:`chercher`,tag:`verbes`,level:`A1`,ex:`薬局を探しています (Yakkyoku wo sagashite imasu) = Je cherche une pharmacie. -ています = action en cours.`},
-    {jp:`見つける（見つけます）`,romaji:`mitsukeru (mitsukemasu)`,fr:`trouver`,tag:`verbes`,level:`A1`,ex:`いいお店を見つけました (Ii omise wo mitsukemashita) = J'ai trouvé un bon restaurant. Passé : -ました.`},
+    {jp:`探す（探します）`,romaji:`sagasu (sagashimasu)`,fr:`chercher`,tag:`verbes`,level:`A1`,ex:`薬局を探しています (Yakkyoku o sagashite imasu) = Je cherche une pharmacie. -ています = action en cours.`},
+    {jp:`見つける（見つけます）`,romaji:`mitsukeru (mitsukemasu)`,fr:`trouver`,tag:`verbes`,level:`A1`,ex:`いいお店を見つけました (Ii omise o mitsukemashita) = J'ai trouvé un bon restaurant. Passé : -ました.`},
     {jp:`払う（払います）`,romaji:`harau (haraimasu)`,fr:`payer`,tag:`verbes`,level:`A0`,ex:`カードで払えますか？(Kaado de haraemasu ka?) = On peut payer par carte ? 払えます = forme potentielle.`},
-    {jp:`予約する（予約します）`,romaji:`yoyaku suru (yoyaku shimasu)`,fr:`réserver`,tag:`verbes`,level:`A1`,ex:`レストランを予約しました (Resutoran wo yoyaku shimashita) = J'ai réservé un restaurant. する verbs : [mot] + します.`},
+    {jp:`予約する（予約します）`,romaji:`yoyaku suru (yoyaku shimasu)`,fr:`réserver`,tag:`verbes`,level:`A1`,ex:`レストランを予約しました (Resutoran o yoyaku shimashita) = J'ai réservé un restaurant. する verbs : [mot] + します.`},
     {jp:`助ける（助けます）`,romaji:`tasukeru (tasukemasu)`,fr:`aider`,tag:`verbes`,level:`A0`,ex:`助けてください！(Tasukete kudasai!) = Aidez-moi ! Forme -て + ください = demande directe.`},
-    {jp:`見せる（見せます）`,romaji:`miseru (misemasu)`,fr:`montrer`,tag:`verbes`,level:`A0`,ex:`地図（ちず / chizu）= plan, carte géographique — à ne pas confondre avec チーズ（chiizu）= fromage, prononciation proche mais i long. 地図を見せてください (Chizu wo misete kudasai) = Montrez-moi le plan. Ou : これを見せてください = montrez-moi ça.`},
-    {jp:`書く（書きます）`,romaji:`kaku (kakimasu)`,fr:`écrire`,tag:`verbes`,level:`A0`,ex:`名前を書いてください (Namae wo kaite kudasai) = Écrivez votre nom s'il vous plaît. Forme -て de 書く = 書いて.`},
+    {jp:`見せる（見せます）`,romaji:`miseru (misemasu)`,fr:`montrer`,tag:`verbes`,level:`A0`,ex:`地図（ちず / chizu）= plan, carte géographique — à ne pas confondre avec チーズ（chiizu）= fromage, prononciation proche mais i long. 地図を見せてください (Chizu o misete kudasai) = Montrez-moi le plan. Ou : これを見せてください = montrez-moi ça.`},
+    {jp:`書く（書きます）`,romaji:`kaku (kakimasu)`,fr:`écrire`,tag:`verbes`,level:`A0`,ex:`名前を書いてください (Namae o kaite kudasai) = Écrivez votre nom s'il vous plaît. Forme -て de 書く = 書いて.`},
     {jp:`読む（読みます）`,romaji:`yomu (yomimasu)`,fr:`lire`,tag:`verbes`,level:`A0`,ex:`漢字が読めません (Kanji ga yomemasen) = Je ne sais pas lire les kanji. 読めます = forme potentielle de 読む.`},
     {jp:`知る（知っています）`,romaji:`shiru (shitte imasu)`,fr:`savoir / connaître`,tag:`verbes`,level:`A1`,ex:`知っています = je sais (état actuel). 知りません = je ne sais pas. Jamais 知ります pour l'état — toujours 知っています.`},
     {jp:`できる（できます）`,romaji:`dekiru (dekimasu)`,fr:`pouvoir / savoir faire`,tag:`verbes`,level:`A0`,ex:`英語ができます (Eigo ga dekimasu) = Je parle anglais (je « peux » en anglais). できません = je ne peux pas / je ne sais pas faire.`},
     {jp:`〜たい・ほしい`,romaji:`~ tai / hoshii`,fr:`vouloir (faire / avoir)`,tag:`verbes`,level:`A0`,ex:`食べたい = vouloir manger (action). 水がほしい = vouloir de l'eau (chose). Le japonais distingue toujours les deux : verbe+たい vs nom+ほしい.`},
     {jp:`帰る（帰ります）`,romaji:`kaeru (kaerimasu)`,fr:`rentrer (chez soi)`,tag:`verbes`,level:`A0`,ex:`そろそろ帰ります (Sorosoro kaerimasu) = Je vais bientôt rentrer. 帰る = retour vers son « chez soi » — différent de 戻る (retourner quelque part).`},
-    {jp:`出る（出ます）`,romaji:`deru (demasu)`,fr:`sortir / partir de`,tag:`verbes`,level:`A0`,ex:`ホテルを出ます (Hoteru wo demasu) = Je quitte l'hôtel. Aussi : 電話に出る = décrocher le téléphone.`},
+    {jp:`出る（出ます）`,romaji:`deru (demasu)`,fr:`sortir / partir de`,tag:`verbes`,level:`A0`,ex:`ホテルを出ます (Hoteru o demasu) = Je quitte l'hôtel. Aussi : 電話に出る = décrocher le téléphone.`},
     {jp:`入る（入ります）`,romaji:`hairu (hairimasu)`,fr:`entrer`,tag:`verbes`,level:`A0`,ex:`お店に入ります (Omise ni hairimasu) = J'entre dans le magasin. に marque l'espace dans lequel on entre.`},
     {jp:`寝る（寝ます）`,romaji:`neru (nemasu)`,fr:`dormir / se coucher`,tag:`verbes`,level:`A0`,ex:`何時に寝ますか？(Nanji ni nemasu ka?) = Tu te couches à quelle heure ? 眠い (nemui) = avoir sommeil.`},
     {jp:`〜といいます`,romaji:`~ to iimasu`,fr:`s'appeler / se nommer`,tag:`verbes`,level:`A0`,ex:`田中といいます (Tanaka to iimasu) = Je m'appelle Tanaka. と encadre ce qu'on « dit / nomme » — même structure que と思います.`},
     {jp:`〜が必要です・要る（要ります）`,romaji:`~ ga hitsuyou desu / iru (irimasu)`,fr:`avoir besoin de`,tag:`verbes`,level:`A1`,ex:`助けが必要です (Tasuke ga hitsuyou desu) = J'ai besoin d'aide. お金がいります = j'ai besoin d'argent (oral, moins formel).`},
-    {jp:`あげる（あげます）`,romaji:`ageru (agemasu)`,fr:`donner (vers l'autre)`,tag:`verbes`,level:`A1`,ex:`お土産をあげます (Omiyage wo agemasu) = Je lui donne un souvenir. あげる = sens sortant (moi → autre). Contraire : もらう (sens entrant).`},
+    {jp:`あげる（あげます）`,romaji:`ageru (agemasu)`,fr:`donner (vers l'autre)`,tag:`verbes`,level:`A1`,ex:`お土産をあげます (Omiyage o agemasu) = Je lui donne un souvenir. あげる = sens sortant (moi → autre). Contraire : もらう (sens entrant).`},
     {jp:`もらう（もらいます）`,romaji:`morau (moraimasu)`,fr:`recevoir (de qqn)`,tag:`verbes`,level:`A1`,ex:`写真を撮ってもらいました = quelqu'un a pris ma photo pour moi. もらう = sens entrant (autre → moi). Base de もらえますか = puis-je recevoir que tu… ?`},
-    {jp:`忘れる（忘れます）`,romaji:`wasureru (wasuremasu)`,fr:`oublier`,tag:`verbes`,level:`A0`,ex:`傘を忘れました (Kasa wo wasuremashita) = J'ai oublié mon parapluie. 忘れ物 (wasuremono) = objet oublié — mot à connaître pour les gares et transports.`},
+    {jp:`忘れる（忘れます）`,romaji:`wasureru (wasuremasu)`,fr:`oublier`,tag:`verbes`,level:`A0`,ex:`傘を忘れました (Kasa o wasuremashita) = J'ai oublié mon parapluie. 忘れ物 (wasuremono) = objet oublié — mot à connaître pour les gares et transports.`},
   ];
 
 // ⭐ CORE_SET : les 100 phrases et verbes les plus utiles au quotidien au Japon.
@@ -525,7 +525,7 @@ export const CONVERSATIONS = [
         { chunk:'ですか', role:'Le point d\'interrogation en japonais.', tip:'Toute phrase qui se termine par ですか devient une question polie. Simple !' }
       ]},
     { speaker:'user', choices:[
-      { jp:'二人です。禁煙席をお願いします', romaji:'Futari desu. Kin\'enseki wo onegaishimasu', fr:'On est deux. Non-fumeur s\'il vous plaît', quality:'best', feedback:'Parfait — nombre + préférence en une phrase, exactement ce qu\'il faut.',
+      { jp:'二人です。禁煙席をお願いします', romaji:'Futari desu. Kin\'enseki o onegaishimasu', fr:'On est deux. Non-fumeur s\'il vous plaît', quality:'best', feedback:'Parfait — nombre + préférence en une phrase, exactement ce qu\'il faut.',
         breakdown:[
           { chunk:'二人です', role:'"On est deux." — la formule la plus naturelle pour donner un nombre de personnes.', tip:'1 personne = ひとり, 2 = ふたり, 3+ = 〜にん. Les deux premiers sont irréguliers, retiens-les séparément.' },
           { chunk:'禁煙席', role:'"Siège non-fumeur." Trois kanji qui racontent toute l\'histoire.', tip:'禁 = interdit, 煙 = fumée, 席 = place. Tu peux deviner le sens même sans avoir appris le mot !' },
@@ -559,7 +559,7 @@ export const CONVERSATIONS = [
         { chunk:'お決まりですか', role:'"Vous avez décidé ?" — version habillée de "vous avez choisi ?".', tip:'決まる = être décidé, fixé. お〜ですか = question polie sur l\'état. En gros : "est-ce que ça s\'est décidé de votre côté ?" — le serveur fait comme si c\'était vous qui décidiez, pas lui qui attendait.' }
       ]},
     { speaker:'user', choices:[
-      { jp:'これをください。あと、ビールを一つお願いします', romaji:'Kore wo kudasai. Ato, biiru wo hitotsu onegaishimasu', fr:'Ça, s\'il vous plaît. Et une bière aussi', quality:'best', feedback:'これをください en pointant = formule magique même sans vocabulaire. あと (+ en plus) enchaîne bien.',
+      { jp:'これをください。あと、ビールを一つお願いします', romaji:'Kore o kudasai. Ato, biiru o hitotsu onegaishimasu', fr:'Ça, s\'il vous plaît. Et une bière aussi', quality:'best', feedback:'これをください en pointant = formule magique même sans vocabulaire. あと (+ en plus) enchaîne bien.',
         breakdown:[
           { chunk:'これをください', role:'"Donnez-moi ça." — LE survivalisme de base en restaurant japonais.', tip:'Tu n\'as pas besoin de savoir le nom du plat. Tu pointes, tu dis これをください, et ça marche. Mémorise cette phrase avant tout le reste.' },
           { chunk:'あと', role:'"Et en plus..." — le connecteur pour ajouter un article à une commande.', tip:'あと + ce que tu veux = "et aussi X". Super pratique : あと、お水をください = "et aussi de l\'eau svp".' },
@@ -665,7 +665,7 @@ export const CONVERSATIONS = [
   { id:'pharmacie', icon:'💊', title:'À la pharmacie', skill:'voyage', level:'A1-A2', turns:[
     { speaker:'npc', jp:'いらっしゃいませ。どうされましたか？', romaji:'Irasshaimase. Dou saremashita ka?', fr:'Bienvenue. Qu\'est-ce qui vous arrive ?' },
     { speaker:'user', choices:[
-      { jp:'頭が痛いです。薬をください', romaji:'Atama ga itai desu. Kusuri wo kudasai', fr:'J\'ai mal à la tête. Un médicament, s\'il vous plaît', quality:'best', feedback:'頭が痛い = j\'ai mal à la tête. [partie du corps] + が + 痛い = formule universelle pour les douleurs.' },
+      { jp:'頭が痛いです。薬をください', romaji:'Atama ga itai desu. Kusuri o kudasai', fr:'J\'ai mal à la tête. Un médicament, s\'il vous plaît', quality:'best', feedback:'頭が痛い = j\'ai mal à la tête. [partie du corps] + が + 痛い = formule universelle pour les douleurs.' },
       { jp:'病気です', romaji:'Byouki desu', fr:'Je suis malade', quality:'ok', feedback:'Compris, mais précise l\'endroit de la douleur — le pharmacien a besoin de plus d\'infos.' },
       { jp:'助けてください', romaji:'Tasukete kudasai', fr:'Au secours !', quality:'weak', feedback:'Réservé aux vraies urgences — ici un simple 頭が痛いです suffit.' }
     ]},
@@ -675,7 +675,7 @@ export const CONVERSATIONS = [
       { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne sais pas', quality:'ok', feedback:'Honnête si tu n\'as pas de thermomètre — le pharmacien peut proposer de prendre ta température.' },
       { jp:'はい、すごく熱いです', romaji:'Hai, sugoku atsui desu', fr:'Oui, très chaud', quality:'weak', feedback:'Attention : 熱い (atsui) = chaud au toucher. Pour la fièvre, dis 熱があります (netsu ga arimasu).' }
     ]},
-    { speaker:'npc', jp:'これを一日三回、食後に飲んでください。', romaji:'Kore wo ichinichi sankai, shokugo ni nonde kudasai.', fr:'Prenez ça trois fois par jour, après les repas.' },
+    { speaker:'npc', jp:'これを一日三回、食後に飲んでください。', romaji:'Kore o ichinichi sankai, shokugo ni nonde kudasai.', fr:'Prenez ça trois fois par jour, après les repas.' },
     { speaker:'user', choices:[
       { jp:'わかりました。もう一度ゆっくり言ってもらえますか？', romaji:'Wakarimashita. Mou ichido yukkuri itte moraemasu ka?', fr:'D\'accord. Pouvez-vous répéter plus lentement ?', quality:'best', feedback:'Demander de répéter lentement est une compétence clé — personne ne t\'en voudra.' },
       { jp:'はい、わかりました', romaji:'Hai, wakarimashita', fr:'Oui, j\'ai compris', quality:'ok', feedback:'Bien si tu as vraiment compris — sinon utilise la première option.' },
@@ -696,13 +696,13 @@ export const CONVERSATIONS = [
   ]},
 
   { id:'hotel', icon:'🏨', title:'Hôtel : check-in', skill:'voyage', level:'A1-A2', turns:[
-    { speaker:'npc', jp:'いらっしゃいませ。ご予約のお名前をお聞かせください。', romaji:'Irasshaimase. Goyoyaku no onamae wo okikase kudasai.', fr:'Bienvenue. Votre nom de réservation, s\'il vous plaît.' },
+    { speaker:'npc', jp:'いらっしゃいませ。ご予約のお名前をお聞かせください。', romaji:'Irasshaimase. Goyoyaku no onamae o okikase kudasai.', fr:'Bienvenue. Votre nom de réservation, s\'il vous plaît.' },
     { speaker:'user', choices:[
       { jp:'デュポンで予約しています', romaji:'Dyupon de yoyaku shite imasu', fr:'J\'ai une réservation au nom de Dupont', quality:'best', feedback:'[nom] + で予約しています = formule de check-in parfaite. で indique le critère de recherche.' },
       { jp:'予約があります', romaji:'Yoyaku ga arimasu', fr:'J\'ai une réservation', quality:'ok', feedback:'Correct mais le réceptionniste aura besoin de ton nom — complète avec le tien.' },
-      { jp:'部屋をください', romaji:'Heya wo kudasai', fr:'Une chambre, s\'il vous plaît', quality:'weak', feedback:'Si tu as une réservation, dis-le — sinon tu risques de ne pas trouver ta chambre dans le système.' }
+      { jp:'部屋をください', romaji:'Heya o kudasai', fr:'Une chambre, s\'il vous plaît', quality:'weak', feedback:'Si tu as une réservation, dis-le — sinon tu risques de ne pas trouver ta chambre dans le système.' }
     ]},
-    { speaker:'npc', jp:'ありがとうございます。パスポートを見せていただけますか？', romaji:'Arigatou gozaimasu. Pasupooto wo misete itadakemasu ka?', fr:'Merci. Puis-je voir votre passeport ?' },
+    { speaker:'npc', jp:'ありがとうございます。パスポートを見せていただけますか？', romaji:'Arigatou gozaimasu. Pasupooto o misete itadakemasu ka?', fr:'Merci. Puis-je voir votre passeport ?' },
     { speaker:'user', choices:[
       { jp:'はい、どうぞ', romaji:'Hai, douzo', fr:'Oui, voilà', quality:'best', feedback:'どうぞ en tendant l\'objet = geste + mot parfaits.' },
       { jp:'少々お待ちください', romaji:'Shoushou omachi kudasai', fr:'Un instant, s\'il vous plaît', quality:'ok', feedback:'Tout à fait valide si tu cherches dans ton sac — phrase utile à connaître.' },
@@ -710,13 +710,13 @@ export const CONVERSATIONS = [
     ]},
     { speaker:'npc', jp:'チェックアウトは11時です。朝食は7時から9時までです。', romaji:'Chekkuauto wa juuichi-ji desu. Choushoku wa shichiji kara kuji made desu.', fr:'Le check-out est à 11h. Le petit-déjeuner est de 7h à 9h.' },
     { speaker:'user', choices:[
-      { jp:'わかりました。Wi-Fiのパスワードを教えてもらえますか？', romaji:'Wakarimashita. Wi-Fi no pasuwaado wo oshiete moraemasu ka?', fr:'D\'accord. Pouvez-vous me donner le mot de passe Wi-Fi ?', quality:'best', feedback:'Enchaîner une autre question après わかりました = très naturel. ～を教えてもらえますか = "pouvez-vous me dire ~".' },
+      { jp:'わかりました。Wi-Fiのパスワードを教えてもらえますか？', romaji:'Wakarimashita. Wi-Fi no pasuwaado o oshiete moraemasu ka?', fr:'D\'accord. Pouvez-vous me donner le mot de passe Wi-Fi ?', quality:'best', feedback:'Enchaîner une autre question après わかりました = très naturel. ～を教えてもらえますか = "pouvez-vous me dire ~".' },
       { jp:'はい、わかりました', romaji:'Hai, wakarimashita', fr:'D\'accord', quality:'ok', feedback:'Bien pour accuser réception, mais tu as probablement d\'autres questions.' },
       { jp:'もう一度言ってください', romaji:'Mou ichido itte kudasai', fr:'Répétez s\'il vous plaît', quality:'ok', feedback:'Très valide si tu n\'as pas suivi les horaires — n\'hésite jamais à demander de répéter.' }
     ]},
     { speaker:'npc', jp:'お部屋は302号室です。こちらがカードキーです。', romaji:'Oheya wa sanbyakunigo-goushitsu desu. Kochira ga kaado kii desu.', fr:'Votre chambre est la 302. Voici votre carte magnétique.' },
     { speaker:'user', choices:[
-      { jp:'ありがとうございます。荷物を部屋に運んでもらえますか？', romaji:'Arigatou gozaimasu. Nimotsu wo heya ni hakonde moraemasu ka?', fr:'Merci. Pouvez-vous monter mes bagages dans la chambre ?', quality:'best', feedback:'Demande de service polie — 運ぶ = transporter, への代わりに に pour la destination.' },
+      { jp:'ありがとうございます。荷物を部屋に運んでもらえますか？', romaji:'Arigatou gozaimasu. Nimotsu o heya ni hakonde moraemasu ka?', fr:'Merci. Pouvez-vous monter mes bagages dans la chambre ?', quality:'best', feedback:'Demande de service polie — 運ぶ = transporter, への代わりに に pour la destination.' },
       { jp:'ありがとうございます', romaji:'Arigatou gozaimasu', fr:'Merci', quality:'ok', feedback:'Parfait pour clore l\'échange si tu n\'as pas besoin d\'aide supplémentaire.' },
       { jp:'エレベーターはどこですか？', romaji:'Erebeetaa wa doko desu ka?', fr:'Où est l\'ascenseur ?', quality:'ok', feedback:'Très pratique à demander ici — le réceptionniste t\'indiquera la direction.' }
     ]}
@@ -729,7 +729,7 @@ export const CONVERSATIONS = [
       { jp:'問題があります', romaji:'Mondai ga arimasu', fr:'Il y a un problème', quality:'ok', feedback:'Honnête mais vague — précise le problème pour qu\'on puisse t\'aider.' },
       { jp:'部屋が嫌いです', romaji:'Heya ga kirai desu', fr:'Je n\'aime pas ma chambre', quality:'weak', feedback:'Correct grammaticalement mais trop personnel — décris le problème technique concret.' }
     ]},
-    { speaker:'npc', jp:'大変申し訳ございません。すぐに係の者を向かわせます。', romaji:'Taihen moushiwake gozaimasen. Sugu ni kakari no mono wo mukawasemasu.', fr:'Nous nous en excusons sincèrement. Quelqu\'un arrive tout de suite.' },
+    { speaker:'npc', jp:'大変申し訳ございません。すぐに係の者を向かわせます。', romaji:'Taihen moushiwake gozaimasen. Sugu ni kakari no mono o mukawasemasu.', fr:'Nous nous en excusons sincèrement. Quelqu\'un arrive tout de suite.' },
     { speaker:'user', choices:[
       { jp:'ありがとうございます。何分くらいかかりますか？', romaji:'Arigatou gozaimasu. Nanpun kurai kakarimasu ka?', fr:'Merci. Ça prendra combien de minutes ?', quality:'best', feedback:'何分くらい = environ combien de minutes ? くらい adoucit la précision demandée.' },
       { jp:'わかりました', romaji:'Wakarimashita', fr:'D\'accord', quality:'ok', feedback:'Bien pour accepter la situation — mais demander le délai est plus utile.' },
@@ -737,7 +737,7 @@ export const CONVERSATIONS = [
     ]},
     { speaker:'npc', jp:'他に何かご不便なことはございますか？', romaji:'Hoka ni nanika gofuben na koto wa gozaimasu ka?', fr:'Y a-t-il autre chose qui vous dérange ?' },
     { speaker:'user', choices:[
-      { jp:'タオルを追加でいただけますか？', romaji:'Taoru wo tsuika de itadakemasu ka?', fr:'Puis-je avoir des serviettes supplémentaires ?', quality:'best', feedback:'追加で = en plus/supplémentaire. いただけますか = forme très polie de "puis-je avoir". Mémorise cette formule.' },
+      { jp:'タオルを追加でいただけますか？', romaji:'Taoru o tsuika de itadakemasu ka?', fr:'Puis-je avoir des serviettes supplémentaires ?', quality:'best', feedback:'追加で = en plus/supplémentaire. いただけますか = forme très polie de "puis-je avoir". Mémorise cette formule.' },
       { jp:'大丈夫です、ありがとうございます', romaji:'Daijoubu desu, arigatou gozaimasu', fr:'Non, ça va, merci', quality:'ok', feedback:'Parfait si tu n\'as pas d\'autre demande.' },
       { jp:'全部ダメです', romaji:'Zenbu dame desu', fr:'Tout est nul', quality:'weak', feedback:'ダメ = mauvais/nul — trop brutal. Décris les problèmes un par un.' }
     ]}
@@ -748,7 +748,7 @@ export const CONVERSATIONS = [
     { speaker:'user', choices:[
       { jp:'大阪まで一枚、片道お願いします', romaji:'Oosaka made ichimai, katamichi onegaishimasu', fr:'Un aller simple pour Osaka, s\'il vous plaît', quality:'best', feedback:'[destination] + まで + 枚 (compteur billets) + 片道 (aller simple). Enchaîne tout en une phrase.' },
       { jp:'大阪に行きたいです', romaji:'Oosaka ni ikitai desu', fr:'Je veux aller à Osaka', quality:'ok', feedback:'Correct, le guichetier comprendra, mais précise 片道/往復 et le nombre de billets.' },
-      { jp:'電車をください', romaji:'Densha wo kudasai', fr:'Donnez-moi un train', quality:'weak', feedback:'On ne "donne" pas un train — 大阪まで一枚お願いします est la formule juste.' }
+      { jp:'電車をください', romaji:'Densha o kudasai', fr:'Donnez-moi un train', quality:'weak', feedback:'On ne "donne" pas un train — 大阪まで一枚お願いします est la formule juste.' }
     ]},
     { speaker:'npc', jp:'新幹線と在来線、どちらにしますか？', romaji:'Shinkansen to zairaisen, dochira ni shimasu ka?', fr:'Shinkansen ou train local, vous préférez lequel ?' },
     { speaker:'user', choices:[
@@ -803,7 +803,7 @@ export const CONVERSATIONS = [
       { jp:'コンビニはどこ？', romaji:'Konbini wa doko?', fr:'Le konbini c\'est où ?', quality:'ok', feedback:'Compris mais familier — avec un inconnu, ですか est plus approprié.' },
       { jp:'コンビニ！', romaji:'Konbini!', fr:'Konbini !', quality:'weak', feedback:'Le seul mot ne fait pas une question — ton interlocuteur ne sait pas ce que tu veux.' }
     ]},
-    { speaker:'npc', jp:'この道をまっすぐ行って、交差点を右に曲がってください。', romaji:'Kono michi wo massugu itte, kousaten wo migi ni magatte kudasai.', fr:'Allez tout droit dans cette rue, puis tournez à droite au carrefour.' },
+    { speaker:'npc', jp:'この道をまっすぐ行って、交差点を右に曲がってください。', romaji:'Kono michi o massugu itte, kousaten o migi ni magatte kudasai.', fr:'Allez tout droit dans cette rue, puis tournez à droite au carrefour.' },
     { speaker:'user', choices:[
       { jp:'ありがとうございます。歩いて何分くらいですか？', romaji:'Arigatou gozaimasu. Aruite nanpun kurai desu ka?', fr:'Merci. C\'est à combien de minutes à pied ?', quality:'best', feedback:'歩いて = en marchant. 何分くらい = environ combien de minutes. くらい adoucit la question.' },
       { jp:'もう一度お願いします', romaji:'Mou ichido onegaishimasu', fr:'Encore une fois s\'il vous plaît', quality:'ok', feedback:'Très bien si tu n\'as pas saisi les directions — personne n\'en voudra.' },
@@ -811,7 +811,7 @@ export const CONVERSATIONS = [
     ]},
     { speaker:'npc', jp:'歩いて5分くらいです。セブン-イレブンです。', romaji:'Aruite gofun kurai desu. Sebun irebun desu.', fr:'Environ 5 minutes à pied. C\'est un 7-Eleven.' },
     { speaker:'user', choices:[
-      { jp:'ありがとうございます。地図を見せてもらえますか？', romaji:'Arigatou gozaimasu. Chizu wo misete moraemasu ka?', fr:'Merci. Vous pouvez me montrer sur le plan ?', quality:'best', feedback:'Montrer ton téléphone avec Google Maps + cette phrase = combo parfait pour les directions complexes.' },
+      { jp:'ありがとうございます。地図を見せてもらえますか？', romaji:'Arigatou gozaimasu. Chizu o misete moraemasu ka?', fr:'Merci. Vous pouvez me montrer sur le plan ?', quality:'best', feedback:'Montrer ton téléphone avec Google Maps + cette phrase = combo parfait pour les directions complexes.' },
       { jp:'ありがとうございます！', romaji:'Arigatou gozaimasu!', fr:'Merci !', quality:'ok', feedback:'Simple et suffisant si tu as bien compris.' },
       { jp:'セブン-イレブンはどこですか？', romaji:'Sebun irebun wa doko desu ka?', fr:'Où est le 7-Eleven ?', quality:'weak', feedback:'Il vient de te le dire ! Montre que tu as compris en répétant les directions.' }
     ]},
@@ -827,7 +827,7 @@ export const CONVERSATIONS = [
     { speaker:'user', choices:[
       { jp:'すみません、お豆腐はどこにありますか？', romaji:'Sumimasen, otofu wa doko ni arimasu ka?', fr:'Excusez-moi, le tofu est où ?', quality:'best', feedback:'[produit] + はどこにありますか = formule standard pour trouver un rayon. に précise la localisation.' },
       { jp:'豆腐？', romaji:'Otofu?', fr:'Tofu ?', quality:'ok', feedback:'Un employé comprendra et te montrera — mais la question complète est plus polie.' },
-      { jp:'豆腐を探しています', romaji:'Otofu wo sagashite imasu', fr:'Je cherche du tofu', quality:'ok', feedback:'Correct et naturel — l\'employé comprendra et te guidera.' }
+      { jp:'豆腐を探しています', romaji:'Otofu o sagashite imasu', fr:'Je cherche du tofu', quality:'ok', feedback:'Correct et naturel — l\'employé comprendra et te guidera.' }
     ]},
     { speaker:'npc', jp:'冷蔵コーナーの3番通路にございます。', romaji:'Reizou koonaa no sanban tsuuroo ni gozaimasu.', fr:'C\'est dans l\'allée 3 du rayon frais.' },
     { speaker:'user', choices:[
@@ -853,7 +853,7 @@ export const CONVERSATIONS = [
     { speaker:'npc', jp:'いらっしゃいませ！何かお探しですか？', romaji:'Irasshaimase! Nanika osagashi desu ka?', fr:'Bienvenue ! Vous cherchez quelque chose ?' },
     { speaker:'user', choices:[
       { jp:'見ているだけです、ありがとうございます', romaji:'Mite iru dake desu, arigatou gozaimasu', fr:'Je regarde juste, merci', quality:'best', feedback:'見ているだけ = "juste en train de regarder". La phrase parfaite pour ne pas être suivi(e) partout.' },
-      { jp:'Tシャツを探しています', romaji:'Tii-shatsu wo sagashite imasu', fr:'Je cherche un T-shirt', quality:'ok', feedback:'Correct si tu cherches vraiment — l\'employé va t\'accompagner.' },
+      { jp:'Tシャツを探しています', romaji:'Tii-shatsu o sagashite imasu', fr:'Je cherche un T-shirt', quality:'ok', feedback:'Correct si tu cherches vraiment — l\'employé va t\'accompagner.' },
       { jp:'大丈夫です', romaji:'Daijoubu desu', fr:'Ça va', quality:'ok', feedback:'Compris, mais 見ているだけ est plus explicite et naturel.' }
     ]},
     { speaker:'npc', jp:'このTシャツはいかがですか？今セール中です。', romaji:'Kono tii-shatsu wa ikaga desu ka? Ima seeru-chuu desu.', fr:'Ce T-shirt, qu\'en pensez-vous ? Il est en solde.' },
@@ -877,19 +877,19 @@ export const CONVERSATIONS = [
 
   { id:'urgence', icon:'🚨', title:'Urgence légère / se faire aider', skill:'voyage', level:'A1-A2', turns:[
     { speaker:'user', choices:[
-      { jp:'すみません、財布を盗まれました。警察に行きたいです', romaji:'Sumimasen, saifu wo nusumaremashita. Keisatsu ni ikitai desu', fr:'Excusez-moi, on m\'a volé mon portefeuille. Je veux aller à la police', quality:'best', feedback:'〜を盗まれました = passif de vol (me faire voler). 警察 = police. Formules essentielles à connaître.' },
+      { jp:'すみません、財布を盗まれました。警察に行きたいです', romaji:'Sumimasen, saifu o nusumaremashita. Keisatsu ni ikitai desu', fr:'Excusez-moi, on m\'a volé mon portefeuille. Je veux aller à la police', quality:'best', feedback:'〜を盗まれました = passif de vol (me faire voler). 警察 = police. Formules essentielles à connaître.' },
       { jp:'助けてください！', romaji:'Tasukete kudasai!', fr:'Aidez-moi !', quality:'ok', feedback:'Pour une vraie urgence physique — mais précise ensuite ce qui se passe.' },
       { jp:'問題があります', romaji:'Mondai ga arimasu', fr:'Il y a un problème', quality:'weak', feedback:'Trop vague pour une urgence — dis directement ce qui s\'est passé.' }
     ]},
     { speaker:'npc', jp:'大丈夫ですか？何がありましたか？', romaji:'Daijoubu desu ka? Nani ga arimashita ka?', fr:'Ça va ? Que s\'est-il passé ?' },
     { speaker:'user', choices:[
-      { jp:'電車の中でかばんを失くしました。遺失物センターはどこですか？', romaji:'Densha no naka de kaban wo nakushimashita. Ishitsubutsu sentaa wa doko desu ka?', fr:'J\'ai perdu mon sac dans le train. Où est le bureau des objets trouvés ?', quality:'best', feedback:'失くす = perdre un objet. 遺失物センター = bureau des objets trouvés. Au Japon les objets perdus sont souvent rendus !' },
+      { jp:'電車の中でかばんを失くしました。遺失物センターはどこですか？', romaji:'Densha no naka de kaban o nakushimashita. Ishitsubutsu sentaa wa doko desu ka?', fr:'J\'ai perdu mon sac dans le train. Où est le bureau des objets trouvés ?', quality:'best', feedback:'失くす = perdre un objet. 遺失物センター = bureau des objets trouvés. Au Japon les objets perdus sont souvent rendus !' },
       { jp:'財布がありません', romaji:'Saifu ga arimasen', fr:'Je n\'ai plus de portefeuille', quality:'ok', feedback:'Clair — l\'interlocuteur comprendra que tu l\'as perdu ou qu\'on te l\'a volé.' },
       { jp:'警察はどこですか？', romaji:'Keisatsu wa doko desu ka?', fr:'Où est la police ?', quality:'ok', feedback:'Valide — la police (交番, koban = poste de police de quartier) peut t\'aider dans tous ces cas.' }
     ]},
     { speaker:'npc', jp:'大使館に連絡しましたか？', romaji:'Taishikan ni renraku shimashita ka?', fr:'Vous avez contacté votre ambassade ?' },
     { speaker:'user', choices:[
-      { jp:'いいえ、まだです。フランス大使館の番号を教えてもらえますか？', romaji:'Iie, mada desu. Furansu taishikan no bangou wo oshiete moraemasu ka?', fr:'Pas encore. Pouvez-vous me donner le numéro de l\'ambassade de France ?', quality:'best', feedback:'まだ = pas encore. ～の番号を教えてもらえますか = "pouvez-vous me donner le numéro de ~".' },
+      { jp:'いいえ、まだです。フランス大使館の番号を教えてもらえますか？', romaji:'Iie, mada desu. Furansu taishikan no bangou o oshiete moraemasu ka?', fr:'Pas encore. Pouvez-vous me donner le numéro de l\'ambassade de France ?', quality:'best', feedback:'まだ = pas encore. ～の番号を教えてもらえますか = "pouvez-vous me donner le numéro de ~".' },
       { jp:'はい、連絡しました', romaji:'Hai, renraku shimashita', fr:'Oui, je les ai contactés', quality:'ok', feedback:'Parfait si c\'est le cas — continue les démarches.' },
       { jp:'わかりません', romaji:'Wakarimasen', fr:'Je ne sais pas', quality:'weak', feedback:'C\'est toi qui sais si tu as appelé ou non — réponds par はい ou いいえ.' }
     ]}
@@ -952,19 +952,19 @@ export const CONVERSATIONS = [
   ]},
 
   { id:'bibliotheque', icon:'📚', title:'À la bibliothèque universitaire', skill:'étude', level:'A1-A2', turns:[
-    { speaker:'npc', jp:'いらっしゃいませ。学生証を見せてください。', romaji:'Irasshaimase. Gakuseishou wo misete kudasai.', fr:'Bonjour. Montrez-moi votre carte étudiante.' },
+    { speaker:'npc', jp:'いらっしゃいませ。学生証を見せてください。', romaji:'Irasshaimase. Gakuseishou o misete kudasai.', fr:'Bonjour. Montrez-moi votre carte étudiante.' },
     { speaker:'user', choices:[
       { jp:'はい、どうぞ。留学生ですが、利用できますか？', romaji:'Hai, douzo. Ryuugakusei desu ga, riyou dekimasu ka?', fr:'Voilà. Je suis étudiant(e) étranger(e), je peux utiliser la bibliothèque ?', quality:'best', feedback:'ですが + question = "je suis X, mais est-ce que je peux... ?" — façon polie d\'introduire une situation particulière.' },
       { jp:'はい、どうぞ', romaji:'Hai, douzo', fr:'Voilà', quality:'ok', feedback:'Bien — si tu as la carte étudiante, tu as le droit d\'accès.' },
-      { jp:'学生証を持っていません', romaji:'Gakuseishou wo motte imasen', fr:'Je n\'ai pas de carte étudiante', quality:'ok', feedback:'Honnête si c\'est le cas — explique que tu es en échange et demande les démarches.' }
+      { jp:'学生証を持っていません', romaji:'Gakuseishou o motte imasen', fr:'Je n\'ai pas de carte étudiante', quality:'ok', feedback:'Honnête si c\'est le cas — explique que tu es en échange et demande les démarches.' }
     ]},
     { speaker:'npc', jp:'はい、留学生の方も利用できますよ。何かお探しですか？', romaji:'Hai, ryuugakusei no kata mo riyou dekimasu yo. Nanika osagashi desu ka?', fr:'Oui, les étudiants étrangers peuvent l\'utiliser. Vous cherchez quelque chose ?' },
     { speaker:'user', choices:[
-      { jp:'この本を借りたいんですが、どうすればいいですか？', romaji:'Kono hon wo karitain desu ga, dou sureba ii desu ka?', fr:'Je voudrais emprunter ce livre — comment je fais ?', quality:'best', feedback:'Parfait — 〜たいんですが annonce poliment ta demande, et どうすればいいですか demande la marche à suivre. Une formule passe-partout pour n\'importe quelle démarche.' },
+      { jp:'この本を借りたいんですが、どうすればいいですか？', romaji:'Kono hon o karitain desu ga, dou sureba ii desu ka?', fr:'Je voudrais emprunter ce livre — comment je fais ?', quality:'best', feedback:'Parfait — 〜たいんですが annonce poliment ta demande, et どうすればいいですか demande la marche à suivre. Une formule passe-partout pour n\'importe quelle démarche.' },
       { jp:'この本、借りられますか？', romaji:'Kono hon, kariraremasu ka?', fr:'Je peux emprunter ce livre ?', quality:'ok', feedback:'Correct et naturel — mais tu auras juste un oui ou un non, sans la marche à suivre.' },
-      { jp:'本をください', romaji:'Hon wo kudasai', fr:'Donnez-moi le livre', quality:'weak', feedback:'ください sert à acheter ou commander. À la bibliothèque, on emprunte : 借りる (kariru).' }
+      { jp:'本をください', romaji:'Hon o kudasai', fr:'Donnez-moi le livre', quality:'weak', feedback:'ください sert à acheter ou commander. À la bibliothèque, on emprunte : 借りる (kariru).' }
     ]},
-    { speaker:'npc', jp:'カウンターで学生証を見せてください。貸出期間は二週間です。それから、ここは自習室なので、お静かにお願いします。', romaji:'Kauntaa de gakuseishou wo misete kudasai. Kashidashi kikan wa nishuukan desu. Sorekara, koko wa jishuushitsu na node, oshizuka ni onegaishimasu.', fr:'Montrez votre carte étudiante au comptoir. Le prêt dure deux semaines. Et ici c\'est une salle d\'étude, merci de rester silencieux.' },
+    { speaker:'npc', jp:'カウンターで学生証を見せてください。貸出期間は二週間です。それから、ここは自習室なので、お静かにお願いします。', romaji:'Kauntaa de gakuseishou o misete kudasai. Kashidashi kikan wa nishuukan desu. Sorekara, koko wa jishuushitsu na node, oshizuka ni onegaishimasu.', fr:'Montrez votre carte étudiante au comptoir. Le prêt dure deux semaines. Et ici c\'est une salle d\'étude, merci de rester silencieux.' },
     { speaker:'user', choices:[
       { jp:'すみません。グループ学習ができる部屋はありますか？', romaji:'Sumimasen. Guruupu gakushuu ga dekiru heya wa arimasu ka?', fr:'Pardon. Y a-t-il une salle pour travailler en groupe ?', quality:'best', feedback:'～ができる部屋 = "une salle où on peut ~". Tournure très utile pour chercher un espace.' },
       { jp:'すみません', romaji:'Sumimasen', fr:'Pardon', quality:'ok', feedback:'Bien pour s\'excuser — mais si tu as besoin d\'un espace groupe, demande-le.' },
@@ -995,7 +995,7 @@ export const CONVERSATIONS = [
   { id:'club-etudiant', icon:'🏸', title:'Rejoindre un club étudiant', skill:'étude', level:'A1-A2', turns:[
     { speaker:'npc', jp:'こんにちは！はじめまして。サークルに興味がありますか？', romaji:'Konnichiwa! Hajimemashite. Saakuru ni kyoumi ga arimasu ka?', fr:'Bonjour ! Enchanté(e). Vous êtes intéressé(e) par le club ?' },
     { speaker:'user', choices:[
-      { jp:'はじめまして。はい、バドミントンサークルを探していました', romaji:'Hajimemashite. Hai, badominton saakuru wo sagashite imashita', fr:'Enchanté(e). Oui, je cherchais justement un club de badminton', quality:'best', feedback:'～を探していました (passé de -ている) = "j\'étais en train de chercher / je cherchais". Montre de l\'enthousiasme ciblé.' },
+      { jp:'はじめまして。はい、バドミントンサークルを探していました', romaji:'Hajimemashite. Hai, badominton saakuru o sagashite imashita', fr:'Enchanté(e). Oui, je cherchais justement un club de badminton', quality:'best', feedback:'～を探していました (passé de -ている) = "j\'étais en train de chercher / je cherchais". Montre de l\'enthousiasme ciblé.' },
       { jp:'はじめまして。見ているだけです', romaji:'Hajimemashite. Mite iru dake desu', fr:'Enchanté(e). Je regarde juste', quality:'ok', feedback:'Correct si tu veux d\'abord observer avant de t\'engager.' },
       { jp:'どんなサークルですか？', romaji:'Donna saakuru desu ka?', fr:'C\'est quel genre de club ?', quality:'ok', feedback:'Bonne question pour s\'informer avant de répondre à l\'intérêt.' }
     ]},
@@ -1011,10 +1011,10 @@ export const CONVERSATIONS = [
       { jp:'火曜日は難しいです。木曜日だけ来てもいいですか？', romaji:'Kayoubi wa muzukashii desu. Mokuyoubi dake kite mo ii desu ka?', fr:'Mardi c\'est compliqué. Je peux venir juste le jeudi ?', quality:'ok', feedback:'～てもいいですか = "est-ce que ça va si je ~" — formule clé pour demander une permission.' },
       { jp:'わかりました', romaji:'Wakarimashita', fr:'D\'accord', quality:'ok', feedback:'Bien pour accuser réception — montre que tu as compris l\'horaire.' }
     ]},
-    { speaker:'npc', jp:'LINEを交換しませんか？練習の連絡をします。', romaji:'LINE wo koukan shimasen ka? Renshuu no renraku wo shimasu.', fr:'On échange nos LINE ? Pour te prévenir des entraînements.' },
+    { speaker:'npc', jp:'LINEを交換しませんか？練習の連絡をします。', romaji:'LINE o koukan shimasen ka? Renshuu no renraku o shimasu.', fr:'On échange nos LINE ? Pour te prévenir des entraînements.' },
     { speaker:'user', choices:[
       { jp:'もちろんです！はい、どうぞ', romaji:'Mochiron desu! Hai, douzo', fr:'Bien sûr ! Voilà (en tendant le téléphone)', quality:'best', feedback:'もちろん = bien sûr. Tendre son téléphone avec QR code LINE = geste attendu au Japon.' },
-      { jp:'LINEのIDを教えます', romaji:'LINE no ID wo oshiemasu', fr:'Je te donne mon ID LINE', quality:'ok', feedback:'Autre façon d\'échanger — certains préfèrent partager l\'ID plutôt que le QR code.' },
+      { jp:'LINEのIDを教えます', romaji:'LINE no ID o oshiemasu', fr:'Je te donne mon ID LINE', quality:'ok', feedback:'Autre façon d\'échanger — certains préfèrent partager l\'ID plutôt que le QR code.' },
       { jp:'LINEは持っていません', romaji:'LINE wa motte imasen', fr:'Je n\'ai pas LINE', quality:'weak', feedback:'LINE est indispensable au Japon — installe-le avant d\'arriver si possible !' }
     ]}
   ]},
@@ -1043,11 +1043,11 @@ export const CONVERSATIONS = [
   // ── SOCIAL / RENCONTRE ───────────────────────────────────────────────────────
 
   { id:'premiere-rencontre', icon:'👋', title:'Première rencontre', skill:'relation', level:'A0-A1', turns:[
-    { speaker:'npc', jp:'あの、すみません。日本語を勉強していますか？', romaji:'Ano, sumimasen. Nihongo wo benkyou shite imasu ka?', fr:'Euh, excusez-moi. Vous étudiez le japonais ?' },
+    { speaker:'npc', jp:'あの、すみません。日本語を勉強していますか？', romaji:'Ano, sumimasen. Nihongo o benkyou shite imasu ka?', fr:'Euh, excusez-moi. Vous étudiez le japonais ?' },
     { speaker:'user', choices:[
       { jp:'はい！まだ勉強中ですが、話せるようになりたいです', romaji:'Hai! Mada benkyouchuu desu ga, hanaseru you ni naritai desu', fr:'Oui ! Je suis encore en train d\'apprendre, mais je veux pouvoir parler', quality:'best', feedback:'勉強中 = en train d\'étudier (中 = en cours). ～ようになりたい = "je veux arriver à pouvoir ~" — structure de progression.' },
       { jp:'少しだけ', romaji:'Sukoshi dake', fr:'Juste un peu', quality:'ok', feedback:'Modeste et naturel — 少しだけ = seulement un peu.' },
-      { jp:'はい、日本語を話します', romaji:'Hai, nihongo wo hanashimasu', fr:'Oui, je parle japonais', quality:'weak', feedback:'Si tu es débutant(e), c\'est un peu présomptueux — 勉強中です est plus honnête et engageant.' }
+      { jp:'はい、日本語を話します', romaji:'Hai, nihongo o hanashimasu', fr:'Oui, je parle japonais', quality:'weak', feedback:'Si tu es débutant(e), c\'est un peu présomptueux — 勉強中です est plus honnête et engageant.' }
     ]},
     { speaker:'npc', jp:'すごい！どのくらい勉強しましたか？', romaji:'Sugoi! Dono kurai benkyou shimashita ka?', fr:'Impressionnant ! Vous avez étudié pendant combien de temps ?' },
     { speaker:'user', choices:[
@@ -1061,7 +1061,7 @@ export const CONVERSATIONS = [
       { jp:'サンドリーヌです', romaji:'Sandorinu desu', fr:'Je suis Sandrine', quality:'ok', feedback:'Correct — mais relancer avec "et vous ?" est plus engageant.' },
       { jp:'私の名前はサンドリーヌです', romaji:'Watashi no namae wa Sandorinu desu', fr:'Mon nom est Sandrine', quality:'weak', feedback:'Grammaticalement correct mais trop formel/scolaire — [prénom] + です est bien plus naturel.' }
     ]},
-    { speaker:'npc', jp:'よろしくお願いします！LINEを交換しませんか？', romaji:'Yoroshiku onegaishimasu! LINE wo koukan shimasen ka?', fr:'Ravi(e) ! On échange nos contacts LINE ?' },
+    { speaker:'npc', jp:'よろしくお願いします！LINEを交換しませんか？', romaji:'Yoroshiku onegaishimasu! LINE o koukan shimasen ka?', fr:'Ravi(e) ! On échange nos contacts LINE ?' },
     { speaker:'user', choices:[
       { jp:'もちろんです！よろしくお願いします', romaji:'Mochiron desu! Yoroshiku onegaishimasu', fr:'Bien sûr ! Ravi(e) aussi !', quality:'best', feedback:'もちろん = bien sûr. Echo de よろしくお願いします = clôture parfaite de rencontre.' },
       { jp:'はい、ぜひ', romaji:'Hai, zehi', fr:'Oui, avec plaisir', quality:'ok', feedback:'ぜひ = certainement / avec plaisir — enthousiaste et naturel.' },
@@ -1070,11 +1070,11 @@ export const CONVERSATIONS = [
   ]},
 
   { id:'cafe', icon:'☕', title:'Café avec un ami japonais', skill:'relation', level:'A1-A2', turns:[
-    { speaker:'npc', jp:'何を飲みますか？私はアイスコーヒーにします', romaji:'Nani wo nomimasu ka? Watashi wa aisu koohii ni shimasu', fr:'Qu\'est-ce que tu prends ? Moi je prends un café glacé' },
+    { speaker:'npc', jp:'何を飲みますか？私はアイスコーヒーにします', romaji:'Nani o nomimasu ka? Watashi wa aisu koohii ni shimasu', fr:'Qu\'est-ce que tu prends ? Moi je prends un café glacé' },
     { speaker:'user', choices:[
       { jp:'私もアイスコーヒーにします。ここはよく来るんですか？', romaji:'Watashi mo aisu koohii ni shimasu. Koko wa yoku kurun desu ka?', fr:'Moi aussi je prends un café glacé. Tu viens souvent ici ?', quality:'best', feedback:'も (aussi) + relancer une question = conversation naturelle. くるんですか = "tu viens ici" avec んです (nuance explicative).' },
-      { jp:'ホットコーヒーをください', romaji:'Hotto koohii wo kudasai', fr:'Un café chaud, s\'il vous plaît', quality:'ok', feedback:'Correct pour commander — mais c\'est un café entre amis, pas au serveur ! Engage aussi la conversation.' },
-      { jp:'水をください', romaji:'Mizu wo kudasai', fr:'De l\'eau, s\'il vous plaît', quality:'weak', feedback:'Tu es au café, commande quelque chose de plus ! Et réponds à ton ami.' }
+      { jp:'ホットコーヒーをください', romaji:'Hotto koohii o kudasai', fr:'Un café chaud, s\'il vous plaît', quality:'ok', feedback:'Correct pour commander — mais c\'est un café entre amis, pas au serveur ! Engage aussi la conversation.' },
+      { jp:'水をください', romaji:'Mizu o kudasai', fr:'De l\'eau, s\'il vous plaît', quality:'weak', feedback:'Tu es au café, commande quelque chose de plus ! Et réponds à ton ami.' }
     ]},
     { speaker:'npc', jp:'最近どうですか？大学の勉強は大変ですか？', romaji:'Saikin dou desu ka? Daigaku no benkyou wa taihen desu ka?', fr:'Comment ça se passe en ce moment ? Les études à la fac, c\'est dur ?' },
     { speaker:'user', choices:[
@@ -1100,12 +1100,12 @@ export const CONVERSATIONS = [
     { speaker:'npc', jp:'来てくれてありがとう！飲み物はもう持ってる？', romaji:'Kite kurete arigatou! Nomimono wa mou motteru?', fr:'Merci d\'être venu(e) ! Tu as déjà quelque chose à boire ?' },
     { speaker:'user', choices:[
       { jp:'まだです。何がありますか？', romaji:'Mada desu. Nani ga arimasu ka?', fr:'Pas encore. Qu\'est-ce qu\'il y a ?', quality:'best', feedback:'まだ = pas encore. Réponse naturelle qui ouvre la conversation sur les boissons disponibles.' },
-      { jp:'ビールをください', romaji:'Biiru wo kudasai', fr:'Une bière, s\'il vous plaît', quality:'ok', feedback:'Direct et clair — ça fonctionne bien dans une fête.' },
+      { jp:'ビールをください', romaji:'Biiru o kudasai', fr:'Une bière, s\'il vous plaît', quality:'ok', feedback:'Direct et clair — ça fonctionne bien dans une fête.' },
       { jp:'大丈夫です', romaji:'Daijoubu desu', fr:'Ça va', quality:'weak', feedback:'Peut être interprété comme "non merci" alors que tu cherches à boire — sois plus clair.' }
     ]},
     { speaker:'npc', jp:'みんな、自己紹介して！', romaji:'Minna, jikoshoukai shite!', fr:'Tout le monde se présente !' },
     { speaker:'user', choices:[
-      { jp:'フランスから来た留学生のサンドリーヌです。日本語を勉強しています。よろしく！', romaji:'Furansu kara kita ryuugakusei no Sandorinu desu. Nihongo wo benkyou shite imasu. Yoroshiku!', fr:'Je suis Sandrine, étudiante en échange de France. J\'apprends le japonais. Salut tout le monde !', quality:'best', feedback:'Auto-présentation complète et naturelle — dans un contexte jeune/festif, よろしく (sans お願いします) est suffisant.' },
+      { jp:'フランスから来た留学生のサンドリーヌです。日本語を勉強しています。よろしく！', romaji:'Furansu kara kita ryuugakusei no Sandorinu desu. Nihongo o benkyou shite imasu. Yoroshiku!', fr:'Je suis Sandrine, étudiante en échange de France. J\'apprends le japonais. Salut tout le monde !', quality:'best', feedback:'Auto-présentation complète et naturelle — dans un contexte jeune/festif, よろしく (sans お願いします) est suffisant.' },
       { jp:'サンドリーヌです。フランス人です', romaji:'Sandorinu desu. Furansujin desu', fr:'Je suis Sandrine. Je suis française', quality:'ok', feedback:'Simple et compréhensible — mais ajoute ce que tu fais ici pour ouvrir des conversations.' },
       { jp:'こんにちは', romaji:'Konnichiwa', fr:'Bonjour', quality:'weak', feedback:'Trop minimal pour une auto-présentation de groupe — dis au moins ton prénom.' }
     ]},
@@ -1130,9 +1130,9 @@ export const CONVERSATIONS = [
       { jp:'はじめまして。よろしくお願いします', romaji:'Hajimemashite. Yoroshiku onegaishimasu', fr:'Enchanté(e). Ravi(e) !', quality:'ok', feedback:'Correct et poli — pour un vrai contexte pro, ajoute と申します pour ton nom.' },
       { jp:'よろしく！', romaji:'Yoroshiku!', fr:'Salut !', quality:'weak', feedback:'Trop familier pour un premier jour au bureau — toujours utiliser よろしくお願いします au complet.' }
     ]},
-    { speaker:'npc', jp:'自己紹介をしていただけますか？', romaji:'Jikoshoukai wo shite itadakemasu ka?', fr:'Pouvez-vous vous présenter ?' },
+    { speaker:'npc', jp:'自己紹介をしていただけますか？', romaji:'Jikoshoukai o shite itadakemasu ka?', fr:'Pouvez-vous vous présenter ?' },
     { speaker:'user', choices:[
-      { jp:'はい。フランスのリヨン大学から参りました交換留学生です。日本語と経済学を専攻しています。よろしくお願いいたします', romaji:'Hai. Furansu no Rion daigaku kara mairimashita koukan ryuugakusei desu. Nihongo to keizaigaku wo senkou shite imasu. Yoroshiku onegai itashimasu', fr:'Oui. Je suis étudiant(e) en échange de l\'Université de Lyon en France. Je me spécialise en japonais et en économie. Ravi(e) !', quality:'best', feedback:'参りました = forme humble de venir. Présentation professionnelle complète avec université + spécialité.' },
+      { jp:'はい。フランスのリヨン大学から参りました交換留学生です。日本語と経済学を専攻しています。よろしくお願いいたします', romaji:'Hai. Furansu no Rion daigaku kara mairimashita koukan ryuugakusei desu. Nihongo to keizaigaku o senkou shite imasu. Yoroshiku onegai itashimasu', fr:'Oui. Je suis étudiant(e) en échange de l\'Université de Lyon en France. Je me spécialise en japonais et en économie. Ravi(e) !', quality:'best', feedback:'参りました = forme humble de venir. Présentation professionnelle complète avec université + spécialité.' },
       { jp:'フランスから来た学生です', romaji:'Furansu kara kita gakusei desu', fr:'Je suis étudiant(e) venu(e) de France', quality:'ok', feedback:'Correct mais insuffisant pour un contexte pro — précise université et spécialité.' },
       { jp:'よろしくお願いします', romaji:'Yoroshiku onegaishimasu', fr:'Ravi(e) !', quality:'weak', feedback:'La formule seule n\'est pas une auto-présentation — le manager attend plus d\'info.' }
     ]},
@@ -1157,7 +1157,7 @@ export const CONVERSATIONS = [
       { jp:'何？', romaji:'Nani?', fr:'Quoi ?', quality:'weak', feedback:'Trop direct/familier — quel que soit le contexte professionnel, reste poli.' },
       { jp:'はい', romaji:'Hai', fr:'Oui', quality:'ok', feedback:'Minimal mais correct — ajoute une relance pour montrer ton engagement.' }
     ]},
-    { speaker:'npc', jp:'この書類を明日までにコピーしてもらえますか？', romaji:'Kono shorui wo ashita made ni kopii shite moraemasu ka?', fr:'Pouvez-vous copier ces documents pour demain ?' },
+    { speaker:'npc', jp:'この書類を明日までにコピーしてもらえますか？', romaji:'Kono shorui o ashita made ni kopii shite moraemasu ka?', fr:'Pouvez-vous copier ces documents pour demain ?' },
     { speaker:'user', choices:[
       { jp:'はい、承知しました。何部必要ですか？', romaji:'Hai, shouchi shimashita. Nanbu hitsuyou desu ka?', fr:'Oui, bien entendu. Combien d\'exemplaires ?', quality:'best', feedback:'承知しました = j\'ai bien compris et j\'exécute (forme professionnelle de わかりました). Demander les détails = initiative professionnelle.' },
       { jp:'わかりました', romaji:'Wakarimashita', fr:'D\'accord', quality:'ok', feedback:'Correct — mais 承知しました est plus professionnel que わかりました en entreprise.' },
@@ -1175,7 +1175,7 @@ export const CONVERSATIONS = [
     { speaker:'npc', jp:'いらっしゃいませ。拝観料は大人600円です。', romaji:'Irasshaimase. Haikanryou wa otona roppyaku-en desu.', fr:'Bienvenue. L\'entrée est de 600 yens pour un adulte.' },
     { speaker:'user', choices:[
       { jp:'一人です。カードで払えますか？', romaji:'Hitori desu. Kaado de haraemasu ka?', fr:'Pour une personne. On peut payer par carte ?', quality:'best', feedback:'Demander le mode de paiement avant de sortir le cash = astuce pratique. Beaucoup de temples n\'acceptent que le cash.' },
-      { jp:'一人分をください', romaji:'Hitori-bun wo kudasai', fr:'Pour une personne', quality:'ok', feedback:'Clair — mais pense à demander le mode de paiement si tu n\'as pas de cash.' },
+      { jp:'一人分をください', romaji:'Hitori-bun o kudasai', fr:'Pour une personne', quality:'ok', feedback:'Clair — mais pense à demander le mode de paiement si tu n\'as pas de cash.' },
       { jp:'安くなりますか？', romaji:'Yasuku narimasu ka?', fr:'C\'est possible moins cher ?', quality:'weak', feedback:'Le marchandage ne se fait pas dans les temples — paie le prix affiché.' }
     ]},
     { speaker:'npc', jp:'写真撮影は本堂内では禁止です。', romaji:'Shashin satsuei wa hondou nai de wa kinshi desu.', fr:'Les photos sont interdites à l\'intérieur du bâtiment principal.' },
@@ -1195,14 +1195,14 @@ export const CONVERSATIONS = [
   // ── GASTRONOMIE ─────────────────────────────────────────────────────────────
 
   { id:'matcha', icon:'🍵', title:'Acheter du matcha (Kyoto)', skill:'gastronomie', level:'A2-B1', turns:[
-    { speaker:'npc', jp:'いらっしゃいませ。どのようなお茶をお探しですか？', romaji:'Irasshaimase. Dono you na ocha wo osagashi desu ka?', fr:'Bienvenue. Quel type de thé cherchez-vous ?',
+    { speaker:'npc', jp:'いらっしゃいませ。どのようなお茶をお探しですか？', romaji:'Irasshaimase. Dono you na ocha o osagashi desu ka?', fr:'Bienvenue. Quel type de thé cherchez-vous ?',
       breakdown:[
         { chunk:'どのような', role:'"Quel type de..." — version habillée de どんな.', tip:'どんな = quelle sorte de (conversation normale). どのような = même sens, mais plus élégant — tu le verras dans les boutiques, les e-mails formels. Les deux se comprennent partout.' },
         { chunk:'お茶', role:'"Le thé" — avec お devant pour marquer la politesse.', tip:'茶 tout seul = thé (brut). お茶 = thé (poli). En japonais, お ou ご devant un mot, c\'est un signe de respect, comme "votre" en français. Ici c\'est le thé du client qui est honoré !' },
         { chunk:'お探しですか', role:'"Cherchez-vous ?" — le verbe "chercher" enveloppé dans la politesse.', tip:'探す = chercher. お探しですか = est-ce que vous cherchez quelque chose ? C\'est la façon dont les vendeurs demandent si tu as besoin d\'aide. Tu peux répondre simplement : はい、〜を探しています (oui, je cherche...).' }
       ]},
     { speaker:'user', choices:[
-      { jp:'抹茶を探しています。ラテに使いたいんですが、まろやかな風味のものを探しています', romaji:'Matcha wo sagashite imasu. Rate ni tsukaitai n desu ga, maroyaka na fuumi no mono wo sagashite imasu', fr:'Je cherche du matcha pour faire des lattes — j\'aime les saveurs douces et rondes en bouche', quality:'best', feedback:'Parfait — tu donnes le contexte d\'utilisation (ラテ), la texture recherchée (まろやか = doux/rond) et montres que tu connais le vocabulaire de dégustation.',
+      { jp:'抹茶を探しています。ラテに使いたいんですが、まろやかな風味のものを探しています', romaji:'Matcha o sagashite imasu. Rate ni tsukaitai n desu ga, maroyaka na fuumi no mono o sagashite imasu', fr:'Je cherche du matcha pour faire des lattes — j\'aime les saveurs douces et rondes en bouche', quality:'best', feedback:'Parfait — tu donnes le contexte d\'utilisation (ラテ), la texture recherchée (まろやか = doux/rond) et montres que tu connais le vocabulaire de dégustation.',
         breakdown:[
           { chunk:'を探しています', role:'"Je suis en train de chercher." — 探しています, pas 探します.', tip:'En japonais, ～ています dit que l\'action est en cours maintenant. 探します = je chercherai (futur). 探しています = je cherche (maintenant, en ce moment dans la boutique). Cette distinction est très utile.' },
           { chunk:'ラテに使いたい', role:'"Je veux l\'utiliser pour faire des lattes."', tip:'使いたい = vouloir utiliser. たい accroché à un verbe = "je veux faire ça". 食べたい = je veux manger. 行きたい = je veux aller. C\'est une des structures les plus pratiques à retenir.' },
@@ -1248,7 +1248,7 @@ export const CONVERSATIONS = [
           { chunk:'おすすめ', role:'"Votre recommandation / ce que vous conseillez."', tip:'おすすめ vient de すすめる = recommander. おすすめ (nom) = ce qu\'on conseille, le coup de cœur. Tu verras おすすめ sur les menus — c\'est le plat du jour, ce que le chef met en avant.' },
           { chunk:'どんな飲み方', role:'"Comment / de quelle façon boire ?" — 方 transforme un verbe en "manière de faire".', tip:'飲む = boire. 方 (かた) accroché à un verbe = la façon de faire. 飲み方 = façon de boire. 食べ方 = façon de manger. 使い方 = façon d\'utiliser (tu verras ça sur les modes d\'emploi !).' }
         ]},
-      { jp:'それをください', romaji:'Sore wo kudasai', fr:'Je vais prendre ça', quality:'ok', feedback:'Direct et efficace — mais tu passes à côté d\'une conversation enrichissante.' },
+      { jp:'それをください', romaji:'Sore o kudasai', fr:'Je vais prendre ça', quality:'ok', feedback:'Direct et efficace — mais tu passes à côté d\'une conversation enrichissante.' },
       { jp:'高いですか？', romaji:'Takai desu ka?', fr:'C\'est cher ?', quality:'weak', feedback:'Un peu abrupt — si tu veux le prix, essaie いくらですか？ après avoir écouté la recommandation.' }
     ]},
     { speaker:'npc', jp:'私は薄茶で、お点前で飲むのが好きです。品種は「やぶきた」がシンプルで落ち着きます。ところで、どちらから？', romaji:'Watashi wa usucha de, otemae de nomu no ga suki desu. Hinshu wa "yabukita" ga shimpuru de ochitsukimasu. Tokoro de, dochira kara?', fr:'Moi j\'aime le usucha (thé léger), préparé en cérémonie. Et pour la variété, le "Yabukita" est simple et reposant. D\'où venez-vous ?',

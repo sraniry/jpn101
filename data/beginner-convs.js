@@ -132,6 +132,25 @@ export const BEGINNER_CONVS = [
      }
     ]
    }
+  ],
+  "grammar": [
+   {
+    "pattern": "X です",
+    "explain": "« Je suis X / c'est X ». です ferme la phrase poliment.",
+    "example": "マリです。 = Je suis Mari."
+   },
+   {
+    "pattern": "X は …",
+    "explain": "は (qui se lit « wa ») désigne le sujet dont on parle : « quant à X ».",
+    "example": "おなまえは？ = Et ton nom ?"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "はじめまして",
+    "role": "Enchanté(e) (première rencontre).",
+    "tip": "On le dit au début, avant son prénom."
+   }
   ]
  },
  {
@@ -163,14 +182,14 @@ export const BEGINNER_CONVS = [
     "speaker": "user",
     "choices": [
      {
-      "jp": "まっちゃラテを ひとつ ください。",
-      "romaji": "Matcha rate wo hitotsu kudasai.",
+      "jp": "抹茶ラテを ひとつ ください。",
+      "romaji": "Matcha rate o hitotsu kudasai.",
       "fr": "Un matcha latte, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait, c'est exactement la phrase qu'il faut.",
       "breakdown": [
        {
-        "chunk": "まっちゃラテ",
+        "chunk": "抹茶ラテ",
         "role": "Matcha latte.",
         "tip": "Les mots venus d'ailleurs (ラテ) s'écrivent en katakana."
        },
@@ -187,14 +206,14 @@ export const BEGINNER_CONVS = [
       ]
      },
      {
-      "jp": "まっちゃラテ。",
+      "jp": "抹茶ラテ。",
       "romaji": "Matcha rate.",
       "fr": "Matcha latte.",
       "quality": "ok",
       "feedback": "Ça passe, mais ajoute を ひとつ ください pour être poli."
      },
      {
-      "jp": "まっちゃラテが すきです。",
+      "jp": "抹茶ラテが すきです。",
       "romaji": "Matcha rate ga suki desu.",
       "fr": "J'aime le matcha latte.",
       "quality": "weak",
@@ -299,6 +318,25 @@ export const BEGINNER_CONVS = [
      }
     ]
    }
+  ],
+  "grammar": [
+   {
+    "pattern": "X を ください",
+    "explain": "« Donnez-moi X, s'il vous plaît. » を marque ce qu'on demande.",
+    "example": "ホットを ください。 = Un chaud, s'il vous plaît."
+   },
+   {
+    "pattern": "X を ひとつ",
+    "explain": "ひとつ = « un (objet) ». On le place après を.",
+    "example": "まっちゃラテを ひとつ ください。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "ホット / アイス",
+    "role": "Chaud / glacé.",
+    "tip": "Mots venus de l'anglais, écrits en katakana."
+   }
   ]
  },
  {
@@ -330,16 +368,16 @@ export const BEGINNER_CONVS = [
     "speaker": "user",
     "choices": [
      {
-      "jp": "アイスの まっちゃラテを ください。",
-      "romaji": "Aisu no matcha rate wo kudasai.",
+      "jp": "アイスの 抹茶ラテを ください。",
+      "romaji": "Aisu no matcha rate o kudasai.",
       "fr": "Un matcha latte glacé, s'il vous plaît.",
       "quality": "best",
       "feedback": "Très bien ! Tu as précisé « glacé » dès le début.",
       "breakdown": [
        {
-        "chunk": "アイスの まっちゃラテ",
+        "chunk": "アイスの 抹茶ラテ",
         "role": "Le matcha latte « glacé ».",
-        "tip": "の relie deux mots : アイス + の + まっちゃラテ."
+        "tip": "の relie deux mots : アイス + の + 抹茶ラテ."
        },
        {
         "chunk": "ください",
@@ -349,7 +387,7 @@ export const BEGINNER_CONVS = [
       ]
      },
      {
-      "jp": "アイス、まっちゃラテ。",
+      "jp": "アイス、抹茶ラテ。",
       "romaji": "Aisu, matcha rate.",
       "fr": "Glacé, matcha latte.",
       "quality": "ok",
@@ -387,7 +425,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "おおきいのを ください。",
-      "romaji": "Ookii no wo kudasai.",
+      "romaji": "Ookii no o kudasai.",
       "fr": "Le grand, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait, tu choisis et tu demandes en une phrase.",
@@ -466,6 +504,25 @@ export const BEGINNER_CONVS = [
      }
     ]
    }
+  ],
+  "grammar": [
+   {
+    "pattern": "A と B、どちらですか",
+    "explain": "« A ou B, lequel ? » と relie deux choix, どちら = « lequel des deux ».",
+    "example": "ホットと アイス、どちらですか。 = Chaud ou glacé ?"
+   },
+   {
+    "pattern": "X ですか",
+    "explain": "か en fin de phrase = point d'interrogation.",
+    "example": "アイスですか。 = C'est glacé ?"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "おおきい / ちいさい",
+    "role": "Grand / petit.",
+    "tip": "Pour une taille de boisson."
+   }
   ]
  },
  {
@@ -519,7 +576,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "まっちゃを のみます。",
-      "romaji": "Matcha wo nomimasu.",
+      "romaji": "Matcha o nomimasu.",
       "fr": "Je bois du matcha.",
       "quality": "weak",
       "feedback": "Phrase correcte, mais ce n'est pas une question. Utilise ありますか ?"
@@ -609,7 +666,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "これを ください。",
-      "romaji": "Kore wo kudasai.",
+      "romaji": "Kore o kudasai.",
       "fr": "Celui-ci, s'il vous plaît.",
       "quality": "ok",
       "feedback": "Ça marche, mais le vendeur ne sait pas combien. Ajoute ひとつ."
@@ -622,6 +679,25 @@ export const BEGINNER_CONVS = [
       "feedback": "ふたつ = 2. Pour un seul, c'est ひとつ."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "X は ありますか",
+    "explain": "« Est-ce qu'il y a X ? » ありますか sert à demander si un magasin a quelque chose.",
+    "example": "まっちゃは ありますか。 = Vous avez du matcha ?"
+   },
+   {
+    "pattern": "X は …",
+    "explain": "は reprend le sujet de la question : « quant à X ».",
+    "example": "まっちゃは … = Le matcha, …"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "こな",
+    "role": "Poudre.",
+    "tip": "まっちゃのこな = poudre de matcha."
    }
   ]
  },
@@ -655,7 +731,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "きつねうどんを ひとつ ください。",
-      "romaji": "Kitsune udon wo hitotsu kudasai.",
+      "romaji": "Kitsune udon o hitotsu kudasai.",
       "fr": "Un udon kitsune, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait ! Un grand classique.",
@@ -711,7 +787,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "あついのを ください。",
-      "romaji": "Atsui no wo kudasai.",
+      "romaji": "Atsui no o kudasai.",
       "fr": "Le chaud, s'il vous plaît.",
       "quality": "best",
       "feedback": "Bien ! の remplace le mot déjà connu.",
@@ -756,6 +832,25 @@ export const BEGINNER_CONVS = [
       "tip": "お…ください = la version polie de « attendez, s'il vous plaît »."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "A と B、どちらですか",
+    "explain": "« A ou B, lequel ? ».",
+    "example": "あついのと つめたいの、どちらですか。"
+   },
+   {
+    "pattern": "adjectif + の",
+    "explain": "Le の remplace un nom déjà connu : あついの = « le chaud ».",
+    "example": "おおきいのを ください。 = Le grand, s'il vous plaît."
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "あつい / つめたい",
+    "role": "Chaud / froid (pour une boisson ou un plat).",
+    "tip": "Pour le temps, « chaud » s'écrit aussi あつい (autre kanji)."
    }
   ]
  },
@@ -845,7 +940,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "じゃあ、それを ください。",
-      "romaji": "Jaa, sore wo kudasai.",
+      "romaji": "Jaa, sore o kudasai.",
       "fr": "Alors, celui-là, s'il vous plaît.",
       "quality": "best",
       "feedback": "Bravo : それ pour le plat dont on vient de parler.",
@@ -929,6 +1024,25 @@ export const BEGINNER_CONVS = [
      }
     ]
    }
+  ],
+  "grammar": [
+   {
+    "pattern": "おすすめは なんですか",
+    "explain": "« Que me conseillez-vous ? » おすすめ = recommandation.",
+    "example": "おすすめは なんですか。"
+   },
+   {
+    "pattern": "X を ください",
+    "explain": "Pour commander après avoir choisi.",
+    "example": "これを ください。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "おすすめ",
+    "role": "Recommandation du restaurant.",
+    "tip": "Souvent écrit sur les menus."
+   }
   ]
  },
  {
@@ -941,7 +1055,7 @@ export const BEGINNER_CONVS = [
    {
     "speaker": "npc",
     "jp": "いらっしゃいませ。チケットを かってください。",
-    "romaji": "Irasshaimase. Chiketto wo katte kudasai.",
+    "romaji": "Irasshaimase. Chiketto o katte kudasai.",
     "fr": "Bienvenue. Achetez un ticket, s'il vous plaît.",
     "breakdown": [
      {
@@ -952,7 +1066,7 @@ export const BEGINNER_CONVS = [
      {
       "chunk": "かってください",
       "role": "« Achetez, s'il vous plaît. »",
-      "tip": "Une demande polie : verbe + ください."
+      "tip": "かって = forme en て du verbe かう (acheter) + ください = « s'il vous plaît, fais-le ». Tu verras la forme en て dans la leçon 11."
      }
     ]
    },
@@ -982,7 +1096,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "ラーメンを ください。",
-      "romaji": "Raamen wo kudasai.",
+      "romaji": "Raamen o kudasai.",
       "fr": "Un ramen, s'il vous plaît.",
       "quality": "weak",
       "feedback": "Ici, c'est la machine qui prend ta commande. Demande plutôt quel bouton."
@@ -1033,7 +1147,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "ラーメンを ください。",
-      "romaji": "Raamen wo kudasai.",
+      "romaji": "Raamen o kudasai.",
       "fr": "Un ramen, s'il vous plaît.",
       "quality": "weak",
       "feedback": "Le ticket remplace la commande : plus besoin de demander."
@@ -1043,7 +1157,7 @@ export const BEGINNER_CONVS = [
    {
     "speaker": "npc",
     "jp": "チケットを おねがいします。おおもりですか？",
-    "romaji": "Chiketto wo onegaishimasu. Oomori desu ka?",
+    "romaji": "Chiketto o onegaishimasu. Oomori desu ka?",
     "fr": "Le ticket, s'il vous plaît. Grande portion ?",
     "breakdown": [
      {
@@ -1063,7 +1177,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "はい、どうぞ。おおもりを おねがいします。",
-      "romaji": "Hai, douzo. Oomori wo onegaishimasu.",
+      "romaji": "Hai, douzo. Oomori o onegaishimasu.",
       "fr": "Voilà. Grande portion, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait : tu tends le ticket et tu précises la portion.",
@@ -1095,6 +1209,30 @@ export const BEGINNER_CONVS = [
       "feedback": "Tu as oublié de donner le ticket ! Dis どうぞ en le tendant."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "verbe en て + ください",
+    "explain": "Forme en て + ください = demande polie (« achetez, s'il vous plaît »). Tu verras la forme en て dans la leçon 11.",
+    "example": "かってください。 = Achetez-le, s'il vous plaît."
+   },
+   {
+    "pattern": "X は どれですか",
+    "explain": "« X, c'est lequel ? » どれ = lequel (parmi plusieurs).",
+    "example": "ラーメンは どれですか。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "すみません",
+    "role": "Excusez-moi / pardon / merci (pour attirer l'attention).",
+    "tip": "Le mot le plus utile : pour appeler quelqu'un ou s'excuser."
+   },
+   {
+    "chunk": "ラーメンは",
+    "role": "Le ramen, (quant à lui).",
+    "tip": "は marque le sujet de ta question."
    }
   ]
  },
@@ -1128,7 +1266,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "まぐろを ふたつ ください。",
-      "romaji": "Maguro wo futatsu kudasai.",
+      "romaji": "Maguro o futatsu kudasai.",
       "fr": "Deux thons, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait ! Tu as donné le plat et la quantité.",
@@ -1179,7 +1317,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "おちゃを ください。",
-      "romaji": "Ocha wo kudasai.",
+      "romaji": "Ocha o kudasai.",
       "fr": "Du thé, s'il vous plaît.",
       "quality": "best",
       "feedback": "Bien vu ! Le thé vert accompagne très bien les sushi.",
@@ -1224,6 +1362,25 @@ export const BEGINNER_CONVS = [
       "tip": "お…ください = la version polie de « attendez, s'il vous plaît »."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "ほかには ?",
+    "explain": "には = « et pour le reste ? ». C'est la question du serveur pour demander s'il vous faut autre chose.",
+    "example": "ほかには？ = Autre chose ?"
+   },
+   {
+    "pattern": "X を ふたつ",
+    "explain": "Nombre + objet : ひとつ (1), ふたつ (2), みっつ (3).",
+    "example": "サーモンを ふたつ ください。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "ほか",
+    "role": "Autre.",
+    "tip": "ほかの = un autre, d'autres."
    }
   ]
  },
@@ -1273,7 +1430,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "これを ください。",
-      "romaji": "Kore wo kudasai.",
+      "romaji": "Kore o kudasai.",
       "fr": "Ceci, s'il vous plaît.",
       "quality": "weak",
       "feedback": "Tu commandes sans savoir ce que c'est ! Demande d'abord なんですか."
@@ -1298,7 +1455,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "これを ひとつ ください。",
-      "romaji": "Kore wo hitotsu kudasai.",
+      "romaji": "Kore o hitotsu kudasai.",
       "fr": "Un de ceux-là, s'il vous plaît.",
       "quality": "best",
       "feedback": "Bien ! Tu as compris et tu commandes.",
@@ -1343,6 +1500,25 @@ export const BEGINNER_CONVS = [
       "tip": "ご = 5, ひゃく = cent, puis えん."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "これは なんですか",
+    "explain": "« Qu'est-ce que c'est ? » これ = ceci, なん = quoi.",
+    "example": "これは なんですか。"
+   },
+   {
+    "pattern": "X です",
+    "explain": "« C'est X. »",
+    "example": "それは おもちです。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "これ / それ / あれ",
+    "role": "Ceci (près de moi) / cela (près de toi) / ça là-bas.",
+    "tip": "Voir la leçon こそあど."
    }
   ]
  },
@@ -1440,8 +1616,8 @@ export const BEGINNER_CONVS = [
       ]
      },
      {
-      "jp": "ほかの ありますか？",
-      "romaji": "Hoka no arimasu ka?",
+      "jp": "ほかのは ありますか？",
+      "romaji": "Hoka no wa arimasu ka?",
       "fr": "Vous avez un autre ?",
       "quality": "ok",
       "feedback": "On comprend, mais dis bien que tu veux un plat pas piquant."
@@ -1467,6 +1643,30 @@ export const BEGINNER_CONVS = [
       "tip": "Il te montre le plat du doigt."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "これは X です",
+    "explain": "« Ceci, c'est X. » は = sujet, です = c'est.",
+    "example": "これは カレーです。"
+   },
+   {
+    "pattern": "adjectif + の は",
+    "explain": "Le の remplace un nom : からくないのは = « celui qui n'est pas piquant ».",
+    "example": "からくないのは ありますか。 = Y en a-t-il un pas piquant ?"
+   },
+   {
+    "pattern": "ほかのは ありますか",
+    "explain": "« Y en a-t-il d'autres ? »",
+    "example": "ほかのは ありますか。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "からい / からくない",
+    "role": "Piquant / pas piquant.",
+    "tip": "Pour nier un adjectif en い : い → くない."
    }
   ]
  },
@@ -1587,6 +1787,25 @@ export const BEGINNER_CONVS = [
      }
     ]
    }
+  ],
+  "grammar": [
+   {
+    "pattern": "X を ください",
+    "explain": "Pour demander quelque chose à la caisse.",
+    "example": "おにぎりを ください。"
+   },
+   {
+    "pattern": "ふくろ",
+    "explain": "Sac. On demande un sac avec ふくろは いりますか ? (Voulez-vous un sac ?)",
+    "example": "いりません。 = Non merci (je n'en veux pas)."
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "いりません",
+    "role": "Je n'en ai pas besoin / non merci.",
+    "tip": "Verbe いる (avoir besoin) à la forme négative polie."
+   }
   ]
  },
  {
@@ -1640,7 +1859,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "トイレを ください。",
-      "romaji": "Toire wo kudasai.",
+      "romaji": "Toire o kudasai.",
       "fr": "Donnez-moi les toilettes.",
       "quality": "weak",
       "feedback": "Tu demandes qu'on te donne les toilettes ! Demande où elles sont."
@@ -1705,6 +1924,25 @@ export const BEGINNER_CONVS = [
       "tip": "La réponse classique à ありがとう."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "X は どこですか",
+    "explain": "« Où est X ? » どこ = où.",
+    "example": "トイレは どこですか。"
+   },
+   {
+    "pattern": "まっすぐ / みぎ / ひだり",
+    "explain": "Tout droit / à droite / à gauche.",
+    "example": "みぎです。 = C'est à droite."
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "トイレ",
+    "role": "Toilettes.",
+    "tip": "En japonais, mot emprunté à l'anglais « toilet »."
    }
   ]
  },
@@ -1830,7 +2068,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "じゃあ、それを ください。",
-      "romaji": "Jaa, sore wo kudasai.",
+      "romaji": "Jaa, sore o kudasai.",
       "fr": "Alors, celui-là, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait : tu choisis et tu demandes.",
@@ -1856,12 +2094,36 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "これを ください。",
-      "romaji": "Kore wo kudasai.",
+      "romaji": "Kore o kudasai.",
       "fr": "Ceci, s'il vous plaît.",
       "quality": "weak",
       "feedback": "Il te montre l'article : pour celui qu'il tient, dis それ."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "これは いくらですか",
+    "explain": "« Combien coûte ceci ? » いくら = combien (prix).",
+    "example": "これは いくらですか。"
+   },
+   {
+    "pattern": "もっと やすいのは ありますか",
+    "explain": "もっと = plus ; やすい = bon marché ; の = « celui ». « Y en a-t-il un moins cher ? »",
+    "example": "もっと やすいのは ありますか。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "これは",
+    "role": "Ceci, (quant à lui).",
+    "tip": "は pose le sujet : on parle de « ceci »."
+   },
+   {
+    "chunk": "円",
+    "role": "Yen.",
+    "tip": "Se lit えん : 1500円 = せんごひゃくえん."
    }
   ]
  },
@@ -1916,7 +2178,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "えきを ください。",
-      "romaji": "Eki wo kudasai.",
+      "romaji": "Eki o kudasai.",
       "fr": "Donnez-moi la gare.",
       "quality": "weak",
       "feedback": "On ne donne pas une gare ! Demande où elle est."
@@ -1986,6 +2248,30 @@ export const BEGINNER_CONVS = [
       "tip": "Courant à l'oral, il rend la phrase plus chaleureuse."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "X は どこですか",
+    "explain": "« Où est X ? »",
+    "example": "えきは どこですか。"
+   },
+   {
+    "pattern": "… ですよ",
+    "explain": "よ en fin de phrase = « je t'assure / tu sais » : adoucit et rassure.",
+    "example": "ちかいですよ。 = C'est tout près, tu sais."
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "ちかい / とおい",
+    "role": "Près / loin.",
+    "tip": "ちかい = proche ; とおい = éloigné."
+   },
+   {
+    "chunk": "まっすぐ",
+    "role": "Tout droit.",
+    "tip": "Un mot que tu entendras pour toutes les directions."
    }
   ]
  },
@@ -2111,6 +2397,25 @@ export const BEGINNER_CONVS = [
      }
     ]
    }
+  ],
+  "grammar": [
+   {
+    "pattern": "X まで",
+    "explain": "まで = « jusqu'à X ». Pour dire où va le ticket.",
+    "example": "きょうとまで ください。"
+   },
+   {
+    "pattern": "どこまでですか",
+    "explain": "« Jusqu'où ? » Question du guichetier.",
+    "example": "どこまでですか。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "きっぷ",
+    "role": "Ticket.",
+    "tip": "きっぷを ください = un ticket, s'il vous plaît."
+   }
   ]
  },
  {
@@ -2169,7 +2474,7 @@ export const BEGINNER_CONVS = [
      },
      {
       "jp": "カードを ください。",
-      "romaji": "Kaado wo kudasai.",
+      "romaji": "Kaado o kudasai.",
       "fr": "Donnez-moi une carte.",
       "quality": "weak",
       "feedback": "Tu demandes qu'on te donne une carte ! Demande si tu peux t'en servir."
@@ -2239,6 +2544,25 @@ export const BEGINNER_CONVS = [
       "tip": "On le dit à la fin, quand tout est fini."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "カードは つかえますか",
+    "explain": "« Puis-je utiliser une carte ? » つかえる = pouvoir utiliser.",
+    "example": "カードは つかえますか。"
+   },
+   {
+    "pattern": "じゃあ",
+    "explain": "« Alors… / bon, alors ». Pour enchaîner après une réponse.",
+    "example": "じゃあ、げんきんで。 = Alors, en liquide."
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "ありがとうございました",
+    "role": "Merci (pour ce qui vient d'être fait).",
+    "tip": "ました = passé : le service est terminé. Pour remercier à la fin."
    }
   ]
  },
@@ -2397,6 +2721,25 @@ export const BEGINNER_CONVS = [
      }
     ]
    }
+  ],
+  "grammar": [
+   {
+    "pattern": "ありがとうございます",
+    "explain": "« Merci. » Forme polie.",
+    "example": "ありがとうございます。"
+   },
+   {
+    "pattern": "すみません / ごめんなさい",
+    "explain": "すみません = pardon (poli, partout). ごめんなさい = je suis désolé(e) (on a fait une faute).",
+    "example": "すみません。 = Excusez-moi."
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "どういたしまして",
+    "role": "De rien.",
+    "tip": "Réponse à ありがとう."
+   }
   ]
  },
  {
@@ -2424,7 +2767,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "おみずを ください。",
-      "romaji": "Omizu wo kudasai.",
+      "romaji": "Omizu o kudasai.",
       "fr": "De l'eau, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait, tu l'as demandée poliment.",
@@ -2475,7 +2818,7 @@ export const BEGINNER_CONVS = [
     "choices": [
      {
       "jp": "おかいけいを おねがいします。",
-      "romaji": "Okaikei wo onegaishimasu.",
+      "romaji": "Okaikei o onegaishimasu.",
       "fr": "L'addition, s'il vous plaît.",
       "quality": "best",
       "feedback": "Parfait. Croise aussi les index en X : c'est le geste universel.",
@@ -2525,6 +2868,30 @@ export const BEGINNER_CONVS = [
       "tip": "ご = 5, せん = 1000."
      }
     ]
+   }
+  ],
+  "grammar": [
+   {
+    "pattern": "おみずを ください",
+    "explain": "Demander de l'eau : おみず = l'eau (お = poli).",
+    "example": "おみずを ください。"
+   },
+   {
+    "pattern": "ほかには ?",
+    "explain": "« Autre chose ? »",
+    "example": "ほかには？ = Autre chose ?"
+   },
+   {
+    "pattern": "おかいけいを おねがいします",
+    "explain": "« L'addition, s'il vous plaît. » おねがいします = « je vous demande ça ».",
+    "example": "おかいけいを おねがいします。"
+   }
+  ],
+  "vocab": [
+   {
+    "chunk": "おかいけい",
+    "role": "L'addition (version polie).",
+    "tip": "Aussi : おかんじょう."
    }
   ]
  }

@@ -28,12 +28,16 @@ export function kanaToRomaji(str){
     if(SOKUON.has(ch)){
       i++;
       const matched = KANA_KEYS_BY_LEN.find(k => str.startsWith(k, i));
-      if(matched) out += KANA_ROMAJI_MAP[matched][0]; // double la consonne suivante
+      if(matched){ const r = KANA_ROMAJI_MAP[matched]; out += r.startsWith('ch') ? 't' : r[0]; } // double la consonne suivante (matcha, pas maccha)
       continue;
     }
     if(ch === 'ー'){ out += out.slice(-1); i++; continue; }
     const matched = KANA_KEYS_BY_LEN.find(k => str.startsWith(k, i));
-    if(matched){ out += KANA_ROMAJI_MAP[matched]; i += matched.length; continue; }
+    if(matched){
+      out += KANA_ROMAJI_MAP[matched]; i += matched.length;
+      if((matched === 'ん' || matched === 'ン') && /[あいうえおやゆよアイウエオヤユヨ]/.test(str[i] || '')) out += "'"; // sen'en, kin'youbi
+      continue;
+    }
     out += ch; i++; // caractères non-kana (kanji, ponctuation, parenthèses…) inchangés
   }
   return out;

@@ -6,7 +6,7 @@ export const MENU_VOCAB = [
     intro: 'Les mots que tu vois sur la carte d\'un café de matcha : boissons, tailles, douceurs japonaises.',
     items: [
       { jp: '抹茶', kana: 'まっちゃ', fr: 'matcha (thé vert en poudre)', note: 'Goût végétal, légèrement amer.' },
-      { jp: '抹茶ラテ', kana: 'まっちゃらて', fr: 'matcha latte', note: 'Matcha mélangé à du lait.' },
+      { jp: '抹茶ラテ', kana: 'まっちゃラテ', fr: 'matcha latte', note: 'Matcha mélangé à du lait.' },
       { jp: 'ほうじ茶', kana: 'ほうじちゃ', fr: 'thé vert torréfié', note: 'Couleur brune, goût grillé, très doux.' },
       { jp: '煎茶', kana: 'せんちゃ', fr: 'sencha (thé vert en feuilles)', note: 'Le thé vert du quotidien, frais et un peu astringent.' },
       { jp: '玄米茶', kana: 'げんまいちゃ', fr: 'thé au riz grillé', note: 'Thé vert mélangé à du riz grillé, goût de noisette.' },
@@ -215,9 +215,9 @@ export const MENUS = [
     sections: [
       { title: 'ドリンク', titleFr: 'Boissons', items: [
         { jp: '抹茶（薄茶）', kana: 'まっちゃ うすちゃ', fr: 'matcha classique', price: 750, note: 'Servi avec une petite douceur.' },
-        { jp: '抹茶ラテ ホット', kana: 'まっちゃらて ホット', fr: 'matcha latte chaud', price: 780 },
-        { jp: '抹茶ラテ アイス', kana: 'まっちゃらて アイス', fr: 'matcha latte glacé', price: 820 },
-        { jp: 'ほうじ茶ラテ', kana: 'ほうじちゃらて', fr: 'latte au thé torréfié', price: 780, note: 'Chaud ou glacé.' },
+        { jp: '抹茶ラテ ホット', kana: 'まっちゃラテ ホット', fr: 'matcha latte chaud', price: 780 },
+        { jp: '抹茶ラテ アイス', kana: 'まっちゃラテ アイス', fr: 'matcha latte glacé', price: 820 },
+        { jp: 'ほうじ茶ラテ', kana: 'ほうじちゃラテ', fr: 'latte au thé torréfié', price: 780, note: 'Chaud ou glacé.' },
         { jp: '玄米茶', kana: 'げんまいちゃ', fr: 'thé au riz grillé', price: 650 },
         { jp: '煎茶', kana: 'せんちゃ', fr: 'thé vert sencha', price: 650 },
         { jp: 'コーヒー', kana: 'コーヒー', fr: 'café', price: 600 },
@@ -342,8 +342,8 @@ export const MENUS = [
 
 export const MENU_PHRASES = [
   { jp: 'すみません、これをください。', kana: 'すみません これをください', fr: 'Excusez-moi, je prends ceci.', when: 'En montrant un plat sur la carte' },
-  { jp: 'ホットの抹茶ラテをひとつください。', kana: 'ホットのまっちゃらてをひとつください', fr: 'Un matcha latte chaud, s\'il vous plaît.', when: 'Au café' },
-  { jp: 'アイスの抹茶ラテを二つください。', kana: 'アイスのまっちゃらてをふたつください', fr: 'Deux matcha lattes glacés, s\'il vous plaît.', when: 'Commander pour deux' },
+  { jp: 'ホットの抹茶ラテをひとつください。', kana: 'ホットのまっちゃラテをひとつください', fr: 'Un matcha latte chaud, s\'il vous plaît.', when: 'Au café' },
+  { jp: 'アイスの抹茶ラテを二つください。', kana: 'アイスのまっちゃラテをふたつください', fr: 'Deux matcha lattes glacés, s\'il vous plaît.', when: 'Commander pour deux' },
   { jp: 'おすすめは何ですか。', kana: 'おすすめはなんですか', fr: 'Qu\'est-ce que vous me conseillez ?', when: 'Quand tu ne sais pas quoi choisir' },
   { jp: 'これは何ですか。', kana: 'これはなんですか', fr: 'Qu\'est-ce que c\'est ?', when: 'En montrant un plat inconnu' },
   { jp: 'これはいくらですか。', kana: 'これはいくらですか', fr: 'C\'est combien ?', when: 'Quand il n\'y a pas de prix' },

@@ -1955,7 +1955,7 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "わかりません",
      "role": "« Je ne comprends pas / je ne sais pas. »",
-     "tip": "Phrase utile, mais ici elle bloque la commande. Astuce de survie : pointe le menu et dis これをください (kore wo kudasai) — pas besoin de connaître le nom du plat."
+     "tip": "Phrase utile, mais ici elle bloque la commande. Astuce de survie : pointe le menu et dis これをください (kore o kudasai) — pas besoin de connaître le nom du plat."
     }
    ],
    "2": [
@@ -1967,7 +1967,7 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "お願いします",
      "role": "« S'il vous plaît. »",
-     "tip": "これ、お願いします est tout à fait correct. Il manque juste la boisson : ajoute あと、ビールを一つ (ato, biiru wo hitotsu) = « et une bière »."
+     "tip": "これ、お願いします est tout à fait correct. Il manque juste la boisson : ajoute あと、ビールを一つ (ato, biiru o hitotsu) = « et une bière »."
     }
    ]
   },
@@ -2020,14 +2020,14 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "いくらですか？",
      "role": "« C'est combien ? » — la question du prix, polie.",
-     "tip": "Très utile en boutique ! Au konbini le prix est souvent affiché, donc ce n'est pas toujours nécessaire. Pour acheter directement : これをください (kore wo kudasai)."
+     "tip": "Très utile en boutique ! Au konbini le prix est souvent affiché, donc ce n'est pas toujours nécessaire. Pour acheter directement : これをください (kore o kudasai)."
     }
    ],
    "2": [
     {
      "chunk": "買いたいです",
      "role": "« Je veux acheter. » — 買う (kau) = acheter + たい = vouloir.",
-     "tip": "Grammaticalement juste, mais on ne l'entend pas à la caisse : tu poses l'article et c'est clair. Si tu veux parler, これをください (kore wo kudasai) suffit."
+     "tip": "Grammaticalement juste, mais on ne l'entend pas à la caisse : tu poses l'article et c'est clair. Si tu veux parler, これをください (kore o kudasai) suffit."
     }
    ]
   },
@@ -2590,7 +2590,7 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "豆腐を探しています",
      "role": "« Je cherche du tofu. »",
-     "tip": "Phrase naturelle et polie, très bien ! 〜を探しています (wo sagashite imasu) marche pour tout ce que tu cherches : 牛乳を探しています = je cherche du lait."
+     "tip": "Phrase naturelle et polie, très bien ! 〜を探しています (o sagashite imasu) marche pour tout ce que tu cherches : 牛乳を探しています = je cherche du lait."
     }
    ]
   },
@@ -2720,7 +2720,7 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "助けてください",
      "role": "« Aidez-moi ! »",
-     "tip": "La bonne phrase en cas de danger immédiat, les gens réagiront vite. Mais pour un vol, la personne aura besoin de savoir quoi faire : enchaîne avec ce qui s'est passé, par exemple 財布を盗まれました (saifu wo nusumaremashita) = on m'a volé mon portefeuille."
+     "tip": "La bonne phrase en cas de danger immédiat, les gens réagiront vite. Mais pour un vol, la personne aura besoin de savoir quoi faire : enchaîne avec ce qui s'est passé, par exemple 財布を盗まれました (saifu o nusumaremashita) = on m'a volé mon portefeuille."
     }
    ],
    "2": [
@@ -2736,7 +2736,7 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "財布がありません",
      "role": "« Je n'ai plus mon portefeuille. »",
-     "tip": "Phrase courte et claire, c'est déjà très bien en situation de stress. Si tu veux préciser : 財布を失くしました (saifu wo nakushimashita) = je l'ai perdu."
+     "tip": "Phrase courte et claire, c'est déjà très bien en situation de stress. Si tu veux préciser : 財布を失くしました (saifu o nakushimashita) = je l'ai perdu."
     }
    ],
    "2": [
@@ -2869,7 +2869,7 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "本をください",
      "role": "« Donnez-moi le livre. »",
-     "tip": "ください, c'est pour acheter ou commander, comme au restaurant. À la bibliothèque on emprunte : 借りる (kariru). Dis plutôt : この本を借りたいです (kono hon wo karitai desu) = je voudrais emprunter ce livre."
+     "tip": "ください, c'est pour acheter ou commander, comme au restaurant. À la bibliothèque on emprunte : 借りる (kariru). Dis plutôt : この本を借りたいです (kono hon o karitai desu) = je voudrais emprunter ce livre."
     }
    ]
   },
@@ -3311,7 +3311,7 @@ export const CONV_ALT_BREAKDOWNS = {
     {
      "chunk": "フランスから来た学生です",
      "role": "« Je suis une étudiante venue de France. »",
-     "tip": "Correct ! Au travail on attend juste un peu plus : ton université et ta spécialité. Par exemple : 経済学を専攻しています (keizaigaku wo senkou shite imasu) = « j'étudie l'économie »."
+     "tip": "Correct ! Au travail on attend juste un peu plus : ton université et ta spécialité. Par exemple : 経済学を専攻しています (keizaigaku o senkou shite imasu) = « j'étudie l'économie »."
     }
    ],
    "2": [
