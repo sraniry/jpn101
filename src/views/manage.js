@@ -1,4 +1,4 @@
-import { phrases, meta, existingKeySet, cardKey, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll, exportProgressionJSON, importProgressionJSON, levelRank } from '../storage.js';
+import { phrases, meta, existingKeySet, cardKey, newCard, savePhrases, saveMeta, archiveCard, getDueAll, nowTs, removePhrase, loadAll, exportProgressionJSON, importProgressionJSON, sanitizeState, levelRank } from '../storage.js';
 import { SEED_PACK, CORE_SET } from '../../data/phrases.js';
 import { escapeHtml } from '../util.js';
 import { render } from '../main.js';
@@ -56,8 +56,8 @@ export function renderList(){
       ${p.level ? `<div class="pi-level">${escapeHtml(p.level)}</div>` : ''}
       <div class="pi-tag">${escapeHtml(p.tag)}</div>
       <div class="pi-due" style="color:${isDue&&!p.archived?'#b8401f':'#6b6358'}">${dueLabel}</div>
-      <button class="pi-restore" data-id="${p.id}">${p.archived?'↩ Remettre':'🎓 Je sais déjà'}</button>
-      <button class="pi-del" data-id="${p.id}" title="Supprimer">✕</button>
+      <button class="pi-restore" data-id="${escapeHtml(p.id)}">${p.archived?'↩ Remettre':'🎓 Je sais déjà'}</button>
+      <button class="pi-del" data-id="${escapeHtml(p.id)}" title="Supprimer">✕</button>
     </div>`;
   }).join('');
   list.querySelectorAll('.pi-del').forEach(b=> b.addEventListener('click', async ()=>{ removePhrase(b.dataset.id); await savePhrases(); updateImportBanner(); render(); }));
@@ -134,8 +134,9 @@ export async function importFromURL(){
     const ok = confirm(`Ce lien contient une progression (${data.phrases.length} phrases). La charger REMPLACE ta progression actuelle sur cet appareil. Continuer ?`);
     if(!ok) return false;
     try{ localStorage.setItem('backup-before-import', JSON.stringify({ phrases: localStorage.getItem('phrases-v2'), meta: localStorage.getItem('meta-v2'), at: new Date().toISOString() })); }catch(_){}
-    localStorage.setItem('phrases-v2', JSON.stringify(data.phrases));
-    if(data.meta) localStorage.setItem('meta-v2', JSON.stringify(data.meta));
+    const clean = sanitizeState(data.phrases, data.meta);
+    localStorage.setItem('phrases-v2', JSON.stringify(clean.phrases));
+    if(data.meta) localStorage.setItem('meta-v2', JSON.stringify(clean.meta));
     await loadAll();
     return true;
   } catch(e) { return false; }

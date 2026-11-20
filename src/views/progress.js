@@ -39,7 +39,7 @@ export function renderProgress(){
 
   let html = `<div class="hub-intro"><h2>Mes progrès</h2><p>${escapeHtml(teacherMessage())}</p></div>
   <div class="kj-dash">
-    <div class="kj-stat"><b>${meta.streak || 0}</b><span>${(meta.streak || 0) > 1 ? 'jours' : 'jour'} d'affilée</span></div>
+    <div class="kj-stat"><b>${Number(meta.streak) || 0}</b><span>${(Number(meta.streak) || 0) > 1 ? 'jours' : 'jour'} d'affilée</span></div>
     <div class="kj-stat"><b>${studied30}</b><span>${studied30 > 1 ? 'jours' : 'jour'} sur 30</span></div>
     <div class="kj-stat"><b>${kk.length}</b><span>kanji vus / 2136</span></div>
     <div class="kj-stat"><b>${mature}</b><span>kanji bien ancrés</span></div>

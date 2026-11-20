@@ -25,7 +25,7 @@ if('speechSynthesis' in window){
 }
 // iPhone/iPad : la voix ne démarre que si speak() est appelé directement dans le geste (tap),
 // sans délai ni utterance « d'échauffement ». On évite donc setTimeout/cancel inutile.
-const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+export const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 let ttsWarmed = false;
 function warmUpTTS(){
   if(IS_IOS) return;
@@ -64,6 +64,7 @@ export function speakSequence(parts, rate){
         if(speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
         if(speechSynthesis.paused) speechSynthesis.resume();
         utterances.forEach(u => speechSynthesis.speak(u));
+        setTimeout(()=>{ if(!started && !speechSynthesis.speaking){ speakStatus = 'failed'; renderSoundBars(); } }, 2000);
         return;
       }
       speechSynthesis.cancel(); // toujours vider la file, même si l'état "speaking" semble faux (bug connu de Chrome après inactivité)

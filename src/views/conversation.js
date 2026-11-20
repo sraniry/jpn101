@@ -38,6 +38,7 @@ function playFullDialogue(conv){
     return best ? { text:best.jp, pitch:1.2 } : null;
   }).filter(Boolean);
   speakSequence(parts, 0.85);
+  setTimeout(()=>{ if(listeningId === conv.id) listeningId = null; }, 100);
 }
 
 // ---------- conversation simulator ----------
@@ -81,7 +82,11 @@ export function renderConversationList(){
     html += `<div class="conv-list">${adv.map(card).join('')}</div>`;
     area.innerHTML = html;
     wireBreakdownToggles(area);
-    area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{ convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage(); }));
+    area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{
+      convState = {convId: el.dataset.id, turnIdx: 0}; renderConversationStage();
+      const c0 = CONVERSATIONS.find(c=>c.id === el.dataset.id), t0 = c0 && c0.turns[0];
+      if(t0 && t0.speaker === 'npc') speak(t0.jp, 0.85); // dans le tap : obligatoire sur iPhone
+    }));
     area.querySelectorAll('.conv-listen').forEach(b=> b.addEventListener('click', e=>{
       e.stopPropagation();
       const conv = valid.find(c=>c.id === b.dataset.id);
@@ -133,10 +138,14 @@ function renderConversationStage(){
     html += bubbleHtml('npc', turn.jp, turn.romaji, turn.fr, turn.breakdown);
     html += `</div><div class="conv-nav-row"><button class="conv-back" id="convExit">← Quitter</button><button class="continue-btn" id="convNext">Continuer</button></div>`;
     area.innerHTML = html;
-    document.getElementById('convNext').addEventListener('click', ()=>{ speak(turn.jp,0.85); convState.turnIdx++; renderConversationStage(); });
+    document.getElementById('convNext').addEventListener('click', ()=>{
+      convState.turnIdx++; renderConversationStage();
+      const nt = conv.turns[convState.turnIdx];
+      if(nt && nt.speaker === 'npc') speak(nt.jp, 0.85); // synchrone, dans le geste (iPhone)
+    });
     document.getElementById('convExit').addEventListener('click', renderConversationList);
     wireBreakdownToggles(area);
-    setTimeout(()=> speak(turn.jp, 0.85), 150);
+    
   } else {
     html += `<div class="conv-choices" id="convChoices">`;
     turn.choices.forEach((ch, idx)=>{
@@ -161,7 +170,11 @@ function renderConversationStage(){
         area.querySelectorAll('.conv-choice-btn').forEach(x=>x.disabled = true);
         conv._chosen = conv._chosen || {}; conv._chosen[convState.turnIdx] = ch;
         const nextBtn = document.createElement('button'); nextBtn.className='continue-btn'; nextBtn.style.marginTop='14px'; nextBtn.textContent='Continuer';
-        nextBtn.addEventListener('click', ()=>{ convState.turnIdx++; renderConversationStage(); });
+        nextBtn.addEventListener('click', ()=>{
+          convState.turnIdx++; renderConversationStage();
+          const nt = conv.turns[convState.turnIdx];
+          if(nt && nt.speaker === 'npc') speak(nt.jp, 0.85);
+        });
         document.getElementById('convChoices').appendChild(nextBtn);
       });
     });

@@ -106,7 +106,7 @@ export function renderToday(){
   let html = gap >= 2 ? `<div class="resume-banner" role="status">👋 <b>Content de te revoir !</b> Dernière séance il y a ${gap} jours : ce n'est pas grave. ${dueK ? `${dueK} carte${dueK > 1 ? 's' : ''} t'attend${dueK > 1 ? 'ent' : ''} : commence par elles, doucement.` : 'Reprends avec une petite séance de 10 minutes.'}</div>` : '';
   html += `<div class="today-head">
     <h3>${doneCount === total ? '🎉 Programme du jour terminé !' : `Programme du jour — ${doneCount}/${total} étapes`}</h3>
-    <p>~${meta.minutes || 20} minutes, dans l'ordre. La régularité bat l'intensité : mieux vaut un peu chaque jour que 3 h le dimanche.</p>
+    <p>~${Number(meta.minutes) || 20} minutes, dans l'ordre. La régularité bat l'intensité : mieux vaut un peu chaque jour que 3 h le dimanche.</p>
     <div class="today-track"><div class="today-track-fill" style="width:${(doneCount/total)*100}%"></div></div>
   </div>`;
   const tip = tipOfTheDay();
@@ -146,7 +146,7 @@ export function renderToday(){
       <div class="ts-title"><span class="ts-icon">🔁</span>Révisions des phrases<span class="ts-time">~10 min</span></div>
       <div class="ts-desc">${phrases.length === 0
         ? 'Importe d\'abord le pack A0 → A2 dans « Mes phrases »'
-        : `${plan.reviews||0}/${reviewGoal} cartes revues aujourd'hui${getReviewDue().length>0?` · ${getReviewDue().length} en retard`:''}`}</div>
+        : `${Number(plan.reviews)||0}/${reviewGoal} cartes revues aujourd'hui${getReviewDue().length>0?` · ${getReviewDue().length} en retard`:''}`}</div>
       <div class="ts-why">Répétition espacée : chaque carte revient pile au moment où tu commences à l'oublier. Rappel actif : tape ta réponse avant de révéler.</div>
     </div>
     <span class="ts-go">${reviewDone ? 'Revoir' : 'Commencer'} →</span>

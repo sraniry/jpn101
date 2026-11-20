@@ -117,6 +117,7 @@ export function newCard(jp, romaji, fr, note, tag, level){
 }
 
 export function rate(card, grade){
+  card.last = nowTs(); // la fusion cloud garde la carte la plus récemment travaillée (un oubli récent bat un vieux « bien »)
   if(grade === 0){
     // Oubli : retour à l'échelle d'apprentissage (10 min, puis 1 j, 3 j…). reps repart à 0 pour que
     // « Bien » donne ensuite 1 jour et non 0 (bug d'avant : la carte restait due pour toujours).
@@ -296,14 +297,29 @@ export function exportProgressionJSON(){
   URL.revokeObjectURL(url);
 }
 
+// Valide/assainit tout état venu de l'extérieur (fichier, lien #sync=, cloud) avant de l'utiliser : les nombres
+// redeviennent des nombres, les ids sont contraints, pour qu'aucune donnée importée ne puisse injecter du HTML.
+export function sanitizeState(ph, me){
+  const num = v => Number.isFinite(+v) ? +v : 0, str = v => typeof v === 'string' ? v : '';
+  ph = (Array.isArray(ph) ? ph : []).filter(p => p && typeof p.jp === 'string').map(p => Object.assign({}, p, {
+    id: /^[A-Za-z0-9_-]{1,40}$/.test(String(p.id)) ? String(p.id) : 'c' + Math.random().toString(36).slice(2, 10),
+    interval: num(p.interval), ease: num(p.ease) || 2.5, reps: num(p.reps), due: num(p.due), tag: str(p.tag),
+  }));
+  me = (me && typeof me === 'object' && !Array.isArray(me)) ? me : {};
+  ['streak', 'minutes', 'dailyLimit', 'lastModified'].forEach(k => { if(k in me) me[k] = num(me[k]); });
+  if(me.plan && typeof me.plan === 'object') ['reviews'].forEach(k => { if(k in me.plan) me.plan[k] = num(me.plan[k]); });
+  return { phrases: ph, meta: me };
+}
+
 // Importe un fichier .json exporté et restaure toute la progression.
 export async function importProgressionJSON(file){
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
-        const data = JSON.parse(e.target.result);
-        if(!data.phrases || !Array.isArray(data.phrases)) throw new Error('Format invalide.');
+        const data0 = JSON.parse(e.target.result);
+        if(!data0.phrases || !Array.isArray(data0.phrases)) throw new Error('Format invalide.');
+        const clean = sanitizeState(data0.phrases, data0.meta), data = { phrases: clean.phrases, meta: clean.meta };
         try{ localStorage.setItem('backup-before-restore', JSON.stringify({ phrases, meta, at: new Date().toISOString() })); }catch(_){}
         meta = META_DEFAULTS();
         if(data.meta && typeof data.meta === 'object') Object.assign(meta, data.meta);

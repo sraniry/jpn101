@@ -5,7 +5,7 @@
 // la vraie protection reste le code lui-même : à traiter comme un mot de passe, ne pas le partager.
 // Tant qu'aucun code n'est renseigné, ce module ne fait strictement rien (aucun appel réseau).
 
-import { phrases, meta, storageSet, loadAll, nowTs, cardKey } from './storage.js';
+import { phrases, meta, storageSet, loadAll, nowTs, cardKey, sanitizeState } from './storage.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXm8d0Q4Y3225jz1h_5GPRoxIbZ6HlvM4",
@@ -39,13 +39,13 @@ async function ensureFirebase(){
   if(fbReadyPromise) return fbReadyPromise;
   fbReadyPromise = (async () => {
     try {
-      const [{ initializeApp }, { getFirestore, doc, getDoc, setDoc, serverTimestamp }, { getAuth, signInAnonymously }] =
+      const [{ initializeApp }, { getFirestore, doc, getDoc, setDoc, serverTimestamp, runTransaction }, { getAuth, signInAnonymously }] =
         await Promise.all([ import(FIREBASE_APP_SDK), import(FIRESTORE_SDK), import(AUTH_SDK) ]);
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       await signInAnonymously(auth);
       const db = getFirestore(app);
-      fb = { doc, getDoc, setDoc, serverTimestamp, db };
+      fb = { doc, getDoc, setDoc, serverTimestamp, runTransaction, db };
       return fb;
     } catch(e) {
       console.error('Firebase indisponible :', e);
@@ -95,11 +95,18 @@ export async function pushToCloud(){
   const f = await ensureFirebase();
   if(!f){ setIndicator('error', fbLastError); return; }
   try {
-    await f.setDoc(docRef(f, code), {
-      phrases,
-      meta,
-      lastModified: meta.lastModified || nowTs(),
-      updatedAt: f.serverTimestamp(),
+    // Transaction : on relit le cloud, on fusionne, puis on écrit. Un appareil resté ouvert (ou en retard)
+    // ne peut donc plus écraser le travail fait ailleurs.
+    const ref = docRef(f, code);
+    await f.runTransaction(f.db, async t => {
+      const snap = await t.get(ref);
+      const r = snap.exists() ? sanitizeState(snap.data().phrases, snap.data().meta) : { phrases: [], meta: {} };
+      t.set(ref, {
+        phrases: mergePhrases(phrases, r.phrases),
+        meta: mergeMeta(meta, r.meta),
+        lastModified: meta.lastModified || nowTs(),
+        updatedAt: f.serverTimestamp(),
+      });
     });
     setIndicator('synced');
   } catch(e) {
@@ -126,14 +133,18 @@ function mergeByKey(a, b, pick){
   Object.entries(b || {}).forEach(([k, v]) => { out[k] = (k in out) ? pick(out[k], v) : v; });
   return out;
 }
+function newerCard(x, y){
+  const lx = x.last || 0, ly = y.last || 0;
+  if(lx !== ly) return ly > lx ? y : x;
+  return ((y.reps || 0) > (x.reps || 0) || ((y.reps || 0) === (x.reps || 0) && (y.due || 0) > (x.due || 0))) ? y : x;
+}
 export function mergePhrases(a, b){
   // Clé = contenu de la carte (jp|romaji), pas l'id aléatoire : le pack importé sur deux appareils ne doit pas être doublé.
   const m = new Map();
   [...(a || []), ...(b || [])].forEach(c => {
     const k = cardKey(c.jp, c.romaji), o = m.get(k);
     if(!o){ m.set(k, c); return; }
-    const better = (c.reps || 0) > (o.reps || 0) || ((c.reps || 0) === (o.reps || 0) && (c.due || 0) > (o.due || 0));
-    m.set(k, better ? c : o);
+    m.set(k, newerCard(o, c));
   });
   return [...m.values()];
 }
@@ -142,7 +153,7 @@ export function mergeMeta(a, b){
   const newer = (a.lastModified || 0) >= (b.lastModified || 0) ? a : b, older = newer === a ? b : a;
   const out = Object.assign({}, older, newer);
   UNION_KEYS.forEach(k => { out[k] = unionArr(a[k], b[k]); });
-  out.kanjiSrs = mergeByKey(a.kanjiSrs, b.kanjiSrs, (x, y) => ((y.reps || 0) > (x.reps || 0) || ((y.reps || 0) === (x.reps || 0) && (y.due || 0) > (x.due || 0))) ? y : x);
+  out.kanjiSrs = mergeByKey(a.kanjiSrs, b.kanjiSrs, newerCard);
   out.studyLog = mergeByKey(a.studyLog, b.studyLog, (x, y) => Math.max(x, y));
   out.mistakes = mergeByKey(a.mistakes, b.mistakes, (x, y) => ((y.last || '') > (x.last || '')) ? y : x);
   const qs = {}; new Set([...Object.keys(a.quizStats || {}), ...Object.keys(b.quizStats || {})]).forEach(k => {
@@ -174,16 +185,16 @@ export async function pullAndMerge(){
     if(!snap.exists()){
       if(!emptyBefore) await pushToCloud();   // jamais d'écrasement du cloud par un état vide
       else setIndicator('synced');
-      return false;
+      return 'ok';
     }
-    const remote = snap.data();
+    const remote = (()=>{ const d = snap.data() || {}; return Object.assign({}, d, sanitizeState(d.phrases, d.meta)); })();
     if(emptyBefore){
       // Appareil neuf : on adopte simplement le cloud, sans rien pousser.
       await storageSet('phrases-v2', JSON.stringify(remote.phrases || []));
       await storageSet('meta-v2', JSON.stringify(remote.meta || {}));
       await loadAll();
       setIndicator('synced');
-      return true;
+      return 'changed';
     }
     const mergedPhrases = mergePhrases(phrases, remote.phrases);
     const mergedMeta = mergeMeta(meta, remote.meta);
@@ -191,7 +202,7 @@ export async function pullAndMerge(){
     await storageSet('meta-v2', JSON.stringify(mergedMeta));
     await loadAll();
     await pushToCloud();   // le cloud reçoit la fusion
-    return true;
+    return 'changed';
   } catch(e) {
     console.error('Pull cloud échoué :', e);
     setIndicator('error', e && e.message);
@@ -227,5 +238,13 @@ export async function initCloudSync(){
   updateSyncIndicator();
   if(!isSyncConfigured()){ syncReady = true; return false; }
   // Le premier rendu part du local ; le résultat de la fusion déclenche un nouveau rendu (voir main.js).
-  try{ return await pullAndMerge(); } finally { syncReady = true; }
+  const ok = await pullAndMerge();
+  syncReady = ok !== false;   // jamais de push si on n'a pas pu lire le cloud
+  return ok === 'changed';
 }
+// Retour sur l'appli (PWA restée ouverte des jours) : on relit le cloud avant tout nouvel envoi.
+document.addEventListener('visibilitychange', async () => {
+  if(document.visibilityState !== 'visible' || !isSyncConfigured() || !syncReady) return;
+  const r = await pullAndMerge();
+  if(r === 'changed') window.dispatchEvent(new CustomEvent('nihongo:remote-merged'));
+});
