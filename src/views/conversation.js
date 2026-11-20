@@ -70,16 +70,15 @@ export function renderConversationList(){
     const card = c=>{
       const isDone = done.includes(c.id);
       return `<div class="conv-pick ${isDone?'is-done':''}" data-id="${c.id}">
-        <div><h4>${isDone?'✓ ':''}${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
+        <div><h4>${isDone?'✓ ':''}${c.icon} ${escapeHtml(c.title)}</h4><p>${escapeHtml(({A0:'Tout début',A1:'Débutant',A2:'Élémentaire'})[c.level] || c.level)} · ${c.turns.filter(t=>t.speaker==='user').length} prises de parole</p></div>
         <div class="conv-actions"><button class="conv-listen" data-id="${c.id}" title="Écouter le dialogue en entier">🎧</button><span class="conv-badge">${isDone?'Rejouer':'Commencer'}</span></div>
       </div>`;
     };
     const beg = valid.filter(c=>c.id.startsWith('b-')), adv = valid.filter(c=>!c.id.startsWith('b-'));
     if(beg.length){
       html += `<h4 class="conv-group">🌱 Pour commencer — très courts, phrases simples</h4><div class="conv-list">${beg.map(card).join('')}</div>`;
-      html += `<h4 class="conv-group">📚 Plus avancés — quand les premiers te semblent faciles</h4>`;
-    }
-    html += `<div class="conv-list">${adv.map(card).join('')}</div>`;
+      html += `<details class="conv-adv"><summary><b>📚 Plus avancés (${adv.length})</b> — quand les premiers te semblent faciles</summary><div class="conv-list">${adv.map(card).join('')}</div></details>`;
+    } else html += `<div class="conv-list">${adv.map(card).join('')}</div>`;
     area.innerHTML = html;
     wireBreakdownToggles(area);
     area.querySelectorAll('.conv-pick').forEach(el=> el.addEventListener('click', ()=>{
@@ -123,10 +122,11 @@ function renderConversationStage(){
     document.getElementById('convBackBtn').addEventListener('click', renderConversationList);
     return;
   }
+  const userTotal = conv.turns.filter(t => t.speaker === 'user').length;
   let html = (convState.turnIdx === 0 && (conv.grammar || []).length) ? `<details class="conv-preview" open><summary>👀 Avant de commencer : ce que tu vas voir</summary>${conv.grammar.map(g => `<div class="gram-card"><b>${escapeHtml(g.pattern)}</b><span>${escapeHtml(g.explain)}</span></div>`).join('')}</details>` : '';
   html += `<div class="conv-stage-head">
     <span>${conv.icon} ${escapeHtml(conv.title)}</span>
-    <span class="conv-turn-count">tour ${convState.turnIdx+1} / ${conv.turns.length}</span>
+    <span class="conv-turn-count">ta réponse ${Math.min(userTotal, conv.turns.slice(0, convState.turnIdx).filter(t => t.speaker === 'user').length + 1)} / ${userTotal}</span>
   </div>
   <div class="today-track conv-turn-track"><div class="today-track-fill" style="width:${(convState.turnIdx/conv.turns.length)*100}%"></div></div>
   <div class="conv-stage">`;

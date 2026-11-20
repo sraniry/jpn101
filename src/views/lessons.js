@@ -1,5 +1,5 @@
 import { LESSONS } from '../../data/lessons.js';
-import { meta, saveMeta, recordAnswer, registerStudyActivity, addQuizStat } from '../storage.js';
+import { meta, saveMeta, recordAnswer, registerStudyActivity, addQuizStat, planMark } from '../storage.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
 import { celebrate } from '../encouragement.js';
@@ -50,7 +50,7 @@ function renderLesson(area, L){
 function renderDrill(area, L){
   if(st.i >= L.drill.length){
     const ok = st.right >= 5, done = meta.lessonsDone || [];
-    if(ok && !done.includes(L.id)){ meta.lessonsDone = [...done, L.id]; celebrate('reviewCount', { emoji: '📘', title: 'Leçon validée', params: { n: L.drill.length } }); }
+    if(ok && !done.includes(L.id)){ meta.lessonsDone = [...done, L.id]; planMark('lesson', 1); celebrate('reviewCount', { emoji: '📘', title: 'Leçon validée', params: { n: L.drill.length } }); }
     addQuizStat('lesson-' + L.id, st.right, L.drill.length); registerStudyActivity(); saveMeta();
     area.innerHTML = `<div class="conv-done"><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${st.right} / ${L.drill.length}${ok ? ' — leçon validée ✓' : ''}</h3>
       <p style="color:#7a7268;font-size:13.5px;">${ok ? 'Bien joué. Tes erreurs éventuelles sont dans « Mes erreurs ».' : 'Presque ! Relis la règle puis refais les questions : il faut 5 bonnes réponses sur 6.'}</p>

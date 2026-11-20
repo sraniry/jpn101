@@ -74,7 +74,12 @@ export function speakSequence(parts, rate){
       }, 30);
     }catch(e){ console.error(e); speakStatus = 'failed'; renderSoundBars(); }
   };
-  if(speechSynthesis.getVoices().length === 0 && !IS_IOS){ speechSynthesis.onvoiceschanged = go; setTimeout(go, 250); }
+  if(speechSynthesis.getVoices().length === 0 && !IS_IOS){
+    // Les voix arrivent en différé : on lit au premier des deux signaux (onvoiceschanged OU délai), jamais les deux.
+    let fired = false;
+    const once = () => { if(fired) return; fired = true; speechSynthesis.onvoiceschanged = probeVoices; go(); };
+    speechSynthesis.onvoiceschanged = once; setTimeout(once, 250);
+  }
   else go();
 }
 

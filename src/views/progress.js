@@ -1,4 +1,4 @@
-import { phrases, meta, todayStr, getConvDone, getQuizStats, openMistakes, masteredMistakes, recordAnswer, registerStudyActivity, saveMeta } from '../storage.js';
+import { phrases, meta, todayStr, getConvDone, getQuizStats, openMistakes, masteredMistakes, recordAnswer, registerStudyActivity, saveMeta, planMark } from '../storage.js';
 import { kanjiTodayStatus } from './kanji.js';
 import { badgesHtml } from '../badges.js';
 import { speak } from '../tts.js';
@@ -7,7 +7,7 @@ import { showView } from '../nav.js';
 import { escapeHtml } from '../util.js';
 
 // ---------- Mes progrès ----------
-const SRC_LABEL = { kanji: 'Kanji', radical: 'Radical', menu: 'Menu', kit: 'Kyoto', word: 'Mot', kana: 'Kana', grammar: 'Grammaire', lesson: 'Leçon', phrase: 'Phrase', jlpt: 'JLPT', pitfall: 'Piège', text: 'Texte' };
+const SRC_LABEL = { kanji: 'Kanji', radical: 'Radical', menu: 'Menu', kit: 'Kyoto', word: 'Mot', kana: 'Kana', grammar: 'Grammaire', lesson: 'Leçon', phrase: 'Phrase', jlpt: 'JLPT', pitfall: 'Piège', text: 'Texte', listening: 'Écoute' };
 const QUIZ_LABEL = { kana: 'Kana', kanji: 'Kanji N5', 'kanji-n4': 'Kanji N4', jlpt: 'JLPT N5', 'jlpt-n4': 'JLPT N4', menus: 'Menus', 'menus-guess': 'Devine le plat', 'listening-n4': 'Écoute N4' };
 
 function lastDays(n){
@@ -74,8 +74,9 @@ function shuffle(a){ a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const
 
 export function renderMistakes(opts){
   const area = document.getElementById('mistakesArea');
-  if(rq) return renderRework(area);
   const open = openMistakes().sort((a, b) => (b.n || 0) - (a.n || 0) || (b.last || '').localeCompare(a.last || ''));
+  if(opts && opts.rework && !rq && open.length){ rq = { qs: shuffle(open).slice(0, opts.n || 10), i: 0, right: 0 }; }
+  if(rq) return renderRework(area);
   const done = masteredMistakes().length;
   const filter = (opts && opts.src) || 'all';
   const list = filter === 'all' ? open : open.filter(e => e.src === filter);
@@ -89,7 +90,7 @@ export function renderMistakes(opts){
     <div class="mn-styles" role="group" aria-label="Filtrer">Filtre : <button type="button" data-f="all" class="${filter === 'all' ? 'on' : ''}">Tout (${open.length})</button>${srcs.map(s => `<button type="button" data-f="${s}" class="${filter === s ? 'on' : ''}">${SRC_LABEL[s] || s} (${open.filter(e => e.src === s).length})</button>`).join('')}</div>
     <div class="mk-list">`;
   list.slice(0, 40).forEach(e => {
-    html += `<div class="mk-item"><div class="mk-top"><span class="mk-src">${SRC_LABEL[e.src] || e.src}</span><span class="mk-n">${e.n} faute${e.n > 1 ? 's' : ''} · ${escapeHtml(e.last || '')}</span></div>
+    html += `<div class="mk-item"><div class="mk-top"><span class="mk-src">${SRC_LABEL[e.src] || e.src}</span><span class="mk-n">${e.n} faute${e.n > 1 ? 's' : ''} · ${escapeHtml(e.last || '')} · réussie ${Math.min(2, e.streak || 0)}/3 d'affilée</span></div>
       <div class="mk-q">${escapeHtml(e.q)}</div>
       <div class="mk-a">✓ ${escapeHtml(e.ok)}${e.say ? ` <button type="button" class="kj-audio" data-say="${escapeHtml(e.say)}" aria-label="Écouter">🔊</button>` : ''}</div>
       ${e.chosen ? `<div class="mk-w">Ta réponse : ${escapeHtml(e.chosen)}</div>` : ''}
@@ -105,7 +106,7 @@ export function renderMistakes(opts){
 
 function renderRework(area){
   if(rq.i >= rq.qs.length){
-    const r = rq; rq = null; registerStudyActivity(); saveMeta();
+    const r = rq; rq = null; registerStudyActivity(); planMark('rework', r.qs.length);
     area.innerHTML = `<div class="conv-done"><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${r.right} / ${r.qs.length}</h3><p style="color:#7a7268;font-size:13.5px;">${r.right === r.qs.length ? 'Tout juste ! Ces erreurs avancent vers « maîtrisées ».' : 'Chaque réponse juste rapproche une erreur de la sortie de la liste (3 d\'affilée).'}</p><button type="button" class="continue-btn" id="mkBack" style="margin-top:16px;">← Mes erreurs</button></div>`;
     document.getElementById('mkBack').addEventListener('click', () => renderMistakes());
     return;

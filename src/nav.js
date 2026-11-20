@@ -12,6 +12,7 @@ export const TITLES = {
   conversation: 'Dialogues', menus: 'Menus & Kyoto', listening: 'Écoute',
   review: 'Réviser mes phrases', add: 'Mes cartes & sauvegarde', skills: 'Mes situations', progress: 'Mes progrès', mistakes: 'Mes erreurs', tips: 'Astuces & leçons de prof', help: 'Comment utiliser l\'appli',
 };
+const TOP_TITLES = { today: 'Aujourd\'hui', path: 'Mon parcours', learn: 'Apprendre', speak: 'Parler et comprendre', me: 'Moi' };
 const renderers = {};
 export function registerView(name, fn){ renderers[name] = fn; }
 let current = 'today';
@@ -38,6 +39,7 @@ export function showView(view, opts = {}){
     bar.querySelector('button').addEventListener('click', () => showView(par));
   } else if(bar){ bar.remove(); }
   current = view;
+  const h1 = document.getElementById('pageH1'); if(h1) h1.textContent = TITLES[view] || TOP_TITLES[view] || 'Nihongo Kyoto';
   if(opts.push !== false){ try{ history.pushState({ v: view }, '', '#' + view); }catch(e){} }
   if(renderers[view]) renderers[view](opts);
   if(opts.scroll !== false) window.scrollTo({ top: 0 });

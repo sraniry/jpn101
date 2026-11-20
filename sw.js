@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v39';
+const CACHE = 'nihongo-v40';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './src/encouragement.js',
   './src/romajiToggle.js',
   './src/cloudsync.js',
+  './src/merge.js',
   './src/tts.js',
   './src/strokes.js',
   './src/reminder.js',
@@ -68,7 +69,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    Promise.all(keys.filter(k => k !== CACHE && k !== 'fonts').map(k => caches.delete(k)))
   ));
   self.clients.claim();
 });
@@ -77,6 +78,15 @@ self.addEventListener('fetch', e => {
   // Réseau d'abord (pour voir les mises à jour tout de suite), mais avec un délai de 3 s : sur un réseau
   // lent (« lie-fi »), on sert le cache au lieu de laisser l'appli se figer.
   if(e.request.method !== 'GET') return;
+  const u = new URL(e.request.url);
+  if(u.origin !== self.location.origin){
+    // Autres origines : Firestore/Firebase ne sont JAMAIS touchés (le délai de 3 s doublerait leurs requêtes).
+    // Seules les polices Google sont mises en cache, pour que le texte garde sa forme hors ligne.
+    if(u.hostname === 'fonts.googleapis.com' || u.hostname === 'fonts.gstatic.com'){
+      e.respondWith(caches.open('fonts').then(c => c.match(e.request).then(r => r || fetch(e.request).then(n => { if(n && (n.ok || n.type === 'opaque')) c.put(e.request, n.clone()); return n; }))));
+    }
+    return;
+  }
   e.respondWith(
     Promise.race([
       fetch(e.request, { cache: 'no-cache' }),

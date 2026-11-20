@@ -39,6 +39,11 @@ export const BEGINNER_CONVS = [
         "chunk": "マリです",
         "role": "« Je suis Mari. »",
         "tip": "Mets ton prénom devant です. です = « c'est / je suis »."
+       },
+       {
+        "chunk": "はじめまして",
+        "role": "Ce qu'on dit en rencontrant quelqu'un.",
+        "tip": "Tu peux le dire toi aussi avant ton prénom."
        }
       ]
      },
@@ -47,14 +52,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Mari.",
       "fr": "Mari.",
       "quality": "ok",
-      "feedback": "On te comprend, mais ajoute です : ça sonne plus poli."
+      "feedback": "On te comprend, mais ajoute です : ça sonne plus poli.",
+      "breakdown": [
+       {
+        "chunk": "マリ",
+        "role": "Ton prénom tout seul.",
+        "tip": "Il manque です : マリです = « je suis Mari »."
+       }
+      ]
      },
      {
       "jp": "はい。",
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "weak",
-      "feedback": "On te demande ton nom : « oui » ne répond pas. Dis ton prénom + です."
+      "feedback": "On te demande ton nom : « oui » ne répond pas. Dis ton prénom + です.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "はい répond à une question oui/non. Ici on demande ton nom : dis-le."
+       }
+      ]
      }
     ]
    },
@@ -103,14 +122,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Furansu.",
       "fr": "France.",
       "quality": "ok",
-      "feedback": "Ça se comprend. Ajoute 人です pour dire que c'est toi."
+      "feedback": "Ça se comprend. Ajoute 人です pour dire que c'est toi.",
+      "breakdown": [
+       {
+        "chunk": "フランス",
+        "role": "France (le pays).",
+        "tip": "Pour dire « je suis français(e) », on ajoute 人 (じん) : フランス人."
+       }
+      ]
      },
      {
       "jp": "フランスごです。",
       "romaji": "Furansu-go desu.",
       "fr": "C'est du français (la langue).",
       "quality": "weak",
-      "feedback": "ご = la langue. Pour dire ta nationalité, on dit 人 (じん)."
+      "feedback": "ご = la langue. Pour dire ta nationalité, on dit 人 (じん).",
+      "breakdown": [
+       {
+        "chunk": "ご",
+        "role": "Suffixe « langue ».",
+        "tip": "フランスご = le français (la langue). Pour la nationalité : 人 (じん)."
+       }
+      ]
      }
     ]
    },
@@ -210,14 +243,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Matcha rate.",
       "fr": "Matcha latte.",
       "quality": "ok",
-      "feedback": "Ça passe, mais ajoute を ひとつ ください pour être poli."
+      "feedback": "Ça passe, mais ajoute を ひとつ ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "抹茶ラテ",
+        "role": "Un matcha latte, sans phrase autour.",
+        "tip": "Ça se comprend, mais en ajoutant を ひとつ ください tu fais une vraie demande polie."
+       }
+      ]
      },
      {
       "jp": "抹茶ラテが すきです。",
       "romaji": "Matcha rate ga suki desu.",
       "fr": "J'aime le matcha latte.",
       "quality": "weak",
-      "feedback": "Tu dis que tu aimes, mais tu ne commandes pas. Termine par ください."
+      "feedback": "Tu dis que tu aimes, mais tu ne commandes pas. Termine par ください.",
+      "breakdown": [
+       {
+        "chunk": "すきです",
+        "role": "« J'aime. »",
+        "tip": "すき = aimer. Ça parle de goûts, pas d'une commande. Pour commander : ください."
+       }
+      ]
      }
     ]
    },
@@ -261,14 +308,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hotto.",
       "fr": "Chaud.",
       "quality": "ok",
-      "feedback": "Compris, mais un です ferait plus poli."
+      "feedback": "Compris, mais un です ferait plus poli.",
+      "breakdown": [
+       {
+        "chunk": "ホット",
+        "role": "Chaud, sans です.",
+        "tip": "Ajoute です : ホットです = « c'est chaud, s'il vous plaît »."
+       }
+      ]
      },
      {
       "jp": "はい。",
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "weak",
-      "feedback": "Ce n'est pas une question oui/non : il faut choisir ホット ou アイス."
+      "feedback": "Ce n'est pas une question oui/non : il faut choisir ホット ou アイス.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "La question propose deux choix (ホット ou アイス) : un « oui » ne choisit rien."
+       }
+      ]
      }
     ]
    },
@@ -307,14 +368,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "ok",
-      "feedback": "Ça marche. Ajoute どうぞ en tendant l'argent."
+      "feedback": "Ça marche. Ajoute どうぞ en tendant l'argent.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "Sert à dire « d'accord ». Plus naturel : はい、どうぞ en donnant l'argent."
+       }
+      ]
      },
      {
       "jp": "いくらですか？",
       "romaji": "Ikura desu ka?",
       "fr": "C'est combien ?",
       "quality": "weak",
-      "feedback": "Il vient de te donner le prix : tu peux payer."
+      "feedback": "Il vient de te donner le prix : tu peux payer.",
+      "breakdown": [
+       {
+        "chunk": "いくらですか",
+        "role": "« C'est combien ? »",
+        "tip": "Le prix vient d'être dit (600円). Poser cette question maintenant n'a plus de sens."
+       }
+      ]
      }
     ]
    }
@@ -391,14 +466,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Aisu, matcha rate.",
       "fr": "Glacé, matcha latte.",
       "quality": "ok",
-      "feedback": "On comprend, mais ajoute を ください pour être poli."
+      "feedback": "On comprend, mais ajoute を ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "アイス、抹茶ラテ",
+        "role": "Deux mots posés l'un après l'autre.",
+        "tip": "Compréhensible, mais ajoute を ください pour faire une phrase polie."
+       }
+      ]
      },
      {
       "jp": "アイスですか？",
       "romaji": "Aisu desu ka?",
       "fr": "C'est glacé ?",
       "quality": "weak",
-      "feedback": "Là, tu poses une question. Pour commander, finis par ください."
+      "feedback": "Là, tu poses une question. Pour commander, finis par ください.",
+      "breakdown": [
+       {
+        "chunk": "ですか",
+        "role": "か = point d'interrogation.",
+        "tip": "アイスですか ? = « c'est glacé ? ». Une question, pas une commande."
+       }
+      ]
      }
     ]
    },
@@ -417,6 +506,16 @@ export const BEGINNER_CONVS = [
       "chunk": "どちら",
       "role": "« Lequel des deux ? »",
       "tip": "On l'utilise quand il y a deux choix. Pour plus de deux, on dit どれ."
+     },
+     {
+      "chunk": "A の と B の、どちら",
+      "role": "« A ou B, lequel ? »",
+      "tip": "と relie deux choix ; どちら = lequel des deux."
+     },
+     {
+      "chunk": "の (おおきいの)",
+      "role": "の remplace le nom déjà connu.",
+      "tip": "おおきいの = « le grand [verre] »."
      }
     ]
    },
@@ -442,14 +541,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Ookii no.",
       "fr": "Le grand.",
       "quality": "ok",
-      "feedback": "Ça passe, mais avec を ください c'est plus poli."
+      "feedback": "Ça passe, mais avec を ください c'est plus poli.",
+      "breakdown": [
+       {
+        "chunk": "おおきいの",
+        "role": "« Le grand. »",
+        "tip": "の remplace le nom (« le grand [verre] »). Il manque を ください."
+       }
+      ]
      },
      {
       "jp": "はい。",
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "weak",
-      "feedback": "Il faut choisir : おおきいの ou ちいさいの."
+      "feedback": "Il faut choisir : おおきいの ou ちいさいの.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "On te donne deux choix (おおきい ou ちいさい) : choisis-en un."
+       }
+      ]
      }
     ]
    },
@@ -493,14 +606,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "ok",
-      "feedback": "Ça marche, mais on dit plutôt これで おねがいします."
+      "feedback": "Ça marche, mais on dit plutôt これで おねがいします.",
+      "breakdown": [
+       {
+        "chunk": "これで おねがいします",
+        "role": "« Avec ça, s'il vous plaît. »",
+        "tip": "Phrase typique pour payer. はい seul est correct mais moins naturel."
+       }
+      ]
      },
      {
       "jp": "たかいです。",
       "romaji": "Takai desu.",
       "fr": "C'est cher.",
       "quality": "weak",
-      "feedback": "On ne dit pas ça à la caisse : paie simplement."
+      "feedback": "On ne dit pas ça à la caisse : paie simplement.",
+      "breakdown": [
+       {
+        "chunk": "たかい",
+        "role": "Cher.",
+        "tip": "Se plaindre du prix à la caisse est mal vu au Japon : paie simplement."
+       }
+      ]
      }
     ]
    }
@@ -564,6 +691,11 @@ export const BEGINNER_CONVS = [
         "chunk": "ありますか",
         "role": "« Il y en a ? / Vous avez ? »",
         "tip": "Sert à demander si une chose est disponible ici."
+       },
+       {
+        "chunk": "まっちゃは",
+        "role": "Le matcha, (en avez-vous ?)",
+        "tip": "は pose le sujet de ta question : le matcha."
        }
       ]
      },
@@ -572,14 +704,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Matcha, arimasu ka?",
       "fr": "Matcha, vous en avez ?",
       "quality": "ok",
-      "feedback": "Compris ! Ajoute すみません au début pour être poli."
+      "feedback": "Compris ! Ajoute すみません au début pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "すみません",
+        "role": "« Excusez-moi. »",
+        "tip": "On l'ajoute au début pour appeler poliment quelqu'un."
+       }
+      ]
      },
      {
       "jp": "まっちゃを のみます。",
       "romaji": "Matcha o nomimasu.",
       "fr": "Je bois du matcha.",
       "quality": "weak",
-      "feedback": "Phrase correcte, mais ce n'est pas une question. Utilise ありますか ?"
+      "feedback": "Phrase correcte, mais ce n'est pas une question. Utilise ありますか ?",
+      "breakdown": [
+       {
+        "chunk": "のみます",
+        "role": "« Je bois. »",
+        "tip": "Verbe poli (boire) : il décrit ce que tu fais, il ne demande rien. Pour demander : ありますか."
+       }
+      ]
      }
     ]
    },
@@ -618,14 +764,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Ikura?",
       "fr": "Combien ?",
       "quality": "ok",
-      "feedback": "On comprend, mais ajoute ですか pour être poli."
+      "feedback": "On comprend, mais ajoute ですか pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "いくら",
+        "role": "« Combien ? »",
+        "tip": "Ajoute ですか : いくらですか est plus poli que いくら tout seul."
+       }
+      ]
      },
      {
       "jp": "なんですか？",
       "romaji": "Nan desu ka?",
       "fr": "C'est quoi ?",
       "quality": "weak",
-      "feedback": "なん = « quoi ». Pour un prix, dis いくら."
+      "feedback": "なん = « quoi ». Pour un prix, dis いくら.",
+      "breakdown": [
+       {
+        "chunk": "なん",
+        "role": "« Quoi ? »",
+        "tip": "なんですか demande ce qu'est un objet. Pour le prix, c'est いくら."
+       }
+      ]
      }
     ]
    },
@@ -669,14 +829,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Kore o kudasai.",
       "fr": "Celui-ci, s'il vous plaît.",
       "quality": "ok",
-      "feedback": "Ça marche, mais le vendeur ne sait pas combien. Ajoute ひとつ."
+      "feedback": "Ça marche, mais le vendeur ne sait pas combien. Ajoute ひとつ.",
+      "breakdown": [
+       {
+        "chunk": "これを ください",
+        "role": "« Celui-ci, s'il vous plaît. »",
+        "tip": "Correct, mais la quantité manque : ajoute ひとつ."
+       }
+      ]
      },
      {
       "jp": "ふたつ ください。",
       "romaji": "Futatsu kudasai.",
       "fr": "Deux, s'il vous plaît.",
       "quality": "weak",
-      "feedback": "ふたつ = 2. Pour un seul, c'est ひとつ."
+      "feedback": "ふたつ = 2. Pour un seul, c'est ひとつ.",
+      "breakdown": [
+       {
+        "chunk": "ふたつ",
+        "role": "Deux (objets).",
+        "tip": "ひとつ = un, ふたつ = deux. Ici tu veux un seul sachet."
+       }
+      ]
      }
     ]
    }
@@ -753,14 +927,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Kitsune udon.",
       "fr": "Udon kitsune.",
       "quality": "ok",
-      "feedback": "On te comprend. Ajoute を ひとつ ください pour être poli."
+      "feedback": "On te comprend. Ajoute を ひとつ ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "きつねうどん",
+        "role": "Le nom du plat seul.",
+        "tip": "Ajoute を ひとつ ください pour en faire une demande polie."
+       }
+      ]
      },
      {
       "jp": "うどんが すきです。",
       "romaji": "Udon ga suki desu.",
       "fr": "J'aime les udon.",
       "quality": "weak",
-      "feedback": "Tu dis que tu aimes, mais tu ne commandes pas. Termine par ください."
+      "feedback": "Tu dis que tu aimes, mais tu ne commandes pas. Termine par ください.",
+      "breakdown": [
+       {
+        "chunk": "すきです",
+        "role": "« J'aime. »",
+        "tip": "Exprime un goût, pas une commande. Pour commander : ください."
+       }
+      ]
      }
     ]
    },
@@ -779,6 +967,16 @@ export const BEGINNER_CONVS = [
       "chunk": "つめたい",
       "role": "Froid.",
       "tip": "Les udon froids se mangent surtout en été."
+     },
+     {
+      "chunk": "A の と B の、どちら",
+      "role": "« A ou B, lequel ? »",
+      "tip": "と relie deux choix ; どちら = lequel des deux."
+     },
+     {
+      "chunk": "の (あついの)",
+      "role": "の remplace le nom déjà connu.",
+      "tip": "あついの = « le chaud (celui qui est chaud) »."
      }
     ]
    },
@@ -804,14 +1002,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Atsui.",
       "fr": "Chaud.",
       "quality": "ok",
-      "feedback": "Compris. Ajoute のを ください pour être poli."
+      "feedback": "Compris. Ajoute のを ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "あつい",
+        "role": "Chaud.",
+        "tip": "Il manque の et を ください : あついのを ください = « le chaud, s'il vous plaît »."
+       }
+      ]
      },
      {
       "jp": "はい。",
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "weak",
-      "feedback": "Il faut choisir : あつい ou つめたい."
+      "feedback": "Il faut choisir : あつい ou つめたい.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "Deux choix (あつい ou つめたい) : il faut en nommer un."
+       }
+      ]
      }
     ]
    },
@@ -906,14 +1118,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Osusume?",
       "fr": "Vos conseils ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute は なんですか pour faire une vraie phrase."
+      "feedback": "On comprend. Ajoute は なんですか pour faire une vraie phrase.",
+      "breakdown": [
+       {
+        "chunk": "おすすめ",
+        "role": "Le plat conseillé.",
+        "tip": "Ajoute は なんですか pour faire une vraie question."
+       }
+      ]
      },
      {
       "jp": "そばが ありますか？",
       "romaji": "Soba ga arimasu ka?",
       "fr": "Vous avez des soba ?",
       "quality": "weak",
-      "feedback": "On est déjà dans un restaurant de soba : demande plutôt ce qu'ils conseillent."
+      "feedback": "On est déjà dans un restaurant de soba : demande plutôt ce qu'ils conseillent.",
+      "breakdown": [
+       {
+        "chunk": "そばが ありますか",
+        "role": "« Vous avez des soba ? »",
+        "tip": "On est déjà dans un restaurant de soba : la question n'a pas de sens."
+       }
+      ]
      }
     ]
    },
@@ -962,14 +1188,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Sore.",
       "fr": "Celui-là.",
       "quality": "ok",
-      "feedback": "Compris. Ajoute を ください pour être poli."
+      "feedback": "Compris. Ajoute を ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "それ",
+        "role": "« Celui-là. »",
+        "tip": "Ajoute を ください pour commander poliment."
+       }
+      ]
      },
      {
       "jp": "そばは なんですか？",
       "romaji": "Soba wa nan desu ka?",
       "fr": "C'est quoi, les soba ?",
       "quality": "weak",
-      "feedback": "Tu es dans un restaurant de soba : cette question étonne. Choisis le plat conseillé."
+      "feedback": "Tu es dans un restaurant de soba : cette question étonne. Choisis le plat conseillé.",
+      "breakdown": [
+       {
+        "chunk": "そばは なんですか",
+        "role": "« C'est quoi, les soba ? »",
+        "tip": "Question étonnante dans un restaurant de soba."
+       }
+      ]
      }
     ]
    },
@@ -1013,14 +1253,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "ok",
-      "feedback": "Ça suffit, mais おねがいします est plus doux."
+      "feedback": "Ça suffit, mais おねがいします est plus doux.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "Suffit, mais はい、おねがいします est plus doux."
+       }
+      ]
      },
      {
       "jp": "いいえ。",
       "romaji": "Iie.",
       "fr": "Non.",
       "quality": "weak",
-      "feedback": "Tu viens de dire non à ce que tu voulais. Réponds はい."
+      "feedback": "Tu viens de dire non à ce que tu voulais. Réponds はい.",
+      "breakdown": [
+       {
+        "chunk": "いいえ",
+        "role": "« Non. »",
+        "tip": "いいえ = non. Ici tu confirmes la commande : réponds はい."
+       }
+      ]
      }
     ]
    }
@@ -1084,6 +1338,16 @@ export const BEGINNER_CONVS = [
         "chunk": "どれ",
         "role": "« Lequel ? » (parmi plusieurs).",
         "tip": "どれ = lequel, どこ = où, なに = quoi."
+       },
+       {
+        "chunk": "すみません",
+        "role": "« Excusez-moi. »",
+        "tip": "Pour attirer l'attention de quelqu'un ou s'excuser."
+       },
+       {
+        "chunk": "ラーメンは",
+        "role": "Le ramen, (c'est…) ?",
+        "tip": "は pose le sujet de ta question."
        }
       ]
      },
@@ -1092,14 +1356,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Raamen wa?",
       "fr": "Le ramen ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute どれですか pour une vraie question."
+      "feedback": "On comprend. Ajoute どれですか pour une vraie question.",
+      "breakdown": [
+       {
+        "chunk": "ラーメンは",
+        "role": "« Le ramen, (c'est…) ? »",
+        "tip": "は pose le sujet. Ajoute どれですか pour finir la question."
+       }
+      ]
      },
      {
       "jp": "ラーメンを ください。",
       "romaji": "Raamen o kudasai.",
       "fr": "Un ramen, s'il vous plaît.",
       "quality": "weak",
-      "feedback": "Ici, c'est la machine qui prend ta commande. Demande plutôt quel bouton."
+      "feedback": "Ici, c'est la machine qui prend ta commande. Demande plutôt quel bouton.",
+      "breakdown": [
+       {
+        "chunk": "ください",
+        "role": "« Donnez-moi. »",
+        "tip": "Ici la machine prend la commande : tu ne demandes rien à la personne, tu cherches un bouton."
+       }
+      ]
      }
     ]
    },
@@ -1143,14 +1421,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Arigatou.",
       "fr": "Merci.",
       "quality": "ok",
-      "feedback": "Ça va avec des amis. Ajoute ございます avec des inconnus."
+      "feedback": "Ça va avec des amis. Ajoute ございます avec des inconnus.",
+      "breakdown": [
+       {
+        "chunk": "ありがとう",
+        "role": "« Merci. » (familier)",
+        "tip": "Entre amis. Avec un inconnu : ありがとうございます."
+       }
+      ]
      },
      {
       "jp": "ラーメンを ください。",
       "romaji": "Raamen o kudasai.",
       "fr": "Un ramen, s'il vous plaît.",
       "quality": "weak",
-      "feedback": "Le ticket remplace la commande : plus besoin de demander."
+      "feedback": "Le ticket remplace la commande : plus besoin de demander.",
+      "breakdown": [
+       {
+        "chunk": "ラーメンを ください",
+        "role": "« Un ramen, s'il vous plaît. »",
+        "tip": "Le ticket vaut déjà commande : tu n'as plus rien à demander."
+       }
+      ]
      }
     ]
    },
@@ -1199,14 +1491,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hai, douzo.",
       "fr": "Voilà.",
       "quality": "ok",
-      "feedback": "Ça marche. Tu auras une portion normale."
+      "feedback": "Ça marche. Tu auras une portion normale.",
+      "breakdown": [
+       {
+        "chunk": "はい、どうぞ",
+        "role": "« Oui, voilà. »",
+        "tip": "どうぞ = « voilà / je vous en prie ». Tu donnes le ticket, c'est naturel."
+       }
+      ]
      },
      {
       "jp": "はい、ありがとう。",
       "romaji": "Hai, arigatou.",
       "fr": "Oui, merci.",
       "quality": "weak",
-      "feedback": "Tu as oublié de donner le ticket ! Dis どうぞ en le tendant."
+      "feedback": "Tu as oublié de donner le ticket ! Dis どうぞ en le tendant.",
+      "breakdown": [
+       {
+        "chunk": "ありがとう",
+        "role": "« Merci. »",
+        "tip": "Il demande le ticket : remercie après, donne-le d'abord avec どうぞ."
+       }
+      ]
      }
     ]
    }
@@ -1288,14 +1594,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Maguro.",
       "fr": "Thon.",
       "quality": "ok",
-      "feedback": "Ça passe. Ajoute を ふたつ ください pour être poli."
+      "feedback": "Ça passe. Ajoute を ふたつ ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "まぐろ",
+        "role": "Le thon.",
+        "tip": "Sans を ふたつ ください, c'est juste un mot. Ajoute-le pour commander."
+       }
+      ]
      },
      {
       "jp": "まぐろが すきです。",
       "romaji": "Maguro ga suki desu.",
       "fr": "J'aime le thon.",
       "quality": "weak",
-      "feedback": "Tu dis que tu aimes, mais tu ne commandes pas. Termine par ください."
+      "feedback": "Tu dis que tu aimes, mais tu ne commandes pas. Termine par ください.",
+      "breakdown": [
+       {
+        "chunk": "すきです",
+        "role": "« J'aime. »",
+        "tip": "Un goût, pas une commande. Termine par ください."
+       }
+      ]
      }
     ]
    },
@@ -1309,6 +1629,11 @@ export const BEGINNER_CONVS = [
       "chunk": "ほか",
       "role": "« Autre chose ».",
       "tip": "ほかには ? = « et en plus ? »"
+     },
+     {
+      "chunk": "には",
+      "role": "« Et pour le reste ? »",
+      "tip": "に / は ajoutés à ほか : « en plus de ça ? »."
      }
     ]
    },
@@ -1334,14 +1659,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Ocha.",
       "fr": "Thé.",
       "quality": "ok",
-      "feedback": "Compris. Ajoute を ください pour être poli."
+      "feedback": "Compris. Ajoute を ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "おちゃ",
+        "role": "Le thé.",
+        "tip": "Ajoute を ください pour demander poliment."
+       }
+      ]
      },
      {
       "jp": "ありがとう。",
       "romaji": "Arigatou.",
       "fr": "Merci.",
       "quality": "weak",
-      "feedback": "Il te demande ce que tu veux en plus : donne un plat ou dis « non merci »."
+      "feedback": "Il te demande ce que tu veux en plus : donne un plat ou dis « non merci ».",
+      "breakdown": [
+       {
+        "chunk": "ありがとう",
+        "role": "« Merci. »",
+        "tip": "On te demande si tu veux autre chose. Réponds par un plat ou un refus."
+       }
+      ]
      }
     ]
    },
@@ -1426,14 +1765,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Kore wa?",
       "fr": "Ça ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute なんですか pour être clair."
+      "feedback": "On comprend. Ajoute なんですか pour être clair.",
+      "breakdown": [
+       {
+        "chunk": "これは",
+        "role": "« Ceci, (c'est…) ? »",
+        "tip": "Ajoute なんですか pour compléter la question."
+       }
+      ]
      },
      {
       "jp": "これを ください。",
       "romaji": "Kore o kudasai.",
       "fr": "Ceci, s'il vous plaît.",
       "quality": "weak",
-      "feedback": "Tu commandes sans savoir ce que c'est ! Demande d'abord なんですか."
+      "feedback": "Tu commandes sans savoir ce que c'est ! Demande d'abord なんですか.",
+      "breakdown": [
+       {
+        "chunk": "これを ください",
+        "role": "« Ceci, s'il vous plaît. »",
+        "tip": "Tu commandes sans savoir ce que c'est. Demande d'abord なんですか."
+       }
+      ]
      }
     ]
    },
@@ -1477,14 +1830,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hitotsu.",
       "fr": "Un.",
       "quality": "ok",
-      "feedback": "Ça passe. Ajoute これを ください pour être poli."
+      "feedback": "Ça passe. Ajoute これを ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "ひとつ",
+        "role": "Un (objet).",
+        "tip": "Ajoute これを ください : on saura ce que tu veux en un."
+       }
+      ]
      },
      {
       "jp": "これは なんですか？",
       "romaji": "Kore wa nan desu ka?",
       "fr": "C'est quoi, ça ?",
       "quality": "weak",
-      "feedback": "Tu as déjà la réponse : tu peux commander."
+      "feedback": "Tu as déjà la réponse : tu peux commander.",
+      "breakdown": [
+       {
+        "chunk": "なんですか",
+        "role": "« C'est quoi ? »",
+        "tip": "Il vient de te répondre (たこやき). Tu peux maintenant commander."
+       }
+      ]
      }
     ]
    },
@@ -1539,6 +1906,16 @@ export const BEGINNER_CONVS = [
       "chunk": "カレー",
       "role": "Le curry japonais.",
       "tip": "Plus doux et plus sucré que le curry indien."
+     },
+     {
+      "chunk": "これは",
+      "role": "« Ceci, (c'est…) »",
+      "tip": "これ = ceci ; は = « quant à ». これは カレーです = « ceci, c'est du curry »."
+     },
+     {
+      "chunk": "です",
+      "role": "« C'est. »",
+      "tip": "Ferme la phrase poliment."
      }
     ]
    },
@@ -1564,14 +1941,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Karai?",
       "fr": "Piquant ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute ですか pour être poli."
+      "feedback": "On comprend. Ajoute ですか pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "からい",
+        "role": "Piquant.",
+        "tip": "Ajoute ですか pour poser la question poliment."
+       }
+      ]
      },
      {
       "jp": "カレーですか？",
       "romaji": "Karee desu ka?",
       "fr": "C'est du curry ?",
       "quality": "weak",
-      "feedback": "Il vient de te le dire ! Demande plutôt si c'est からい."
+      "feedback": "Il vient de te le dire ! Demande plutôt si c'est からい.",
+      "breakdown": [
+       {
+        "chunk": "カレーですか",
+        "role": "« C'est du curry ? »",
+        "tip": "Il vient de te dire que c'est du curry. Demande plutôt si c'est piquant."
+       }
+      ]
      }
     ]
    },
@@ -1612,6 +2003,11 @@ export const BEGINNER_CONVS = [
         "chunk": "ありますか",
         "role": "« Vous en avez ? »",
         "tip": "La question pour savoir s'il y en a un."
+       },
+       {
+        "chunk": "からくないのは",
+        "role": "« Celui qui n'est pas piquant ? »",
+        "tip": "の remplace le nom ; は = « quant à ». からくない = pas piquant (い → くない)."
        }
       ]
      },
@@ -1620,14 +2016,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hoka no wa arimasu ka?",
       "fr": "Vous avez un autre ?",
       "quality": "ok",
-      "feedback": "On comprend, mais dis bien que tu veux un plat pas piquant."
+      "feedback": "On comprend, mais dis bien que tu veux un plat pas piquant.",
+      "breakdown": [
+       {
+        "chunk": "ほかのは",
+        "role": "« Les autres (celui d'un autre type) ? »",
+        "tip": "の remplace le nom. Précise ce que tu veux : からくないのは."
+       }
+      ]
      },
      {
       "jp": "からいです。",
       "romaji": "Karai desu.",
       "fr": "C'est piquant.",
       "quality": "weak",
-      "feedback": "Tu répètes ce qu'il vient de dire : demande-lui un autre plat."
+      "feedback": "Tu répètes ce qu'il vient de dire : demande-lui un autre plat.",
+      "breakdown": [
+       {
+        "chunk": "からいです",
+        "role": "« C'est piquant. »",
+        "tip": "Tu répètes l'info reçue. Demande un autre plat avec ありますか."
+       }
+      ]
      }
     ]
    },
@@ -1717,14 +2127,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Irimasen.",
       "fr": "Je n'en veux pas.",
       "quality": "ok",
-      "feedback": "Correct, mais un peu sec. だいじょうぶです est plus doux."
+      "feedback": "Correct, mais un peu sec. だいじょうぶです est plus doux.",
+      "breakdown": [
+       {
+        "chunk": "いりません",
+        "role": "« Je n'en ai pas besoin. »",
+        "tip": "Poli mais sec. だいじょうぶです adoucit le refus."
+       }
+      ]
      },
      {
       "jp": "はい。",
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "weak",
-      "feedback": "はい = oui : on va te donner un sac. Pour refuser, dis だいじょうぶです."
+      "feedback": "はい = oui : on va te donner un sac. Pour refuser, dis だいじょうぶです.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "はい = d'accord, donc oui au sac. Pour refuser : だいじょうぶです."
+       }
+      ]
      }
     ]
    },
@@ -1763,14 +2187,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "ok",
-      "feedback": "Ça marche, mais おねがいします est plus poli."
+      "feedback": "Ça marche, mais おねがいします est plus poli.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "Suffit, mais おねがいします est plus poli."
+       }
+      ]
      },
      {
       "jp": "あたためます。",
       "romaji": "Atatamemasu.",
       "fr": "Je réchauffe.",
       "quality": "weak",
-      "feedback": "Ce serait toi qui réchauffes ! Dis はい、おねがいします."
+      "feedback": "Ce serait toi qui réchauffes ! Dis はい、おねがいします.",
+      "breakdown": [
+       {
+        "chunk": "あたためます",
+        "role": "« Je réchauffe. »",
+        "tip": "La forme ます décrit ce que TOI tu fais. Ici c'est lui qui réchauffe."
+       }
+      ]
      }
     ]
    },
@@ -1855,14 +2293,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Toire?",
       "fr": "Toilettes ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute は どこですか pour une vraie question."
+      "feedback": "On comprend. Ajoute は どこですか pour une vraie question.",
+      "breakdown": [
+       {
+        "chunk": "トイレ",
+        "role": "Les toilettes.",
+        "tip": "Ajoute は どこですか pour poser une vraie question."
+       }
+      ]
      },
      {
       "jp": "トイレを ください。",
       "romaji": "Toire o kudasai.",
       "fr": "Donnez-moi les toilettes.",
       "quality": "weak",
-      "feedback": "Tu demandes qu'on te donne les toilettes ! Demande où elles sont."
+      "feedback": "Tu demandes qu'on te donne les toilettes ! Demande où elles sont.",
+      "breakdown": [
+       {
+        "chunk": "ください",
+        "role": "« Donnez-moi. »",
+        "tip": "Tu demanderais qu'on te donne les toilettes. Pour un lieu : どこですか."
+       }
+      ]
      }
     ]
    },
@@ -1901,14 +2353,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Arigatou.",
       "fr": "Merci.",
       "quality": "ok",
-      "feedback": "Ça va, mais ございます est plus poli avec un inconnu."
+      "feedback": "Ça va, mais ございます est plus poli avec un inconnu.",
+      "breakdown": [
+       {
+        "chunk": "ありがとう",
+        "role": "« Merci. »",
+        "tip": "Familier. Avec un inconnu : ありがとうございます."
+       }
+      ]
      },
      {
       "jp": "どこですか？",
       "romaji": "Doko desu ka?",
       "fr": "C'est où ?",
       "quality": "weak",
-      "feedback": "Il vient de te répondre : regarde où il montre."
+      "feedback": "Il vient de te répondre : regarde où il montre.",
+      "breakdown": [
+       {
+        "chunk": "どこですか",
+        "role": "« C'est où ? »",
+        "tip": "Il vient de te répondre (あそこ) : inutile de redemander."
+       }
+      ]
      }
     ]
    },
@@ -1980,6 +2446,11 @@ export const BEGINNER_CONVS = [
         "chunk": "いくらですか",
         "role": "« Combien ça coûte ? »",
         "tip": "Mets l'objet devant : これは いくらですか."
+       },
+       {
+        "chunk": "これは",
+        "role": "« Ceci, (c'est…) »",
+        "tip": "これ = ceci ; は = « quant à »."
        }
       ]
      },
@@ -1988,14 +2459,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Ikura?",
       "fr": "Combien ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute これは et ですか."
+      "feedback": "On comprend. Ajoute これは et ですか.",
+      "breakdown": [
+       {
+        "chunk": "いくら",
+        "role": "« Combien ? »",
+        "tip": "Ajoute これは et ですか : これは いくらですか."
+       }
+      ]
      },
      {
       "jp": "これは なんですか？",
       "romaji": "Kore wa nan desu ka?",
       "fr": "C'est quoi ?",
       "quality": "weak",
-      "feedback": "なん = « quoi ». Pour un prix, dis いくら."
+      "feedback": "なん = « quoi ». Pour un prix, dis いくら.",
+      "breakdown": [
+       {
+        "chunk": "なん",
+        "role": "« Quoi ? »",
+        "tip": "なんですか = « qu'est-ce que c'est ? ». Pour un prix : いくら."
+       }
+      ]
      }
     ]
    },
@@ -2031,6 +2516,11 @@ export const BEGINNER_CONVS = [
         "chunk": "やすい",
         "role": "Pas cher.",
         "tip": "Le contraire : たかい = cher."
+       },
+       {
+        "chunk": "やすいのは",
+        "role": "« Un [qui est] moins cher ? »",
+        "tip": "の remplace le nom, は pose le thème."
        }
       ]
      },
@@ -2039,14 +2529,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Yasui no wa?",
       "fr": "Un moins cher ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute もっと ... ありますか pour une vraie phrase."
+      "feedback": "On comprend. Ajoute もっと ... ありますか pour une vraie phrase.",
+      "breakdown": [
+       {
+        "chunk": "やすいのは",
+        "role": "« Un moins cher ? »",
+        "tip": "やすい = bon marché, の = celui-là. Ajoute もっと ... ありますか."
+       }
+      ]
      },
      {
       "jp": "たかいです。",
       "romaji": "Takai desu.",
       "fr": "C'est cher.",
       "quality": "weak",
-      "feedback": "On comprend ta pensée, mais demande plutôt : もっと やすいのは？"
+      "feedback": "On comprend ta pensée, mais demande plutôt : もっと やすいのは？",
+      "breakdown": [
+       {
+        "chunk": "たかい",
+        "role": "Cher.",
+        "tip": "Tu constates, mais tu ne demandes rien : demande もっと やすいのは."
+       }
+      ]
      }
     ]
    },
@@ -2060,6 +2564,11 @@ export const BEGINNER_CONVS = [
       "chunk": "1500円",
       "role": "Mille cinq cents yens.",
       "tip": "せん (1000) + ごひゃく (500) + えん."
+     },
+     {
+      "chunk": "これは",
+      "role": "« Ceci, c'est… »",
+      "tip": "これ = ceci ; は = « quant à »."
      }
     ]
    },
@@ -2090,14 +2599,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Sore.",
       "fr": "Celui-là.",
       "quality": "ok",
-      "feedback": "Compris. Ajoute を ください pour être poli."
+      "feedback": "Compris. Ajoute を ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "それ",
+        "role": "« Celui-là. »",
+        "tip": "それ = ce que tient la personne en face. Ajoute を ください."
+       }
+      ]
      },
      {
       "jp": "これを ください。",
       "romaji": "Kore o kudasai.",
       "fr": "Ceci, s'il vous plaît.",
       "quality": "weak",
-      "feedback": "Il te montre l'article : pour celui qu'il tient, dis それ."
+      "feedback": "Il te montre l'article : pour celui qu'il tient, dis それ.",
+      "breakdown": [
+       {
+        "chunk": "これ",
+        "role": "« Celui-ci. »",
+        "tip": "これ = près de moi. L'article est dans les mains du vendeur : それ."
+       }
+      ]
      }
     ]
    }
@@ -2174,14 +2697,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Eki wa?",
       "fr": "La gare ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute どこですか pour une vraie question."
+      "feedback": "On comprend. Ajoute どこですか pour une vraie question.",
+      "breakdown": [
+       {
+        "chunk": "えきは",
+        "role": "« La gare, (c'est…) ? »",
+        "tip": "Ajoute どこですか pour finir la question."
+       }
+      ]
      },
      {
       "jp": "えきを ください。",
       "romaji": "Eki o kudasai.",
       "fr": "Donnez-moi la gare.",
       "quality": "weak",
-      "feedback": "On ne donne pas une gare ! Demande où elle est."
+      "feedback": "On ne donne pas une gare ! Demande où elle est.",
+      "breakdown": [
+       {
+        "chunk": "ください",
+        "role": "« Donnez-moi. »",
+        "tip": "On ne donne pas une gare ! Pour un lieu : どこですか."
+       }
+      ]
      }
     ]
    },
@@ -2225,14 +2762,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Chikai?",
       "fr": "Près ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute ですか pour être poli."
+      "feedback": "On comprend. Ajoute ですか pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "ちかい",
+        "role": "Proche.",
+        "tip": "Ajoute ですか pour demander poliment."
+       }
+      ]
      },
      {
       "jp": "とおいです。",
       "romaji": "Tooi desu.",
       "fr": "C'est loin.",
       "quality": "weak",
-      "feedback": "Tu affirmes au lieu de demander. Pose la question avec ですか."
+      "feedback": "Tu affirmes au lieu de demander. Pose la question avec ですか.",
+      "breakdown": [
+       {
+        "chunk": "とおい",
+        "role": "Loin.",
+        "tip": "Sans か, c'est une affirmation, pas une question."
+       }
+      ]
      }
     ]
    },
@@ -2246,6 +2797,11 @@ export const BEGINNER_CONVS = [
       "chunk": "よ",
       "role": "Petit mot de fin : « je te le dis ! »",
       "tip": "Courant à l'oral, il rend la phrase plus chaleureuse."
+     },
+     {
+      "chunk": "ですよ",
+      "role": "« C'est… tu sais. »",
+      "tip": "よ à la fin = « je t'assure », ça rassure."
      }
     ]
    }
@@ -2292,6 +2848,11 @@ export const BEGINNER_CONVS = [
       "chunk": "まで",
       "role": "« Jusqu'à ».",
       "tip": "きょうとえきまで = jusqu'à la gare de Kyoto."
+     },
+     {
+      "chunk": "どこまで",
+      "role": "« Jusqu'où ? »",
+      "tip": "どこ = où ; まで = jusqu'à."
      }
     ]
    },
@@ -2327,14 +2888,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Kyouto eki.",
       "fr": "Gare de Kyoto.",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute まで いちまい ください."
+      "feedback": "On comprend. Ajoute まで いちまい ください.",
+      "breakdown": [
+       {
+        "chunk": "きょうとえき",
+        "role": "La gare de Kyoto.",
+        "tip": "Dis aussi jusqu'où tu vas : まで, puis いちまい ください."
+       }
+      ]
      },
      {
       "jp": "きょうとえきから。",
       "romaji": "Kyouto eki kara.",
       "fr": "Depuis la gare de Kyoto.",
       "quality": "weak",
-      "feedback": "から = « depuis ». Pour « jusqu'à », dis まで."
+      "feedback": "から = « depuis ». Pour « jusqu'à », dis まで.",
+      "breakdown": [
+       {
+        "chunk": "から",
+        "role": "« À partir de. »",
+        "tip": "から = départ. Pour la destination : まで (jusqu'à)."
+       }
+      ]
      }
     ]
    },
@@ -2373,14 +2948,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "ok",
-      "feedback": "Ça marche. Ajoute どうぞ en tendant l'argent."
+      "feedback": "Ça marche. Ajoute どうぞ en tendant l'argent.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "Suffit, mais どうぞ en tendant l'argent est plus naturel."
+       }
+      ]
      },
      {
       "jp": "いくらですか？",
       "romaji": "Ikura desu ka?",
       "fr": "C'est combien ?",
       "quality": "weak",
-      "feedback": "Il vient de te le dire : 210円."
+      "feedback": "Il vient de te le dire : 210円.",
+      "breakdown": [
+       {
+        "chunk": "いくらですか",
+        "role": "« C'est combien ? »",
+        "tip": "Il vient de te donner le prix (210円) : paie."
+       }
+      ]
      }
     ]
    },
@@ -2470,14 +3059,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Kaado?",
       "fr": "Carte ?",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute は つかえますか pour une vraie question."
+      "feedback": "On comprend. Ajoute は つかえますか pour une vraie question.",
+      "breakdown": [
+       {
+        "chunk": "カード",
+        "role": "La carte (bancaire).",
+        "tip": "Ajoute は つかえますか : « peut-on s'en servir ? »."
+       }
+      ]
      },
      {
       "jp": "カードを ください。",
       "romaji": "Kaado o kudasai.",
       "fr": "Donnez-moi une carte.",
       "quality": "weak",
-      "feedback": "Tu demandes qu'on te donne une carte ! Demande si tu peux t'en servir."
+      "feedback": "Tu demandes qu'on te donne une carte ! Demande si tu peux t'en servir.",
+      "breakdown": [
+       {
+        "chunk": "カードを ください",
+        "role": "« Donnez-moi une carte. »",
+        "tip": "Tu demandes qu'on te donne une carte. Demande si tu peux en utiliser une : つかえますか."
+       }
+      ]
      }
     ]
    },
@@ -2513,6 +3116,11 @@ export const BEGINNER_CONVS = [
         "chunk": "おねがいします",
         "role": "« S'il vous plaît ».",
         "tip": "Adoucit la demande."
+       },
+       {
+        "chunk": "じゃあ",
+        "role": "« Alors… »",
+        "tip": "Pour enchaîner après une réponse."
        }
       ]
      },
@@ -2521,14 +3129,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Kaado de.",
       "fr": "Par carte.",
       "quality": "ok",
-      "feedback": "Ça passe. Ajoute おねがいします pour être poli."
+      "feedback": "Ça passe. Ajoute おねがいします pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "カードで",
+        "role": "« Par carte. »",
+        "tip": "で = le moyen. Ajoute おねがいします pour être poli."
+       }
+      ]
      },
      {
       "jp": "カードは ありますか？",
       "romaji": "Kaado wa arimasu ka?",
       "fr": "Vous avez une carte ?",
       "quality": "weak",
-      "feedback": "Tu demandes si c'est LUI qui a une carte ! Dis カードで おねがいします."
+      "feedback": "Tu demandes si c'est LUI qui a une carte ! Dis カードで おねがいします.",
+      "breakdown": [
+       {
+        "chunk": "カードは ありますか",
+        "role": "« Vous avez une carte ? »",
+        "tip": "ありますか demande si l'autre a quelque chose. Pour dire ton moyen de paiement : カードで."
+       }
+      ]
      }
     ]
    },
@@ -2539,9 +3161,9 @@ export const BEGINNER_CONVS = [
     "fr": "Merci beaucoup.",
     "breakdown": [
      {
-      "chunk": "ございました",
-      "role": "Le « merci » au passé : l'achat est terminé.",
-      "tip": "On le dit à la fin, quand tout est fini."
+      "chunk": "ありがとうございました",
+      "role": "« Merci (pour ce qui vient de se passer). »",
+      "tip": "ました = passé : le service est terminé. Pour remercier à la fin."
      }
     ]
    }
@@ -2618,14 +3240,28 @@ export const BEGINNER_CONVS = [
       "romaji": "A, arigatou.",
       "fr": "Ah, merci.",
       "quality": "ok",
-      "feedback": "Ça va entre amis. Avec un inconnu, ajoute ございます."
+      "feedback": "Ça va entre amis. Avec un inconnu, ajoute ございます.",
+      "breakdown": [
+       {
+        "chunk": "ありがとう",
+        "role": "« Merci. »",
+        "tip": "Familier. Avec un inconnu, ajoute ございます."
+       }
+      ]
      },
      {
       "jp": "いいえ。",
       "romaji": "Iie.",
       "fr": "Non.",
       "quality": "weak",
-      "feedback": "Cette personne t'aide : dire non est étrange. Remercie-la."
+      "feedback": "Cette personne t'aide : dire non est étrange. Remercie-la.",
+      "breakdown": [
+       {
+        "chunk": "いいえ",
+        "role": "« Non. »",
+        "tip": "いいえ = non, mais on t'a aidé : il faut remercier."
+       }
+      ]
      }
     ]
    },
@@ -2656,6 +3292,11 @@ export const BEGINNER_CONVS = [
         "chunk": "ほんとうに",
         "role": "« Vraiment ».",
         "tip": "Se place devant le merci pour le renforcer."
+       },
+       {
+        "chunk": "ありがとうございました",
+        "role": "« Merci beaucoup (pour ce que vous avez fait). »",
+        "tip": "ました = passé : l'aide est déjà faite."
        }
       ]
      },
@@ -2664,14 +3305,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Arigatou.",
       "fr": "Merci.",
       "quality": "ok",
-      "feedback": "Ça va, mais plus poli avec un inconnu : ありがとうございました."
+      "feedback": "Ça va, mais plus poli avec un inconnu : ありがとうございました.",
+      "breakdown": [
+       {
+        "chunk": "ありがとう",
+        "role": "« Merci. »",
+        "tip": "Pour un service rendu, ありがとうございました est plus poli."
+       }
+      ]
      },
      {
       "jp": "ごめんなさい。",
       "romaji": "Gomennasai.",
       "fr": "Pardon.",
       "quality": "weak",
-      "feedback": "Tu t'excuses alors que tu veux remercier."
+      "feedback": "Tu t'excuses alors que tu veux remercier.",
+      "breakdown": [
+       {
+        "chunk": "ごめんなさい",
+        "role": "« Je suis désolé(e). »",
+        "tip": "Pour une faute. Ici tu veux remercier, pas t'excuser."
+       }
+      ]
      }
     ]
    },
@@ -2710,14 +3365,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Hai.",
       "fr": "Oui.",
       "quality": "ok",
-      "feedback": "Ça marche, mais だいじょうぶです est plus clair."
+      "feedback": "Ça marche, mais だいじょうぶです est plus clair.",
+      "breakdown": [
+       {
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "Pas faux, mais だいじょうぶです dit mieux « ce n'est pas grave »."
+       }
+      ]
      },
      {
       "jp": "ありがとう。",
       "romaji": "Arigatou.",
       "fr": "Merci.",
       "quality": "weak",
-      "feedback": "Tu remercies alors qu'il s'excuse : réponds だいじょうぶです."
+      "feedback": "Tu remercies alors qu'il s'excuse : réponds だいじょうぶです.",
+      "breakdown": [
+       {
+        "chunk": "ありがとう",
+        "role": "« Merci. »",
+        "tip": "C'est lui qui s'excuse : réponds だいじょうぶです."
+       }
+      ]
      }
     ]
    }
@@ -2759,6 +3428,11 @@ export const BEGINNER_CONVS = [
       "chunk": "ほか",
       "role": "« Autre chose ».",
       "tip": "ほかには ? = « et en plus ? »"
+     },
+     {
+      "chunk": "には",
+      "role": "« Et pour le reste ? »",
+      "tip": "に / は ajoutés à ほか : « en plus de ça ? »."
      }
     ]
    },
@@ -2789,14 +3463,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Omizu.",
       "fr": "Eau.",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute を ください pour être poli."
+      "feedback": "On comprend. Ajoute を ください pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "おみず",
+        "role": "L'eau (お = poli).",
+        "tip": "Ajoute を ください pour demander poliment."
+       }
+      ]
      },
      {
       "jp": "おみずが すきです。",
       "romaji": "Omizu ga suki desu.",
       "fr": "J'aime l'eau.",
       "quality": "weak",
-      "feedback": "Tu dis que tu aimes, mais tu ne demandes pas. Termine par ください."
+      "feedback": "Tu dis que tu aimes, mais tu ne demandes pas. Termine par ください.",
+      "breakdown": [
+       {
+        "chunk": "すきです",
+        "role": "« J'aime. »",
+        "tip": "Un goût, pas une demande. Termine par ください."
+       }
+      ]
      }
     ]
    },
@@ -2840,14 +3528,28 @@ export const BEGINNER_CONVS = [
       "romaji": "Okaikei.",
       "fr": "L'addition.",
       "quality": "ok",
-      "feedback": "On comprend. Ajoute を おねがいします pour être poli."
+      "feedback": "On comprend. Ajoute を おねがいします pour être poli.",
+      "breakdown": [
+       {
+        "chunk": "おかいけい",
+        "role": "L'addition.",
+        "tip": "Ajoute を おねがいします : おかいけいを おねがいします."
+       }
+      ]
      },
      {
       "jp": "いくらですか？",
       "romaji": "Ikura desu ka?",
       "fr": "C'est combien ?",
       "quality": "weak",
-      "feedback": "Possible, mais à table on dit plutôt おかいけいを おねがいします."
+      "feedback": "Possible, mais à table on dit plutôt おかいけいを おねがいします.",
+      "breakdown": [
+       {
+        "chunk": "いくらですか",
+        "role": "« C'est combien ? »",
+        "tip": "Possible, mais à table on demande l'addition avec おかいけい."
+       }
+      ]
      }
     ]
    },

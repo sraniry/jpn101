@@ -1,5 +1,5 @@
 import { showView } from '../nav.js';
-import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity, planMark, saveMeta } from '../storage.js';
+import { phrases, meta, buildQueue, rate, archiveCard, savePhrases, registerStudyActivity, planMark, saveMeta, recordAnswer } from '../storage.js';
 import { CORE_SET } from '../../data/phrases.js';
 import { speak } from '../tts.js';
 import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, renderPitch } from '../util.js';
@@ -68,6 +68,17 @@ function maskParticleInRomaji(romaji, particle){
 
 // ---------- Filtre par compétence (clic sur une carte de l'onglet Compétences) ----------
 let reviewFilterTag = null;
+// Journal d'erreurs : « Galère » = faute (avec 3 choix distracteurs tirés des autres phrases), « Bien/Facile » = réussite.
+function logPhraseAnswer(card, grade){
+  try{
+    if(grade === 0){
+      const others = phrases.filter(p => p.fr && p.fr !== card.fr).map(p => p.fr).sort(() => Math.random() - 0.5);
+      const choices = [card.fr, ...[...new Set(others)].slice(0, 3)];
+      recordAnswer('phrase', card.id || card.jp, false, { q: `Que veut dire « ${card.jp} » ?`, ok: card.fr, choices, explain: [card.romaji, card.ex].filter(Boolean).join(' — '), say: card.jp, chosen: '' });
+    } else if(grade >= 2) recordAnswer('phrase', card.id || card.jp, true, {});
+  }catch(e){}
+}
+
 export function setReviewFilterTag(tag){ reviewFilterTag = (tag && tag !== 'all') ? tag : null; }
 export function getReviewFilterTag(){ return reviewFilterTag; }
 
@@ -204,7 +215,7 @@ export function renderReview(){
 
   html += `<div class="flashcard" id="flashcardEl">`;
   html += `<div class="tag-pill">${escapeHtml(currentReview.tag)}${CORE_SET.has(currentReview.jp)?' ⭐':''}</div>`;
-  if(currentReview.level) html += `<div class="level-pill">${escapeHtml(currentReview.level)}</div>`;
+  if(currentReview.level) html += `<div class="level-pill" title="A0 = tout début, A1 = débutant, A2 = élémentaire">${escapeHtml(({A0:'Tout début',A1:'Débutant',A2:'Élémentaire'})[currentReview.level] || currentReview.level)}</div>`;
 
   if(dicteMode && !revealed){
     // Mode dictée : on entend, on tape le romaji
@@ -306,7 +317,7 @@ export function renderReview(){
   area.querySelectorAll('.rate-row button').forEach(b=>{
     b.addEventListener('click', ()=>{
       const grade = parseInt(b.dataset.grade,10);
-      rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
+      rate(currentReview, grade); logPhraseAnswer(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
       sessionTotal++; if(grade>=2) sessionGoodOrEasy++;
       const justStudied = currentReview;
       reviewQueue.shift(); reviewedSinceBreak++; renderHeader(); afterRate();
@@ -370,7 +381,7 @@ function renderParticleDrill(area){
     area.querySelectorAll('.rate-row button').forEach(b=>{
       b.addEventListener('click', ()=>{
         const grade = parseInt(b.dataset.grade,10);
-        rate(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
+        rate(currentReview, grade); logPhraseAnswer(currentReview, grade); savePhrases(); registerStudyActivity(); planMark('reviews', 1);
         sessionTotal++; if(grade>=2) sessionGoodOrEasy++;
         const justStudied = currentReview;
         reviewQueue.shift(); reviewedSinceBreak++; renderHeader(); afterRate();
@@ -391,7 +402,7 @@ function renderParticleDrill(area){
 function renderInterleaveBreak(area){
   let dots = ''; for(let i=0;i<3;i++) dots += `<div class="rep-dot ${i<interleaveReps?'filled':''}"></div>`;
   area.innerHTML = `<div class="interleave-card">
-    <p class="section-label" style="text-align:center;">Pause ombrage (répétition mêlée)</p>
+    <p class="section-label" style="text-align:center;">Pause « écho » : répète après la voix (shadowing)</p>
     <p>Répète cette phrase à voix haute 3 fois. Mélanger révision et prononciation ancre la mémoire bien plus que des blocs séparés.</p>
     <div class="jp-big">${escapeHtml(interleaveCard.jp)}</div>
     <div class="jp-big-romaji">${escapeHtml(interleaveCard.romaji||'')}</div>

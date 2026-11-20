@@ -69,6 +69,18 @@ function bumpStudyLog(){
 }
 // ---------- Journal d'erreurs ----------
 // Chaque mauvaise réponse est gardée avec sa question complète : on peut la rejouer à l'identique.
+// Les réponses de quiz arrivent en rafale : on regroupe les écritures de meta (~300 ms) au lieu de tout réécrire à chaque clic.
+let metaTimer = null;
+export function saveMetaSoon(){
+  clearTimeout(metaTimer);
+  metaTimer = setTimeout(() => { metaTimer = null; saveMeta(); }, 300);
+}
+export function flushMeta(){ if(metaTimer){ clearTimeout(metaTimer); metaTimer = null; return saveMeta(); } }
+try{
+  window.addEventListener('pagehide', flushMeta);
+  window.addEventListener('visibilitychange', () => { if(typeof document !== 'undefined' && document.visibilityState === 'hidden') flushMeta(); });
+}catch(e){}
+
 export function recordAnswer(src, key, ok, q){
   const m = meta.mistakes = meta.mistakes || {};
   const id = src + '|' + key;
@@ -76,14 +88,14 @@ export function recordAnswer(src, key, ok, q){
     const e = m[id]; if(!e) return;
     e.streak = (e.streak || 0) + 1;
     if(e.streak >= 3){ e.mastered = true; e.masteredOn = todayStr(); }
-    saveMeta();
+    saveMetaSoon();
     return;
   }
   const e = m[id] || { src, key, n: 0 };
   Object.assign(e, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain || '', say: q.say || '', chosen: q.chosen || '', last: todayStr(), streak: 0, mastered: false });
   e.n = (e.n || 0) + 1; m[id] = e;
   const ids = Object.keys(m); if(ids.length > 300){ ids.sort((a, b) => (m[a].last || '').localeCompare(m[b].last || '')).slice(0, ids.length - 300).forEach(i => delete m[i]); }
-  saveMeta();
+  saveMetaSoon();
 }
 export function openMistakes(){ return Object.values(meta.mistakes || {}).filter(e => !e.mastered); }
 export function masteredMistakes(){ return Object.values(meta.mistakes || {}).filter(e => e.mastered); }
@@ -282,7 +294,12 @@ export function bestQuizScore(kind){
   }, null);
 }
 
-export function removePhrase(id){ phrases = phrases.filter(p => p.id !== id); }
+export function removePhrase(id){
+  const p = phrases.find(x => x.id === id);
+  // Tombstone : sans elle, la carte supprimée ici ressusciterait à la prochaine fusion avec un autre appareil.
+  if(p){ (meta.deleted = meta.deleted || {})[cardKey(p.jp, p.romaji)] = nowTs(); saveMeta(); }
+  phrases = phrases.filter(x => x.id !== id);
+}
 
 // ---------- Export / Import JSON (sauvegarde locale manuelle) ----------
 // Exporte toute la progression dans un fichier .json téléchargeable.

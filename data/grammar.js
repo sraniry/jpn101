@@ -34,8 +34,6 @@ export const GRAMMAR_HTML = `
         <tr><td class="jpc">-て + ください <span class="romaji-sm">(-te kudasai)</span></td><td>« Fais ~ stp »</td><td>行ってください <span class="romaji-sm">itte kudasai</span> — allez-y stp</td></tr>
         <tr><td class="jpc">-ませんか <span class="romaji-sm">(-masen ka)</span></td><td>Invitation polie</td><td>行きませんか <span class="romaji-sm">ikimasen ka</span> — on y va ?</td></tr>
         <tr><td class="jpc">-ましょう <span class="romaji-sm">(-mashou)</span></td><td>« Faisons ~ »</td><td>行きましょう <span class="romaji-sm">ikimashou</span> — allons-y</td></tr>
-        <tr><td class="jpc">-ことができます <span class="romaji-sm">(-koto ga dekimasu)</span></td><td>« Je peux / sais ~ »</td><td>行くことができます <span class="romaji-sm">iku koto ga dekimasu</span> — je peux y aller</td></tr>
-        <tr><td class="jpc">-なければなりません <span class="romaji-sm">(-nakereba narimasen)</span></td><td>« Je dois ~ »</td><td>行かなければなりません <span class="romaji-sm">ikanakereba narimasen</span> — je dois y aller</td></tr>
       </table>
       <div class="gram-callout"><b>Astuce de francophone :</b> le japonais n'a pas de futur distinct du présent, ni de genre, ni de pluriel sur le verbe. 行きます <span class="romaji-sm">(ikimasu)</span> peut vouloir dire « je vais », « il va », « ils iront ». Le contexte tranche.</div>
     </div>
@@ -92,8 +90,6 @@ export const GRAMMAR_HTML = `
       <h3>Expressions idiomatiques à ne pas traduire mot à mot</h3>
       <div class="gram-callout"><span class="jp jp-say" data-jp="よろしくお願いします">よろしくお願いします 🔊</span> <span class="romaji-sm">(Yoroshiku onegaishimasu)</span> — pas de traduction littérale. Clôt toute présentation : « comptez sur moi / soyons bien ensemble ».</div>
       <div class="gram-callout"><span class="jp jp-say" data-jp="お疲れ様です">お疲れ様です 🔊</span> <span class="romaji-sm">(Otsukaresama desu)</span> — « tu as dû être fatigué » = salut/merci entre collègues, à toute heure.</div>
-      <div class="gram-callout"><span class="jp jp-say" data-jp="～んですが">〜んですが… 🔊</span> <span class="romaji-sm">(~n desu ga)</span> — laisse la phrase ouverte sur が. Adoucit une demande : « voilà la situation… (pouvez-vous m'aider ?) ».</div>
-      <div class="gram-callout"><span class="jp jp-say" data-jp="～てもらえますか">〜てもらえますか 🔊</span> <span class="romaji-sm">(~te moraemasu ka)</span> — « puis-je recevoir que vous fassiez ~ ? » = la façon polie de demander un service.</div>
       <div class="gram-callout"><b>La négation = politesse.</b> 一緒に行きませんか <span class="romaji-sm">(Issho ni ikimasen ka)</span> (« vous ne venez pas ? ») est plus poli que 行きますか <span class="romaji-sm">(ikimasu ka)</span>. Inviter par la forme négative laisse à l'autre la liberté de refuser.</div>
     </div>
 
@@ -101,14 +97,30 @@ export const GRAMMAR_HTML = `
       <h3>Exemples de la vraie vie — situations à Kyoto</h3>
       <p>Les mêmes structures vues plus haut, dans des situations concrètes que tu vas vraiment rencontrer en voyage.</p>
       <div class="gram-callout"><b>Au konbini, tu hésites devant les bentos :</b><br><span class="jp jp-say" data-jp="これは辛いですか">これは辛いですか？ 🔊</span> <span class="romaji-sm">Kore wa karai desu ka?</span> — Est-ce que c'est épicé ? <span class="romaji-sm">(です sur l'adjectif からい)</span></div>
-      <div class="gram-callout"><b>Au restaurant, la serveuse demande où tu manges :</b><br><span class="jp jp-say" data-jp="店内でお召し上がりですか">店内でお召し上がりですか？ 🔊</span> <span class="romaji-sm">Tennai de omeshiagari desu ka?</span> — Vous mangez sur place ?<br>Réponse : <span class="jp jp-say" data-jp="持ち帰りでお願いします">持ち帰りでお願いします 🔊</span> <span class="romaji-sm">Mochikaeri de onegaishimasu</span> — À emporter, s'il vous plaît <span class="romaji-sm">(で = moyen/manière, pas seulement lieu)</span></div>
       <div class="gram-callout"><b>Tu es perdu près de Fushimi Inari :</b><br><span class="jp jp-say" data-jp="伏見稲荷はどこですか">伏見稲荷はどこですか？ 🔊</span> <span class="romaji-sm">Fushimi Inari wa doko desu ka?</span> — Où est Fushimi Inari ? <span class="romaji-sm">(squelette [lieu]はどこですか)</span></div>
       <div class="gram-callout"><b>À l'auberge, tu demandes le Wi-Fi (chose, pas personne → あります) :</b><br><span class="jp jp-say" data-jp="Wi-Fiはありますか">Wi-Fiはありますか？ 🔊</span> <span class="romaji-sm">Wi-Fi wa arimasu ka?</span> — Il y a du Wi-Fi ?<br>Réponse possible : <span class="jp jp-say" data-jp="ロビーにあります">ロビーにあります 🔊</span> <span class="romaji-sm">Robii ni arimasu</span> — Il y en a dans le hall <span class="romaji-sm">(に = lieu où ça existe)</span></div>
       <div class="gram-callout"><b>Au temple, tu demandes si tu peux prendre une photo :</b><br><span class="jp jp-say" data-jp="写真を撮ってもいいですか">写真を撮ってもいいですか？ 🔊</span> <span class="romaji-sm">Shashin o tottemo ii desu ka?</span> — Je peux prendre une photo ? <span class="romaji-sm">(~てもいいですか = demander la permission, variante de ~てください)</span></div>
-      <div class="gram-callout"><b>Au marché de Nishiki, tu demandes à goûter :</b><br><span class="jp jp-say" data-jp="味見できますか">味見できますか？ 🔊</span> <span class="romaji-sm">Ajimi dekimasu ka?</span> — Je peux goûter ? <span class="romaji-sm">(できます = ことができます raccourci, très courant à l'oral)</span></div>
       <div class="gram-callout"><b>Tu rates ton bus et veux savoir le suivant :</b><br><span class="jp jp-say" data-jp="次のバスは何時に来ますか">次のバスは何時に来ますか？ 🔊</span> <span class="romaji-sm">Tsugi no basu wa nanji ni kimasu ka?</span> — Le prochain bus arrive à quelle heure ? <span class="romaji-sm">(の = possession/lien : « le bus de la suite », に = moment précis)</span></div>
       <div class="gram-callout"><b>Au izakaya le soir, proposer de trinquer :</b><br><span class="jp jp-say" data-jp="一緒に飲みませんか">一緒に飲みませんか？ 🔊</span> <span class="romaji-sm">Issho ni nomimasen ka?</span> — On boit un coup ensemble ? <span class="romaji-sm">(forme négative = invitation polie, vu plus haut)</span></div>
     </div>
+
+
+    <details class="gram-later" style="margin:18px 0;border:1px dashed #c9c1b0;border-radius:10px;padding:4px 12px;background:#faf7f0">
+      <summary style="cursor:pointer;font-weight:600;font-size:13.5px;padding:10px 0;min-height:44px;line-height:1.4">📌 Plus tard (N4) : structures avancées. À ouvrir quand les phrases en ます te semblent faciles.</summary>
+      <div class="gram-section">
+        <h3>Plus tard (N4) : verbe + structures</h3>
+        <p>Tu n'as pas besoin de ça pour commencer. Ces formes demandent de connaître la forme du dictionnaire et la forme en て (voir les leçons de grammaire).</p>
+        <table class="gram">
+          <tr><th>Forme</th><th>Sens</th><th>Exemple</th></tr>
+        <tr><td class="jpc">-ことができます <span class="romaji-sm">(-koto ga dekimasu)</span></td><td>« Je peux / sais ~ »</td><td>行くことができます <span class="romaji-sm">iku koto ga dekimasu</span> — je peux y aller</td></tr>
+        <tr><td class="jpc">-なければなりません <span class="romaji-sm">(-nakereba narimasen)</span></td><td>« Je dois ~ »</td><td>行かなければなりません <span class="romaji-sm">ikanakereba narimasen</span> — je dois y aller</td></tr>
+        </table>
+      <div class="gram-callout"><span class="jp jp-say" data-jp="～てもらえますか">〜てもらえますか 🔊</span> <span class="romaji-sm">(~te moraemasu ka)</span> — « puis-je recevoir que vous fassiez ~ ? » = la façon polie de demander un service.</div>
+      <div class="gram-callout"><span class="jp jp-say" data-jp="～んですが">〜んですが… 🔊</span> <span class="romaji-sm">(~n desu ga)</span> — laisse la phrase ouverte sur が. Adoucit une demande : « voilà la situation… (pouvez-vous m'aider ?) ».</div>
+      <div class="gram-callout"><b>Au restaurant, la serveuse demande où tu manges :</b><br><span class="jp jp-say" data-jp="店内でお召し上がりですか">店内でお召し上がりですか？ 🔊</span> <span class="romaji-sm">Tennai de omeshiagari desu ka?</span> — Vous mangez sur place ?<br>Réponse : <span class="jp jp-say" data-jp="持ち帰りでお願いします">持ち帰りでお願いします 🔊</span> <span class="romaji-sm">Mochikaeri de onegaishimasu</span> — À emporter, s'il vous plaît <span class="romaji-sm">(で = moyen/manière, pas seulement lieu)</span></div>
+      <div class="gram-callout"><b>Au marché de Nishiki, tu demandes à goûter :</b><br><span class="jp jp-say" data-jp="味見できますか">味見できますか？ 🔊</span> <span class="romaji-sm">Ajimi dekimasu ka?</span> — Je peux goûter ? <span class="romaji-sm">(できます = ことができます raccourci, très courant à l'oral)</span></div>
+      </div>
+    </details>
 
     <div class="gram-section">
       <h3>Prononciation : les pièges du francophone</h3>

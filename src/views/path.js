@@ -24,10 +24,10 @@ export function pathSteps(){
   return [
     { id: 'kana', icon: 'あ', title: 'Lire les kana', goal: 'Tu lis hiragana et katakana sans hésiter.', crit: '12 leçons validées', done: k.done, total: k.total, min: '10 min/jour', view: 'kana' },
     { id: 'survie', icon: '🙏', title: 'Phrases de survie', goal: 'Bonjour, merci, s\'il vous plaît, « c\'est combien ? ».', crit: `${survivalTotal} phrases essentielles apprises`, done: Math.min(survival, survivalTotal), total: survivalTotal, min: '5 min/jour', view: 'review' },
+    { id: 'parler', icon: '💬', title: 'Parler au café, au resto, en ville', goal: 'Tu commandes et tu poses des questions.', crit: 'Dialogues débutants terminés', done: convDone, total: begin.length || 18, min: '1 à 2 par jour', view: 'conversation' },
     { id: 'briques', icon: '🧱', title: 'Les briques : radicaux de base', goal: 'Tu reconnais les 51 briques qui composent les kanji.', crit: '51 radicaux vus', done: Math.min(51, Object.keys(S).filter(x => x.startsWith('r:')).length), total: 51, min: '8 par jour', view: 'kanji' },
     { id: 'gram', icon: '📘', title: 'Grammaire de base', goal: 'こそあど, mots interrogatifs, は/が, particules, て-form…', crit: LESSONS.length + ' leçons courtes', done: lessons, total: LESSONS.length, min: '1 leçon par jour', view: 'lessons' },
     { id: 'k100', icon: '漢', title: '100 premiers kanji', goal: 'Tu débloques « Mots que tu sais lire ».', crit: '100 kanji appris', done: Math.min(100, kanjiKnown), total: 100, min: '6 par jour', view: 'kanji' },
-    { id: 'parler', icon: '💬', title: 'Parler au café, au resto, en ville', goal: 'Tu commandes et tu poses des questions.', crit: 'Dialogues débutants terminés', done: convDone, total: begin.length || 18, min: '1 à 2 par jour', view: 'conversation' },
     { id: 'lire', icon: '🍜', title: 'Lire une carte, un panneau', goal: 'Tu lis un menu de ramen et un panneau de gare.', crit: '5 défis ou quiz de menus', done: Math.min(5, readTries), total: 5, min: '5 min/jour', view: 'menus' },
     { id: 'k296', icon: '📖', title: '296 kanji : niveau N5 + N4', goal: 'Les kanji des examens JLPT N5 et N4.', crit: '296 kanji appris', done: Math.min(296, kanjiKnown), total: 296, min: '6 par jour', view: 'kanji' },
     { id: 'k2136', icon: '🏯', title: 'Les 2136 kanji', goal: 'Tout le japonais courant écrit.', crit: '2136 kanji appris', done: kanjiKnown, total: 2136, min: 'un an à 6/jour', view: 'kanji' },
@@ -52,8 +52,8 @@ export function renderPath(){
     const state = s.done >= s.total ? 'done' : (i === cur ? 'now' : (s.done > 0 ? 'part' : 'next'));
     html += `<li class="path-step ${state}"><button type="button" class="path-btn" data-go="${s.view}">
       <span class="path-num">${state === 'done' ? '✓' : i + 1}</span>
-      <span class="path-body"><b>${s.icon} ${escapeHtml(s.title)}</b><small>${escapeHtml(s.goal)}</small>
-        <span class="path-bar"><span style="width:${pct(s)}%"></span></span><small>${escapeHtml(s.crit)} · ${s.done}/${s.total}</small></span>
+      <span class="path-body"><b>${s.icon} ${escapeHtml(s.title)}</b>${state === 'now' ? `<small>📍 Tu es ici : voir le cadre en haut · ${s.done}/${s.total}</small>` : `<small>${escapeHtml(s.goal)}</small>
+        <span class="path-bar"><span style="width:${pct(s)}%"></span></span><small>${escapeHtml(s.crit)} · ${s.done}/${s.total}</small>`}</span>
     </button></li>`;
   });
   html += `</ol><p class="hub-foot">Rien n'est verrouillé. Si une étape te bloque, passe à la suivante et reviens plus tard : c'est normal.</p>`;

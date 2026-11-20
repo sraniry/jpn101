@@ -1,4 +1,4 @@
-import { phrases, registerStudyActivity, addQuizStat, bestQuizScore } from '../storage.js';
+import { phrases, registerStudyActivity, addQuizStat, bestQuizScore, recordAnswer } from '../storage.js';
 import { quizLine } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
 import { SEED_PACK } from '../../data/phrases.js';
@@ -107,6 +107,8 @@ function renderListenQuiz(){
       if(q.answered) return;
       q.answered = true;
       const ok = btn.dataset.ok === 'true';
+      { const good = choices.find(c => c.ok);
+        recordAnswer('listening', isPrix ? 'prix:' + card : 'sens:' + card.jp, ok, { q: isPrix ? `Écoute : combien annonce la caissière ? (${card}円)` : `Écoute : que veut dire « ${card.jp} » ?`, ok: good.label, choices: choices.map(c => c.label), explain: isPrix ? numberHint(card) : (card.romaji || ''), say: jpToSay, chosen: ok ? '' : btn.textContent }); }
       if(ok){ btn.classList.add('correct'); q.correct++; }
       else { btn.classList.add('wrong'); zone.querySelector('[data-ok="true"]').classList.add('correct'); }
       zone.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);

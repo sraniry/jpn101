@@ -9,7 +9,12 @@ import { KANJI_SENTENCES } from '../../data/jlpt-kanji-sentences.js';
 import { KANJI_RADICALS } from '../../data/kanji-radicals.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { phrases, newCard, savePhrases, existingKeySet, cardKey, registerStudyActivity,
-         getExamHistory, addExamRecord, addQuizStat, bestQuizScore, getQuizStats } from '../storage.js';
+         getExamHistory, addExamRecord, addQuizStat, bestQuizScore, getQuizStats, recordAnswer } from '../storage.js';
+
+// Journal d'erreurs : une ligne par question de quiz JLPT (réussite ou faute).
+function logJlpt(key, ok, q, good, choices, explain, chosen, say){
+  try{ recordAnswer('jlpt', String(key).slice(0, 80), ok, { q: String(q).slice(0, 200), ok: good, choices: choices || [good], explain: String(explain || '').replace(/<[^>]*>/g, ''), say: say || '', chosen: ok ? '' : (chosen || '') }); }catch(e){}
+}
 import { refreshCounters } from '../main.js';
 import { speak, speakSequence } from '../tts.js';
 import { celebrate, quizLine } from '../encouragement.js';
@@ -305,6 +310,7 @@ function renderKanjiSensQuiz(panel){
   panel.querySelectorAll('.kqc-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const ok = btn.dataset.correct === 'true';
+      logJlpt('kanji:' + card.k, ok, `Que veut dire ${card.k} ?`, card.fr, choices.map(c => c.fr), '', btn.textContent, card.k);
       if(ok){ btn.classList.add('correct'); q.correct++; }
       else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
@@ -488,6 +494,7 @@ function renderQuizCard(panel){
     btn.addEventListener('click', ()=>{
       const ok = btn.dataset.ok === 'true';
       q.byType[card.type][1]++;
+      logJlpt(card.type + ':' + (card.q || card.jp), ok, card.q || card.jp, card.ok, card.choices, card.explanation, btn.textContent, card.jp);
       if(ok){ btn.classList.add('correct'); q.correct++; q.byType[card.type][0]++; }
       else { btn.classList.add('wrong'); panel.querySelector('[data-ok="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
@@ -695,6 +702,7 @@ function renderPiegesCard(panel){
   panel.querySelectorAll('.kqc-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const good = btn.dataset.ok === 'true';
+      logJlpt('pieges:' + (card.q || card.pre || '') + (card.ok || ''), good, card.q || ('Quel morceau va dans la case ★ ? ' + (card.pre || '') + '＿＿★＿＿' + (card.post || '')), ok, choices, card.explanation, btn.textContent, jp || '');
       if(good){ btn.classList.add('correct'); q.correct++; }
       else { btn.classList.add('wrong'); panel.querySelector('[data-ok="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
@@ -747,6 +755,7 @@ function renderN4ListeningPanel(panel){
   panel.querySelectorAll('.kqc-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const ok = btn.dataset.ok === 'true';
+      logJlpt('listen:' + it.q, ok, it.q, it.ok, choices, it.explanation || '', btn.textContent, '');
       if(ok){ btn.classList.add('correct'); q.correct++; }
       else { btn.classList.add('wrong'); panel.querySelector('[data-ok="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);

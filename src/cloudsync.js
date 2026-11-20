@@ -5,7 +5,8 @@
 // la vraie protection reste le code lui-même : à traiter comme un mot de passe, ne pas le partager.
 // Tant qu'aucun code n'est renseigné, ce module ne fait strictement rien (aucun appel réseau).
 
-import { phrases, meta, storageSet, loadAll, nowTs, cardKey, sanitizeState } from './storage.js';
+import { phrases, meta, storageSet, loadAll, nowTs, sanitizeState } from './storage.js';
+import { mergePhrases, mergeMeta } from './merge.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXm8d0Q4Y3225jz1h_5GPRoxIbZ6HlvM4",
@@ -57,6 +58,17 @@ async function ensureFirebase(){
   return fbReadyPromise;
 }
 
+// Format v3 : tout l'état dans UNE chaîne JSON (0 entrée d'index Firestore, pas de limite des 40 000 index).
+// Lecture rétro-compatible avec l'ancien format { phrases, meta }.
+export function readRemote(d){
+  d = d || {};
+  if(typeof d.state === 'string'){
+    try{ const o = JSON.parse(d.state); return sanitizeState(o.phrases, o.meta); }catch(e){ return { phrases: [], meta: {} }; }
+  }
+  return sanitizeState(d.phrases, d.meta);
+}
+export function packState(ph, me){ return { v: 3, state: JSON.stringify({ phrases: ph, meta: me }) }; }
+function delOf(a, b){ const o = Object.assign({}, (a || {}).deleted || {}); Object.entries((b || {}).deleted || {}).forEach(([k, v]) => { o[k] = Math.max(o[k] || 0, v); }); return o; }
 function docRef(f, code){ return f.doc(f.db, 'progress', code); }
 
 // ---------- Indicateur visuel (bloc "Mes phrases") ----------
@@ -100,13 +112,12 @@ export async function pushToCloud(){
     const ref = docRef(f, code);
     await f.runTransaction(f.db, async t => {
       const snap = await t.get(ref);
-      const r = snap.exists() ? sanitizeState(snap.data().phrases, snap.data().meta) : { phrases: [], meta: {} };
-      t.set(ref, {
-        phrases: mergePhrases(phrases, r.phrases),
-        meta: mergeMeta(meta, r.meta),
+      const r = snap.exists() ? readRemote(snap.data()) : { phrases: [], meta: {} };
+      const mm = mergeMeta(meta, r.meta);
+      t.set(ref, Object.assign(packState(mergePhrases(phrases, r.phrases, mm.deleted), mm), {
         lastModified: meta.lastModified || nowTs(),
         updatedAt: f.serverTimestamp(),
-      });
+      }));
     });
     setIndicator('synced');
   } catch(e) {
@@ -126,49 +137,7 @@ export function schedulePush(){
 // ---------- Pull + FUSION au démarrage ----------
 // Avant : « la version la plus récente écrase tout » → un appareil neuf ou resté hors-ligne pouvait
 // effacer la progression des autres. Maintenant on FUSIONNE : rien n'est perdu.
-const UNION_KEYS = ['convDone', 'readingKnown', 'badgesSeen', 'grammarDrills', 'masteredSkillsSeen', 'lessonsDone', 'textsDone'];
-function unionArr(a, b){ return [...new Set([...(a || []), ...(b || [])])]; }
-function mergeByKey(a, b, pick){
-  const out = Object.assign({}, a || {});
-  Object.entries(b || {}).forEach(([k, v]) => { out[k] = (k in out) ? pick(out[k], v) : v; });
-  return out;
-}
-function newerCard(x, y){
-  const lx = x.last || 0, ly = y.last || 0;
-  if(lx !== ly) return ly > lx ? y : x;
-  return ((y.reps || 0) > (x.reps || 0) || ((y.reps || 0) === (x.reps || 0) && (y.due || 0) > (x.due || 0))) ? y : x;
-}
-export function mergePhrases(a, b){
-  // Clé = contenu de la carte (jp|romaji), pas l'id aléatoire : le pack importé sur deux appareils ne doit pas être doublé.
-  const m = new Map();
-  [...(a || []), ...(b || [])].forEach(c => {
-    const k = cardKey(c.jp, c.romaji), o = m.get(k);
-    if(!o){ m.set(k, c); return; }
-    m.set(k, newerCard(o, c));
-  });
-  return [...m.values()];
-}
-export function mergeMeta(a, b){
-  a = a || {}; b = b || {};
-  const newer = (a.lastModified || 0) >= (b.lastModified || 0) ? a : b, older = newer === a ? b : a;
-  const out = Object.assign({}, older, newer);
-  UNION_KEYS.forEach(k => { out[k] = unionArr(a[k], b[k]); });
-  out.kanjiSrs = mergeByKey(a.kanjiSrs, b.kanjiSrs, newerCard);
-  out.studyLog = mergeByKey(a.studyLog, b.studyLog, (x, y) => Math.max(x, y));
-  out.mistakes = mergeByKey(a.mistakes, b.mistakes, (x, y) => ((y.last || '') > (x.last || '')) ? y : x);
-  const qs = {}; new Set([...Object.keys(a.quizStats || {}), ...Object.keys(b.quizStats || {})]).forEach(k => {
-    const seen = new Set(), list = [];
-    [...((a.quizStats || {})[k] || []), ...((b.quizStats || {})[k] || [])].forEach(e => { const j = JSON.stringify(e); if(!seen.has(j)){ seen.add(j); list.push(e); } });
-    qs[k] = list.sort((x, y) => (x.date || '').localeCompare(y.date || '')).slice(-50);
-  }); out.quizStats = qs;
-  { const seen = new Set(), list = []; [...(a.examHistory || []), ...(b.examHistory || [])].forEach(e => { const j = JSON.stringify(e); if(!seen.has(j)){ seen.add(j); list.push(e); } }); out.examHistory = list.slice(-100); }
-  out.kanaPath = { done: unionArr((a.kanaPath || {}).done, (b.kanaPath || {}).done) };
-  const lastA = a.lastStudyDate || '', lastB = b.lastStudyDate || '';
-  const fresher = lastA >= lastB ? a : b;
-  out.lastStudyDate = fresher.lastStudyDate || null; out.streak = fresher.streak || 0;
-  out.lastModified = Math.max(a.lastModified || 0, b.lastModified || 0);
-  return out;
-}
+export { mergePhrases, mergeMeta };
 function isEmptyLocal(){
   return phrases.length === 0 && !Object.keys(meta.kanjiSrs || {}).length && !(meta.convDone || []).length && !meta.lastStudyDate;
 }
@@ -187,7 +156,7 @@ export async function pullAndMerge(){
       else setIndicator('synced');
       return 'ok';
     }
-    const remote = (()=>{ const d = snap.data() || {}; return Object.assign({}, d, sanitizeState(d.phrases, d.meta)); })();
+    const remote = readRemote(snap.data());
     if(emptyBefore){
       // Appareil neuf : on adopte simplement le cloud, sans rien pousser.
       await storageSet('phrases-v2', JSON.stringify(remote.phrases || []));
@@ -196,8 +165,8 @@ export async function pullAndMerge(){
       setIndicator('synced');
       return 'changed';
     }
-    const mergedPhrases = mergePhrases(phrases, remote.phrases);
     const mergedMeta = mergeMeta(meta, remote.meta);
+    const mergedPhrases = mergePhrases(phrases, remote.phrases, mergedMeta.deleted);
     await storageSet('phrases-v2', JSON.stringify(mergedPhrases));
     await storageSet('meta-v2', JSON.stringify(mergedMeta));
     await loadAll();

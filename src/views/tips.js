@@ -4,10 +4,24 @@ import { CONFUSABLES } from '../../data/confusables.js';
 import { recordAnswer, saveMeta } from '../storage.js';
 import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
+import { kanaPathState } from './kana.js';
+import { kanjiTodayStatus } from './kanji.js';
 
 // ---------- Astuces & leçons de prof ----------
 const dayNumber = () => Math.floor(Date.now() / 86400000);
-export const tipOfTheDay = () => TIPS[dayNumber() % TIPS.length];
+// L'astuce du jour s'adapte au niveau : pas de piège de katakana à qui n'a pas fini les kana.
+export const tipOfTheDay = () => {
+  let themes = null;
+  try{
+    const k = kanaPathState(), n = kanjiTodayStatus().learnedTotal;
+    if(k.done < k.total) themes = ['kana', 'prononciation', 'methode', 'motivation'];
+    else if(n < 100) themes = ['kanji', 'prononciation', 'nombres', 'methode', 'motivation', 'kyoto'];
+  }catch(e){}
+  const pool = themes ? TIPS.filter(t => themes.includes(t.theme)) : TIPS;
+  const list = pool.length ? pool : TIPS;
+  return list[dayNumber() % list.length];
+};
+let tipsShown = 12;
 const rj = t => `<span class="rj-inline">${escapeHtml(t || '')}</span>`;
 function shuffle(a){ a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
@@ -29,7 +43,8 @@ export function renderTips(opts){
   area.innerHTML = html;
   area.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; renderTips(); }));
   area.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => speak(b.dataset.say, 0.8)));
-  area.querySelectorAll('[data-theme]').forEach(b => b.addEventListener('click', () => { theme = b.dataset.theme; renderTips(); }));
+  area.querySelectorAll('[data-theme]').forEach(b => b.addEventListener('click', () => { theme = b.dataset.theme; tipsShown = 12; renderTips(); }));
+  const tm = area.querySelector('#tipsMore'); if(tm) tm.addEventListener('click', () => { tipsShown += 12; renderTips(); });
   wireDrills(area);
 }
 
@@ -38,7 +53,7 @@ function tipsHtml(){
   const today = tipOfTheDay();
   return `<div class="tip-today"><span class="kj-slabel">Astuce du jour</span>${escapeHtml(today.text)}${today.example ? `<div class="mn-kana">${escapeHtml(today.example.jp)} ${rj(today.example.romaji)} — ${escapeHtml(today.example.fr)}</div>` : ''}</div>
     <div class="mn-styles" role="group" aria-label="Thème"><button type="button" data-theme="all" class="${theme === 'all' ? 'on' : ''}">Tout</button>${Object.entries(THEME).map(([k, l]) => `<button type="button" data-theme="${k}" class="${theme === k ? 'on' : ''}">${l}</button>`).join('')}</div>
-    ${list.map(t => `<div class="tip-card"><span class="mk-src">${THEME[t.theme] || t.theme}</span><p>${escapeHtml(t.text)}</p>${t.example ? `<div class="mn-kana">${escapeHtml(t.example.jp)} ${rj(t.example.romaji)} — ${escapeHtml(t.example.fr)} <button type="button" class="kj-audio" data-say="${escapeHtml(t.example.jp)}" aria-label="Écouter">🔊</button></div>` : ''}</div>`).join('')}`;
+    ${list.slice(0, tipsShown).map(t => `<div class="tip-card"><span class="mk-src">${THEME[t.theme] || t.theme}</span><p>${escapeHtml(t.text)}</p>${t.example ? `<div class="mn-kana">${escapeHtml(t.example.jp)} ${rj(t.example.romaji)} — ${escapeHtml(t.example.fr)} <button type="button" class="kj-audio" data-say="${escapeHtml(t.example.jp)}" aria-label="Écouter">🔊</button></div>` : ''}</div>`).join('')}${list.length > tipsShown ? `<button type="button" class="kj-big" id="tipsMore">Voir plus d'astuces (${list.length - tipsShown} autres)</button>` : ''}`;
 }
 
 function mistakesHtml(){

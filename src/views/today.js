@@ -1,10 +1,11 @@
-import { phrases, meta, saveMeta, todayStr, getDueAll, getReviewDue, planToday, getConvDone } from '../storage.js';
+import { phrases, meta, saveMeta, todayStr, planToday, getConvDone, openMistakes } from '../storage.js';
+import { LESSONS } from '../../data/lessons.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
 import { openConversation } from './conversation.js';
 import { escapeHtml } from '../util.js';
 import { celebrate } from '../encouragement.js';
-import { kanjiTodayStatus } from './kanji.js';
+import { kanjiTodayStatus, dueCounts, DUE_PAUSE } from './kanji.js';
 import { todayChallenge } from './menus.js';
 import { reminderHtml, wireReminder } from '../reminder.js';
 import { tipOfTheDay } from './tips.js';
@@ -69,7 +70,8 @@ export function renderToday(){
   const area = document.getElementById('todayArea');
   const plan = planToday();
   const kana = kanaPathState();
-  const due = getReviewDue().length;   // seulement les cartes déjà vues : les nouvelles ne sont pas « en retard »
+  const dc = dueCounts();
+  const due = dc.phrases;   // seulement les cartes déjà vues : les nouvelles ne sont pas « en retard »
   const reviewGoal = Math.min(REVIEW_GOAL_CAP, Math.max(due, phrases.length ? 5 : 0));
   const convs = suggestedConversations(CONV_GOAL);
 
@@ -84,11 +86,22 @@ export function renderToday(){
   const convDone = convProgress >= CONV_GOAL;
   const ch = todayChallenge();
   const challengeDone = (plan.challenge || 0) >= 1;
-  const flagsAll = [kanaDone, kanjiDone, reviewDone, convDone, challengeDone];
-  const minsPre = meta.minutes || 20;
-  const keepPre = minsPre <= 10 ? [kanaDone ? 1 : 0, 4] : (minsPre <= 20 ? [kanaDone ? null : 0, 1, 2, 4].filter(x => x !== null) : [0, 1, 2, 3, 4]);
-  const flags = keepPre.map(i => flagsAll[i]);
-  const doneCount = flags.filter(Boolean).length, total = flags.length;
+  // Leçon de grammaire du jour : la première non faite, dans l'ordre.
+  const lessonsDoneIds = meta.lessonsDone || [];
+  const nextLesson = LESSONS.find(l => !lessonsDoneIds.includes(l.id));
+  const lessonDone = !nextLesson || (plan.lesson || 0) >= 1;
+  // Erreurs à retravailler : 3 questions par jour tant qu'il en reste.
+  const openErr = openMistakes().length;
+  const errGoal = Math.min(3, openErr + (plan.rework || 0));
+  const errDone = openErr === 0 || (plan.rework || 0) >= errGoal;
+
+  const mins = Number(meta.minutes) || 20;
+  // Le plan garde toujours la même forme dans la journée : une étape terminée reste affichée, cochée (jamais retirée).
+  const ids = mins <= 10 ? ['kana', 'kanji', 'challenge']
+    : (mins <= 20 ? ['kana', 'kanji', 'review', 'lesson', 'errors', 'challenge'] : ['kana', 'kanji', 'review', 'lesson', 'errors', 'conv', 'challenge']);
+  const planIds = ids.filter(id => id !== 'errors' || openErr > 0 || (plan.rework || 0) > 0);
+  const flagOf = { kana: kanaDone, kanji: kanjiDone, review: reviewDone, lesson: lessonDone, errors: errDone, conv: convDone, challenge: challengeDone };
+  const doneCount = planIds.filter(id => flagOf[id]).length, total = planIds.length;
 
   // Un seul toast par jour à l'instant précis où toutes les étapes se complètent — pas à chaque
   // re-rendu de l'onglet une fois qu'elles le sont déjà (sinon il réapparaîtrait à chaque clic).
@@ -102,59 +115,42 @@ export function renderToday(){
     : `Prochaine leçon : <b>${escapeHtml(kana.next.row)}</b> (${kana.done}/${kana.total} leçons validées)`;
 
   const gap = meta.lastStudyDate ? Math.round((new Date(todayStr()) - new Date(meta.lastStudyDate)) / 86400000) : 0;
-  const dueK = kj.due + getReviewDue().length;
-  let html = gap >= 2 ? `<div class="resume-banner" role="status">👋 <b>Content de te revoir !</b> Dernière séance il y a ${gap} jours : ce n'est pas grave. ${dueK ? `${dueK} carte${dueK > 1 ? 's' : ''} t'attend${dueK > 1 ? 'ent' : ''} : commence par elles, doucement.` : 'Reprends avec une petite séance de 10 minutes.'}</div>` : '';
+  const dueDetail = [dc.kanji ? `${dc.kanji} kanji` : '', dc.phrases ? `${dc.phrases} phrase${dc.phrases > 1 ? 's' : ''}` : ''].filter(Boolean).join(' + ');
+  let html = gap >= 2 ? `<div class="resume-banner" role="status">👋 <b>Content de te revoir !</b> Dernière séance il y a ${gap} jours : ce n'est pas grave. ${dc.total ? `${dueDetail} à revoir : commence par là, doucement.` : 'Reprends avec une petite séance de 10 minutes.'}</div>` : '';
   html += `<div class="today-head">
     <h3>${doneCount === total ? '🎉 Programme du jour terminé !' : `Programme du jour — ${doneCount}/${total} étapes`}</h3>
-    <p>~${Number(meta.minutes) || 20} minutes, dans l'ordre. La régularité bat l'intensité : mieux vaut un peu chaque jour que 3 h le dimanche.</p>
+    <p>~${mins} minutes, dans l'ordre. La régularité bat l'intensité : mieux vaut un peu chaque jour que 3 h le dimanche.</p>
     <div class="today-track"><div class="today-track-fill" style="width:${(doneCount/total)*100}%"></div></div>
   </div>`;
   const tip = tipOfTheDay();
   html += `<div class="tip-today"><span class="kj-slabel">💡 Astuce de prof du jour</span>${escapeHtml(tip.text)} <button type="button" class="kj-link" id="tipMore">Plus d'astuces</button></div><div class="today-steps">`;
 
-  const steps = [];
-  // Étape 1 — Kana
-  steps.push(`<div class="today-step ${kanaDone?'is-done':''}" data-view="kana">
-    <div class="ts-check">${kanaDone ? '✓' : '1'}</div>
-    <div class="ts-body">
-      <div class="ts-title"><span class="ts-icon">あ</span>Kana du jour<span class="ts-time">~10 min</span></div>
-      <div class="ts-desc">${kanaLabel}</div>
-      <div class="ts-why">Le décodage des kana doit devenir automatique — c'est la fondation de tout le reste.</div>
-    </div>
-    <span class="ts-go">${kanaDone ? 'Revoir' : 'Commencer'} →</span>
-  </div>`);
-
-  // Étape 2 — Kanji (radicaux d'abord, puis N nouveaux par jour + rappels espacés)
+  const STEP = {};
+  STEP.kana = { view: 'kana', icon: 'あ', title: 'Kana du jour', time: '~10 min', desc: kanaLabel,
+    why: 'Le décodage des kana doit devenir automatique — c\'est la fondation de tout le reste.', go: kanaDone ? 'Revoir' : 'Commencer' };
   const kjWhat = kj.phase === 'radicals' ? 'radicaux' : 'kanji';
-  const kjDesc = !kj.started
-    ? 'Commence par les <b>radicaux</b> : les briques qui composent tous les kanji. 8 par jour.'
-    : `${kj.introduced}/${kj.goal} ${kjWhat} nouveaux aujourd'hui · ${kj.due} carte${kj.due>1?'s':''} à réviser · ${kj.learnedTotal} kanji vus sur 2136`;
-  steps.push(`<div class="today-step ${kanjiDone?'is-done':''}" data-view="kanji">
-    <div class="ts-check">${kanjiDone ? '✓' : '2'}</div>
-    <div class="ts-body">
-      <div class="ts-title"><span class="ts-icon">漢</span>Kanji du jour<span class="ts-time">~10 min</span></div>
-      <div class="ts-desc">${kjDesc}</div>
-      <div class="ts-why">2136 kanji = 6 par jour pendant un an. Chaque kanji est découpé en briques, avec une petite histoire, et revient en révision au moment où tu allais l'oublier.</div>
-    </div>
-    <span class="ts-go">${kanjiDone ? 'Revoir' : 'Commencer'} →</span>
-  </div>`);
+  STEP.kanji = { view: 'kanji', icon: '漢', title: 'Kanji du jour', time: '~10 min',
+    desc: kj.paused ? `⏸️ On rattrape d'abord : ${kj.due} cartes à revoir (plus de ${DUE_PAUSE}), les nouveaux kanji reprennent après.`
+      : (!kj.started ? 'Commence par les <b>radicaux</b> : les briques qui composent tous les kanji. 8 par jour.'
+        : `${kj.introduced}/${kj.goal} ${kjWhat} nouveaux aujourd'hui · ${kj.due} carte${kj.due>1?'s':''} à réviser · ${kj.learnedTotal} kanji vus sur 2136`),
+    why: '2136 kanji = 6 par jour pendant un an. Chaque kanji est découpé en briques, avec une petite histoire, et revient en révision au moment où tu allais l\'oublier.', go: kanjiDone ? 'Revoir' : 'Commencer' };
+  STEP.review = { view: 'review', icon: '🔁', title: 'Révisions des phrases', time: '~10 min',
+    desc: phrases.length === 0 ? 'Importe d\'abord le pack A0 → A2 dans « Mes phrases »'
+      : `${Number(plan.reviews)||0}/${reviewGoal} cartes revues aujourd'hui${due>0?` · ${due} à revoir`:''}`,
+    why: 'Répétition espacée : chaque carte revient pile au moment où tu commences à l\'oublier. Rappel actif : tape ta réponse avant de révéler.', go: reviewDone ? 'Revoir' : 'Commencer' };
+  STEP.lesson = { view: 'lessons', icon: '📘', title: nextLesson ? `Leçon : ${nextLesson.title}` : 'Leçons de grammaire', time: '~5 min',
+    desc: nextLesson ? `Leçon ${LESSONS.indexOf(nextLesson) + 1} sur ${LESSONS.length} : la règle, des exemples, puis 6 questions. Il faut 5 bonnes réponses.` : 'Les 12 leçons sont faites. Bravo ! Tu peux les relire quand tu veux.',
+    why: 'Une petite règle de grammaire par jour : c\'est elle qui te permet de construire tes propres phrases, pas seulement de les répéter.', go: lessonDone ? 'Revoir' : 'Commencer' };
+  STEP.errors = { view: 'mistakes', icon: '❗', title: 'Retravailler 3 erreurs', time: '~3 min',
+    desc: errDone ? 'Fait pour aujourd\'hui. Les erreurs réussies 3 fois disparaissent de la liste.' : `${openErr} erreur${openErr > 1 ? 's' : ''} en attente : on en reprend ${errGoal} aujourd'hui.`,
+    why: 'Ce qui t\'a fait trébucher est ce qui te fait le plus progresser. 3 minutes suffisent.', go: errDone ? 'Revoir' : 'Commencer' };
+  STEP.challenge = { view: 'menus', icon: ch.icon, title: `Défi du jour : ${escapeHtml(ch.title)}`, time: '~5 min', desc: escapeHtml(ch.goal), why: escapeHtml(ch.tip), go: challengeDone ? 'Refaire' : 'Relever le défi' };
 
-  // Étape 3 — Révisions SRS (phrases)
-  steps.push(`<div class="today-step ${reviewDone?'is-done':''}" data-view="review">
-    <div class="ts-check">${reviewDone ? '✓' : '3'}</div>
-    <div class="ts-body">
-      <div class="ts-title"><span class="ts-icon">🔁</span>Révisions des phrases<span class="ts-time">~10 min</span></div>
-      <div class="ts-desc">${phrases.length === 0
-        ? 'Importe d\'abord le pack A0 → A2 dans « Mes phrases »'
-        : `${Number(plan.reviews)||0}/${reviewGoal} cartes revues aujourd'hui${getReviewDue().length>0?` · ${getReviewDue().length} en retard`:''}`}</div>
-      <div class="ts-why">Répétition espacée : chaque carte revient pile au moment où tu commences à l'oublier. Rappel actif : tape ta réponse avant de révéler.</div>
-    </div>
-    <span class="ts-go">${reviewDone ? 'Revoir' : 'Commencer'} →</span>
-  </div>`);
-
-  // Étape 4 — Dialogues (débutant d'abord)
-  steps.push(`<div class="today-step today-step-conv ${convDone?'is-done':''}">
-    <div class="ts-check">${convDone ? '✓' : '4'}</div>
+  planIds.forEach((id, n) => {
+    const isDone = flagOf[id], num = isDone ? '✓' : n + 1;
+    if(id === 'conv'){
+      html += `<div class="today-step today-step-conv ${convDone?'is-done':''}">
+    <div class="ts-check">${num}</div>
     <div class="ts-body">
       <div class="ts-title"><span class="ts-icon">💬</span>Dialogues<span class="ts-time">~10 min</span></div>
       <div class="ts-desc">${convs.length ? `${convProgress}/${CONV_GOAL} terminés aujourd'hui — de très courts dialogues pour commander, demander, remercier.` : 'Aucun dialogue disponible'}</div>
@@ -163,23 +159,21 @@ export function renderToday(){
       </div>
       <div class="ts-why">Produire des phrases en contexte consolide bien plus que relire — et prépare les vraies situations.</div>
     </div>
-  </div>`);
-
-  // Étape 5 — Défi du jour (menu / commande)
-  steps.push(`<div class="today-step ${challengeDone?'is-done':''}" data-view="menus">
-    <div class="ts-check">${challengeDone ? '✓' : '5'}</div>
+  </div>`;
+      return;
+    }
+    const st = STEP[id];
+    const title = id === 'challenge' ? st.title : escapeHtml(st.title);
+    html += `<div class="today-step ${isDone?'is-done':''}" data-view="${st.view}" data-step="${id}">
+    <div class="ts-check">${num}</div>
     <div class="ts-body">
-      <div class="ts-title"><span class="ts-icon">${ch.icon}</span>Défi du jour : ${escapeHtml(ch.title)}<span class="ts-time">~5 min</span></div>
-      <div class="ts-desc">${escapeHtml(ch.goal)}</div>
-      <div class="ts-why">${escapeHtml(ch.tip)}</div>
+      <div class="ts-title"><span class="ts-icon">${st.icon}</span>${title}<span class="ts-time">${st.time}</span></div>
+      <div class="ts-desc">${st.desc}</div>
+      <div class="ts-why">${st.why}</div>
     </div>
-    <span class="ts-go">${challengeDone ? 'Refaire' : 'Relever le défi'} →</span>
-  </div>`);
-  // Durée choisie à l'accueil : le programme s'adapte (10 min = l'essentiel, 20 min = sans dialogues, 45 min = tout).
-  const mins = meta.minutes || 20;
-  const keep = mins <= 10 ? [kanaDone ? 1 : 0, 4] : (mins <= 20 ? [kanaDone ? null : 0, 1, 2, 4].filter(x => x !== null) : [0, 1, 2, 3, 4]);
-  const shown = keep.map((idx, n) => steps[idx].replace(/(<div class="ts-check">)[^<]*(<\/div>)/, (m0, o, c) => `${o}${[kanaDone, kanjiDone, reviewDone, convDone, challengeDone][idx] ? '✓' : n + 1}${c}`));
-  html += shown.join('');
+    <span class="ts-go">${st.go} →</span>
+  </div>`;
+  });
   html += `</div>`;
 
   const bonus = bonusOfTheDay();
@@ -196,9 +190,15 @@ export function renderToday(){
   wireReminder(area);
   const bonusEl = area.querySelector('.today-bonus-step');
   if(bonusEl) bonusEl.addEventListener('click', ()=>{ if(bonus.view==='jlpt') import('./jlpt.js').then(m=>{ m.setJlptLevel(bonus.level || 'N5'); gotoTab('jlpt'); }); else gotoTab(bonusEl.dataset.view); });
-  // Étapes 1 et 2 : toute la carte est cliquable, un seul view cible.
-  area.querySelectorAll('.today-step[data-view]').forEach(el=> el.addEventListener('click', ()=>{ gotoTab(el.dataset.view); if(el.dataset.view==='menus') import('./menus.js').then(m=>m.openMenuChallenge(ch.id)); }));
-  // Étape 3 : deux cibles distinctes (une par dialogue suggéré), chacune ouvre directement ce dialogue.
+  // Étapes à une seule cible : toute la carte est cliquable (touche Entrée / Espace gérée par main.js).
+  area.querySelectorAll('.today-step[data-view]').forEach(el=> el.addEventListener('click', ()=>{
+    const step = el.dataset.step, v = el.dataset.view;
+    if(step === 'lesson' && nextLesson){ showView('lessons', { id: nextLesson.id }); return; }
+    if(step === 'errors' && openErr > 0){ showView('mistakes', { rework: true, n: 3 }); return; }
+    gotoTab(v);
+    if(v === 'menus') import('./menus.js').then(m=>m.openMenuChallenge(ch.id));
+  }));
+  // Dialogues : une cible par dialogue suggéré, chacune ouvre directement ce dialogue.
   area.querySelectorAll('.today-conv-pick').forEach(btn=> btn.addEventListener('click', e=>{
     e.stopPropagation();
     gotoTab('conversation');
