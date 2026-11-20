@@ -2,7 +2,7 @@
 let jaVoiceFound = null, voiceProbed = false, speakStatus = null; // null | 'speaking' | 'failed'
 // Chrome (hors Edge) souffre d'un bug macOS où speechSynthesis accepte l'utterance
 // mais ne démarre jamais (onstart/onend/onerror muets). Détecté pour orienter vers Safari.
-const IS_CHROME = /Chrome\//.test(navigator.userAgent) && !/Edg\//.test(navigator.userAgent) && !/OPR\//.test(navigator.userAgent);
+const IS_CHROME = /Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints === 0 && /Chrome\//.test(navigator.userAgent) && !/Edg\//.test(navigator.userAgent) && !/OPR\//.test(navigator.userAgent);
 
 export function probeVoices(){
   if(!('speechSynthesis' in window)){ console.warn('[TTS] speechSynthesis non disponible sur ce navigateur'); return; }

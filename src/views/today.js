@@ -69,7 +69,7 @@ export function renderToday(){
   const area = document.getElementById('todayArea');
   const plan = planToday();
   const kana = kanaPathState();
-  const due = getDueAll().length;
+  const due = getReviewDue().length;   // seulement les cartes déjà vues : les nouvelles ne sont pas « en retard »
   const reviewGoal = Math.min(REVIEW_GOAL_CAP, Math.max(due, phrases.length ? 5 : 0));
   const convs = suggestedConversations(CONV_GOAL);
 

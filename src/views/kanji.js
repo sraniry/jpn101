@@ -54,7 +54,7 @@ export function kanjiTodayStatus(){
   const radSeen = Object.keys(s).filter(k => isRadKey(k)).length;
   const radLeft = RAD_TOTAL - radSeen - d.newR.filter(r => !s[keyR(r)]).length;
   const quotaMet = introduced >= goal || (phase === 'radicals' && radLeft <= 0);
-  const lessonDone = quotaMet ? d.newK.concat(d.newR).every(k => s[k]) : false;
+  const lessonDone = quotaMet ? (d.newK.every(k => s[k]) && d.newR.every(r => s[keyR(r)] || s[r])) : false;
   const learnedTotal = Object.keys(s).filter(k => !isRadKey(k)).length;
   return { due, phase, goal, introduced, lessonDone, reviewed: d.reviewed, learnedTotal, started: Object.keys(s).length > 0 || introduced > 0 };
 }

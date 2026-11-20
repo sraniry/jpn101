@@ -1023,3 +1023,12 @@
 .gram-card b{ color:var(--indigo-deep); font-size:14px; } .gram-card em{ color:#6b6358; font-size:12.5px; }
 .conv-preview{ margin:0 0 12px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:#fffdf8; font-size:13px; }
 .conv-preview summary{ cursor:pointer; font-weight:600; color:var(--indigo-deep); min-height:32px; }
+
+/* explications de dialogue lisibles sur téléphone : une colonne, pleine largeur */
+.bubble .conv-breakdown, .bubble .cbd-row{ max-width:100%; }
+@media (max-width:680px){
+  .bubble{ max-width:94%; }
+  .cbd-row{ grid-template-columns:1fr; gap:1px; margin-bottom:9px; }
+  .cbd-tip{ grid-column:1; }
+  .bubble-audio{ min-width:44px; min-height:44px; font-size:16px; }
+}

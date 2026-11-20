@@ -278,6 +278,7 @@ function renderLessonQuiz(panel, lesson){
   panel.querySelectorAll('.kqc-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const ok = btn.dataset.correct === 'true';
+      recordAnswer('kana', card.jp, ok, { q: `Comment se lit ${card.jp} ?`, ok: card.romaji, choices, explain: `${card.jp} = ${card.romaji}. Dis-le à voix haute 3 fois.`, say: card.jp, chosen: ok ? '' : btn.textContent });
       if(ok){ btn.classList.add('correct'); q.correct++; }
       else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);

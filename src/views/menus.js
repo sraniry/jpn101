@@ -76,6 +76,7 @@ function wireAudio(root){ root.querySelectorAll('[data-say]').forEach(b => b.add
 
 // ---------- accueil ----------
 function renderHome(area){
+  lexicon().catch(() => {});
   const ch = todayChallenge();
   let html = `<div class="skills-intro"><b>Lire une carte, commander, poser des questions.</b> Café de matcha, udon, ramen avec distributeur de tickets, sushi : on s'entraîne sur de vraies cartes, avec les kanji tels qu'on les voit sur place. Astuce : essaie de lire AVANT de révéler la traduction.</div>
   <div class="mn-challenge" id="mnChallenge"><span class="mn-ch-tag">Défi du jour</span><b>${ch.icon} ${escapeHtml(ch.title)}</b><span>${escapeHtml(ch.goal)}</span><span class="ts-go">Relever le défi →</span></div>
@@ -240,7 +241,14 @@ function buildChallengeQuiz(ch){
 }
 
 // ---------- lecteur de quiz ----------
+// Romaji sous chaque choix : direct pour les kana, via le lexique pour les kanji (menus, kit, mots).
+function choiceRj(c){
+  if(isKanaStr(c)) return `<span class="mn-ch-rj">${rj(c)}</span>`;
+  const e = lexCache && lexCache.lex.get(c);
+  return e && e.kana ? `<span class="mn-ch-rj">${rj(e.kana)}</span>` : '';
+}
 function renderQuiz(area){
+  if(!lexCache) lexicon().then(() => { if(ui.quiz && document.getElementById('mnFb') && !ui.answered) { const a = document.getElementById('mnFb').closest('.kj-card'); if(a && !a.dataset.rj){ a.dataset.rj = 1; a.querySelectorAll('.mn-choice').forEach(b => { if(!b.querySelector('.mn-ch-rj')) b.insertAdjacentHTML('beforeend', choiceRj(b.dataset.c)); }); } } }).catch(() => {});
   const z = ui.quiz;
   if(!z || !z.length){ go('home'); return; }
   ui.i = ui.i || 0; ui.right = ui.right || 0;
@@ -250,7 +258,7 @@ function renderQuiz(area){
     if(ui.challenge){ planMark('challenge', 1); }
     registerStudyActivity();
     celebrate('reviewCount', { emoji: '🍣', title: ui.challenge ? 'Défi du jour réussi' : 'Quiz terminé', params: { n: z.length } });
-    area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div>
+    area.innerHTML = `<div class="conv-done">${ui.right / z.length >= 0.6 ? '<div class="stamp" style="margin:0 auto 14px;">合格</div>' : ''}
       <h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${ui.right} / ${z.length}${perfect ? ' — parfait !' : ''}</h3>
       <p style="color:#7a7268;font-size:13.5px;">${perfect ? 'Tu peux commander les yeux fermés.' : 'Refais-le : les réponses restent en mémoire plus longtemps quand on se trompe puis qu\'on corrige.'}</p>
       <button class="continue-btn" id="mnAgain" style="margin-top:16px;">Recommencer</button> <button class="conv-back" id="mnHome" style="margin-top:16px;">← Menus</button></div>`;
@@ -265,7 +273,7 @@ function renderQuiz(area){
   area.innerHTML = `<div class="kj-top"><button class="conv-back" id="mnBack">← Quitter</button><span>${ui.challenge ? ui.challenge.icon + ' ' + escapeHtml(ui.challenge.title) : escapeHtml(ui.title || '')}</span><span>${ui.i + 1} / ${z.length}</span></div>
     <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / z.length) * 100}%"></div></div>
     <div class="kj-card"><p class="mn-q">${escapeHtml(q.q)}</p>
-      <div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${isKanaStr(c) ? `<span class="mn-ch-rj">${rj(c)}</span>` : ''}</button>`).join('')}</div><div id="mnFb"></div></div>`;
+      <div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${choiceRj(c)}</button>`).join('')}</div><div id="mnFb"></div></div>`;
   wireBack();
   area.querySelectorAll('.kj-choice').forEach(b => b.addEventListener('click', () => {
     const ok = b.dataset.c === q.ok;
