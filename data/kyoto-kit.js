@@ -783,55 +783,55 @@ export const KIT_VOCAB = [
 export const KIT_PHRASES = [
  {
   "jp": "京都駅はどこですか。",
-  "kana": "きょうとえきはどこですか",
+  "kana": "きょうと えき は どこ です か",
   "fr": "Où est la gare de Kyoto ?",
   "when": "Pour demander ton chemin"
  },
  {
   "jp": "この電車は京都駅に行きますか。",
-  "kana": "このでんしゃはきょうとえきにいきますか",
+  "kana": "この でんしゃ は きょうと えき に いきます か",
   "fr": "Ce train va-t-il à la gare de Kyoto ?",
   "when": "Avant de monter"
  },
  {
   "jp": "京都駅までいくらですか。",
-  "kana": "きょうとえきまでいくらですか",
+  "kana": "きょうと えき まで いくら です か",
   "fr": "Combien coûte le trajet jusqu'à la gare de Kyoto ?",
   "when": "Au guichet ou devant la machine"
  },
  {
   "jp": "ICカードにチャージしたいです。",
-  "kana": "アイシーカードにチャージしたいです",
+  "kana": "アイシー カード に チャージ したい です",
   "fr": "Je voudrais recharger ma carte IC.",
   "when": "À la machine ou au guichet"
  },
  {
   "jp": "切符はどこで買えますか。",
-  "kana": "きっぷはどこでかえますか",
+  "kana": "きっぷ は どこ で かえます か",
   "fr": "Où peut-on acheter un billet ?",
   "when": "Dans une gare"
  },
  {
   "jp": "乗り換えはどこですか。",
-  "kana": "のりかえはどこですか",
+  "kana": "のりかえ は どこ です か",
   "fr": "Où est la correspondance ?",
   "when": "Gare avec plusieurs lignes"
  },
  {
   "jp": "何番線ですか。",
-  "kana": "なんばんせんですか",
+  "kana": "なんばんせん です か",
   "fr": "C'est quel quai ?",
   "when": "Quand tu cherches ton train"
  },
  {
   "jp": "次の駅は何ですか。",
-  "kana": "つぎのえきはなんですか",
+  "kana": "つぎ の えき は なん です か",
   "fr": "Quelle est la prochaine gare ?",
   "when": "Dans le train"
  },
  {
   "jp": "この席は空いていますか。",
-  "kana": "このせきはあいていますか",
+  "kana": "この せき は あいています か",
   "fr": "Cette place est-elle libre ?",
   "when": "Dans le train ou le bus"
  },
@@ -843,133 +843,133 @@ export const KIT_PHRASES = [
  },
  {
   "jp": "このバスは清水寺に行きますか。",
-  "kana": "このバスはきよみずでらにいきますか",
+  "kana": "この バス は きよみずでら に いきます か",
   "fr": "Ce bus va-t-il à Kiyomizu-dera ?",
   "when": "À l'arrêt, avant de monter"
  },
  {
   "jp": "金閣寺に行くバス停はどこですか。",
-  "kana": "きんかくじにいくバスていはどこですか",
+  "kana": "きんかくじ に いく バスてい は どこ です か",
   "fr": "Quel est l'arrêt pour Kinkaku-ji ?",
   "when": "À demander au chauffeur ou à un passant"
  },
  {
   "jp": "京都駅に行くバスは何番ですか。",
-  "kana": "きょうとえきにいくバスはなんばんですか",
+  "kana": "きょうと えき に いく バス は なんばん です か",
   "fr": "Quel bus va à la gare de Kyoto ?",
   "when": "À l'arrêt"
  },
  {
   "jp": "両替できますか。",
-  "kana": "りょうがえできますか",
+  "kana": "りょうがえ できます か",
   "fr": "Peut-on faire de la monnaie ?",
   "when": "Quand tu n'as qu'un gros billet"
  },
  {
   "jp": "ICカードで払えますか。",
-  "kana": "アイシーカードではらえますか",
+  "kana": "アイシー カード で はらえます か",
   "fr": "Puis-je payer avec une carte IC ?",
   "when": "Bus, boutique"
  },
  {
   "jp": "拝観料はいくらですか。",
-  "kana": "はいかんりょうはいくらですか",
+  "kana": "はいかんりょう は いくら です か",
   "fr": "Combien coûte l'entrée ?",
   "when": "Devant le temple"
  },
  {
   "jp": "何時まで開いていますか。",
-  "kana": "なんじまであいていますか",
+  "kana": "なんじ まで あいています か",
   "fr": "Jusqu'à quelle heure est-ce ouvert ?",
   "when": "Temple, magasin"
  },
  {
   "jp": "写真を撮ってもいいですか。",
-  "kana": "しゃしんをとってもいいですか",
+  "kana": "しゃしん を とって も いい です か",
   "fr": "Puis-je prendre une photo ?",
   "when": "Dans un temple ou chez quelqu'un"
  },
  {
   "jp": "ここで靴を脱ぎますか。",
-  "kana": "ここでくつをぬぎますか",
+  "kana": "ここ で くつ を ぬぎます か",
   "fr": "On enlève ses chaussures ici ?",
   "when": "À l'entrée d'un bâtiment"
  },
  {
   "jp": "御朱印をお願いします。",
-  "kana": "ごしゅいんをおねがいします",
+  "kana": "ごしゅいん を おねがいします",
   "fr": "Un 御朱印, s'il vous plaît.",
   "when": "En tendant ton carnet"
  },
  {
   "jp": "おみくじはいくらですか。",
-  "kana": "おみくじはいくらですか",
+  "kana": "おみくじ は いくら です か",
   "fr": "Combien coûte un omikuji ?",
   "when": "Dans un sanctuaire"
  },
  {
   "jp": "温めてください。",
-  "kana": "あたためてください",
+  "kana": "あたためて ください",
   "fr": "Pouvez-vous le chauffer, s'il vous plaît ?",
   "when": "Au konbini"
  },
  {
   "jp": "袋は要りません。",
-  "kana": "ふくろはいりません",
+  "kana": "ふくろ は いりません",
   "fr": "Je n'ai pas besoin de sac.",
   "when": "Au konbini"
  },
  {
   "jp": "箸をください。",
-  "kana": "はしをください",
+  "kana": "はし を ください",
   "fr": "Des baguettes, s'il vous plaît.",
   "when": "Au konbini"
  },
  {
   "jp": "カードで払えますか。",
-  "kana": "カードではらえますか",
+  "kana": "カード で はらえます か",
   "fr": "Puis-je payer par carte ?",
   "when": "Boutique, restaurant"
  },
  {
   "jp": "現金のみですか。",
-  "kana": "げんきんのみですか",
+  "kana": "げんきん のみ です か",
   "fr": "C'est espèces uniquement ?",
   "when": "Avant de commander"
  },
  {
   "jp": "領収書をお願いします。",
-  "kana": "りょうしゅうしょをおねがいします",
+  "kana": "りょうしゅうしょ を おねがいします",
   "fr": "Un reçu, s'il vous plaît.",
   "when": "À la caisse"
  },
  {
   "jp": "助けてください。",
-  "kana": "たすけてください",
+  "kana": "たすけて ください",
   "fr": "Aidez-moi, s'il vous plaît.",
   "when": "En cas de problème"
  },
  {
   "jp": "道に迷いました。",
-  "kana": "みちにまよいました",
+  "kana": "みち に まよいました",
   "fr": "Je me suis perdu(e).",
   "when": "Pour demander de l'aide"
  },
  {
   "jp": "もう一度お願いします。",
-  "kana": "もういちどおねがいします",
+  "kana": "もう いちど おねがいします",
   "fr": "Encore une fois, s'il vous plaît.",
   "when": "Quand tu n'as pas compris"
  },
  {
   "jp": "ゆっくり話してください。",
-  "kana": "ゆっくりはなしてください",
+  "kana": "ゆっくり はなして ください",
   "fr": "Parlez lentement, s'il vous plaît.",
   "when": "Quand ça va trop vite"
  },
  {
   "jp": "英語は話せますか。",
-  "kana": "えいごははなせますか",
+  "kana": "えいご は はなせます か",
   "fr": "Parlez-vous anglais ?",
   "when": "En dernier recours"
  }

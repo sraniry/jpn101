@@ -86,7 +86,7 @@ function renderCoreList(list){
   const core = SEED_PACK.filter(r => CORE_SET.has(r.jp))
     .slice().sort((a,b)=> levelRank(a.level) - levelRank(b.level));
   let lastLevel = null;
-  list.innerHTML = `<p style="font-size:12.5px;color:#7a7268;margin:0 0 10px;">Les <b>${core.length} phrases ⭐</b> qui couvrent ~80 % des situations réelles. Si tu manques de temps, maîtrise-les en priorité.</p>` +
+  list.innerHTML = `<p style="font-size:12.5px;color:#5f574d;margin:0 0 10px;">Les <b>${core.length} phrases ⭐</b> qui couvrent ~80 % des situations réelles. Si tu manques de temps, maîtrise-les en priorité.</p>` +
     core.map(r=>{
       const added = inSrs.has(cardKey(r.jp, r.romaji));
       const header = (r.level !== lastLevel) ? (lastLevel = r.level, levelHeaderHtml(r.level)) : '';

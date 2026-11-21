@@ -1,9 +1,10 @@
 import { MENUS, MENU_VOCAB, MENU_PHRASES, MENU_ASK, MENU_CHALLENGES } from '../../data/menus.js';
+import { ASK_LEX, ASK_PARTICLES } from '../../data/ask-lexicon.js';
 import { KIT_VOCAB, KIT_PHRASES, KIT_ASK, KIT_TIPS, KIT_CHALLENGES } from '../../data/kyoto-kit.js';
 import { planMark, registerStudyActivity, addQuizStat, recordAnswer, meta } from '../storage.js';
 import { kanaPathState } from './kana.js';
 import { speak } from '../tts.js';
-import { escapeHtml, kanaToRomaji } from '../util.js';
+import { escapeHtml, kanaToRomaji, romajiPhrase } from '../util.js';
 import { celebrate } from '../encouragement.js';
 
 let DECK_CACHE = null, RAD_CACHE = null;
@@ -164,7 +165,7 @@ function renderPhrases(area){
     <div class="skills-intro">Écoute, répète à voix haute, puis choisis les 5 que tu utiliseras vraiment. La structure qui sert partout : <b>ce que tu veux + を + ください</b>.</div>`;
   src.forEach(p => {
     html += `<div class="mn-phrase"><div class="mn-ph-top"><span class="mn-jp-s">${escapeHtml(p.jp)}</span><button class="kj-audio" data-say="${escapeHtml(p.jp)}">🔊</button></div>
-      <div class="mn-kana">${rj(p.kana)}</div><div class="mn-ph-fr">${escapeHtml(p.fr)}</div><div class="mn-when">${escapeHtml(p.when)}</div></div>`;
+      <div class="mn-kana"><span class="rj-inline">${escapeHtml(romajiPhrase(p.kana))}</span></div><div class="mn-ph-fr">${escapeHtml(p.fr)}</div><div class="mn-when">${escapeHtml(p.when)}</div></div>`;
   });
   html += `<div class="mn-actions"><span></span><button class="continue-btn" id="mnQuiz">Quiz →</button></div>`;
   area.innerHTML = html; wireBack(); wireAudio(area);
@@ -241,8 +242,39 @@ function buildChallengeQuiz(ch){
 }
 
 // ---------- lecteur de quiz ----------
-// Romaji sous chaque choix : direct pour les kana, via le lexique pour les kanji (menus, kit, mots).
+// Romaji + mots-clés sous chaque choix : on découpe la phrase avec le mini-lexique des défis (data/ask-lexicon.js).
+const ASK_MAP = new Map(ASK_LEX.map(([j, k, f]) => [j, { k, f, j }]));
+const ASK_MAX = Math.max(...[...ASK_MAP.keys()].map(s => s.length));
+function askSegment(t){
+  const out = []; let unk = '', i = 0;
+  const flush = () => { if(unk){ out.push({ k: unk, j: unk, bad: /[㐀-鿿]/.test(unk) }); unk = ''; } };
+  while(i < t.length){
+    if(/[。、！？\s]/.test(t[i])){ flush(); i++; continue; }
+    let hit = null;
+    for(let n = Math.min(ASK_MAX, t.length - i); n >= 1; n--){
+      const s = t.slice(i, i + n);
+      if(ASK_MAP.has(s)){ hit = [s, ASK_MAP.get(s)]; break; }
+      if(n <= 2 && ASK_PARTICLES[s]){ hit = [s, { k: s, j: s, p: true }]; break; }
+    }
+    // un は/を/が… collé à un nom est une particule, même si « はい » existe dans le lexique
+    if(hit && i > 0 && out.length && !out[out.length - 1].p && hit[0].length <= 2 && !hit[1].p && ASK_PARTICLES[t[i]]) hit = [t[i], { k: t[i], j: t[i], p: true }];
+    if(hit){ flush(); out.push(hit[1]); i += hit[0].length; } else { unk += t[i]; i++; }
+  }
+  flush(); return out;
+}
+function askRomaji(text){
+  const seg = askSegment(text);
+  if(!seg.length || seg.some(x => x.bad)) return null;
+  const rjs = seg.map(x => x.p ? ASK_PARTICLES[x.k] : kanaToRomaji(x.k));
+  const gloss = []; const seen = new Set();
+  seg.forEach(x => { if(x.f && !seen.has(x.j) && !/^(です|ですか|ます か|ました|ません|ください)$/.test(x.k)){ seen.add(x.j); gloss.push(`${x.j} = ${x.f}`); } });
+  return { rj: rjs.join(' '), gloss: gloss.slice(0, 5).join(' · ') };
+}
 function choiceRj(c){
+  if(/[ぁ-ヶ㐀-鿿]/.test(c)){
+    const a = askRomaji(c);
+    if(a) return `<span class="mn-ch-rj">${escapeHtml(a.rj)}</span>${a.gloss ? `<span class="mn-ch-gloss" style="display:block;font-size:12px;color:#5f574d;font-family:inherit">${escapeHtml(a.gloss)}</span>` : ''}`;
+  }
   if(isKanaStr(c)) return `<span class="mn-ch-rj">${rj(c)}</span>`;
   const e = lexCache && lexCache.lex.get(c);
   return e && e.kana ? `<span class="mn-ch-rj">${rj(e.kana)}</span>` : '';
@@ -260,7 +292,7 @@ function renderQuiz(area){
     celebrate('reviewCount', { emoji: '🍣', title: ui.challenge ? 'Défi du jour réussi' : 'Quiz terminé', params: { n: z.length } });
     area.innerHTML = `<div class="conv-done">${ui.right / z.length >= 0.6 ? '<div class="stamp" style="margin:0 auto 14px;">合格</div>' : ''}
       <h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${ui.right} / ${z.length}${perfect ? ' — parfait !' : ''}</h3>
-      <p style="color:#7a7268;font-size:13.5px;">${perfect ? 'Tu peux commander les yeux fermés.' : 'Refais-le : les réponses restent en mémoire plus longtemps quand on se trompe puis qu\'on corrige.'}</p>
+      <p style="color:#5f574d;font-size:13.5px;">${perfect ? 'Tu peux commander les yeux fermés.' : 'Refais-le : les réponses restent en mémoire plus longtemps quand on se trompe puis qu\'on corrige.'}</p>
       <button class="continue-btn" id="mnAgain" style="margin-top:16px;">Recommencer</button> <button class="conv-back" id="mnHome" style="margin-top:16px;">← Menus</button></div>`;
     document.getElementById('mnHome').addEventListener('click', () => go('home'));
     document.getElementById('mnAgain').addEventListener('click', () => {
@@ -302,7 +334,7 @@ async function renderGuess(area){
     const sc = ui.score; addQuizStat('menus-guess', sc.ok, ui.queue.length); registerStudyActivity();
     if(ui.challenge) planMark('challenge', 1);
     area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${sc.ok} trouvés, ${sc.near} presque, ${sc.miss} ratés</h3>
-      <p style="color:#7a7268;font-size:13.5px;">Ce qui compte : repérer les kanji connus. Chaque kanji appris rend la carte plus lisible.</p>
+      <p style="color:#5f574d;font-size:13.5px;">Ce qui compte : repérer les kanji connus. Chaque kanji appris rend la carte plus lisible.</p>
       <button class="continue-btn" id="mnAgain" style="margin-top:16px;">Rejouer</button> <button class="conv-back" id="mnHome" style="margin-top:16px;">← Menus</button></div>`;
     document.getElementById('mnHome').addEventListener('click', () => go('home'));
     document.getElementById('mnAgain').addEventListener('click', () => go('guess', { menuId: ui.menuId }));

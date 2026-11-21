@@ -1,4 +1,4 @@
-import { meta, saveMeta, todayStr, nowTs, rate, registerStudyActivity, recordAnswer, getReviewDue } from '../storage.js';
+import { meta, saveMeta, todayStr, nowTs, rate, registerStudyActivity, recordAnswer, getReviewDue, planToday } from '../storage.js';
 import { speak } from '../tts.js';
 import { escapeHtml, escapeRj, rjMark, kanaToRomaji } from '../util.js';
 import { celebrate } from '../encouragement.js';
@@ -26,7 +26,11 @@ async function loadData(){
 }
 
 // ---------- état persistant ----------
-export const cfg = () => Object.assign({ perDay: 6, radPerDay: 8 }, meta.kanjiCfg || {});
+export const cfg = () => {
+  const c = Object.assign({ perDay: 6, radPerDay: 8 }, meta.kanjiCfg || {});
+  const n = (v, d) => { v = Math.trunc(Number(v)); return Number.isFinite(v) && v >= 1 && v <= 30 ? v : d; };
+  return { perDay: n(c.perDay, 6), radPerDay: n(c.radPerDay, 8) };
+};
 const srs = () => (meta.kanjiSrs = meta.kanjiSrs || {});
 function daily(){
   const t = todayStr();
@@ -60,11 +64,24 @@ export function kanjiTodayStatus(){
   const introduced = phase === 'radicals' ? d.newR.length : d.newK.length;
   const radSeen = Object.keys(s).filter(k => isRadKey(k)).length;
   const radLeft = RAD_TOTAL - radSeen - d.newR.filter(r => !s[keyR(r)]).length;
-  const paused = due > DUE_PAUSE && introduced === 0;
+  if(d.dueStart === undefined) d.dueStart = Object.values(s).filter(c => c.due <= now && (c.reps || 0) > 0).length;   // cartes dues au début de la journée : c'est CE rattrapage qui compte pour l'étape
+  const paused = d.dueStart > DUE_PAUSE && introduced === 0;
   const quotaMet = introduced >= goal || (phase === 'radicals' && radLeft <= 0) || paused;
   const lessonDone = quotaMet ? (d.newK.every(k => s[k]) && d.newR.every(r => s[keyR(r)] || s[r])) : false;
   const learnedTotal = Object.keys(s).filter(k => !isRadKey(k)).length;
-  return { due, paused, phase, goal, introduced, lessonDone, reviewed: d.reviewed, learnedTotal, started: Object.keys(s).length > 0 || introduced > 0 };
+  return { due, dueStart: d.dueStart, paused, phase, goal, introduced, lessonDone, reviewed: d.reviewed, learnedTotal, started: Object.keys(s).length > 0 || introduced > 0 };
+}
+
+// Étape « Kanji du jour » : une fois validée, elle reste validée (plan.kanjiOk), même si des cartes
+// ratées redeviennent dues 10 minutes plus tard. Validée = leçon du jour faite ET rattrapage du jour fait
+// (toutes les cartes dues du matin, ou au moins 60 révisions, plafond d'une session).
+export function kanjiStepDone(){
+  const p = planToday();
+  if(p.kanjiOk) return true;
+  const st = kanjiTodayStatus();
+  const target = Math.min(st.dueStart || 0, DUE_PAUSE);
+  if(st.lessonDone && (st.due === 0 || (Number(st.reviewed) || 0) >= target)){ p.kanjiOk = true; saveMeta(false); return true; }
+  return false;
 }
 
 function newCardRec(){ return { interval: 0, ease: 2.5, reps: 0, due: nowTs(), lapses: 0, intro: todayStr() }; }
@@ -178,6 +195,7 @@ export async function renderKanji(){
   else if(sub === 'radicals') renderRadicals(area);
   else if(sub === 'words') renderWords(area);
   else if(sub === 'wquiz') renderWordQuiz(area);
+  try{ kanjiStepDone(); }catch(e){}   // fige l'étape du jour dès qu'elle est atteinte
 }
 function go(s, extra){ sub = s; ui = extra || {}; renderKanji(); }
 
@@ -206,7 +224,7 @@ function renderHome(area){
   const inRad = st.phase === 'radicals';
   const pending = [...daily().newK, ...daily().newR].filter(k => !s[k]).length;
   const newLabel = inRad ? 'radicaux' : 'kanji';
-  const remainingToday = Math.max(0, st.goal - (inRad ? daily().newR.length : daily().newK.length)) + pending;
+  const remainingToday = st.paused ? 0 : Math.max(0, st.goal - (inRad ? daily().newR.length : daily().newK.length)) + pending;
 
   let html = `<div class="skills-intro"><b>Les 2 136 kanji d'usage courant, sans pression.</b> Avec ${cfg().perDay} nouveaux kanji par jour, tu les as tous en ~${Math.ceil(TOTAL / cfg().perDay / 30)} mois. On commence par les <b>radicaux</b> : ce sont les briques qui composent tous les kanji. Quand tu les reconnais, un kanji n'est plus un dessin compliqué, c'est une petite histoire.</div>`;
 
@@ -222,7 +240,7 @@ function renderHome(area){
 
   html += `<div class="kj-actions">
     <button class="kj-big ${st.due ? 'primary' : ''}" id="kjReview" ${st.due ? '' : 'disabled'}>🔁 Réviser <b>${st.due}</b> carte${st.due > 1 ? 's' : ''}</button>
-    <button class="kj-big ${remainingToday ? 'primary' : ''}" id="kjLesson" ${remainingToday ? '' : 'disabled'}>✨ Apprendre ${remainingToday ? remainingToday + ' ' + newLabel + ' nouveau' + (remainingToday > 1 ? 'x' : '') : '— quota du jour atteint'}</button>
+    <button class="kj-big ${remainingToday ? 'primary' : ''}" id="kjLesson" ${remainingToday ? '' : 'disabled'}>${st.paused ? '⏸️ Nouveaux kanji en pause' : '✨ Apprendre ' + (remainingToday ? remainingToday + ' ' + newLabel + ' nouveau' + (remainingToday > 1 ? 'x' : '') : '— quota du jour atteint')}</button>
   </div>`;
   if(inRad){
     html += `<div class="kj-note">🧱 <b>Phase 1 : les radicaux de base</b> (${cfg().radPerDay} par jour, environ ${Math.ceil(starters.length / cfg().radPerDay)} jours). Les kanji commencent ensuite automatiquement. <button class="kj-link" id="kjSkip">Passer aux kanji tout de suite</button></div>`;
@@ -279,7 +297,7 @@ function renderLearnCard(area){
     <div class="kj-card kj-learn">${front}${back}</div>
     <div class="kj-nav">
       ${ui.i > 0 ? '<button class="conv-back" id="kjPrev">←</button>' : '<span></span>'}
-      <button class="continue-btn" id="kjNext">${ui.i + 1 < ui.items.length ? 'Suivant' : 'Mini-quiz →'}</button>
+      <button class="continue-btn sticky-cta" id="kjNext">${ui.i + 1 < ui.items.length ? 'Suivant' : 'Mini-quiz →'}</button>
     </div>
     <p class="kj-tip">Prends 20 secondes : lis l'histoire à voix haute, trace le kanji du doigt, imagine la scène.</p>`;
   wireChips(area); wireAudio(area);
@@ -332,9 +350,10 @@ function renderQuizQ(area){
     ui.results = ui.results || {}; ui.results[key] = ok; if(ok) ui.right++;
     const data = itemData(it);
     recordAnswer(it.kind === 'r' ? 'radical' : 'kanji', key, ok, { q: `Que veut dire ${g} ?`, ok: labelOf(it), choices, explain: it.kind === 'r' ? (data.r.story || '') : (data.d.st || ''), say: it.kind === 'k' && data.d.ex ? data.d.ex[1] : '', chosen: b.dataset.c });
-    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ C\'était : ' + escapeHtml(labelOf(it))}</div>${it.kind === 'k' ? readingsHtml(data.d) : radSayHtml(data.r)}${!ok ? `<div class="kj-story"><span class="kj-slabel">💡 Image pour retenir</span>${escapeHtml(it.kind === 'k' ? (data.d.st || '') : (data.r.story || ''))}</div>` : ''}<button class="continue-btn" id="kjQn">Continuer</button>`;
+    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ C\'était : ' + escapeHtml(labelOf(it))}</div>${it.kind === 'k' ? readingsHtml(data.d) : radSayHtml(data.r)}${!ok ? `<div class="kj-story"><span class="kj-slabel">💡 Image pour retenir</span>${escapeHtml(it.kind === 'k' ? (data.d.st || '') : (data.r.story || ''))}</div>` : ''}<button class="continue-btn sticky-cta" id="kjQn">Continuer</button>`;
     wireAudio(document.getElementById('kjFb'));
-    document.getElementById('kjQn').addEventListener('click', () => { ui.qi++; renderKanji(); });
+    document.getElementById('kjQn').addEventListener('click', () => { ui.qi++; renderKanji(); window.scrollTo({ top: 0 }); });
+    setTimeout(() => { const q = document.getElementById('kjQn'); if(q) q.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 60);
     if(it.kind === 'k' && data.d.ex) speak(data.d.ex[1], 0.85);
   }));
 }
@@ -348,16 +367,12 @@ function dueKeys(){
 // gardée dans meta.kanjiNotes et réaffichée ensuite.
 function leechBox(area, key, data){
   const c = srs()[key];
-  if(!c || (c.lapses || 0) < 4){
-    const own = (meta.kanjiNotes || {})[key];
-    if(own) area.querySelector('#kjCard')?.insertAdjacentHTML('beforeend', `<div class="kj-story"><span class="kj-slabel">✏️ Ton image</span>${escapeHtml(own)}</div>`);
-    return;
-  }
+  if(!c || (Number(c.lapses) || 0) < 4) return;   // « Ton image » est déjà affichée par la fiche (kanjiBack)
   c.leech = true;
   const alts = (WORDS || []).filter(w => w.jp.includes(key) && w.jp !== (data.ex || [])[0]).slice(0, 3);
   const own = (meta.kanjiNotes || {})[key] || '';
   const box = document.createElement('div'); box.className = 'kj-note';
-  box.innerHTML = `<b>🩹 Carte difficile</b> : tu l'as oubliée ${c.lapses} fois, ce n'est pas grave, ça arrive à tout le monde. Change d'image : invente la tienne (la plus bizarre est la meilleure).
+  box.innerHTML = `<b>🩹 Carte difficile</b> : tu l'as oubliée ${Number(c.lapses) || 0} fois, ce n'est pas grave, ça arrive à tout le monde. Change d'image : invente la tienne (la plus bizarre est la meilleure).
     ${alts.length ? `<div>Autres mots pour l'ancrer : ${alts.map(w => `<b>${escapeHtml(w.jp)}</b> (${escapeHtml(w.kana)}) ${escapeHtml(w.fr)}`).join(' · ')}</div>` : ''}
     <input type="text" id="kjOwn" maxlength="160" placeholder="Ton image à toi…" value="${escapeHtml(own)}" aria-label="Ton image pour ce kanji" style="width:100%;margin-top:6px;padding:8px;font-size:15px">`;
   area.querySelector('#kjCard')?.after(box);
@@ -369,7 +384,7 @@ function renderReviewStep(area){
   if(!ui.queue.length){
     if(ui.total) { registerStudyActivity(); celebrate('reviewCaughtUp', { emoji: '✅', title: 'Révisions kanji terminées' }); }
     area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${ui.total ? 'Révisions terminées !' : 'Rien à réviser pour l\'instant'}</h3>
-      <p style="color:#7a7268;font-size:13.5px;">${ui.total ? `${ui.ok} réussies sur ${ui.done} passages.` : 'Reviens plus tard : chaque carte revient quand elle en a besoin.'}</p>
+      <p style="color:#5f574d;font-size:13.5px;">${ui.total ? `${ui.ok} réussies sur ${ui.done} passages.` : 'Reviens plus tard : chaque carte revient quand elle en a besoin.'}</p>
       <button class="continue-btn" id="kjDone" style="margin-top:16px;">← Kanji</button></div>`;
     document.getElementById('kjDone').addEventListener('click', () => go('home'));
     return;
@@ -494,7 +509,7 @@ function renderWordQuiz(area){
   if(ui.i >= ui.qs.length){
     registerStudyActivity();
     area.innerHTML = `<div class="conv-done"><div class="stamp" style="margin:0 auto 14px;">合格</div><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${ui.right} / ${ui.qs.length}</h3>
-      <p style="color:#7a7268;font-size:13.5px;">Ces mots, tu les lis avec des kanji que tu as appris toi-même.</p><button class="continue-btn" id="kjDone" style="margin-top:16px;">← Mots</button></div>`;
+      <p style="color:#5f574d;font-size:13.5px;">Ces mots, tu les lis avec des kanji que tu as appris toi-même.</p><button class="continue-btn" id="kjDone" style="margin-top:16px;">← Mots</button></div>`;
     document.getElementById('kjDone').addEventListener('click', () => go('words', { list: false }));
     return;
   }
@@ -508,7 +523,7 @@ function renderWordQuiz(area){
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === q.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else ui.right++;
     recordAnswer('word', q.word + ':' + q.q.slice(0, 6), ok, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain, say: q.say, chosen: b.dataset.c });
-    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div><div class="mn-say-box"><b>${escapeHtml(q.word)}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span></div><div class="mn-explain">${escapeHtml(q.explain)}</div><button class="continue-btn" id="kjQn">Continuer</button>`;
+    document.getElementById('kjFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div><div class="mn-say-box"><b>${escapeHtml(q.word)}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span></div><div class="mn-explain">${escapeHtml(q.explain)}</div><button class="continue-btn sticky-cta" id="kjQn">Continuer</button>`;
     document.getElementById('kjQn').addEventListener('click', () => { ui.i++; renderKanji(); });
     speak(q.say, 0.85);
   }));

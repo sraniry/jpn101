@@ -44,6 +44,11 @@ export function mergeMeta(a, b){
   out.kanjiSrs = mergeByKey(a.kanjiSrs, b.kanjiSrs, newerCard);
   out.studyLog = mergeByKey(a.studyLog, b.studyLog, (x, y) => Math.max(x, y));
   out.deleted = mergeByKey(a.deleted, b.deleted, Math.max);
+  // Notes personnelles et préférences : fusionnées clé par clé (la plus récente gagne sur une même clé), jamais écrasées en bloc.
+  out.kanjiNotes = Object.assign({}, older.kanjiNotes, newer.kanjiNotes);
+  out.romajiPrefs = Object.assign({}, older.romajiPrefs, newer.romajiPrefs, { pages: Object.assign({}, (older.romajiPrefs || {}).pages, (newer.romajiPrefs || {}).pages), sections: Object.assign({}, (older.romajiPrefs || {}).sections, (newer.romajiPrefs || {}).sections), words: Object.assign({}, (older.romajiPrefs || {}).words, (newer.romajiPrefs || {}).words) });
+  if(!a.romajiPrefs && !b.romajiPrefs) delete out.romajiPrefs;
+  if(!a.kanjiNotes && !b.kanjiNotes) delete out.kanjiNotes;
   const mist = mergeByKey(a.mistakes, b.mistakes, (x, y) => ((y.last || '') > (x.last || '')) ? y : x);
   out.mistakes = capMistakes(mist);
   const qs = {}; new Set([...Object.keys(a.quizStats || {}), ...Object.keys(b.quizStats || {})]).forEach(k => {

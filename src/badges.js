@@ -34,17 +34,17 @@ export const BADGES = [
   },
   {
     id:'conv-all', icon:'🎭', title:'Tous les dialogues',
-    desc:'Termine les ' + totalConversations() + ' dialogues',
+    get desc(){ return 'Termine les ' + totalConversations() + ' dialogues'; },   // calculé à l'affichage : la liste complète n'est connue qu'après le chargement des dialogues
     progress: () => [getConvDone().length, totalConversations()],
   },
   {
     id:'gram-half', icon:'📐', title:'Grammaire en route',
-    desc:'Valide la moitié des règles de grammaire',
+    desc:'Valide la moitié des exercices de la page Grammaire (référence)',
     progress: () => [getGrammarDrills().length, Math.ceil(GRAMMAR_DRILLS.length/2)],
   },
   {
     id:'gram-all', icon:'🧱', title:'Grammaire rodée',
-    desc:'Valide les ' + GRAMMAR_DRILLS.length + ' règles de grammaire',
+    desc:'Valide les ' + GRAMMAR_DRILLS.length + ' exercices de la page Grammaire (référence)',
     progress: () => [getGrammarDrills().length, GRAMMAR_DRILLS.length],
   },
   {

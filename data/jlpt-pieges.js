@@ -933,7 +933,7 @@ export const PIEGES = {
     "choicesRomaji": [
      "de",
      "ni",
-     "wo",
+     "o",
      "e"
     ],
     "ok": "で",
@@ -952,7 +952,7 @@ export const PIEGES = {
     "choicesRomaji": [
      "ni",
      "de",
-     "wo",
+     "o",
      "e"
     ],
     "ok": "に",
@@ -971,7 +971,7 @@ export const PIEGES = {
     "choicesRomaji": [
      "ga",
      "wa",
-     "wo",
+     "o",
      "ni"
     ],
     "ok": "が",
@@ -989,7 +989,7 @@ export const PIEGES = {
     ],
     "choicesRomaji": [
      "ga",
-     "wo",
+     "o",
      "ni",
      "de"
     ],
@@ -1028,7 +1028,7 @@ export const PIEGES = {
     "choicesRomaji": [
      "ni",
      "de",
-     "wo",
+     "o",
      "ga"
     ],
     "ok": "に",
@@ -1048,7 +1048,7 @@ export const PIEGES = {
      "— （nanimo irenai）",
      "ni",
      "de",
-     "wo"
+     "o"
     ],
     "ok": "×（何も入れない）",
     "explanation": "毎日, 今日, 明日, 昨日, 今, いつも ne prennent jamais に. Le piège, c'est d'en mettre un par habitude parce qu'on pense « le jour… »."
@@ -1066,7 +1066,7 @@ export const PIEGES = {
     "choicesRomaji": [
      "ni",
      "de",
-     "wo",
+     "o",
      "ga"
     ],
     "ok": "に",
@@ -1084,7 +1084,7 @@ export const PIEGES = {
     ],
     "choicesRomaji": [
      "ni",
-     "wo",
+     "o",
      "de",
      "to"
     ],
@@ -1198,7 +1198,7 @@ export const PIEGES = {
     ],
     "choicesRomaji": [
      "ni",
-     "wo",
+     "o",
      "e",
      "de"
     ],
@@ -1218,7 +1218,7 @@ export const PIEGES = {
     "choicesRomaji": [
      "ni",
      "kara",
-     "wo",
+     "o",
      "de"
     ],
     "ok": "に",
@@ -1331,7 +1331,7 @@ export const PIEGES = {
     ],
     "choicesRomaji": [
      "ga",
-     "wo",
+     "o",
      "ni",
      "e"
     ],

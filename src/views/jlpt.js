@@ -474,7 +474,7 @@ function renderQuizCard(panel){
       ${best ? `<div class="kqd-best">Ton record : ${best.correct}/${best.total} (${Math.round(best.pct*100)} %)</div>` : ''}
       <div class="kqd-msg">${pct>=80?'🎉 Niveau examen atteint !':pct>=55?'👍 Tu serais reçue — continue pour la marge.':'💪 Revois les sections faibles ci-dessous.'}</div>
       <div class="kqd-teacher">${quizLine(pct)}</div>
-      <p style="font-size:13px;color:#7a7268;">${line('Vocabulaire')} · ${line('Kanji')} · ${line('Grammaire')}</p>
+      <p style="font-size:13px;color:#5f574d;">${line('Vocabulaire')} · ${line('Kanji')} · ${line('Grammaire')}</p>
       <button class="kana-quiz-restart" id="jlptQuizRestart">🔄 Nouvelle session</button>
     </div>`;
     panel.querySelector('#jlptQuizRestart').addEventListener('click', ()=> renderQuizSetup(panel));

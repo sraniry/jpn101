@@ -1,7 +1,7 @@
 import { LESSONS } from '../../data/lessons.js';
 import { meta, saveMeta, recordAnswer, registerStudyActivity, addQuizStat, planMark } from '../storage.js';
 import { speak } from '../tts.js';
-import { escapeHtml } from '../util.js';
+import { escapeHtml, kanaToRomaji } from '../util.js';
 import { celebrate } from '../encouragement.js';
 
 // ---------- Leçons de grammaire : une règle courte, des exemples, un piège, un petit exercice ----------
@@ -39,12 +39,28 @@ function renderLesson(area, L){
     <h4 class="kj-h">Des exemples</h4>
     ${L.examples.map(e => `<div class="mn-phrase"><div class="mn-ph-top"><span class="mn-jp-s">${escapeHtml(e.jp)}</span><button type="button" class="kj-audio" data-say="${escapeHtml(e.jp)}" aria-label="Écouter">🔊</button></div><div class="mn-kana">${rj(e.romaji)}</div><div class="mn-ph-fr">${escapeHtml(e.fr)}</div></div>`).join('')}
     <div class="ls-pitfall"><span class="kj-slabel">⚠️ L'erreur classique</span><p><b>Ce qu'on fait souvent :</b> ${escapeHtml(L.pitfall.says)}</p>
-      <p><b>À dire plutôt :</b> ${escapeHtml(L.pitfall.fix && L.pitfall.fix.jp ? L.pitfall.fix.jp : '')} ${L.pitfall.fix && L.pitfall.fix.romaji ? rj(L.pitfall.fix.romaji) : ''} ${L.pitfall.fix && L.pitfall.fix.fr ? '— ' + escapeHtml(L.pitfall.fix.fr) : ''}</p><p>${escapeHtml(L.pitfall.why)}</p></div>
+      <p><b>À dire plutôt :</b> ${fixHtml(L.pitfall.fix)}</p><p>${escapeHtml(L.pitfall.why)}</p></div>
     <div class="ls-tip"><span class="kj-slabel">💡 Le conseil de la prof</span>${escapeHtml(L.tip)}</div>
     <div class="mn-actions" style="justify-content:center"><button type="button" class="continue-btn" id="lsDrill">Passer aux 6 questions →</button></div>`;
   area.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => speak(b.dataset.say, 0.85)));
   document.getElementById('lsBack').addEventListener('click', () => { st.id = null; renderLessons(); });
   document.getElementById('lsDrill').addEventListener('click', () => { st.quiz = true; st.i = 0; st.right = 0; st.order = shuffle(L.drill.map((_, i) => i)); renderLessons(); window.scrollTo({ top: 0 }); });
+}
+
+// « À dire plutôt » : tolère une simple phrase (chaîne) ou un objet {jp, romaji, fr}.
+function fixHtml(fix){
+  if(!fix) return '';
+  if(typeof fix === 'string') return escapeHtml(fix);
+  return `${escapeHtml(fix.jp || '')} ${fix.romaji ? rj(fix.romaji) : ''} ${fix.fr ? '— ' + escapeHtml(fix.fr) : ''}`;
+}
+// Lecture des kanji les plus fréquents dans les questions, pour ne pas bloquer une débutante.
+const KANJI_RJ = { '駅': 'eki', '何': 'nan', '円': 'en', '時': 'ji', '分': 'fun', '人': 'hito', '水': 'mizu', '本': 'hon', '日': 'nichi', '月': 'tsuki', '店': 'mise', '学校': 'gakkou', '食': 'ta', '飲': 'no', '行': 'i', '来': 'ku', '見': 'mi', '買': 'ka', '高': 'taka', '安': 'yasu', '大': 'oo', '小': 'chii', '私': 'watashi', '先生': 'sensei', '今': 'ima', '百': 'hyaku', '千': 'sen', '万': 'man' };
+function qHtml(text){
+  return escapeHtml(text).replace(/(学校|先生|[駅何円時分人水本日月店食飲行来見買高安大小私今百千万])/g, (m) => KANJI_RJ[m] ? `${m}<span class="rj-inline">(${KANJI_RJ[m]})</span>` : m);
+}
+const isKanaOnly = c => /^[ぁ-ゖァ-ヶー・、。？！ ]+$/.test(c);
+function choiceHtml(c){
+  return escapeHtml(c) + (isKanaOnly(c) ? `<span class="mn-ch-rj">${rj(kanaToRomaji(c))}</span>` : '');
 }
 
 function renderDrill(area, L){
@@ -53,7 +69,7 @@ function renderDrill(area, L){
     if(ok && !done.includes(L.id)){ meta.lessonsDone = [...done, L.id]; planMark('lesson', 1); celebrate('reviewCount', { emoji: '📘', title: 'Leçon validée', params: { n: L.drill.length } }); }
     addQuizStat('lesson-' + L.id, st.right, L.drill.length); registerStudyActivity(); saveMeta();
     area.innerHTML = `<div class="conv-done"><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${st.right} / ${L.drill.length}${ok ? ' — leçon validée ✓' : ''}</h3>
-      <p style="color:#7a7268;font-size:13.5px;">${ok ? 'Bien joué. Tes erreurs éventuelles sont dans « Mes erreurs ».' : 'Presque ! Relis la règle puis refais les questions : il faut 5 bonnes réponses sur 6.'}</p>
+      <p style="color:#5f574d;font-size:13.5px;">${ok ? 'Bien joué. Tes erreurs éventuelles sont dans « Mes erreurs ».' : 'Presque ! Relis la règle puis refais les questions : il faut 5 bonnes réponses sur 6.'}</p>
       <button type="button" class="continue-btn" id="lsAgain" style="margin-top:16px;">${ok ? 'Revoir la leçon' : 'Relire la règle'}</button> <button type="button" class="conv-back" id="lsAll" style="margin-top:16px;">Toutes les leçons</button></div>`;
     document.getElementById('lsAgain').addEventListener('click', () => { st.quiz = false; renderLessons(); });
     document.getElementById('lsAll').addEventListener('click', () => { st.id = null; renderLessons(); });
@@ -62,7 +78,7 @@ function renderDrill(area, L){
   const q = L.drill[st.order[st.i]], choices = shuffle(q.choices);
   area.innerHTML = `<div class="kj-top"><button type="button" class="conv-back" id="lsBack">← La leçon</button><span>${st.i + 1} / ${L.drill.length}</span></div>
     <div class="today-track"><div class="today-track-fill" style="width:${(st.i / L.drill.length) * 100}%"></div></div>
-    <div class="kj-card"><p class="mn-q">${escapeHtml(q.q)}</p><div class="kj-choices">${choices.map(c => `<button type="button" class="kj-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}</div><div id="lsFb" aria-live="polite"></div></div>`;
+    <div class="kj-card"><p class="mn-q">${qHtml(q.q)}</p><div class="kj-choices">${choices.map(c => `<button type="button" class="kj-choice" data-c="${escapeHtml(c)}">${choiceHtml(c)}</button>`).join('')}</div><div id="lsFb" aria-live="polite"></div></div>`;
   document.getElementById('lsBack').addEventListener('click', () => { st.quiz = false; renderLessons(); });
   area.querySelectorAll('.kj-choice').forEach(b => b.addEventListener('click', () => {
     const ok = b.dataset.c === q.ok;

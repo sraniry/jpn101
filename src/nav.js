@@ -40,7 +40,8 @@ export function showView(view, opts = {}){
   } else if(bar){ bar.remove(); }
   current = view;
   const h1 = document.getElementById('pageH1'); if(h1) h1.textContent = TITLES[view] || TOP_TITLES[view] || 'Nihongo Kyoto';
-  if(opts.push !== false){ try{ history.pushState({ v: view }, '', '#' + view); }catch(e){} }
+  // Retoucher l'onglet déjà actif ne crée pas une entrée d'historique de plus (sinon « retour » tourne en rond).
+  if(opts.push !== false){ try{ history[(history.state && history.state.v === view) ? 'replaceState' : 'pushState']({ v: view }, '', '#' + view); }catch(e){} }
   if(renderers[view]) renderers[view](opts);
   if(opts.scroll !== false) window.scrollTo({ top: 0 });
   const h = sec.querySelector('h2, h3, .subbar-title'); // focus utile pour lecteurs d'écran

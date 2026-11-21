@@ -1,5 +1,7 @@
-import { phrases, meta, todayStr, getConvDone, getQuizStats, openMistakes, masteredMistakes, recordAnswer, registerStudyActivity, saveMeta, planMark } from '../storage.js';
+import { phrases, meta, todayStr, getConvDone, getQuizStats, openMistakes, masteredMistakes, recordAnswer, registerStudyActivity, planMark } from '../storage.js';
 import { kanjiTodayStatus } from './kanji.js';
+import { kanaPathState } from './kana.js';
+import { CONVERSATIONS } from '../../data/phrases.js';
 import { badgesHtml } from '../badges.js';
 import { speak } from '../tts.js';
 import { LESSONS } from '../../data/lessons.js';
@@ -35,17 +37,21 @@ export function renderProgress(){
   const log = meta.studyLog || {}, days = lastDays(30);
   const studied30 = days.filter(d => log[d]).length;
   const mastered = phrases.filter(p => p.interval >= 7 && !p.archived).length;
-  const convs = getConvDone().length;
+  const convTotal = CONVERSATIONS.filter(c => c.id && Array.isArray(c.turns)).length;
+  const convs = getConvDone().filter(id => CONVERSATIONS.some(c => c.id === id)).length;
 
+  const kanaSt = kanaPathState(), streak = Number(meta.streak) || 0;
+  const streakTile = streak > 0 ? `<div class="kj-stat"><b>${streak}</b><span>${streak > 1 ? 'jours' : 'jour'} d'affilée</span></div>` : `<div class="kj-stat"><b>🌱</b><span>${meta.lastStudyDate ? 'On reprend aujourd\'hui !' : 'Ta série commence à ta première séance'}</span></div>`;
   let html = `<div class="hub-intro"><h2>Mes progrès</h2><p>${escapeHtml(teacherMessage())}</p></div>
   <div class="kj-dash">
-    <div class="kj-stat"><b>${Number(meta.streak) || 0}</b><span>${(Number(meta.streak) || 0) > 1 ? 'jours' : 'jour'} d'affilée</span></div>
+    ${streakTile}
+    <div class="kj-stat"><b>${kanaSt.done}/${kanaSt.total}</b><span>leçons de kana</span></div>
     <div class="kj-stat"><b>${studied30}</b><span>${studied30 > 1 ? 'jours' : 'jour'} sur 30</span></div>
     <div class="kj-stat"><b>${kk.length}</b><span>kanji vus / 2136</span></div>
     <div class="kj-stat"><b>${mature}</b><span>kanji bien ancrés</span></div>
     <div class="kj-stat"><b>${rr.length}/51</b><span>radicaux</span></div>
     <div class="kj-stat"><b>${mastered}</b><span>phrases maîtrisées</span></div>
-    <div class="kj-stat"><b>${convs}</b><span>dialogues faits</span></div>
+    <div class="kj-stat"><b>${convs}/${convTotal}</b><span>dialogues faits</span></div>
     <div class="kj-stat"><b>${(meta.lessonsDone || []).length}/${LESSONS.length}</b><span>leçons de grammaire</span></div>
   </div>
   <h4 class="kj-h">Les 30 derniers jours</h4>
@@ -87,10 +93,10 @@ export function renderMistakes(opts){
     area.innerHTML = html; return;
   }
   html += `<div class="kj-actions"><button type="button" class="kj-big primary" id="mkRework">🎯 Retravailler (${Math.min(10, open.length)} questions)</button><button type="button" class="kj-big" id="mkTips">💡 Erreurs classiques des francophones</button></div>
-    <div class="mn-styles" role="group" aria-label="Filtrer">Filtre : <button type="button" data-f="all" class="${filter === 'all' ? 'on' : ''}">Tout (${open.length})</button>${srcs.map(s => `<button type="button" data-f="${s}" class="${filter === s ? 'on' : ''}">${SRC_LABEL[s] || s} (${open.filter(e => e.src === s).length})</button>`).join('')}</div>
+    <div class="mn-styles" role="group" aria-label="Filtrer">Filtre : <button type="button" data-f="all" class="${filter === 'all' ? 'on' : ''}">Tout (${open.length})</button>${srcs.map(s => `<button type="button" data-f="${escapeHtml(s)}" class="${filter === s ? 'on' : ''}">${escapeHtml(SRC_LABEL[s] || s)} (${open.filter(e => e.src === s).length})</button>`).join('')}</div>
     <div class="mk-list">`;
   list.slice(0, 40).forEach(e => {
-    html += `<div class="mk-item"><div class="mk-top"><span class="mk-src">${SRC_LABEL[e.src] || e.src}</span><span class="mk-n">${e.n} faute${e.n > 1 ? 's' : ''} · ${escapeHtml(e.last || '')} · réussie ${Math.min(2, e.streak || 0)}/3 d'affilée</span></div>
+    html += `<div class="mk-item"><div class="mk-top"><span class="mk-src">${escapeHtml(SRC_LABEL[e.src] || e.src)}</span><span class="mk-n">${Number(e.n) || 0} faute${(Number(e.n) || 0) > 1 ? 's' : ''} · ${escapeHtml(e.last || '')} · réussie ${Math.min(2, e.streak || 0)}/3 d'affilée</span></div>
       <div class="mk-q">${escapeHtml(e.q)}</div>
       <div class="mk-a">✓ ${escapeHtml(e.ok)}${e.say ? ` <button type="button" class="kj-audio" data-say="${escapeHtml(e.say)}" aria-label="Écouter">🔊</button>` : ''}</div>
       ${e.chosen ? `<div class="mk-w">Ta réponse : ${escapeHtml(e.chosen)}</div>` : ''}
@@ -107,7 +113,7 @@ export function renderMistakes(opts){
 function renderRework(area){
   if(rq.i >= rq.qs.length){
     const r = rq; rq = null; registerStudyActivity(); planMark('rework', r.qs.length);
-    area.innerHTML = `<div class="conv-done"><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${r.right} / ${r.qs.length}</h3><p style="color:#7a7268;font-size:13.5px;">${r.right === r.qs.length ? 'Tout juste ! Ces erreurs avancent vers « maîtrisées ».' : 'Chaque réponse juste rapproche une erreur de la sortie de la liste (3 d\'affilée).'}</p><button type="button" class="continue-btn" id="mkBack" style="margin-top:16px;">← Mes erreurs</button></div>`;
+    area.innerHTML = `<div class="conv-done"><h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${r.right} / ${r.qs.length}</h3><p style="color:#5f574d;font-size:13.5px;">${r.right === r.qs.length ? 'Tout juste ! Ces erreurs avancent vers « maîtrisées ».' : 'Chaque réponse juste rapproche une erreur de la sortie de la liste (3 d\'affilée).'}</p><button type="button" class="continue-btn" id="mkBack" style="margin-top:16px;">← Mes erreurs</button></div>`;
     document.getElementById('mkBack').addEventListener('click', () => renderMistakes());
     return;
   }
@@ -120,8 +126,7 @@ function renderRework(area){
     const ok = b.dataset.c === e.ok;
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === e.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else rq.right++;
-    recordAnswer(e.src, e.key, ok, ok ? e : { q: e.q, ok: e.ok, choices: e.choices, explain: e.explain, say: e.say, chosen: b.dataset.c });
-    saveMeta();
+    recordAnswer(e.src, e.key, ok, ok ? e : { q: e.q, ok: e.ok, choices: e.choices, explain: e.explain, say: e.say, chosen: b.dataset.c });   // recordAnswer écrit meta (regroupé)
     document.getElementById('mkFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div>${e.explain ? `<div class="mn-explain">${escapeHtml(e.explain)}</div>` : ''}<button type="button" class="continue-btn" id="mkNext">Continuer</button>`;
     document.getElementById('mkNext').addEventListener('click', () => { rq.i++; renderMistakes(); });
     if(e.say) speak(e.say, 0.85);

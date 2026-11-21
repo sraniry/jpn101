@@ -118,7 +118,7 @@ export const GRAMMAR_HTML = `
       <div class="gram-callout"><span class="jp jp-say" data-jp="～てもらえますか">〜てもらえますか 🔊</span> <span class="romaji-sm">(~te moraemasu ka)</span> — « puis-je recevoir que vous fassiez ~ ? » = la façon polie de demander un service.</div>
       <div class="gram-callout"><span class="jp jp-say" data-jp="～んですが">〜んですが… 🔊</span> <span class="romaji-sm">(~n desu ga)</span> — laisse la phrase ouverte sur が. Adoucit une demande : « voilà la situation… (pouvez-vous m'aider ?) ».</div>
       <div class="gram-callout"><b>Au restaurant, la serveuse demande où tu manges :</b><br><span class="jp jp-say" data-jp="店内でお召し上がりですか">店内でお召し上がりですか？ 🔊</span> <span class="romaji-sm">Tennai de omeshiagari desu ka?</span> — Vous mangez sur place ?<br>Réponse : <span class="jp jp-say" data-jp="持ち帰りでお願いします">持ち帰りでお願いします 🔊</span> <span class="romaji-sm">Mochikaeri de onegaishimasu</span> — À emporter, s'il vous plaît <span class="romaji-sm">(で = moyen/manière, pas seulement lieu)</span></div>
-      <div class="gram-callout"><b>Au marché de Nishiki, tu demandes à goûter :</b><br><span class="jp jp-say" data-jp="味見できますか">味見できますか？ 🔊</span> <span class="romaji-sm">Ajimi dekimasu ka?</span> — Je peux goûter ? <span class="romaji-sm">(できます = ことができます raccourci, très courant à l'oral)</span></div>
+      <div class="gram-callout"><b>Au marché de Nishiki, tu demandes à goûter :</b><br><span class="jp jp-say" data-jp="味見できますか">味見できますか？ 🔊</span> <span class="romaji-sm">Ajimi dekimasu ka?</span> — Je peux goûter ? <span class="romaji-sm">(味見 + できます : un nom en する + できる = « pouvoir faire »)</span></div>
       </div>
     </details>
 

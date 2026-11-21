@@ -3,7 +3,7 @@ import { celebrate } from './encouragement.js';
 const STORAGE_KEY = 'phrases-v2';
 const META_KEY = 'meta-v2';
 
-export let phrases = [];
+export const phrases = [];
 const META_DEFAULTS = () => ({ streak:0, lastStudyDate:null, newIntroducedDate:null, newIntroducedCount:0, dailyLimit:10 });
 export let meta = META_DEFAULTS();
 
@@ -24,22 +24,62 @@ export async function storageSet(key, value){
   }
   if(!ok) console.error('Sauvegarde impossible (localStorage bloqué).');
 }
+// loadAll MUTE en place : les objets de `phrases` (et `meta`) déjà en mémoire — ceux que la file de révision
+// ou une fiche ouverte tiennent par référence — restent valides. Sinon une note donnée après une relecture
+// serait écrite sur un objet périmé, puis perdue (bug « révisions perdues après retour sur l'appli »).
+function adoptPhrases(list){
+  const byId = new Map(phrases.map(p => [p.id, p]));
+  const next = list.map(c => {
+    const o = c && byId.get(c.id);
+    if(!o) return c;
+    Object.keys(o).forEach(k => { if(!(k in c)) delete o[k]; });
+    return Object.assign(o, c);
+  });
+  phrases.length = 0; next.forEach(c => phrases.push(c));
+}
+function adoptMeta(next, replace){
+  if(replace) Object.keys(meta).forEach(k => { if(!(k in next)) delete meta[k]; });
+  Object.assign(meta, next);
+}
 export async function loadAll(){
-  try{ const v = await storageGet(STORAGE_KEY); phrases = v ? JSON.parse(v) : []; }catch(e){ phrases = []; }
-  try{ const v2 = await storageGet(META_KEY); if(v2) meta = Object.assign(meta, JSON.parse(v2)); }catch(e){}
+  let list = [];
+  try{ const v = await storageGet(STORAGE_KEY); list = v ? JSON.parse(v) : []; }catch(e){ list = []; }
+  if(!Array.isArray(list)) list = [];
+  adoptPhrases(list);
+  try{ const v2 = await storageGet(META_KEY); if(v2) adoptMeta(JSON.parse(v2), false); }catch(e){}
 }
-export async function savePhrases(){
-  meta.lastModified = nowTs();
-  await storageSet(STORAGE_KEY, JSON.stringify(phrases));
-  await storageSet(META_KEY, JSON.stringify(meta));
-  window.dispatchEvent(new CustomEvent('nihongo:changed'));
+// Adopte un état fusionné (cloud) en gardant l'identité des objets (cartes appariées par cardKey).
+export function adoptMerged(list, newMeta){
+  const byKey = new Map(phrases.map(p => [cardKey(p.jp, p.romaji), p]));
+  const next = (list || []).map(c => { const o = byKey.get(cardKey(c.jp, c.romaji)); if(!o) return c; Object.keys(o).forEach(k => { if(!(k in c)) delete o[k]; }); return Object.assign(o, c); });
+  phrases.length = 0; next.forEach(c => phrases.push(c));
+  adoptMeta(newMeta || {}, true);
 }
+// Écriture de meta REGROUPÉE : une rafale d'actions (note + erreur + plan + série…) = 1 seule écriture
+// (~250 ms plus tard) au lieu d'une par action. flushMeta() écrit tout de suite (fermeture de page, savePhrases).
+let metaTimer = null, metaWaiters = [], metaTouched = false;
+async function writeMeta(){
+  metaTimer = null;
+  const waiters = metaWaiters, touched = metaTouched; metaWaiters = []; metaTouched = false;
+  try{ await storageSet(META_KEY, JSON.stringify(meta)); }finally{ waiters.forEach(r => r()); }
+  if(touched) window.dispatchEvent(new CustomEvent('nihongo:changed'));
+}
+export function flushMeta(){ if(metaTimer){ clearTimeout(metaTimer); return writeMeta(); } return Promise.resolve(); }
 // touch=false : écriture technique (migration, remise à zéro du jour) qui ne doit PAS faire croire
 // à la synchro cloud que cet appareil a de la progression plus récente que les autres.
-export async function saveMeta(touch = true){
-  if(touch) meta.lastModified = nowTs();
-  await storageSet(META_KEY, JSON.stringify(meta));
-  if(touch) window.dispatchEvent(new CustomEvent('nihongo:changed'));   // une écriture technique ne déclenche pas de push cloud
+export function saveMeta(touch = true){
+  if(touch){ meta.lastModified = nowTs(); metaTouched = true; }
+  return new Promise(res => { metaWaiters.push(res); clearTimeout(metaTimer); metaTimer = setTimeout(writeMeta, 250); });
+}
+export const saveMetaSoon = saveMeta;
+try{
+  window.addEventListener('pagehide', flushMeta);
+  window.addEventListener('visibilitychange', () => { if(typeof document !== 'undefined' && document.visibilityState === 'hidden') flushMeta(); });
+}catch(e){}
+export async function savePhrases(){
+  meta.lastModified = nowTs(); metaTouched = true;
+  await storageSet(STORAGE_KEY, JSON.stringify(phrases));
+  clearTimeout(metaTimer); await writeMeta();   // meta part avec les cartes : une seule écriture
 }
 
 export function nowTs(){ return Date.now(); }
@@ -70,17 +110,6 @@ function bumpStudyLog(){
 // ---------- Journal d'erreurs ----------
 // Chaque mauvaise réponse est gardée avec sa question complète : on peut la rejouer à l'identique.
 // Les réponses de quiz arrivent en rafale : on regroupe les écritures de meta (~300 ms) au lieu de tout réécrire à chaque clic.
-let metaTimer = null;
-export function saveMetaSoon(){
-  clearTimeout(metaTimer);
-  metaTimer = setTimeout(() => { metaTimer = null; saveMeta(); }, 300);
-}
-export function flushMeta(){ if(metaTimer){ clearTimeout(metaTimer); metaTimer = null; return saveMeta(); } }
-try{
-  window.addEventListener('pagehide', flushMeta);
-  window.addEventListener('visibilitychange', () => { if(typeof document !== 'undefined' && document.visibilityState === 'hidden') flushMeta(); });
-}catch(e){}
-
 export function recordAnswer(src, key, ok, q){
   const m = meta.mistakes = meta.mistakes || {};
   const id = src + '|' + key;
@@ -298,7 +327,7 @@ export function removePhrase(id){
   const p = phrases.find(x => x.id === id);
   // Tombstone : sans elle, la carte supprimée ici ressusciterait à la prochaine fusion avec un autre appareil.
   if(p){ (meta.deleted = meta.deleted || {})[cardKey(p.jp, p.romaji)] = nowTs(); saveMeta(); }
-  phrases = phrases.filter(x => x.id !== id);
+  { const i = phrases.findIndex(x => x.id === id); if(i >= 0) phrases.splice(i, 1); }
 }
 
 // ---------- Export / Import JSON (sauvegarde locale manuelle) ----------
@@ -317,15 +346,54 @@ export function exportProgressionJSON(){
 // Valide/assainit tout état venu de l'extérieur (fichier, lien #sync=, cloud) avant de l'utiliser : les nombres
 // redeviennent des nombres, les ids sont contraints, pour qu'aucune donnée importée ne puisse injecter du HTML.
 export function sanitizeState(ph, me){
-  const num = v => Number.isFinite(+v) ? +v : 0, str = v => typeof v === 'string' ? v : '';
+  const num = v => Number.isFinite(+v) ? +v : 0, int = (v, d = 0) => Number.isFinite(+v) ? Math.trunc(+v) : d;
+  const str = (v, n = 400) => typeof v === 'string' ? v.slice(0, n) : '';
+  const obj = v => (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+  const strList = (v, n = 3000, len = 80) => Array.isArray(v) ? v.slice(0, n).map(x => str(x, len)) : [];
+  const date = v => /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '';
+  const id = v => /^[A-Za-z0-9_-]{1,40}$/.test(String(v)) ? String(v) : 'c' + Math.random().toString(36).slice(2, 10);
+  const srsCard = c => { c = obj(c); const o = { interval: num(c.interval), ease: num(c.ease) || 2.5, reps: int(c.reps), due: num(c.due), lapses: int(c.lapses), last: num(c.last) }; if(typeof c.intro === 'string') o.intro = date(c.intro); return o; };
+
   ph = (Array.isArray(ph) ? ph : []).filter(p => p && typeof p.jp === 'string').map(p => Object.assign({}, p, {
-    id: /^[A-Za-z0-9_-]{1,40}$/.test(String(p.id)) ? String(p.id) : 'c' + Math.random().toString(36).slice(2, 10),
-    interval: num(p.interval), ease: num(p.ease) || 2.5, reps: num(p.reps), due: num(p.due), tag: str(p.tag),
+    id: id(p.id), jp: str(p.jp, 300), romaji: str(p.romaji, 300), fr: str(p.fr, 300), note: str(p.note, 600), level: str(p.level, 8),
+    interval: num(p.interval), ease: num(p.ease) || 2.5, reps: int(p.reps), due: num(p.due), last: num(p.last), lapses: int(p.lapses),
+    created: num(p.created), shadowReps: int(p.shadowReps), archived: !!p.archived, tag: str(p.tag, 60),
   }));
-  me = (me && typeof me === 'object' && !Array.isArray(me)) ? me : {};
-  ['streak', 'minutes', 'dailyLimit', 'lastModified'].forEach(k => { if(k in me) me[k] = num(me[k]); });
-  if(me.plan && typeof me.plan === 'object') ['reviews'].forEach(k => { if(k in me.plan) me.plan[k] = num(me.plan[k]); });
-  return { phrases: ph, meta: me };
+
+  me = obj(me); const o = {};
+  // ----- nombres / chaînes simples
+  ['streak', 'minutes', 'dailyLimit', 'lastModified', 'newIntroducedCount'].forEach(k => { if(k in me) o[k] = num(me[k]); });
+  ['lastStudyDate', 'newIntroducedDate', 'dailyProgramCelebrated', 'radDoneOn'].forEach(k => { if(k in me) o[k] = date(me[k]) || null; });
+  ['goal', 'level', 'kanjiPhase'].forEach(k => { if(k in me) o[k] = str(me[k], 20); });
+  ['onboarded', 'reviewReadMode'].forEach(k => { if(k in me) o[k] = !!me[k]; });
+  if('kanjiCfg' in me){ const c = obj(me.kanjiCfg); o.kanjiCfg = { perDay: Math.min(30, Math.max(1, int(c.perDay, 6))), radPerDay: Math.min(30, Math.max(1, int(c.radPerDay, 8))) }; }
+  // ----- listes de textes
+  ['convDone', 'readingKnown', 'badgesSeen', 'grammarDrills', 'masteredSkillsSeen', 'lessonsDone', 'textsDone'].forEach(k => { if(k in me) o[k] = strList(me[k]); });
+  // ----- SRS kanji
+  if('kanjiSrs' in me){ o.kanjiSrs = {}; Object.entries(obj(me.kanjiSrs)).slice(0, 4000).forEach(([k, c]) => { o.kanjiSrs[str(k, 20)] = srsCard(c); }); }
+  if('kanjiNotes' in me){ o.kanjiNotes = {}; Object.entries(obj(me.kanjiNotes)).slice(0, 2500).forEach(([k, v]) => { o.kanjiNotes[str(k, 20)] = str(v, 160); }); }
+  if('kanjiDaily' in me){ const d = obj(me.kanjiDaily); o.kanjiDaily = { date: date(d.date), newK: strList(d.newK, 200, 20), newR: strList(d.newR, 200, 20), reviewed: int(d.reviewed) }; }
+  // ----- plan du jour
+  if('plan' in me){ const p = obj(me.plan); o.plan = { date: date(p.date), kana: !!p.kana, reviews: int(p.reviews), conv: int(p.conv), challenge: int(p.challenge), lesson: int(p.lesson), rework: int(p.rework) }; }
+  // ----- journal d'étude, tombstones
+  if('studyLog' in me){ o.studyLog = {}; Object.entries(obj(me.studyLog)).slice(-500).forEach(([k, v]) => { if(date(k)) o.studyLog[k] = int(v); }); }
+  if('deleted' in me){ o.deleted = {}; Object.entries(obj(me.deleted)).slice(0, 3000).forEach(([k, v]) => { o.deleted[str(k, 300)] = num(v); }); }
+  // ----- journal d'erreurs : « src » dans une liste fixe, tout le reste borné
+  if('mistakes' in me){
+    const SRC = ['kanji', 'radical', 'menu', 'kit', 'word', 'kana', 'grammar', 'lesson', 'phrase', 'jlpt', 'pitfall', 'text', 'listening', 'dialogue', 'autre'];
+    o.mistakes = {};
+    Object.entries(obj(me.mistakes)).slice(0, 600).forEach(([k, e]) => { e = obj(e);
+      o.mistakes[str(k, 200)] = { src: SRC.includes(e.src) ? e.src : 'autre', key: str(e.key, 120), n: int(e.n), streak: int(e.streak), mastered: !!e.mastered, masteredOn: date(e.masteredOn),
+        q: str(e.q, 400), ok: str(e.ok, 200), explain: str(e.explain, 600), say: str(e.say, 200), chosen: str(e.chosen, 200), last: date(e.last), choices: strList(e.choices, 6, 200) }; });
+  }
+  // ----- quiz, examens, kana, rappel, romaji
+  if('quizStats' in me){ o.quizStats = {}; Object.entries(obj(me.quizStats)).slice(0, 40).forEach(([k, l]) => { o.quizStats[str(k, 40)] = (Array.isArray(l) ? l : []).slice(-50).map(e => ({ date: date(obj(e).date), correct: int(obj(e).correct), total: int(obj(e).total) })); }); }
+  if('examHistory' in me){ o.examHistory = (Array.isArray(me.examHistory) ? me.examHistory : []).slice(-100).map(e => { e = obj(e); const r = {}; Object.entries(e).slice(0, 12).forEach(([k, v]) => { r[str(k, 30)] = typeof v === 'number' ? num(v) : (typeof v === 'boolean' ? v : str(v, 80)); }); return r; }); }
+  if('kanaPath' in me){ o.kanaPath = { done: (Array.isArray(obj(me.kanaPath).done) ? me.kanaPath.done : []).slice(0, 100).map(x => int(x)) }; }
+  if('reminder' in me){ const r = obj(me.reminder); o.reminder = { time: /^\d{2}:\d{2}$/.test(r.time) ? r.time : '19:00', notif: !!r.notif, notifiedOn: date(r.notifiedOn) }; }
+  if('romajiPrefs' in me){ const r = obj(me.romajiPrefs), bools = v => { const b = {}; Object.entries(obj(v)).slice(0, 500).forEach(([k, x]) => { b[str(k, 120)] = !!x; }); return b; };
+    o.romajiPrefs = { global: r.global !== false, pages: bools(r.pages), sections: bools(r.sections), words: bools(r.words) }; }
+  return { phrases: ph, meta: o };
 }
 
 // Importe un fichier .json exporté et restaure toute la progression.

@@ -1,11 +1,12 @@
-import { phrases, meta, saveMeta, todayStr, planToday, getConvDone, openMistakes } from '../storage.js';
+import { phrases, meta, saveMeta, todayStr, planToday, getConvDone, openMistakes, getQuizStats } from '../storage.js';
 import { LESSONS } from '../../data/lessons.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
 import { openConversation } from './conversation.js';
+import { speak } from '../tts.js';
 import { escapeHtml } from '../util.js';
 import { celebrate } from '../encouragement.js';
-import { kanjiTodayStatus, dueCounts, DUE_PAUSE } from './kanji.js';
+import { kanjiTodayStatus, kanjiStepDone, dueCounts, DUE_PAUSE } from './kanji.js';
 import { todayChallenge } from './menus.js';
 import { reminderHtml, wireReminder } from '../reminder.js';
 import { tipOfTheDay } from './tips.js';
@@ -77,7 +78,7 @@ export function renderToday(){
 
   const kanaDone = plan.kana || kana.done >= kana.total;
   const kj = kanjiTodayStatus();
-  const kanjiDone = kj.lessonDone && kj.due === 0;
+  const kanjiDone = kanjiStepDone();   // figée une fois atteinte : ne se décoche pas si des cartes redeviennent dues
   const reviewDone = phrases.length > 0 && plan.reviews >= reviewGoal;
   // plan.conv était un booléen avant cette mise à jour ; s'il traîne encore tel quel
   // aujourd'hui, on le compte comme un dialogue déjà fait plutôt que de perdre sa progression.
@@ -85,7 +86,8 @@ export function renderToday(){
   const convProgress = Math.min(convRaw, CONV_GOAL);
   const convDone = convProgress >= CONV_GOAL;
   const ch = todayChallenge();
-  const challengeDone = (plan.challenge || 0) >= 1;
+  // Le défi ne compte que s'il est réussi à 60 % au moins (un défi raté à 20 % ne coche pas l'étape).
+  const challengeDone = (plan.challenge || 0) >= 1 && getQuizStats('menus').some(e => e.date === todayStr() && e.total && e.correct / e.total >= 0.6);
   // Leçon de grammaire du jour : la première non faite, dans l'ordre.
   const lessonsDoneIds = meta.lessonsDone || [];
   const nextLesson = LESSONS.find(l => !lessonsDoneIds.includes(l.id));
@@ -93,13 +95,14 @@ export function renderToday(){
   // Erreurs à retravailler : 3 questions par jour tant qu'il en reste.
   const openErr = openMistakes().length;
   const errGoal = Math.min(3, openErr + (plan.rework || 0));
-  const errDone = openErr === 0 || (plan.rework || 0) >= errGoal;
+  const errDone = !!plan.errOk || openErr === 0 || (plan.rework || 0) >= errGoal;
+  if(errDone && !plan.errOk){ plan.errOk = true; saveMeta(false); }   // une étape cochée le reste, même si une nouvelle faute arrive ensuite
 
   const mins = Number(meta.minutes) || 20;
   // Le plan garde toujours la même forme dans la journée : une étape terminée reste affichée, cochée (jamais retirée).
   const ids = mins <= 10 ? ['kana', 'kanji', 'challenge']
     : (mins <= 20 ? ['kana', 'kanji', 'review', 'lesson', 'errors', 'challenge'] : ['kana', 'kanji', 'review', 'lesson', 'errors', 'conv', 'challenge']);
-  const planIds = ids.filter(id => id !== 'errors' || openErr > 0 || (plan.rework || 0) > 0);
+  const planIds = ids;   // même liste toute la journée : l'étape « erreurs » est toujours là (cochée s'il n'y a rien à reprendre)
   const flagOf = { kana: kanaDone, kanji: kanjiDone, review: reviewDone, lesson: lessonDone, errors: errDone, conv: convDone, challenge: challengeDone };
   const doneCount = planIds.filter(id => flagOf[id]).length, total = planIds.length;
 
@@ -136,13 +139,13 @@ export function renderToday(){
     why: '2136 kanji = 6 par jour pendant un an. Chaque kanji est découpé en briques, avec une petite histoire, et revient en révision au moment où tu allais l\'oublier.', go: kanjiDone ? 'Revoir' : 'Commencer' };
   STEP.review = { view: 'review', icon: '🔁', title: 'Révisions des phrases', time: '~10 min',
     desc: phrases.length === 0 ? 'Importe d\'abord le pack A0 → A2 dans « Mes phrases »'
-      : `${Number(plan.reviews)||0}/${reviewGoal} cartes revues aujourd'hui${due>0?` · ${due} à revoir`:''}`,
+      : (reviewDone ? `${Number(plan.reviews)||0} carte${(Number(plan.reviews)||0) > 1 ? 's' : ''} revue${(Number(plan.reviews)||0) > 1 ? 's' : ''} aujourd'hui ✓` : `${Number(plan.reviews)||0}/${reviewGoal} cartes revues aujourd'hui`) + (due>0 ? ` · ${due} à revoir` : ''),
     why: 'Répétition espacée : chaque carte revient pile au moment où tu commences à l\'oublier. Rappel actif : tape ta réponse avant de révéler.', go: reviewDone ? 'Revoir' : 'Commencer' };
   STEP.lesson = { view: 'lessons', icon: '📘', title: nextLesson ? `Leçon : ${nextLesson.title}` : 'Leçons de grammaire', time: '~5 min',
     desc: nextLesson ? `Leçon ${LESSONS.indexOf(nextLesson) + 1} sur ${LESSONS.length} : la règle, des exemples, puis 6 questions. Il faut 5 bonnes réponses.` : 'Les 12 leçons sont faites. Bravo ! Tu peux les relire quand tu veux.',
     why: 'Une petite règle de grammaire par jour : c\'est elle qui te permet de construire tes propres phrases, pas seulement de les répéter.', go: lessonDone ? 'Revoir' : 'Commencer' };
   STEP.errors = { view: 'mistakes', icon: '❗', title: 'Retravailler 3 erreurs', time: '~3 min',
-    desc: errDone ? 'Fait pour aujourd\'hui. Les erreurs réussies 3 fois disparaissent de la liste.' : `${openErr} erreur${openErr > 1 ? 's' : ''} en attente : on en reprend ${errGoal} aujourd'hui.`,
+    desc: openErr === 0 ? 'Aucune erreur en attente : bravo ! Ce qui te fait trébucher apparaîtra ici.' : (errDone ? 'Fait pour aujourd\'hui. Les erreurs réussies 3 fois disparaissent de la liste.' : `${openErr} erreur${openErr > 1 ? 's' : ''} en attente : on en reprend ${errGoal} aujourd'hui.`),
     why: 'Ce qui t\'a fait trébucher est ce qui te fait le plus progresser. 3 minutes suffisent.', go: errDone ? 'Revoir' : 'Commencer' };
   STEP.challenge = { view: 'menus', icon: ch.icon, title: `Défi du jour : ${escapeHtml(ch.title)}`, time: '~5 min', desc: escapeHtml(ch.goal), why: escapeHtml(ch.tip), go: challengeDone ? 'Refaire' : 'Relever le défi' };
 
@@ -203,5 +206,7 @@ export function renderToday(){
     e.stopPropagation();
     gotoTab('conversation');
     openConversation(btn.dataset.conv);
+    const c0 = CONVERSATIONS.find(x => x.id === btn.dataset.conv), t0 = c0 && c0.turns && c0.turns[0];
+    if(t0 && t0.speaker === 'npc') speak(t0.jp, 0.85);   // dans le geste : sinon muet sur iPhone
   }));
 }

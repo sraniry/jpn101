@@ -1,5 +1,18 @@
+stages: [test, deploy]
+
+# Les tests ne demandent aucune dépendance : on les lance avant chaque déploiement.
+test:
+  stage: test
+  image: node:20-alpine
+  script:
+    - node tests/run.mjs
+  rules:
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 pages:
   stage: deploy
+  needs: [test]
   script:
     - mkdir -p public
     - cp index.html styles.css manifest.json sw.js public/

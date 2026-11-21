@@ -5,7 +5,7 @@
 // la vraie protection reste le code lui-même : à traiter comme un mot de passe, ne pas le partager.
 // Tant qu'aucun code n'est renseigné, ce module ne fait strictement rien (aucun appel réseau).
 
-import { phrases, meta, storageSet, loadAll, nowTs, sanitizeState } from './storage.js';
+import { phrases, meta, storageSet, nowTs, sanitizeState, adoptMerged, flushMeta } from './storage.js';
 import { mergePhrases, mergeMeta } from './merge.js';
 
 const firebaseConfig = {
@@ -68,7 +68,6 @@ export function readRemote(d){
   return sanitizeState(d.phrases, d.meta);
 }
 export function packState(ph, me){ return { v: 3, state: JSON.stringify({ phrases: ph, meta: me }) }; }
-function delOf(a, b){ const o = Object.assign({}, (a || {}).deleted || {}); Object.entries((b || {}).deleted || {}).forEach(([k, v]) => { o[k] = Math.max(o[k] || 0, v); }); return o; }
 function docRef(f, code){ return f.doc(f.db, 'progress', code); }
 
 // ---------- Indicateur visuel (bloc "Mes phrases") ----------
@@ -142,6 +141,12 @@ function isEmptyLocal(){
   return phrases.length === 0 && !Object.keys(meta.kanjiSrs || {}).length && !(meta.convDone || []).length && !meta.lastStudyDate;
 }
 
+async function persistLocal(){
+  await storageSet('phrases-v2', JSON.stringify(phrases));
+  await storageSet('meta-v2', JSON.stringify(meta));
+}
+
+// Relit le cloud et fusionne. Renvoie 'changed' (l'état local a bougé → re-rendre), 'ok' (rien à faire) ou false (échec).
 export async function pullAndMerge(){
   const code = getSyncCode();
   if(!code) return false;
@@ -159,19 +164,22 @@ export async function pullAndMerge(){
     const remote = readRemote(snap.data());
     if(emptyBefore){
       // Appareil neuf : on adopte simplement le cloud, sans rien pousser.
-      await storageSet('phrases-v2', JSON.stringify(remote.phrases || []));
-      await storageSet('meta-v2', JSON.stringify(remote.meta || {}));
-      await loadAll();
+      adoptMerged(remote.phrases || [], remote.meta || {});
+      await persistLocal();
       setIndicator('synced');
       return 'changed';
     }
+    const before = JSON.stringify({ p: phrases, m: meta });
     const mergedMeta = mergeMeta(meta, remote.meta);
     const mergedPhrases = mergePhrases(phrases, remote.phrases, mergedMeta.deleted);
-    await storageSet('phrases-v2', JSON.stringify(mergedPhrases));
-    await storageSet('meta-v2', JSON.stringify(mergedMeta));
-    await loadAll();
-    await pushToCloud();   // le cloud reçoit la fusion
-    return 'changed';
+    // adoptMerged garde l'identité des objets : la file de révision en cours reste valide (plus de notes perdues).
+    adoptMerged(mergedPhrases, mergedMeta);
+    const changedLocal = JSON.stringify({ p: phrases, m: meta }) !== before;
+    if(changedLocal) await persistLocal();
+    // Le cloud ne reçoit la fusion que si elle diffère de ce qu'il contient déjà (pas d'écriture inutile à chaque retour).
+    const remoteNow = JSON.stringify({ p: remote.phrases, m: remote.meta });
+    if(JSON.stringify({ p: phrases, m: meta }) !== remoteNow) await pushToCloud(); else setIndicator('synced');
+    return changedLocal ? 'changed' : 'ok';
   } catch(e) {
     console.error('Pull cloud échoué :', e);
     setIndicator('error', e && e.message);
@@ -214,6 +222,7 @@ export async function initCloudSync(){
 // Retour sur l'appli (PWA restée ouverte des jours) : on relit le cloud avant tout nouvel envoi.
 document.addEventListener('visibilitychange', async () => {
   if(document.visibilityState !== 'visible' || !isSyncConfigured() || !syncReady) return;
+  await flushMeta();
   const r = await pullAndMerge();
-  if(r === 'changed') window.dispatchEvent(new CustomEvent('nihongo:remote-merged'));
+  if(r === 'changed') window.dispatchEvent(new CustomEvent('nihongo:remote-merged'));   // main.js : re-rendre la vue courante
 });

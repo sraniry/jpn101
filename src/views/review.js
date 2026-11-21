@@ -6,6 +6,7 @@ import { escapeHtml, emptyState, formatExplain, grammarChipsHtml, colorizeJp, re
 import { renderHeader, refreshCounters } from '../main.js';
 import { celebrate } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
+import { kanaPathState } from './kana.js';
 
 // Objectif de révisions du jour (doit rester aligné avec REVIEW_GOAL_CAP dans today.js) —
 // dupliqué en constante locale plutôt qu'importé pour ne pas créer de dépendance croisée
@@ -131,7 +132,12 @@ function checkRomaji(typed, correct){
   if(a === b) return 'good';
   return editDistance(a,b) <= Math.max(1, Math.round(b.length*0.15)) ? 'close' : 'off';
 }
-function readMode(){ return meta.reviewReadMode !== false; } // défaut : on tape la lecture
+// Défaut : tant que les kana ne sont pas acquis, on donne le sens (le romaji est visible sur la carte) ;
+// ensuite, on tape la lecture. Le choix explicite de la bouton ⇄ prime toujours.
+function readMode(){
+  if(meta.reviewReadMode === undefined){ try{ const k = kanaPathState(); return k.done >= k.total; }catch(e){ return false; } }
+  return meta.reviewReadMode !== false;
+}
 function checkAnswer(typed, correct){
   const a = canonicalize(normalize(typed)), b = canonicalize(normalize(correct));
   if(!a) return null;
@@ -242,7 +248,7 @@ export function renderReview(){
   html += `</div>`;
 
   if(!revealed){
-    const placeholder = (dicteMode||reading) ? 'Tape le romaji… ex: Konnichiwa' : 'Ça veut dire…';
+    const placeholder = (dicteMode||reading) ? 'Tape le romaji…' : 'Ça veut dire…';
     const label = dicteMode ? 'Tape ce que tu entends en romaji (orthographe approximative OK)' : reading ? 'Comment ça se lit ? Tape en romaji (casse, espaces, ou/oo : sans importance)' : 'Ta réponse (effort de rappel, même incertain — la casse n\'a aucune importance)';
     html += `<div class="recall-input"><label>${label}</label><textarea id="recallBox" rows="1" placeholder="${placeholder}" autocapitalize="off" autocorrect="off" spellcheck="false">${escapeHtml(lastTyped)}</textarea></div>`;
     html += `<button class="reveal-btn" id="revealBtn">Vérifier / Révéler</button>`;
@@ -297,6 +303,7 @@ export function renderReview(){
 
   const cf = document.getElementById('clearReviewFilter');
   if(cf) cf.addEventListener('click', ()=>{ reviewFilterTag = null; startReviewSession(); });
+  { const fc = document.getElementById('flashcardEl'); if(fc && fc.getBoundingClientRect().top > innerHeight * 0.55) setTimeout(() => fc.scrollIntoView({ block: 'start' }), 30); }   // la carte doit être visible sans défiler
   const tmg = document.getElementById('toggleModeGuide'); if(tmg) tmg.addEventListener('click', ()=>{ const g=document.getElementById('modeGuide'); if(g) g.style.display = g.style.display==='none'?'block':'none'; });
   const tr = document.getElementById('toggleRead'); if(tr) tr.addEventListener('click', ()=>{ captureTyped(); meta.reviewReadMode = !readMode(); saveMeta(); listenMode=false; dicteMode=false; revealed=false; lastTyped=''; renderReview(); });
   const tl = document.getElementById('toggleListen'); if(tl) tl.addEventListener('click', ()=>{ captureTyped(); listenMode=!listenMode; dicteMode=false; renderReview(); });

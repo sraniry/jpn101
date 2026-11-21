@@ -115,6 +115,17 @@ async function init(){
 }
 init();
 
+// Retour sur l'appli : le cloud vient d'être relu et fusionné. On rafraîchit l'écran, sauf pendant une révision
+// (pour ne pas casser la file en cours : la carte affichée reste celle qu'on note).
+window.addEventListener('nihongo:remote-merged', () => {
+  try{ updateImportBanner(); updateStreak(); if(currentView() !== 'review') render(); else renderHeader(); }catch(e){}
+});
+
+// Boutons d'action collants au-dessus de la barre du bas (mobile) : « Continuer » reste visible sans défiler.
+{ const st = document.createElement('style');
+  st.textContent = '@media (max-width:680px){ .sticky-cta{ position:sticky; bottom:76px; z-index:6; box-shadow:0 4px 14px rgba(0,0,0,.18); } .rate-row{ position:sticky; bottom:76px; z-index:6; background:var(--bg,#fbf8f1); padding:8px 0; } .is-best{ outline:3px solid #5b6a4d; } }';
+  document.head.appendChild(st); }
+
 // ---------- Clavier : les cartes cliquables (div) deviennent de vrais boutons pour le clavier et les lecteurs d'écran ----------
 const CLICKABLES = '.today-step[data-view], .today-bonus-step, .mn-item, .conv-pick, .skill-card, .tag-chip';
 function enhanceClickables(){

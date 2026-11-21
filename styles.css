@@ -1067,3 +1067,31 @@ main small, main label, main .rm-small{ font-size:max(12px, 1em) !important; }
   main input[type=text], main input[type=number], main input[type=time], main input[type=search], main select, main summary{ min-height:44px !important; }
   main input[type=checkbox], main input[type=radio]{ min-width:44px; min-height:44px; width:44px; height:44px; margin:0; }
 }
+
+/* ===== Audit dev n°3 — contrastes, tailles minimales, cibles (surcharges volontaires, en fin de fichier) ===== */
+.rj-eye{ opacity:.85 !important; color:#4f4a40 !important; }
+.rj-eye-section, .rj-eye-word{ opacity:.85 !important; color:#4f4a40 !important; }
+.p-wa{ color:#9a4f0f !important; } .p-ga{ color:#2f62a8 !important; } .p-ni{ color:#1c6e49 !important; } .p-de{ color:#6b3fb0 !important; }
+.p-e{ color:#17727d !important; } .p-to{ color:#8a5a14 !important; } .p-mo{ color:#a63a73 !important; } .p-no{ color:#4f6e4f !important; }
+.p-kara,.p-made,.p-yori,.p-node,.p-noni{ color:#5f574d !important; }
+.stamp{ opacity:1; }
+/* leçons de kana verrouillées : lisibles (pas d'opacité), différenciées par le fond et le cadenas */
+.kana-path-item.is-locked{ opacity:1; background:#efeae0; border-style:dashed; }
+.kana-path-item.is-locked .kpi-preview, .kana-path-item .kpi-status{ color:#4f4a40; }
+.kana-path-item.is-locked b, .kana-path-item.is-locked span{ color:#4f4a40; }
+/* badges verrouillés : idem, grisés par le filtre et non par l'opacité */
+.badge-card{ opacity:1; }
+.badge-card:not(.is-earned){ background:#efeae0; }
+.badge-card:not(.is-earned) .bc-icon{ filter:grayscale(1); }
+.bc-desc, .bc-status, .badge-card:not(.is-earned) .bc-title{ color:#4f4a40; }
+/* étape du programme terminée : lisible, signalée par la coche et le liseré */
+.today-step.is-done{ opacity:1; }
+/* plancher de 12 px pour les petits textes de Lire / Astuces / Progrès */
+.sign-card .sc-note, .sign-card .sc-romaji, .rg-add, .rg-quiz, .read-group .rg-add, .mk-src, .sc-note, .sc-romaji{ font-size:12px; }
+.kj-stat span, .bc-status, .bc-desc, .mk-n, .kj-credit, .kj-slabel{ font-size:max(12px, 1em); }
+/* champs de saisie : 44 px de haut sur téléphone */
+@media (max-width:680px){
+  input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]):not([type=hidden]), select, textarea{ min-height:44px; }
+}
+.path-tag, .stat span{ font-size:12px; }
+.mode-chip, .level-pill, .skill-level, .star-pill, .skill-head span, .skill-card span{ font-size:max(12px, 1em); }

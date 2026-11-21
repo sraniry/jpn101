@@ -4,6 +4,7 @@ import { planMark, phrases, newCard, savePhrases, existingKeySet, cardKey,
          registerStudyActivity, recordAnswer, getKanaPath, markKanaLesson, addQuizStat, bestQuizScore } from '../storage.js';
 import { celebrate, quizLine } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
+import { escapeHtml } from '../util.js';
 
 // État du quiz
 let quizState = null;
@@ -226,6 +227,7 @@ function renderLesson(panel){
     html += `<div class="kana-lesson-cell" data-jp="${it.h}">
       <span class="klc-pair"><span class="kpc-h" data-jp="${it.h}">${it.h}</span><span class="kpc-sep">/</span><span class="kpc-k" data-jp="${it.k}">${it.k}</span></span>
       <span class="kcc-rom">${it.romaji}</span>
+      ${it.hmnemo?`<span class="klc-mnemo">${it.hmnemo}</span>`:''}
       ${it.mnemo?`<span class="klc-mnemo">${it.mnemo}</span>`:''}
     </div>`;
   });
@@ -258,6 +260,7 @@ function renderLessonQuiz(panel, lesson){
     panel.innerHTML = `<div class="kana-quiz-done">
       <div class="kqd-score">${q.correct}/${q.deck.length} — ${pct}%</div>
       <div class="kqd-msg">${passed ? '🎉 Leçon validée ! La suivante est débloquée.' : '💪 Il faut 80 % — relis la ligne et retente.'}</div>
+      ${(q.missed || []).length ? `<div class="kqd-missed" style="text-align:left;margin:10px 0"><b>À revoir :</b><ul style="margin:6px 0 0 18px">${[...new Map(q.missed.map(m => [m.jp, m])).values()].map(m => `<li><b>${escapeHtml(m.jp)}</b> = ${escapeHtml(m.romaji)}${m.mn ? ` — ${escapeHtml(m.mn)}` : ''}</li>`).join('')}</ul></div>` : ''}
       <button class="kana-quiz-restart" id="lessonQuizEnd">${passed ? '→ Retour au parcours' : '🔄 Retenter'}</button>
     </div>`;
     document.getElementById('lessonQuizEnd').addEventListener('click', ()=>{
@@ -283,10 +286,25 @@ function renderLessonQuiz(panel, lesson){
       else { btn.classList.add('wrong'); panel.querySelector('[data-correct="true"]').classList.add('correct'); }
       panel.querySelectorAll('.kqc-btn').forEach(b=>b.disabled=true);
       speak(card.jp, 0.8);
-      setTimeout(()=>{ q.idx++; renderPath(); }, 900);
+      if(ok){ setTimeout(()=>{ q.idx++; renderPath(); }, 700); return; }
+      // Faute : on ne passe PAS tout seul à la suite. On montre la bonne réponse et l'image pour la retenir.
+      const it = lesson.items.find(x => x.h === card.jp || x.k === card.jp) || {};
+      const mn = it.h === card.jp ? it.hmnemo : it.mnemo;
+      (q.missed = q.missed || []).push({ jp: card.jp, romaji: card.romaji, mn: mn || '' });
+      const fb = document.createElement('div'); fb.className = 'kana-fb-wrong'; fb.setAttribute('role', 'status');
+      fb.style.cssText = 'margin-top:12px;padding:10px 12px;border-radius:10px;background:#fbeee9;border:1px solid #e3b6a8;font-size:14px;line-height:1.5';
+      fb.innerHTML = `<b>${escapeHtml(card.jp)} se lit « ${escapeHtml(card.romaji)} »</b>${mn ? `<br><span>💡 ${escapeHtml(mn)}</span>` : ''}`;
+      const nx = document.createElement('button'); nx.type = 'button'; nx.className = 'continue-btn sticky-cta'; nx.style.marginTop = '10px'; nx.textContent = 'Continuer';
+      nx.addEventListener('click', ()=>{ q.idx++; renderPath(); });
+      fb.appendChild(document.createElement('br')); fb.appendChild(nx);
+      panel.querySelector('.kana-quiz-card').appendChild(fb);
+      setTimeout(()=> nx.scrollIntoView({ block:'nearest', behavior:'smooth' }), 60);
     });
   });
 }
+
+// Ouvre directement une leçon du parcours (utilisé par l'accueil : « Commencer la leçon 1 »).
+export function openKanaLesson(idx){ lessonState = { lessonIdx: idx, quiz: null }; }
 
 export function renderKana() {
   const area = document.getElementById('kanaArea');

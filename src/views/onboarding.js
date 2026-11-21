@@ -1,5 +1,5 @@
 import { phrases, meta, saveMeta, markKanaLesson } from '../storage.js';
-import { KANA_LESSONS } from './kana.js';
+import { KANA_LESSONS, openKanaLesson } from './kana.js';
 import { importSeed } from './manage.js';
 import { speak } from '../tts.js';
 import { showView } from '../nav.js';
@@ -31,8 +31,11 @@ function show(){
   const box = document.getElementById('onboarding'); if(!box) return;
   const st = { step: 1, goal: meta.goal || 'kyoto', level: 'zero', minutes: meta.minutes || 20, romaji: true };
   box.hidden = false;
+  // Le reste de la page devient inerte (clavier, lecteur d'écran) tant que l'accueil est ouvert.
+  const others = [...document.body.children].filter(el => el !== box && !['SCRIPT', 'STYLE', 'LINK'].includes(el.tagName));
+  others.forEach(el => { el.inert = true; el.setAttribute('aria-hidden', 'true'); });
   const prevFocus = document.activeElement;
-  const close = () => { box.hidden = true; box.innerHTML = ''; box.onkeydown = null; if(prevFocus && prevFocus.focus) prevFocus.focus(); };
+  const close = () => { others.forEach(el => { el.inert = false; el.removeAttribute('aria-hidden'); }); box.hidden = true; box.innerHTML = ''; box.onkeydown = null; if(prevFocus && prevFocus.focus) prevFocus.focus(); };
   // Modale accessible : Échap ferme (= « Passer »), Tab reste dans la fenêtre.
   box.onkeydown = e => {
     if(e.key === 'Escape'){ meta.onboarded = true; saveMeta(); close(); return; }
@@ -47,11 +50,11 @@ function show(){
     let body = '';
     if(st.step === 1){
       body = `<h2>Bienvenue ! 🌸</h2><p class="ob-promise">20 minutes par jour : tu lis les kana en 2 semaines et tu commandes au café en 1 mois.</p><p><b>Quel est ton objectif principal ?</b></p>
-        <div class="ob-choices">${GOALS.map(([id, ic, l]) => `<button type="button" class="ob-choice ${st.goal === id ? 'on' : ''}" data-goal="${id}">${ic} ${escapeHtml(l)}</button>`).join('')}</div>`;
+        <div class="ob-choices">${GOALS.map(([id, ic, l]) => `<button type="button" class="ob-choice ${st.goal === id ? 'on' : ''}" aria-pressed="${st.goal === id}" data-goal="${id}">${ic} ${escapeHtml(l)}</button>`).join('')}</div>`;
     } else if(st.step === 2){
       body = `<h2>Ton niveau et ton temps</h2><p><b>Où en es-tu ?</b></p>
-        <div class="ob-choices">${LEVELS.map(([id, l]) => `<button type="button" class="ob-choice ${st.level === id ? 'on' : ''}" data-level="${id}">${escapeHtml(l)}</button>`).join('')}</div>
-        <p><b>Combien de temps par jour ?</b></p><div class="ob-choices row">${TIMES.map(([m, l]) => `<button type="button" class="ob-choice ${st.minutes === m ? 'on' : ''}" data-min="${m}">${l}</button>`).join('')}</div>
+        <div class="ob-choices">${LEVELS.map(([id, l]) => `<button type="button" class="ob-choice ${st.level === id ? 'on' : ''}" aria-pressed="${st.level === id}" data-level="${id}">${escapeHtml(l)}</button>`).join('')}</div>
+        <p><b>Combien de temps par jour ?</b></p><div class="ob-choices row">${TIMES.map(([m, l]) => `<button type="button" class="ob-choice ${st.minutes === m ? 'on' : ''}" aria-pressed="${st.minutes === m}" data-min="${m}">${l}</button>`).join('')}</div>
         <label class="ob-check"><input type="checkbox" id="obRomaji" ${st.romaji ? 'checked' : ''}> Afficher le romaji (lettres latines) sous le japonais</label>`;
     } else if(st.step === 4){
       const T = st.test, q = T.deck[T.idx];
@@ -94,7 +97,8 @@ function show(){
       await saveMeta();
       await importSeed(['A0', 'A1']);
       close(); window.dispatchEvent(new CustomEvent('nihongo:changed'));
-      showView(st.level === 'zero' || (st.test && !st.test.ok) ? 'kana' : 'today');
+      if(st.level === 'zero' || (st.test && !st.test.ok)){ openKanaLesson(0); showView('kana'); }   // directement la leçon 1, sans chercher
+      else showView('today');
     });
     box.querySelector('#obNext').focus();
   };

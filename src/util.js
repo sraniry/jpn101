@@ -14,9 +14,15 @@ const KANA_ROMAJI_MAP = (() => {
   KATAKANA_ONLY.forEach(it => { map[it.k] = it.romaji; });
   return map;
 })();
+// Combinaisons katakana « étrangères » absentes des tables de kana, et を = « o » (convention de toute l'appli).
+Object.assign(KANA_ROMAJI_MAP, { 'シェ':'she','ジェ':'je','チェ':'che','ティ':'ti','ディ':'di','ファ':'fa','フィ':'fi','フェ':'fe','フォ':'fo','ウィ':'wi','ウェ':'we','ウォ':'wo','ヴ':'vu','トゥ':'tu','ドゥ':'du','ツァ':'tsa','を':'o','ヲ':'o' });
 const KANA_KEYS_BY_LEN = Object.keys(KANA_ROMAJI_MAP).sort((a, b) => b.length - a.length);
 const SOKUON = new Set(['っ', 'ッ']);
 
+// Phrase entière : les mots sont séparés par des espaces dans les données ; は / を / へ isolés sont des particules.
+export function romajiPhrase(str){
+  return (str || '').split(/\s+/).filter(Boolean).map(w => w === 'は' ? 'wa' : w === 'を' ? 'o' : w === 'へ' ? 'e' : w === 'こんにちは' ? 'konnichiwa' : w === 'こんばんは' ? 'konbanwa' : kanaToRomaji(w)).join(' ');
+}
 export function kanaToRomaji(str){
   if(!str) return '';
   // 「・」 (point médian katakana) sépare deux lectures : il doit devenir un séparateur latin,

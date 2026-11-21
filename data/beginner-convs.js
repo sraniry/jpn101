@@ -312,8 +312,8 @@ export const BEGINNER_CONVS = [
       "breakdown": [
        {
         "chunk": "ホット",
-        "role": "Chaud, sans です.",
-        "tip": "Ajoute です : ホットです = « c'est chaud, s'il vous plaît »."
+        "role": "Chaud, sans phrase autour.",
+        "tip": "Ajoute で おねがいします : ホットで おねがいします = « chaud, s'il vous plaît »."
        }
       ]
      },
@@ -403,7 +403,7 @@ export const BEGINNER_CONVS = [
    {
     "pattern": "X を ひとつ",
     "explain": "ひとつ = « un (objet) ». On le place après を.",
-    "example": "まっちゃラテを ひとつ ください。"
+    "example": "抹茶ラテを ひとつ ください。"
    }
   ],
   "vocab": [
@@ -609,9 +609,9 @@ export const BEGINNER_CONVS = [
       "feedback": "Ça marche, mais on dit plutôt これで おねがいします.",
       "breakdown": [
        {
-        "chunk": "これで おねがいします",
-        "role": "« Avec ça, s'il vous plaît. »",
-        "tip": "Phrase typique pour payer. はい seul est correct mais moins naturel."
+        "chunk": "はい",
+        "role": "« Oui. »",
+        "tip": "Correct, mais en tendant l'argent ou la carte, on dit plutôt これで おねがいします."
        }
       ]
      },
@@ -707,9 +707,9 @@ export const BEGINNER_CONVS = [
       "feedback": "Compris ! Ajoute すみません au début pour être poli.",
       "breakdown": [
        {
-        "chunk": "すみません",
-        "role": "« Excusez-moi. »",
-        "tip": "On l'ajoute au début pour appeler poliment quelqu'un."
+        "chunk": "まっちゃ、ありますか",
+        "role": "« Du matcha, vous en avez ? »",
+        "tip": "Compréhensible. Version polie : すみません、まっちゃは ありますか？"
        }
       ]
      },
@@ -1632,8 +1632,8 @@ export const BEGINNER_CONVS = [
      },
      {
       "chunk": "には",
-      "role": "« Et pour le reste ? »",
-      "tip": "に / は ajoutés à ほか : « en plus de ça ? »."
+      "role": "に + は collés à ほか.",
+      "tip": "Ne traduis pas には seul : ほかには？ = « Autre chose ? / Et avec ça ? »."
      }
     ]
    },
@@ -1835,7 +1835,7 @@ export const BEGINNER_CONVS = [
        {
         "chunk": "ひとつ",
         "role": "Un (objet).",
-        "tip": "Ajoute これを ください : on saura ce que tu veux en un."
+        "tip": "Dis-le en phrase : これを ひとつ ください."
        }
       ]
      },
@@ -2205,8 +2205,8 @@ export const BEGINNER_CONVS = [
       "breakdown": [
        {
         "chunk": "あたためます",
-        "role": "« Je réchauffe. »",
-        "tip": "La forme ます décrit ce que TOI tu fais. Ici c'est lui qui réchauffe."
+        "role": "« Je (le) réchauffe. »",
+        "tip": "En japonais on ne dit pas qui fait l'action. Ici あたためます sonne comme « je vais le réchauffer (moi-même) ». C'est l'employé qui réchauffe : réponds はい、おねがいします."
        }
       ]
      }
@@ -2233,9 +2233,9 @@ export const BEGINNER_CONVS = [
     "example": "おにぎりを ください。"
    },
    {
-    "pattern": "ふくろ",
-    "explain": "Sac. On demande un sac avec ふくろは いりますか ? (Voulez-vous un sac ?)",
-    "example": "いりません。 = Non merci (je n'en veux pas)."
+    "pattern": "X は いりますか",
+    "explain": "« Vous voulez X ? » : la question de la caisse. Réponds はい、おねがいします ou いいえ、だいじょうぶです.",
+    "example": "ふくろは いりますか。 = Voulez-vous un sac ?"
    }
   ],
   "vocab": [
@@ -2991,7 +2991,7 @@ export const BEGINNER_CONVS = [
    {
     "pattern": "X まで",
     "explain": "まで = « jusqu'à X ». Pour dire où va le ticket.",
-    "example": "きょうとまで ください。"
+    "example": "きょうとまで いちまい ください。 = Un billet pour Kyoto, s'il vous plaît."
    },
    {
     "pattern": "どこまでですか",
@@ -3431,8 +3431,8 @@ export const BEGINNER_CONVS = [
      },
      {
       "chunk": "には",
-      "role": "« Et pour le reste ? »",
-      "tip": "に / は ajoutés à ほか : « en plus de ça ? »."
+      "role": "に + は collés à ほか.",
+      "tip": "Ne traduis pas には seul : ほかには？ = « Autre chose ? / Et avec ça ? »."
      }
     ]
    },
