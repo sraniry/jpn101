@@ -241,6 +241,54 @@ function buildChallengeQuiz(ch){
   return buildAskQuiz(ch.ref, 5);
 }
 
+
+// ---------- Aide des défis : grammaire + kanji + romaji ----------
+const GRAMMAR_HINTS = [
+  [/をください/, 'を + ください', "Ce que tu veux + を + ください = « donnez-moi … ». を marque l'objet (on le prononce « o »). C'est la phrase magique pour commander."],
+  [/でお願いします|をお願いします|お願いします/, 'お願いします', "お願いします (onegai shimasu) = « s'il vous plaît / je vous le demande ». Plus poli que ください. で + お願いします = « avec ça, s'il vous plaît » (choix d'un réglage)."],
+  [/ですか/, '〜ですか ?', "か à la fin = point d'interrogation. Pas de changement d'ordre des mots : on ajoute か."],
+  [/はいくら|いくら/, 'いくら', "いくら = combien (prix). Ce + は + いくら + ですか = « c'est combien ? »."],
+  [/はどこ/, 'は + どこ', "どこ = où. Lieu + は + どこですか = « où est … ? ». は se prononce « wa »."],
+  [/はありますか|ありますか/, 'ありますか', "ありますか = « est-ce qu'il y a … ? / vous avez … ? ». Pour une chose (pas une personne)."],
+  [/できますか/, 'できますか', "できます = pouvoir / être possible. 〜できますか = « est-ce possible de … ? »."],
+  [/たいです/, '〜たいです', "Verbe (racine) + たいです = « je veux … ». Ex. 食べたい = je veux manger."],
+  [/抜き/, '〜抜き', "〜抜き (nuki) = « sans … ». Ex. ねぎ抜き = sans ciboule."],
+  [/ひとつ|ふたつ|みっつ|一つ|二つ|三つ/, 'ひとつ, ふたつ, みっつ', "Compter des objets : ひとつ = 1, ふたつ = 2, みっつ = 3. On le place après を : 抹茶ラテをひとつください."],
+  [/これ|それ|あれ/, 'これ / それ / あれ', "これ = ceci (près de moi), それ = cela (près de toi), あれ = là-bas. は marque le thème, を l'objet."],
+  [/何/, '何 (nan / nani)', "何 = quoi. これは何ですか = « qu'est-ce que c'est ? »."],
+];
+// Aide générale par défi (avant de commencer)
+const CHALLENGE_GRAMMAR = {
+  menu: ["Lire une carte", ["Le nom du plat est à gauche, le prix à droite (円 = yen).", "Les kanji décrivent la garniture : cherche ceux que tu connais.", "Appuie sur « Aide » sous la question pour voir chaque kanji (sens, lecture, romaji)."]],
+  vocab: ["Retenir des mots", ["Dis chaque mot à voix haute avec 🔊.", "Les kanji sont expliqués sous la question : sens + lecture en romaji.", "Le même kanji revient dans plusieurs mots : repère-le."]],
+  phrases: ["Phrases à dire", ["Structure de base : ce que tu veux + を + ください.", "お願いします = s'il vous plaît (poli).", "Le romaji est sous chaque choix : lis-le à voix haute."]],
+  ask: ["Que dire dans la situation ?", ["Ce que tu veux + を + ください = « donnez-moi ».", "〜は + いくら / どこ / 何 + ですか = poser une question (か = « ? »).", "Sous chaque choix : romaji + sens des mots clés."]]
+};
+const grammarFor = txt => GRAMMAR_HINTS.filter(([re]) => re.test(txt)).slice(0, 3);
+const hintsHtml = txt => { const g = grammarFor(txt); return g.length ? `<div class="mn-gram"><span class="kj-slabel">Grammaire</span>${g.map(([, t, d]) => `<p><b>${escapeHtml(t)}</b> — ${escapeHtml(d)}</p>`).join('')}</div>` : ''; };
+function kanjiMiniHtml(jp){
+  if(!DECK_CACHE) return '';
+  const chars = [...new Set(jp.match(CJK) || [])]; if(!chars.length) return '';
+  const rows = chars.map(c => { const d = DECK_CACHE.get(c); if(!d) return ''; const r = (d.kun && d.kun[0]) || (d.on && d.on[0]) || ''; return `<li><b class="ki-g" style="font-size:22px">${escapeHtml(c)}</b> ${escapeHtml(d.fr)}${r ? ` <span class="mn-rom">${rj(String(r).replace(/[()]/g, ''))}</span>` : ''}</li>`; }).join('');
+  return `<div class="ki-box"><span class="kj-slabel">Kanji utiles</span><ul class="ki-mini">${rows}</ul></div>`;
+}
+function questionHelp(q, choices){
+  // romaji de la phrase de la question (mot entre « »), kanji de la question et des choix japonais, grammaire des choix
+  const parts = [];
+  const quoted = (q.q.match(/«\s*([^»]+?)\s*»/g) || []).map(x => x.replace(/[«»]/g, '').trim()).filter(x => /[ぁ-ヶ㐀-鿿]/.test(x));
+  if(quoted.length && q.kana) parts.push(`<div class="mn-say-box"><b>${escapeHtml(quoted[0])}</b> se lit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>`);
+  const jpTexts = [...quoted, ...choices.filter(c => /[㐀-鿿]/.test(c))];
+  const kanjiTxt = jpTexts.join('');
+  const kinfo = kanjiTxt ? kanjiMiniHtml(kanjiTxt) : '';
+  const gram = hintsHtml(choices.join(' '));
+  if(!parts.length && !kinfo && !gram) return '';
+  return `<details class="mn-help" open><summary>💡 Aide : kanji, romaji, grammaire</summary>${parts.join('')}${kinfo}${gram}</details>`;
+}
+function introHtml(ch){
+  const [title, lines] = CHALLENGE_GRAMMAR[ch.kind] || CHALLENGE_GRAMMAR.ask;
+  return `<details class="mn-help mn-intro" open><summary>📘 Avant de commencer : ${escapeHtml(title)}</summary><ul>${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul></details>`;
+}
+
 // ---------- lecteur de quiz ----------
 // Romaji + mots-clés sous chaque choix : on découpe la phrase avec le mini-lexique des défis (data/ask-lexicon.js).
 const ASK_MAP = new Map(ASK_LEX.map(([j, k, f]) => [j, { k, f, j }]));
@@ -306,15 +354,15 @@ function renderQuiz(area){
   const q = z[ui.i], choices = shuffle(q.choices);
   area.innerHTML = `<div class="kj-top"><button class="conv-back" id="mnBack">← Quitter</button><span>${ui.challenge ? ui.challenge.icon + ' ' + escapeHtml(ui.challenge.title) : escapeHtml(ui.title || '')}</span><span>${ui.i + 1} / ${z.length}</span></div>
     <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / z.length) * 100}%"></div></div>
-    <div class="kj-card"><p class="mn-q">${escapeHtml(q.q)}</p>
-      <div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${choiceRj(c)}</button>`).join('')}</div><div id="mnFb"></div></div>`;
+    <div class="kj-card">${ui.challenge && ui.i === 0 ? introHtml(ui.challenge) : ''}<p class="mn-q">${escapeHtml(q.q)}</p>
+      ${questionHelp(q, choices)}<div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${choiceRj(c)}</button>`).join('')}</div><div id="mnFb"></div></div>`;
   wireBack();
   area.querySelectorAll('.kj-choice').forEach(b => b.addEventListener('click', () => {
     const ok = b.dataset.c === q.ok;
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === q.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else ui.right++;
     recordAnswer(KIT_IDS.has((ui.challenge || {}).id) || ui.backTo === 'kit' ? 'kit' : 'menu', (q.word || q.q).slice(0, 40) + ':' + q.q.slice(0, 10), ok, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain, say: q.say, chosen: b.dataset.c });
-    document.getElementById('mnFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div>${q.kana ? `<div class="mn-say-box"><b>${escapeHtml(q.word || '')}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>` : ''}<div class="mn-explain">${escapeHtml(q.explain || '')}</div>${q.word ? kanjiInfoHtml(q.word) : ''}<button class="continue-btn" id="mnNext">Continuer</button>`;
+    document.getElementById('mnFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div>${q.kana ? `<div class="mn-say-box"><b>${escapeHtml(q.word || '')}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>` : ''}<div class="mn-explain">${escapeHtml(q.explain || '')}</div>${/[ぁ-ヶ㐀-鿿]/.test(q.ok) && !q.word ? (askRomaji(q.ok) ? `<div class="mn-say-box"><b>${escapeHtml(q.ok)}</b> <span class="mn-rom">${escapeHtml(askRomaji(q.ok).rj)}</span></div>` : '') + hintsHtml(q.ok) : ''}${q.word ? kanjiInfoHtml(q.word) : ''}<button class="continue-btn" id="mnNext">Continuer</button>`;
     wireAudio(document.getElementById('mnFb'));
     document.getElementById('mnNext').addEventListener('click', () => { ui.i++; renderMenus(); });
     if(q.say) speak(q.say, 0.85);

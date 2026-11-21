@@ -1095,3 +1095,12 @@ main small, main label, main .rm-small{ font-size:max(12px, 1em) !important; }
 }
 .path-tag, .stat span{ font-size:12px; }
 .mode-chip, .level-pill, .skill-level, .star-pill, .skill-head span, .skill-card span{ font-size:max(12px, 1em); }
+
+/* Défis : aide kanji / romaji / grammaire */
+.mn-help{ background:#fbf6ea; border:1px solid #e3d6b8; border-radius:12px; padding:8px 12px; margin:10px 0; text-align:left; font-size:14px; }
+.mn-help > summary{ cursor:pointer; font-weight:700; color:var(--indigo-deep); min-height:44px; display:flex; align-items:center; }
+.mn-help ul{ margin:4px 0 6px 18px; padding:0; }
+.mn-help li{ margin:3px 0; line-height:1.45; }
+.mn-gram p{ margin:5px 0; font-size:13.5px; line-height:1.45; color:#4a4339; }
+.mn-help .ki-box{ margin-top:6px; }
+.ki-mini{ list-style:none; margin:4px 0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:4px 10px; font-size:13.5px; } .ki-mini li{ margin:0; } @media(max-width:420px){ .ki-mini{ grid-template-columns:1fr; } }
