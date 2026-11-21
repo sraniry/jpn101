@@ -115,10 +115,10 @@ async function init(){
 }
 init();
 
-// Retour sur l'appli : le cloud vient d'être relu et fusionné. On rafraîchit l'écran, sauf pendant une révision
-// (pour ne pas casser la file en cours : la carte affichée reste celle qu'on note).
+// Retour sur l'appli : le cloud vient d'être relu et fusionné. On ne redessine que les écrans de consultation ;
+// pendant un dialogue, une révision, un quiz ou une leçon, seul l'en-tête est rafraîchi (on ne casse pas l'activité en cours).
 window.addEventListener('nihongo:remote-merged', () => {
-  try{ updateImportBanner(); updateStreak(); if(currentView() !== 'review') render(); else renderHeader(); }catch(e){}
+  try{ updateImportBanner(); updateStreak(); if(['today','path','learn','speak','me','progress'].includes(currentView())) render(); else renderHeader(); }catch(e){}
 });
 
 // Boutons d'action collants au-dessus de la barre du bas (mobile) : « Continuer » reste visible sans défiler.

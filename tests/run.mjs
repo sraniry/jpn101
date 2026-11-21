@@ -135,4 +135,13 @@ const mg = await imp('src/merge.js');
   const { LESSON_SUMMARY } = await imp('data/summary.js');
   ok(LESSON_SUMMARY.length === LESSONS.length && LESSON_SUMMARY.every((s, i) => s.id === LESSONS[i].id && s.title === LESSONS[i].title), 'data/summary.js : résumé des leçons identique à data/lessons.js');
 }
+
+// --- sanitizeState : idempotent, et conserve les champs réels (plan.kanjiOk, examHistory.scores…)
+{
+  const st = await import('../src/storage.js');
+  const me = { plan: { date: '2026-11-21', kana: true, kanjiOk: true, errOk: true, reviews: 3 }, kanjiDaily: { date: '2026-11-21', newK: ['日'], newR: [], reviewed: 2, dueStart: 12 }, examHistory: [{ date: '2026-11-01', score: 55, scores: { vocab: 30, grammar: 25 }, failedSections: ['listening'], topErrors: ['は/が'] }] };
+  const a = st.sanitizeState([], JSON.parse(JSON.stringify(me))).meta, b = st.sanitizeState([], JSON.parse(JSON.stringify(a))).meta;
+  ok(JSON.stringify(a) === JSON.stringify(b), 'sanitizeState idempotent');
+  ok(a.plan.kanjiOk === true && a.plan.errOk === true && a.kanjiDaily.dueStart === 12 && a.examHistory[0].scores.vocab === 30 && a.examHistory[0].failedSections[0] === 'listening', 'sanitizeState conserve plan.kanjiOk/errOk, dueStart, examHistory.scores');
+}
 process.exit(fails ? 1 : 0);

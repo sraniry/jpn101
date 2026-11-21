@@ -400,7 +400,7 @@ function renderReviewStep(area){
     ${ui.revealed ? `<div class="rate-row">
       <button class="rate-again" data-grade="0">Galère</button><button class="rate-hard" data-grade="1">Difficile</button>
       <button class="rate-good" data-grade="2">Bien</button><button class="rate-easy" data-grade="3">Facile</button></div>` : ''}`;
-  if(ui.revealed && !rad) leechBox(area, key, data);
+  if(ui.revealed) leechBox(area, key, data);
   wireChips(area); wireAudio(area);
   document.getElementById('kjBack').addEventListener('click', () => go('home'));
   const rv = document.getElementById('kjReveal');

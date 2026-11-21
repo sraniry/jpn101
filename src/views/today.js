@@ -96,7 +96,8 @@ export function renderToday(){
   const openErr = openMistakes().length;
   const errGoal = Math.min(3, openErr + (plan.rework || 0));
   const errDone = !!plan.errOk || openErr === 0 || (plan.rework || 0) >= errGoal;
-  if(errDone && !plan.errOk){ plan.errOk = true; saveMeta(false); }   // une étape cochée le reste, même si une nouvelle faute arrive ensuite
+  // On ne fige « fait » que si du vrai travail a été fait ; « 0 erreur » ne coche que tant que la liste est vide.
+  if(!plan.errOk && (plan.rework || 0) >= errGoal && errGoal > 0){ plan.errOk = true; saveMeta(false); }
 
   const mins = Number(meta.minutes) || 20;
   // Le plan garde toujours la même forme dans la journée : une étape terminée reste affichée, cochée (jamais retirée).

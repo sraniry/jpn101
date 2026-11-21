@@ -56,7 +56,8 @@ function fixHtml(fix){
 // Lecture des kanji les plus fréquents dans les questions, pour ne pas bloquer une débutante.
 const KANJI_RJ = { '駅': 'eki', '何': 'nan', '円': 'en', '時': 'ji', '分': 'fun', '人': 'hito', '水': 'mizu', '本': 'hon', '日': 'nichi', '月': 'tsuki', '店': 'mise', '学校': 'gakkou', '食': 'ta', '飲': 'no', '行': 'i', '来': 'ku', '見': 'mi', '買': 'ka', '高': 'taka', '安': 'yasu', '大': 'oo', '小': 'chii', '私': 'watashi', '先生': 'sensei', '今': 'ima', '百': 'hyaku', '千': 'sen', '万': 'man' };
 function qHtml(text){
-  return escapeHtml(text).replace(/(学校|先生|[駅何円時分人水本日月店食飲行来見買高安大小私今百千万])/g, (m) => KANJI_RJ[m] ? `${m}<span class="rj-inline">(${KANJI_RJ[m]})</span>` : m);
+  // Pas de lecture injectée caractère par caractère : elle donnait des lectures fausses (水曜日, 昨日, 三本…).
+  return escapeHtml(text);
 }
 const isKanaOnly = c => /^[ぁ-ゖァ-ヶー・、。？！ ]+$/.test(c);
 function choiceHtml(c){

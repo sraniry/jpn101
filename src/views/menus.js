@@ -257,12 +257,14 @@ function askSegment(t){
       if(n <= 2 && ASK_PARTICLES[s]){ hit = [s, { k: s, j: s, p: true }]; break; }
     }
     // un は/を/が… collé à un nom est une particule, même si « はい » existe dans le lexique
-    if(hit && i > 0 && out.length && !out[out.length - 1].p && hit[0].length <= 2 && !hit[1].p && ASK_PARTICLES[t[i]]) hit = [t[i], { k: t[i], j: t[i], p: true }];
+    const PROTECT = ['です', 'ですか', 'でした', 'ます', 'ました', 'ません', 'ください', 'ひとつ', 'ふたつ', 'みっつ', 'どうぞ', 'どこ', 'どう'];
+    const prevOk = (out.length && !out[out.length - 1].p) || unk;
+    if(hit && i > 0 && prevOk && hit[0].length <= 2 && !hit[1].p && ASK_PARTICLES[t[i]] && !PROTECT.includes(hit[0]) && /^(はい|はら|でい|のり|もう|とう|でき)/.test(hit[0] + '') ) hit = [t[i], { k: t[i], j: t[i], p: true }];
     if(hit){ flush(); out.push(hit[1]); i += hit[0].length; } else { unk += t[i]; i++; }
   }
   flush(); return out;
 }
-function askRomaji(text){
+export function askRomaji(text){
   const seg = askSegment(text);
   if(!seg.length || seg.some(x => x.bad)) return null;
   const rjs = seg.map(x => x.p ? ASK_PARTICLES[x.k] : kanaToRomaji(x.k));

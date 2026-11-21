@@ -352,6 +352,15 @@ export function sanitizeState(ph, me){
   const strList = (v, n = 3000, len = 80) => Array.isArray(v) ? v.slice(0, n).map(x => str(x, len)) : [];
   const date = v => /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '';
   const id = v => /^[A-Za-z0-9_-]{1,40}$/.test(String(v)) ? String(v) : 'c' + Math.random().toString(36).slice(2, 10);
+  // Copie profonde bornée : nombres, booléens, chaînes courtes, listes/objets limités — aucune clé « dangereuse », rien d'exécutable.
+  const deep = (v, d = 0) => {
+    if(typeof v === 'number') return num(v);
+    if(typeof v === 'boolean') return v;
+    if(typeof v === 'string') return str(v, 300);
+    if(d >= 3 || !v || typeof v !== 'object') return null;
+    if(Array.isArray(v)) return v.slice(0, 60).map(x => deep(x, d + 1));
+    const r = {}; Object.entries(v).slice(0, 40).forEach(([k, x]) => { if(k !== '__proto__' && k !== 'constructor') r[str(k, 60)] = deep(x, d + 1); }); return r;
+  };
   const srsCard = c => { c = obj(c); const o = { interval: num(c.interval), ease: num(c.ease) || 2.5, reps: int(c.reps), due: num(c.due), lapses: int(c.lapses), last: num(c.last) }; if(typeof c.intro === 'string') o.intro = date(c.intro); return o; };
 
   ph = (Array.isArray(ph) ? ph : []).filter(p => p && typeof p.jp === 'string').map(p => Object.assign({}, p, {
@@ -372,9 +381,9 @@ export function sanitizeState(ph, me){
   // ----- SRS kanji
   if('kanjiSrs' in me){ o.kanjiSrs = {}; Object.entries(obj(me.kanjiSrs)).slice(0, 4000).forEach(([k, c]) => { o.kanjiSrs[str(k, 20)] = srsCard(c); }); }
   if('kanjiNotes' in me){ o.kanjiNotes = {}; Object.entries(obj(me.kanjiNotes)).slice(0, 2500).forEach(([k, v]) => { o.kanjiNotes[str(k, 20)] = str(v, 160); }); }
-  if('kanjiDaily' in me){ const d = obj(me.kanjiDaily); o.kanjiDaily = { date: date(d.date), newK: strList(d.newK, 200, 20), newR: strList(d.newR, 200, 20), reviewed: int(d.reviewed) }; }
+  if('kanjiDaily' in me){ const d = obj(me.kanjiDaily); o.kanjiDaily = Object.assign(obj(deep(d)), { date: date(d.date), newK: strList(d.newK, 200, 20), newR: strList(d.newR, 200, 20), reviewed: int(d.reviewed) }); }
   // ----- plan du jour
-  if('plan' in me){ const p = obj(me.plan); o.plan = { date: date(p.date), kana: !!p.kana, reviews: int(p.reviews), conv: int(p.conv), challenge: int(p.challenge), lesson: int(p.lesson), rework: int(p.rework) }; }
+  if('plan' in me){ const p = obj(me.plan); o.plan = Object.assign(obj(deep(p)), { date: date(p.date), kana: !!p.kana, reviews: int(p.reviews), conv: int(p.conv), challenge: int(p.challenge), lesson: int(p.lesson), rework: int(p.rework) }); }
   // ----- journal d'étude, tombstones
   if('studyLog' in me){ o.studyLog = {}; Object.entries(obj(me.studyLog)).slice(-500).forEach(([k, v]) => { if(date(k)) o.studyLog[k] = int(v); }); }
   if('deleted' in me){ o.deleted = {}; Object.entries(obj(me.deleted)).slice(0, 3000).forEach(([k, v]) => { o.deleted[str(k, 300)] = num(v); }); }
@@ -388,7 +397,7 @@ export function sanitizeState(ph, me){
   }
   // ----- quiz, examens, kana, rappel, romaji
   if('quizStats' in me){ o.quizStats = {}; Object.entries(obj(me.quizStats)).slice(0, 40).forEach(([k, l]) => { o.quizStats[str(k, 40)] = (Array.isArray(l) ? l : []).slice(-50).map(e => ({ date: date(obj(e).date), correct: int(obj(e).correct), total: int(obj(e).total) })); }); }
-  if('examHistory' in me){ o.examHistory = (Array.isArray(me.examHistory) ? me.examHistory : []).slice(-100).map(e => { e = obj(e); const r = {}; Object.entries(e).slice(0, 12).forEach(([k, v]) => { r[str(k, 30)] = typeof v === 'number' ? num(v) : (typeof v === 'boolean' ? v : str(v, 80)); }); return r; }); }
+  if('examHistory' in me){ o.examHistory = (Array.isArray(me.examHistory) ? me.examHistory : []).slice(-100).map(e => { e = obj(e); return obj(deep(e)); }); }
   if('kanaPath' in me){ o.kanaPath = { done: (Array.isArray(obj(me.kanaPath).done) ? me.kanaPath.done : []).slice(0, 100).map(x => int(x)) }; }
   if('reminder' in me){ const r = obj(me.reminder); o.reminder = { time: /^\d{2}:\d{2}$/.test(r.time) ? r.time : '19:00', notif: !!r.notif, notifiedOn: date(r.notifiedOn) }; }
   if('romajiPrefs' in me){ const r = obj(me.romajiPrefs), bools = v => { const b = {}; Object.entries(obj(v)).slice(0, 500).forEach(([k, x]) => { b[str(k, 120)] = !!x; }); return b; };

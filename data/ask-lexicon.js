@@ -5,7 +5,7 @@ export const ASK_PARTICLES = { 'は': 'wa', 'を': 'o', 'が': 'ga', 'に': 'ni'
 // [écriture, lecture, sens (facultatif : seuls les mots utiles sont glosés)]
 export const ASK_LEX = [
  ['ホット','ホット','chaud'],['アイス','アイス','glacé'],['抹茶','まっちゃ','matcha'],['ラテ','ラテ','latte'],['コーヒー','コーヒー','café'],['ミルク','ミルク','lait'],
- ['一つ','ひとつ','un'],['二つ','ふたつ','deux'],['三つ','みっつ','trois'],['一人','ひとり','une personne'],['二人','ふたり','deux personnes'],['一杯','いっぱい','une tasse'],
+ ['一つ','ひとつ','un'],['ひとつ','ひとつ','un'],['ふたつ','ふたつ','deux'],['みっつ','みっつ','trois'],['おみくじ','おみくじ','oracle papier'],['二つ','ふたつ','deux'],['三つ','みっつ','trois'],['一人','ひとり','une personne'],['二人','ふたり','deux personnes'],['一杯','いっぱい','une tasse'],
  ['何を','なに を','quoi (objet)'],['何分','なんぷん','combien de minutes'],['何人','なんにん','combien de personnes'],['何時','なんじ','quelle heure'],['何円','なんえん','combien de yens'],['何番線','なんばんせん','quel quai'],['何番','なんばん','quel numéro'],['何','なん','quoi'],
  ['お会計','おかいけい','l’addition'],['お水','おみず','l’eau'],['お箸','おはし','baguettes'],['お持ち帰り','おもちかえり','à emporter'],['持ち帰り','もちかえり','à emporter'],['お願いします','おねがいします','s’il vous plaît'],['お守り','おまもり','porte-bonheur'],['お釣り','おつり','monnaie rendue'],
  ['甘さ控えめ','あまさ ひかえめ','peu sucré'],['大きく','おおきく','plus grand'],['熱く','あつく','plus chaud'],['豆乳','とうにゅう','lait de soja'],['変えられます','かえられます','peut changer'],['砂糖','さとう','sucre'],

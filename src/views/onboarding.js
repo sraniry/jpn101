@@ -93,7 +93,7 @@ function show(){
       if(st.step === 3 && st.level !== 'zero'){ st.test = makeTest(); st.step = 4; render(); return; }
       if(st.step === 4 && st.test.ok) KANA_LESSONS.forEach((_, i) => markKanaLesson(i));
       meta.onboarded = true; meta.goal = st.goal; meta.minutes = st.minutes; meta.level = st.level;
-      if(st.level !== 'zero') meta.kanjiPhase = 'kanji';
+      if(st.level !== 'zero' && st.test && st.test.ok) meta.kanjiPhase = 'kanji';   // test raté : on garde les radicaux d'abord
       meta.romajiPrefs = Object.assign({ pages: {}, sections: {}, words: {} }, meta.romajiPrefs || {}, { global: st.romaji });
       await saveMeta();
       await importSeed(['A0', 'A1']);
