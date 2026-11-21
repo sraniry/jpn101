@@ -73,6 +73,7 @@ function show(){
         <p class="ob-small">Tu pourras choisir une heure de rappel dans l'écran Aujourd'hui (calendrier).</p>`;
     }
     box.innerHTML = `<div class="ob-card">${dots}${body}<div class="ob-actions">${st.step > 1 ? '<button type="button" class="conv-back" id="obPrev">← Retour</button>' : '<button type="button" class="kj-link" id="obSkip">Passer</button>'}${st.step === 4 && st.test.idx < st.test.deck.length ? '' : `<button type="button" class="continue-btn" id="obNext">${st.step < 3 ? 'Suivant' : (st.step === 4 ? 'Continuer' : (st.level === 'zero' ? 'Commencer ma première leçon' : 'Suivant : test des kana'))}</button>`}</div></div>`;
+    { const fb = box.querySelector('#obNext') || box.querySelector('button'); if(fb) fb.focus({ preventScroll: true }); }
     box.querySelectorAll('[data-goal]').forEach(b => b.addEventListener('click', () => { st.goal = b.dataset.goal; render(); }));
     box.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', () => { st.level = b.dataset.level; render(); }));
     box.querySelectorAll('[data-min]').forEach(b => b.addEventListener('click', () => { st.minutes = +b.dataset.min; render(); }));
