@@ -1113,3 +1113,14 @@ main small, main label, main .rm-small{ font-size:max(12px, 1em) !important; }
 .lv-bar{ display:flex; align-items:center; gap:8px; margin:6px 0; } .lv-track{ flex:1; height:8px; background:#eee6d3; border-radius:4px; overflow:hidden; } .lv-track div{ height:100%; background:#3d8b4f; }
 .mn-lvnote{ font-size:13px; margin:6px 0 0; }
 .dk-mark{ color:#b5443a; font-weight:800; } .dk-mark.hdk{ color:#2f6fa3; } .kvc-kana{ display:block; font-size:14px; color:#4a4339; }
+
+/* Aide kanji (révision de phrases) */
+.kanji-aid{ margin:10px auto; max-width:520px; text-align:left; background:#fbf6ea; border:1px solid #e3d6b8; border-radius:12px; padding:6px 12px; font-size:14px; }
+.kanji-aid > summary{ cursor:pointer; font-weight:700; color:var(--indigo-deep); min-height:44px; display:flex; align-items:center; }
+.kh-row{ display:flex; gap:12px; align-items:flex-start; padding:8px 0; border-top:1px dashed #e3d6b8; }
+.kh-g{ font-size:34px; line-height:1; min-width:44px; text-align:center; font-family:'Shippori Mincho',serif; }
+.kh-t{ flex:1; line-height:1.45; }
+.kh-rd{ font-size:13.5px; color:#4a4339; } .kh-rom{ color:#5f574d; font-style:italic; }
+.kh-c{ font-size:13px; color:#4a4339; margin-top:2px; }
+.kh-tip{ font-size:13.5px; background:#fff; border-radius:8px; padding:6px 8px; margin-top:4px; color:#3d3730; }
+.kh-general{ margin-top:8px; font-size:13.5px; } .kh-general ul{ margin:4px 0 0 18px; padding:0; } .kh-general li{ margin:3px 0; }

@@ -7,6 +7,7 @@ import { renderHeader, refreshCounters } from '../main.js';
 import { celebrate } from '../encouragement.js';
 import { celebrateNewBadges } from '../badges.js';
 import { kanaPathState } from './kana.js';
+import { hasKanji, deckReady, loadKanjiHelp, kanjiHelpHtml } from '../kanji-help.js';
 
 // Objectif de révisions du jour (doit rester aligné avec REVIEW_GOAL_CAP dans today.js) —
 // dupliqué en constante locale plutôt qu'importé pour ne pas créer de dépendance croisée
@@ -199,6 +200,8 @@ export function renderReview(){
   if(interleaveActive){ renderInterleaveBreak(area); return; }
   if(!currentReview){ area.innerHTML = emptyState('Tout est à jour !', "Aucune carte à revoir (ou limite de nouvelles cartes atteinte aujourd'hui). Reviens plus tard."); return; }
   if(drillMode){ renderParticleDrill(area); return; }
+  // Dictionnaire des kanji chargé à la demande : on re-rend dès qu'il est prêt (une seule fois).
+  if(hasKanji(currentReview.jp) && !deckReady()) loadKanjiHelp().then(() => renderReview()).catch(() => {});
   const total = reviewQueue._startCount || 1;
   const doneToday = Math.max(0, total - reviewQueue.length);
 
@@ -231,6 +234,7 @@ export function renderReview(){
     html += `<button class="listen-btn" id="listenPlayBtn">▶</button><div class="hint" style="margin-top:14px;">Écoute, devine le sens, puis touche pour révéler</div>`;
   } else {
     html += `<div class="jp-text">${colorizeJp(currentReview.jp)}</div>`;
+    if(!revealed && hasKanji(currentReview.jp) && !dicteMode && !listenMode && deckReady()) html += `<details class="kanji-aid"><summary>🈶 Aide kanji : sens, lectures, astuces</summary>${kanjiHelpHtml(currentReview.jp)}</details>`;
     // Mode lecture : pas de romaji au recto, sinon on recopierait au lieu de lire
     if(!reading){
       html += `<div class="romaji">${escapeHtml(currentReview.romaji||'')}</div>`;
@@ -242,6 +246,7 @@ export function renderReview(){
     html += `<div class="jp-text">${colorizeJp(currentReview.jp)}</div>`;
     html += `<div class="romaji">${escapeHtml(currentReview.romaji||'')}</div>`;
     html += `<div class="fr-text">${escapeHtml(currentReview.fr||'')}</div>`;
+    if(hasKanji(currentReview.jp) && deckReady()) html += `<details class="kanji-aid" open><summary>🈶 Les kanji de cette phrase</summary>${kanjiHelpHtml(currentReview.jp)}</details>`;
     if(currentReview.pitch) html += renderPitch(currentReview.pitch);
     html += `<button class="audio-mini" id="audioMini">▶</button>`;
   }

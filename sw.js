@@ -1,4 +1,4 @@
-const CACHE = 'nihongo-v47';
+const CACHE = 'nihongo-v49';
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const ASSETS = [
   './src/strokes.js',
   './src/reminder.js',
   './src/util.js',
+  './src/kanji-help.js',
   './src/views/skills.js',
   './src/views/review.js',
   './src/views/conversation.js',
