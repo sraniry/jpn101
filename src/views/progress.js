@@ -7,10 +7,11 @@ import { speak } from '../tts.js';
 import { LESSONS } from '../../data/lessons.js';
 import { showView } from '../nav.js';
 import { escapeHtml } from '../util.js';
+import { levelBoxHtml } from './menus.js';
 
 // ---------- Mes progrès ----------
 const SRC_LABEL = { kanji: 'Kanji', radical: 'Radical', menu: 'Menu', kit: 'Kyoto', word: 'Mot', kana: 'Kana', grammar: 'Grammaire', lesson: 'Leçon', phrase: 'Phrase', jlpt: 'JLPT', pitfall: 'Piège', text: 'Texte', listening: 'Écoute' };
-const QUIZ_LABEL = { kana: 'Kana', kanji: 'Kanji N5', 'kanji-n4': 'Kanji N4', jlpt: 'JLPT N5', 'jlpt-n4': 'JLPT N4', menus: 'Menus', 'menus-guess': 'Devine le plat', 'listening-n4': 'Écoute N4' };
+const QUIZ_LABEL = { kana: 'Kana', kanji: 'Kanji N5', 'kanji-n4': 'Kanji N4', jlpt: 'JLPT N5', 'jlpt-n4': 'JLPT N4', menus: 'Menus', 'menus-guess': 'Devine le plat', 'menus-n5': 'Défis N5', 'menus-n4': 'Défis N4', 'listening-n4': 'Écoute N4' };
 
 function lastDays(n){
   const out = []; const d = new Date();
@@ -54,6 +55,7 @@ export function renderProgress(){
     <div class="kj-stat"><b>${convs}/${convTotal}</b><span>dialogues faits</span></div>
     <div class="kj-stat"><b>${(meta.lessonsDone || []).length}/${LESSONS.length}</b><span>leçons de grammaire</span></div>
   </div>
+  <h4 class="kj-h">Mon niveau</h4>${levelBoxHtml()}
   <h4 class="kj-h">Les 30 derniers jours</h4>
   <div class="cal" role="img" aria-label="${studied30} jours étudiés sur les 30 derniers jours">${days.map(d => `<span class="cal-d ${log[d] ? (log[d] > 15 ? 'l3' : log[d] > 5 ? 'l2' : 'l1') : ''}" title="${d}${log[d] ? ' : ' + log[d] + ' actions' : ''}"></span>`).join('')}</div>
   <p class="kj-tip" style="text-align:left">Une case colorée = un jour où tu as étudié. Une case vide n'est pas un échec : on reprend, c'est tout.</p>`;

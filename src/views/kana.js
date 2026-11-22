@@ -9,42 +9,18 @@ import { escapeHtml } from '../util.js';
 // État du quiz
 let quizState = null;
 
+import { DERIVED_WORDS } from '../../data/derived-words.js';
+
 // ---------- Mots et phrases courantes utilisant les dérivés (゛゜ et combinaisons) ----------
 // Demandé explicitement : voir les dérivés dans du vocabulaire réel plutôt que dans un tableau
 // abstrait aide à les retenir. Trois groupes alignés sur les tableaux ci-dessus.
-const DERIVED_WORDS = {
-  dakuten: [
-    { jp:'頑張って', romaji:'Ganbatte', fr:'Courage ! / Fais de ton mieux !' },
-    { jp:'大丈夫です', romaji:'Daijoubu desu', fr:'Ça va, pas de problème.' },
-    { jp:'ご飯', romaji:'Gohan', fr:'Riz / repas' },
-    { jp:'鞄', romaji:'Kaban', fr:'Sac' },
-    { jp:'番号', romaji:'Bangou', fr:'Numéro' },
-    { jp:'残念です', romaji:'Zannen desu', fr:'C\'est dommage.' },
-    { jp:'全部でいくらですか', romaji:'Zenbu de ikura desu ka', fr:'Combien ça fait au total ?' },
-  ],
-  handakuten: [
-    { jp:'乾杯', romaji:'Kanpai', fr:'Santé ! (en trinquant)' },
-    { jp:'立派です', romaji:'Rippa desu', fr:'C\'est magnifique / splendide.' },
-    { jp:'出発します', romaji:'Shuppatsu shimasu', fr:'Je pars / le départ a lieu.' },
-    { jp:'元気いっぱい', romaji:'Genki ippai', fr:'Plein d\'énergie.' },
-    { jp:'ぴったりです', romaji:'Pittari desu', fr:'C\'est parfaitement adapté.' },
-    { jp:'鉛筆', romaji:'Enpitsu', fr:'Crayon' },
-  ],
-  yoon: [
-    { jp:'今日は何曜日ですか', romaji:'Kyou wa nan youbi desu ka', fr:'Quel jour sommes-nous aujourd\'hui ?' },
-    { jp:'写真を撮ってもいいですか', romaji:'Shashin o tottemo ii desu ka', fr:'Puis-je prendre une photo ?' },
-    { jp:'電車に乗ります', romaji:'Densha ni norimasu', fr:'Je monte dans le train.' },
-    { jp:'お茶をください', romaji:'Ocha o kudasai', fr:'Du thé, s\'il vous plaît.' },
-    { jp:'病院はどこですか', romaji:'Byouin wa doko desu ka', fr:'Où est l\'hôpital ?' },
-    { jp:'旅行が好きです', romaji:'Ryokou ga suki desu', fr:'J\'aime voyager.' },
-    { jp:'じゃあね', romaji:'Jaa ne', fr:'À plus ! (familier)' },
-    { jp:'三百円です', romaji:'Sanbyaku en desu', fr:'Ça fait 300 yens.' },
-  ],
-};
+const DK_RE = /[がぎぐげござじずぜぞだぢづでどばびぶべぼ]/g, HDK_RE = /[ぱぴぷぺぽ]/g;
+const markKana = k => k.replace(DK_RE, c => `<b class="dk-mark">${c}</b>`).replace(HDK_RE, c => `<b class="dk-mark hdk">${c}</b>`);
 function derivedWordsHtml(list){
   return `<div class="kana-vocab-grid">${list.map(w=>
     `<div class="kana-vocab-card derived-word" data-jp="${escapeHtmlAttr(w.jp)}">
       <span class="kvc-jp">${w.jp}</span>
+      ${w.kana ? `<span class="kvc-kana">${markKana(w.kana)}</span>` : ''}
       <span class="kvc-rom">${w.romaji}</span>
       <span class="kvc-fr">${w.fr}</span>
     </div>`

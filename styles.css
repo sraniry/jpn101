@@ -1112,3 +1112,4 @@ main small, main label, main .rm-small{ font-size:max(12px, 1em) !important; }
 .lv-box{ background:#fff; border:1px solid #e3d6b8; border-radius:12px; padding:10px 12px; margin:10px 0; font-size:13.5px; text-align:left; }
 .lv-bar{ display:flex; align-items:center; gap:8px; margin:6px 0; } .lv-track{ flex:1; height:8px; background:#eee6d3; border-radius:4px; overflow:hidden; } .lv-track div{ height:100%; background:#3d8b4f; }
 .mn-lvnote{ font-size:13px; margin:6px 0 0; }
+.dk-mark{ color:#b5443a; font-weight:800; } .dk-mark.hdk{ color:#2f6fa3; } .kvc-kana{ display:block; font-size:14px; color:#4a4339; }

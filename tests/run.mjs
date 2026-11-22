@@ -6,6 +6,15 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let fails = 0; const ok = (c, m) => { if(!c){ console.error('✗', m); fails++; } else console.log('✓', m); };
 const imp = f => import(pathToFileURL(path.join(root, f)).href);
 
+
+// 0. Dérivés : chaque exemple de dakuten a un ゛, chaque exemple de handakuten a un ゜ (lecture kana)
+{
+  const { DERIVED_WORDS } = await imp('data/derived-words.js');
+  const DK = /[がぎぐげござじずぜぞだぢづでどばびぶべぼ]/, HDK = /[ぱぴぷぺぽ]/;
+  const bad = [...DERIVED_WORDS.dakuten.filter(w => !w.kana || !DK.test(w.kana)).map(w => 'dakuten:' + w.jp), ...DERIVED_WORDS.handakuten.filter(w => !w.kana || !HDK.test(w.kana)).map(w => 'handakuten:' + w.jp)];
+  ok(bad.length === 0, 'dérivés : exemples dakuten/handakuten avec la marque' + (bad.length ? ' — ' + bad.join(', ') : ''));
+}
+
 // 1. SRS : après un oubli, « Bien » ne doit jamais donner 0 jour
 globalThis.document = { getElementById: () => null }; globalThis.window = { addEventListener(){}, dispatchEvent(){} };
 globalThis.localStorage = { getItem: () => null, setItem(){} }; globalThis.CustomEvent = class {};

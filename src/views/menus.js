@@ -325,7 +325,7 @@ function levelStats(){
   const sum = k => getQuizStats(k).slice(-15).reduce((a, e) => [a[0] + e.correct, a[1] + e.total], [0, 0]);
   return { n5: sum('menus-n5'), n4: sum('menus-n4') };
 }
-function levelBoxHtml(){
+export function levelBoxHtml(){
   const { n5, n4 } = levelStats();
   const pc = a => a[1] ? Math.round(100 * a[0] / a[1]) : null;
   const a = pc(n5), b = pc(n4);
