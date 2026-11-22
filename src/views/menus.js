@@ -314,7 +314,7 @@ function allChoicesHtml(q, choices, chosen){
 }
 function introHtml(ch){
   const [title, lines] = CHALLENGE_GRAMMAR[ch.kind] || CHALLENGE_GRAMMAR.ask;
-  return `<details class="mn-help mn-intro" open><summary>📘 Avant de commencer : ${escapeHtml(title)}</summary><ul>${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul><p class="mn-lvnote">Repères : <span class="lv-badge lv-N5">N5</span> = à connaître d'abord · <span class="lv-badge lv-N4">N4</span> = pour aller plus loin, pas obligatoire.</p>${levelBoxHtml()}</details>`;
+  return `<details class="mn-help mn-intro" open><summary>📘 Avant de commencer : ${escapeHtml(title)}</summary><ul>${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul><p class="mn-lvnote">Repères : <span class="lv-badge lv-N5">N5</span> = à connaître d'abord · <span class="lv-badge lv-N4">N4</span> = pour aller plus loin, pas obligatoire.</p><div id="lvIntro"></div></details>`;
 }
 // ---------- encouragements + positionnement ----------
 const OK_MSG = ['Bravo !', 'Exact, bien joué !', 'Tu progresses !', 'Super, continue !', 'Ça rentre !'];
@@ -325,19 +325,26 @@ function levelStats(){
   const sum = k => getQuizStats(k).slice(-15).reduce((a, e) => [a[0] + e.correct, a[1] + e.total], [0, 0]);
   return { n5: sum('menus-n5'), n4: sum('menus-n4') };
 }
-export function levelBoxHtml(){
+// Le N4 n'apparaît que si au moins un kanji N4 a été vu (sinon on ne sait pas encore « situer » le N4).
+export async function n4SeenCount(){
+  try{ const m = await import('../../data/kanji-joyo.js'); const S = meta.kanjiSrs || {};
+    return m.KANJI_DECK.filter(d => d.j === 4 && S[d.k]).length; }catch(e){ return 0; }
+}
+export function levelBoxHtml(n4Seen = 0){
   const { n5, n4 } = levelStats();
   const pc = a => a[1] ? Math.round(100 * a[0] / a[1]) : null;
-  const a = pc(n5), b = pc(n4);
+  const a = pc(n5), b = n4Seen > 0 ? pc(n4) : null;
   let label, hint;
   if(n5[1] < 8){ label = 'Pas encore assez de réponses pour situer ton niveau'; hint = 'Fais 2 ou 3 défis : on te dira où tu en es.'; }
   else if(a >= 85 && b !== null && b >= 60){ label = 'Tu maîtrises le N5 et tu attaques le N4 🎉'; hint = 'Continue sur les défis N4 : lis les kanji un par un.'; }
-  else if(a >= 85){ label = 'N5 solide'; hint = 'Prochaine étape : les phrases marquées N4.'; }
+  else if(a >= 85){ label = 'N5 solide'; hint = b === null ? 'Prochaine étape : les kanji N4 (ils apparaîtront ici).' : 'Prochaine étape : les phrases marquées N4.'; }
   else if(a >= 65){ label = 'N5 en bonne voie'; hint = 'Revois les kanji N5 des réponses ratées.'; }
-  else { label = 'Début du N5 : normal, tout le monde commence ici'; hint = 'Concentre-toi sur les phrases N5, ignore le N4 pour l\'instant.'; }
+  else { label = 'Début du N5 : normal, tout le monde commence ici'; hint = 'Concentre-toi sur les phrases N5 pour l\'instant.'; }
   const bar = (t, v) => `<div class="lv-bar"><span class="lv-badge lv-${t}">${t}</span><div class="lv-track"><div style="width:${v || 0}%"></div></div><b>${v === null ? '–' : v + ' %'}</b></div>`;
-  return `<div class="lv-box"><b>🧭 Ton niveau estimé : ${label}</b>${bar('N5', a)}${bar('N4', b)}<small>${hint}</small></div>`;
+  return `<div class="lv-box"><b>🧭 Ton niveau estimé : ${label}</b>${bar('N5', a)}${n4Seen > 0 ? bar('N4', b) : ''}<small>${hint}</small></div>`;
 }
+// Version asynchrone : charge la liste des kanji pour savoir si le N4 est commencé.
+export async function levelBoxAsync(){ return levelBoxHtml(await n4SeenCount()); }
 // ---------- lecteur de quiz ----------
 // Romaji + mots-clés sous chaque choix : on découpe la phrase avec le mini-lexique des défis (data/ask-lexicon.js).
 const ASK_MAP = new Map(ASK_LEX.map(([j, k, f]) => [j, { k, f, j }]));
@@ -392,8 +399,9 @@ function renderQuiz(area){
     celebrate('reviewCount', { emoji: '🍣', title: ui.challenge ? 'Défi du jour réussi' : 'Quiz terminé', params: { n: z.length } });
     area.innerHTML = `<div class="conv-done">${ui.right / z.length >= 0.6 ? '<div class="stamp" style="margin:0 auto 14px;">合格</div>' : ''}
       <h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${ui.right} / ${z.length}${perfect ? ' — parfait !' : ''}</h3>
-      <p style="color:#5f574d;font-size:13.5px;">${endMsg(ui.right / z.length)}</p>${levelBoxHtml()}
+      <p style="color:#5f574d;font-size:13.5px;">${endMsg(ui.right / z.length)}</p><div id="lvEnd"></div>
       <button class="continue-btn" id="mnAgain" style="margin-top:16px;">Recommencer</button> <button class="conv-back" id="mnHome" style="margin-top:16px;">← Menus</button></div>`;
+    levelBoxAsync().then(h => { const e = document.getElementById('lvEnd'); if(e) e.innerHTML = h; });
     document.getElementById('mnHome').addEventListener('click', () => go('home'));
     document.getElementById('mnAgain').addEventListener('click', () => {
       if(ui.challenge) return openMenuChallenge(ui.challenge.id);
@@ -406,6 +414,7 @@ function renderQuiz(area){
     <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / z.length) * 100}%"></div></div>
     <div class="kj-card">${ui.challenge && ui.i === 0 ? introHtml(ui.challenge) : ''}<p class="mn-q">${escapeHtml(q.q)}</p>
       ${questionHelp(q, choices)}<div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${choiceRj(c)}</button>`).join('')}</div><div id="mnFb"></div></div>`;
+  if(ui.challenge && ui.i === 0) levelBoxAsync().then(h => { const e = document.getElementById('lvIntro'); if(e) e.innerHTML = h; });
   wireBack();
   area.querySelectorAll('.kj-choice').forEach(b => b.addEventListener('click', () => {
     const ok = b.dataset.c === q.ok;

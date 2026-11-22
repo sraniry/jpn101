@@ -7,7 +7,7 @@ import { speak } from '../tts.js';
 import { LESSONS } from '../../data/lessons.js';
 import { showView } from '../nav.js';
 import { escapeHtml } from '../util.js';
-import { levelBoxHtml } from './menus.js';
+import { levelBoxAsync } from './menus.js';
 
 // ---------- Mes progrès ----------
 const SRC_LABEL = { kanji: 'Kanji', radical: 'Radical', menu: 'Menu', kit: 'Kyoto', word: 'Mot', kana: 'Kana', grammar: 'Grammaire', lesson: 'Leçon', phrase: 'Phrase', jlpt: 'JLPT', pitfall: 'Piège', text: 'Texte', listening: 'Écoute' };
@@ -55,7 +55,7 @@ export function renderProgress(){
     <div class="kj-stat"><b>${convs}/${convTotal}</b><span>dialogues faits</span></div>
     <div class="kj-stat"><b>${(meta.lessonsDone || []).length}/${LESSONS.length}</b><span>leçons de grammaire</span></div>
   </div>
-  <h4 class="kj-h">Mon niveau</h4>${levelBoxHtml()}
+  <h4 class="kj-h">Mon niveau</h4><div id="lvMe"></div>
   <h4 class="kj-h">Les 30 derniers jours</h4>
   <div class="cal" role="img" aria-label="${studied30} jours étudiés sur les 30 derniers jours">${days.map(d => `<span class="cal-d ${log[d] ? (log[d] > 15 ? 'l3' : log[d] > 5 ? 'l2' : 'l1') : ''}" title="${d}${log[d] ? ' : ' + log[d] + ' actions' : ''}"></span>`).join('')}</div>
   <p class="kj-tip" style="text-align:left">Une case colorée = un jour où tu as étudié. Une case vide n'est pas un échec : on reprend, c'est tout.</p>`;
@@ -74,6 +74,7 @@ export function renderProgress(){
   html += `<h4 class="kj-h">Mes scores</h4>` + (rows ? `<table class="score-table"><thead><tr><th>Quiz</th><th>Dernier</th><th>Meilleur</th><th>Fois</th></tr></thead><tbody>${rows}</tbody></table>` : `<p class="kj-tip" style="text-align:left">Pas encore de quiz terminé. Dès ton premier, tes scores apparaîtront ici.</p>`);
   html += `<h4 class="kj-h">Mes badges</h4>${badgesHtml()}`;
   area.innerHTML = html;
+  levelBoxAsync().then(h => { const e = document.getElementById('lvMe'); if(e) e.innerHTML = h; });
 }
 
 // ---------- Mes erreurs : retravailler ce qui t'a fait trébucher ----------
