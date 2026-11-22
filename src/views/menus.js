@@ -1,7 +1,7 @@
 import { MENUS, MENU_VOCAB, MENU_PHRASES, MENU_ASK, MENU_CHALLENGES } from '../../data/menus.js';
 import { ASK_LEX, ASK_PARTICLES } from '../../data/ask-lexicon.js';
 import { KIT_VOCAB, KIT_PHRASES, KIT_ASK, KIT_TIPS, KIT_CHALLENGES } from '../../data/kyoto-kit.js';
-import { planMark, registerStudyActivity, addQuizStat, recordAnswer, meta } from '../storage.js';
+import { planMark, registerStudyActivity, addQuizStat, getQuizStats, recordAnswer, meta } from '../storage.js';
 import { kanaPathState } from './kana.js';
 import { speak } from '../tts.js';
 import { escapeHtml, kanaToRomaji, romajiPhrase } from '../util.js';
@@ -193,8 +193,8 @@ function buildMenuQuiz(m, n){
     qs.push({ q: `Combien coûte « ${it.jp} » ?`, ok: yen(it.price), choices: [yen(it.price), ...others], explain: `${it.jp} (${it.fr}) : ${yen(it.price)}.`, say: it.kana, word: it.jp, kana: it.kana });
   });
   pick(items, 3).forEach(it => {
-    const others = pick(uniqBy(items.filter(x => x.fr !== it.fr), x => x.fr), 3).map(x => x.fr);
-    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], explain: `${it.jp} : ${it.fr}.${it.note ? ' ' + it.note : ''}`, say: it.kana, word: it.jp, kana: it.kana });
+    const oth = pick(uniqBy(items.filter(x => x.fr !== it.fr), x => x.fr), 3), others = oth.map(x => x.fr);
+    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], inf: Object.fromEntries([it, ...oth].map(x => [x.fr, x])), explain: `${it.jp} : ${it.fr}.${it.note ? ' ' + it.note : ''}`, say: it.kana, word: it.jp, kana: it.kana });
   });
   const rev = pick(items, 1)[0];
   if(rev){ const others = pick(items.filter(x => x.jp !== rev.jp), 3).map(x => x.jp); qs.push({ q: `Quel article est « ${rev.fr} » ?`, ok: rev.jp, choices: [rev.jp, ...others], explain: `${rev.jp} = ${rev.fr}.`, say: rev.kana, word: rev.jp, kana: rev.kana }); }
@@ -210,8 +210,8 @@ function buildMenuQuiz(m, n){
 function buildVocabQuiz(g, n){
   const items = g.items, qs = [];
   pick(items, Math.ceil(n * 0.5)).forEach(it => {
-    const others = pick(uniqBy(items.filter(x => x.fr !== it.fr), x => x.fr), 3).map(x => x.fr);
-    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], explain: `${it.jp} : ${it.fr}${it.note ? ' — ' + it.note : ''}.`, say: it.kana, word: it.jp, kana: it.kana });
+    const oth = pick(uniqBy(items.filter(x => x.fr !== it.fr), x => x.fr), 3), others = oth.map(x => x.fr);
+    qs.push({ q: `Que veut dire « ${it.jp} » ?`, ok: it.fr, choices: [it.fr, ...others], inf: Object.fromEntries([it, ...oth].map(x => [x.fr, x])), explain: `${it.jp} : ${it.fr}${it.note ? ' — ' + it.note : ''}.`, say: it.kana, word: it.jp, kana: it.kana });
   });
   pick(items, Math.floor(n * 0.3)).forEach(it => {
     const others = pick(items.filter(x => x.jp !== it.jp), 3).map(x => x.jp);
@@ -244,18 +244,18 @@ function buildChallengeQuiz(ch){
 
 // ---------- Aide des défis : grammaire + kanji + romaji ----------
 const GRAMMAR_HINTS = [
-  [/をください/, 'を + ください', "Ce que tu veux + を + ください = « donnez-moi … ». を marque l'objet (on le prononce « o »). C'est la phrase magique pour commander."],
-  [/でお願いします|をお願いします|お願いします/, 'お願いします', "お願いします (onegai shimasu) = « s'il vous plaît / je vous le demande ». Plus poli que ください. で + お願いします = « avec ça, s'il vous plaît » (choix d'un réglage)."],
-  [/ですか/, '〜ですか ?', "か à la fin = point d'interrogation. Pas de changement d'ordre des mots : on ajoute か."],
-  [/はいくら|いくら/, 'いくら', "いくら = combien (prix). Ce + は + いくら + ですか = « c'est combien ? »."],
-  [/はどこ/, 'は + どこ', "どこ = où. Lieu + は + どこですか = « où est … ? ». は se prononce « wa »."],
-  [/はありますか|ありますか/, 'ありますか', "ありますか = « est-ce qu'il y a … ? / vous avez … ? ». Pour une chose (pas une personne)."],
-  [/できますか/, 'できますか', "できます = pouvoir / être possible. 〜できますか = « est-ce possible de … ? »."],
-  [/たいです/, '〜たいです', "Verbe (racine) + たいです = « je veux … ». Ex. 食べたい = je veux manger."],
-  [/抜き/, '〜抜き', "〜抜き (nuki) = « sans … ». Ex. ねぎ抜き = sans ciboule."],
-  [/ひとつ|ふたつ|みっつ|一つ|二つ|三つ/, 'ひとつ, ふたつ, みっつ', "Compter des objets : ひとつ = 1, ふたつ = 2, みっつ = 3. On le place après を : 抹茶ラテをひとつください."],
-  [/これ|それ|あれ/, 'これ / それ / あれ', "これ = ceci (près de moi), それ = cela (près de toi), あれ = là-bas. は marque le thème, を l'objet."],
-  [/何/, '何 (nan / nani)', "何 = quoi. これは何ですか = « qu'est-ce que c'est ? »."],
+  [/をください/, 'を + ください', "Ce que tu veux + を + ください = « donnez-moi … ». を marque l'objet (on le prononce « o »). C'est la phrase magique pour commander.", 'N5'],
+  [/でお願いします|をお願いします|お願いします/, 'お願いします', "お願いします (onegai shimasu) = « s'il vous plaît / je vous le demande ». Plus poli que ください. で + お願いします = « avec ça, s'il vous plaît » (choix d'un réglage).", 'N5'],
+  [/ですか/, '〜ですか ?', "か à la fin = point d'interrogation. Pas de changement d'ordre des mots : on ajoute か.", 'N5'],
+  [/はいくら|いくら/, 'いくら', "いくら = combien (prix). Ce + は + いくら + ですか = « c'est combien ? ».", 'N5'],
+  [/はどこ/, 'は + どこ', "どこ = où. Lieu + は + どこですか = « où est … ? ». は se prononce « wa ».", 'N5'],
+  [/はありますか|ありますか/, 'ありますか', "ありますか = « est-ce qu'il y a … ? / vous avez … ? ». Pour une chose (pas une personne).", 'N5'],
+  [/できますか/, 'できますか', "できます = pouvoir / être possible. 〜できますか = « est-ce possible de … ? ».", 'N4'],
+  [/たいです/, '〜たいです', "Verbe (racine) + たいです = « je veux … ». Ex. 食べたい = je veux manger.", 'N5'],
+  [/抜き/, '〜抜き', "〜抜き (nuki) = « sans … ». Ex. ねぎ抜き = sans ciboule.", 'N4'],
+  [/ひとつ|ふたつ|みっつ|一つ|二つ|三つ/, 'ひとつ, ふたつ, みっつ', "Compter des objets : ひとつ = 1, ふたつ = 2, みっつ = 3. On le place après を : 抹茶ラテをひとつください.", 'N5'],
+  [/これ|それ|あれ/, 'これ / それ / あれ', "これ = ceci (près de moi), それ = cela (près de toi), あれ = là-bas. は marque le thème, を l'objet.", 'N5'],
+  [/何/, '何 (nan / nani)', "何 = quoi. これは何ですか = « qu'est-ce que c'est ? ».", 'N5'],
 ];
 // Aide générale par défi (avant de commencer)
 const CHALLENGE_GRAMMAR = {
@@ -264,31 +264,80 @@ const CHALLENGE_GRAMMAR = {
   phrases: ["Phrases à dire", ["Structure de base : ce que tu veux + を + ください.", "お願いします = s'il vous plaît (poli).", "Le romaji est sous chaque choix : lis-le à voix haute."]],
   ask: ["Que dire dans la situation ?", ["Ce que tu veux + を + ください = « donnez-moi ».", "〜は + いくら / どこ / 何 + ですか = poser une question (か = « ? »).", "Sous chaque choix : romaji + sens des mots clés."]]
 };
-const grammarFor = txt => GRAMMAR_HINTS.filter(([re]) => re.test(txt)).slice(0, 3);
-const hintsHtml = txt => { const g = grammarFor(txt); return g.length ? `<div class="mn-gram"><span class="kj-slabel">Grammaire</span>${g.map(([, t, d]) => `<p><b>${escapeHtml(t)}</b> — ${escapeHtml(d)}</p>`).join('')}</div>` : ''; };
+const grammarFor = txt => GRAMMAR_HINTS.filter(([re]) => re.test(txt)).slice(0, 4);
+const gramLine = ([, t, d, lv]) => `<p><span class="lv-badge lv-${lv}">${lv}</span> <b>${escapeHtml(t)}</b> — ${escapeHtml(d)}</p>`;
+const kLevel = c => { const d = DECK_CACHE && DECK_CACHE.get(c); return !d ? 'N3+' : d.j === 5 ? 'N5' : d.j === 4 ? 'N4' : 'N3+'; };
+// niveau d'une phrase / d'un mot : N4 dès qu'un kanji ou une structure dépasse le N5
+function textLevel(t){
+  const ks = [...new Set(String(t).match(CJK) || [])];
+  if(ks.some(c => kLevel(c) !== 'N5')) return 'N4';
+  return grammarFor(t).some(g => g[3] === 'N4') ? 'N4' : 'N5';
+}
+const hintsHtml = txt => {
+  const g = grammarFor(txt); if(!g.length) return '';
+  const a = g.filter(x => x[3] === 'N5'), b = g.filter(x => x[3] !== 'N5');
+  return `<div class="mn-gram"><span class="kj-slabel">Grammaire</span>${a.map(gramLine).join('')}${b.length ? `<span class="kj-slabel">Pour aller plus loin (N4)</span>${b.map(gramLine).join('')}` : ''}</div>`;
+};
 function kanjiMiniHtml(jp){
   if(!DECK_CACHE) return '';
   const chars = [...new Set(jp.match(CJK) || [])]; if(!chars.length) return '';
-  const rows = chars.map(c => { const d = DECK_CACHE.get(c); if(!d) return ''; const r = (d.kun && d.kun[0]) || (d.on && d.on[0]) || ''; return `<li><b class="ki-g" style="font-size:22px">${escapeHtml(c)}</b> ${escapeHtml(d.fr)}${r ? ` <span class="mn-rom">${rj(String(r).replace(/[()]/g, ''))}</span>` : ''}</li>`; }).join('');
-  return `<div class="ki-box"><span class="kj-slabel">Kanji utiles</span><ul class="ki-mini">${rows}</ul></div>`;
+  const row = c => { const d = DECK_CACHE.get(c); if(!d) return `<li><b class="ki-g" style="font-size:22px">${escapeHtml(c)}</b> hors liste</li>`; const r = (d.on && d.on[0] && d.j === 5 && !(d.kun && d.kun[0])) ? d.on[0] : ((d.kun && d.kun[0]) || (d.on && d.on[0]) || ''); return `<li><b class="ki-g" style="font-size:22px">${escapeHtml(c)}</b> ${escapeHtml(d.fr)}${r ? ` <span class="mn-rom">${rj(String(r).replace(/[()]/g, ''))}</span>` : ''}</li>`; };
+  const n5 = chars.filter(c => kLevel(c) === 'N5'), up = chars.filter(c => kLevel(c) !== 'N5');
+  return `<div class="ki-box">${n5.length ? `<span class="kj-slabel">Kanji à connaître (N5)</span><ul class="ki-mini">${n5.map(row).join('')}</ul>` : ''}${up.length ? `<span class="kj-slabel">Pour aller plus loin (N4 et +)</span><ul class="ki-mini">${up.map(row).join('')}</ul>` : ''}</div>`;
 }
 function questionHelp(q, choices){
-  // romaji de la phrase de la question (mot entre « »), kanji de la question et des choix japonais, grammaire des choix
   const parts = [];
   const quoted = (q.q.match(/«\s*([^»]+?)\s*»/g) || []).map(x => x.replace(/[«»]/g, '').trim()).filter(x => /[ぁ-ヶ㐀-鿿]/.test(x));
   if(quoted.length && q.kana) parts.push(`<div class="mn-say-box"><b>${escapeHtml(quoted[0])}</b> se lit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>`);
   const jpTexts = [...quoted, ...choices.filter(c => /[㐀-鿿]/.test(c))];
-  const kanjiTxt = jpTexts.join('');
-  const kinfo = kanjiTxt ? kanjiMiniHtml(kanjiTxt) : '';
+  const kinfo = jpTexts.length ? kanjiMiniHtml(jpTexts.join('')) : '';
   const gram = hintsHtml(choices.join(' '));
   if(!parts.length && !kinfo && !gram) return '';
   return `<details class="mn-help" open><summary>💡 Aide : kanji, romaji, grammaire</summary>${parts.join('')}${kinfo}${gram}</details>`;
 }
+// Après la réponse : CHAQUE choix expliqué (romaji, sens des mots, grammaire, kanji), pas seulement la bonne réponse.
+function allChoicesHtml(q, choices, chosen){
+  const rows = choices.map(c => {
+    const isOk = c === q.ok, isMine = c === chosen;
+    const inf = q.inf && q.inf[c];
+    const jp = /[ぁ-ヶ㐀-鿿]/.test(c) ? c : (inf ? inf.jp : '');
+    let body = '';
+    if(/[ぁ-ヶ㐀-鿿]/.test(c)){ const a = askRomaji(c); if(a) body += `<div class="mn-rom">${escapeHtml(a.rj)}</div>${a.gloss ? `<div class="mn-ch-gloss2">${escapeHtml(a.gloss)}</div>` : ''}`; else { const e = lexCache && lexCache.lex.get(c); if(e){ body += `<div class="mn-rom">${rj(e.kana)}</div><div class="mn-ch-gloss2">${escapeHtml(e.fr)}</div>`; } } }
+    else if(inf){ body += `<div class="mn-ch-gloss2">en japonais : <b>${escapeHtml(inf.jp)}</b> ${rj(inf.kana)}</div>`; }
+    if(isKanaStr(c) && !body) body += `<div class="mn-rom">${rj(c)}</div>`;
+    const lv = jp ? textLevel(jp) : '';
+    const kin = jp && /[㐀-鿿]/.test(jp) ? kanjiMiniHtml(jp) : '';
+    const g = jp ? hintsHtml(jp) : '';
+    return `<div class="mn-all ${isOk ? 'is-ok' : (isMine ? 'is-ko' : '')}"><div class="mn-all-h">${isOk ? '✓' : (isMine ? '✗' : '•')} <b>${escapeHtml(c)}</b> ${lv ? `<span class="lv-badge lv-${lv}">${lv}</span>` : ''}${isMine && !isOk ? ' <em>(ta réponse)</em>' : ''}</div>${body}${g}${kin}</div>`;
+  }).join('');
+  return `<details class="mn-help mn-all-box" open><summary>🔎 Chaque réponse expliquée</summary>${rows}</details>`;
+}
 function introHtml(ch){
   const [title, lines] = CHALLENGE_GRAMMAR[ch.kind] || CHALLENGE_GRAMMAR.ask;
-  return `<details class="mn-help mn-intro" open><summary>📘 Avant de commencer : ${escapeHtml(title)}</summary><ul>${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul></details>`;
+  return `<details class="mn-help mn-intro" open><summary>📘 Avant de commencer : ${escapeHtml(title)}</summary><ul>${lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul><p class="mn-lvnote">Repères : <span class="lv-badge lv-N5">N5</span> = à connaître d'abord · <span class="lv-badge lv-N4">N4</span> = pour aller plus loin, pas obligatoire.</p>${levelBoxHtml()}</details>`;
 }
-
+// ---------- encouragements + positionnement ----------
+const OK_MSG = ['Bravo !', 'Exact, bien joué !', 'Tu progresses !', 'Super, continue !', 'Ça rentre !'];
+const KO_MSG = ["Pas grave : c'est en se trompant qu'on retient.", 'Presque ! Lis l\'explication, tu l\'auras la prochaine fois.', 'Courage, tu apprends.', 'Une erreur de plus = une chose de mieux retenue.'];
+const endMsg = r => r === 1 ? 'Parfait ! Tu pourrais commander les yeux fermés. 🎉' : r >= 0.8 ? 'Très bien ! Tu lis déjà beaucoup de choses. Encore un peu et c\'est parfait.' : r >= 0.6 ? 'Bien joué, tu as la moitié du chemin et plus. Relis « Chaque réponse expliquée » et refais le défi.' : r >= 0.3 ? 'C\'est un début solide : ces défis sont difficiles. Refais-le en lisant bien les aides, tu verras la différence.' : 'Pas facile, et c\'est normal : tu apprends une nouvelle écriture ! Refais-le avec les aides ouvertes, une bonne réponse à la fois.';
+const streakMsg = n => n >= 5 ? `🔥 ${n} bonnes réponses d'affilée, incroyable !` : n >= 3 ? `🔥 ${n} d'affilée !` : '';
+function levelStats(){
+  const sum = k => getQuizStats(k).slice(-15).reduce((a, e) => [a[0] + e.correct, a[1] + e.total], [0, 0]);
+  return { n5: sum('menus-n5'), n4: sum('menus-n4') };
+}
+function levelBoxHtml(){
+  const { n5, n4 } = levelStats();
+  const pc = a => a[1] ? Math.round(100 * a[0] / a[1]) : null;
+  const a = pc(n5), b = pc(n4);
+  let label, hint;
+  if(n5[1] < 8){ label = 'Pas encore assez de réponses pour situer ton niveau'; hint = 'Fais 2 ou 3 défis : on te dira où tu en es.'; }
+  else if(a >= 85 && b !== null && b >= 60){ label = 'Tu maîtrises le N5 et tu attaques le N4 🎉'; hint = 'Continue sur les défis N4 : lis les kanji un par un.'; }
+  else if(a >= 85){ label = 'N5 solide'; hint = 'Prochaine étape : les phrases marquées N4.'; }
+  else if(a >= 65){ label = 'N5 en bonne voie'; hint = 'Revois les kanji N5 des réponses ratées.'; }
+  else { label = 'Début du N5 : normal, tout le monde commence ici'; hint = 'Concentre-toi sur les phrases N5, ignore le N4 pour l\'instant.'; }
+  const bar = (t, v) => `<div class="lv-bar"><span class="lv-badge lv-${t}">${t}</span><div class="lv-track"><div style="width:${v || 0}%"></div></div><b>${v === null ? '–' : v + ' %'}</b></div>`;
+  return `<div class="lv-box"><b>🧭 Ton niveau estimé : ${label}</b>${bar('N5', a)}${bar('N4', b)}<small>${hint}</small></div>`;
+}
 // ---------- lecteur de quiz ----------
 // Romaji + mots-clés sous chaque choix : on découpe la phrase avec le mini-lexique des défis (data/ask-lexicon.js).
 const ASK_MAP = new Map(ASK_LEX.map(([j, k, f]) => [j, { k, f, j }]));
@@ -337,12 +386,13 @@ function renderQuiz(area){
   if(ui.i >= z.length){
     const perfect = ui.right === z.length;
     addQuizStat('menus', ui.right, z.length);
+    const lv = ui.lv || {}; ['N5', 'N4'].forEach(t => { if(lv[t] && lv[t][1]) addQuizStat('menus-' + t.toLowerCase(), lv[t][0], lv[t][1]); });
     if(ui.challenge){ planMark('challenge', 1); }
     registerStudyActivity();
     celebrate('reviewCount', { emoji: '🍣', title: ui.challenge ? 'Défi du jour réussi' : 'Quiz terminé', params: { n: z.length } });
     area.innerHTML = `<div class="conv-done">${ui.right / z.length >= 0.6 ? '<div class="stamp" style="margin:0 auto 14px;">合格</div>' : ''}
       <h3 style="font-family:'Shippori Mincho',serif;color:var(--indigo-deep);">${ui.right} / ${z.length}${perfect ? ' — parfait !' : ''}</h3>
-      <p style="color:#5f574d;font-size:13.5px;">${perfect ? 'Tu peux commander les yeux fermés.' : 'Refais-le : les réponses restent en mémoire plus longtemps quand on se trompe puis qu\'on corrige.'}</p>
+      <p style="color:#5f574d;font-size:13.5px;">${endMsg(ui.right / z.length)}</p>${levelBoxHtml()}
       <button class="continue-btn" id="mnAgain" style="margin-top:16px;">Recommencer</button> <button class="conv-back" id="mnHome" style="margin-top:16px;">← Menus</button></div>`;
     document.getElementById('mnHome').addEventListener('click', () => go('home'));
     document.getElementById('mnAgain').addEventListener('click', () => {
@@ -361,8 +411,10 @@ function renderQuiz(area){
     const ok = b.dataset.c === q.ok;
     area.querySelectorAll('.kj-choice').forEach(x => { x.disabled = true; if(x.dataset.c === q.ok) x.classList.add('ok'); });
     if(!ok) b.classList.add('ko'); else ui.right++;
+    ui.streak = ok ? (ui.streak || 0) + 1 : 0;
+    const lvT = textLevel(q.ok + ' ' + (q.word || '')); ui.lv = ui.lv || {}; const L = ui.lv[lvT] = ui.lv[lvT] || [0, 0]; L[1]++; if(ok) L[0]++;
     recordAnswer(KIT_IDS.has((ui.challenge || {}).id) || ui.backTo === 'kit' ? 'kit' : 'menu', (q.word || q.q).slice(0, 40) + ':' + q.q.slice(0, 10), ok, { q: q.q, ok: q.ok, choices: q.choices, explain: q.explain, say: q.say, chosen: b.dataset.c });
-    document.getElementById('mnFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ Oui !' : '✗ Pas tout à fait'}</div>${q.kana ? `<div class="mn-say-box"><b>${escapeHtml(q.word || '')}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>` : ''}<div class="mn-explain">${escapeHtml(q.explain || '')}</div>${/[ぁ-ヶ㐀-鿿]/.test(q.ok) && !q.word ? (askRomaji(q.ok) ? `<div class="mn-say-box"><b>${escapeHtml(q.ok)}</b> <span class="mn-rom">${escapeHtml(askRomaji(q.ok).rj)}</span></div>` : '') + hintsHtml(q.ok) : ''}${q.word ? kanjiInfoHtml(q.word) : ''}<button class="continue-btn" id="mnNext">Continuer</button>`;
+    document.getElementById('mnFb').innerHTML = `<div class="kj-fb ${ok ? 'ok' : 'ko'}">${ok ? '✓ ' + OK_MSG[ui.i % OK_MSG.length] : '✗ ' + KO_MSG[ui.i % KO_MSG.length]}${streakMsg(ui.streak) ? ' ' + streakMsg(ui.streak) : ''} <span class="lv-badge lv-${lvT}">${lvT}</span></div>${q.kana ? `<div class="mn-say-box"><b>${escapeHtml(q.word || '')}</b> se dit <b>${escapeHtml(q.kana)}</b> <span class="mn-rom">${rj(q.kana)}</span> <button class="kj-audio" data-say="${escapeHtml(q.kana)}">🔊</button></div>` : ''}<div class="mn-explain">${escapeHtml(q.explain || '')}</div>${q.word ? kanjiInfoHtml(q.word) : ''}${allChoicesHtml(q, choices, b.dataset.c)}<button class="continue-btn" id="mnNext">Continuer</button>`;
     wireAudio(document.getElementById('mnFb'));
     document.getElementById('mnNext').addEventListener('click', () => { ui.i++; renderMenus(); });
     if(q.say) speak(q.say, 0.85);
