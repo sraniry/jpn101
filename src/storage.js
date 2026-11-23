@@ -87,11 +87,20 @@ export function nowTs(){ return Date.now(); }
 export function todayStr(){ const d = new Date(), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; }
 export function daysToMs(d){ return d*24*60*60*1000; }
 
+function weekMonday(){
+  const d = new Date(), day = d.getDay(), diff = day === 0 ? 6 : day - 1;
+  d.setDate(d.getDate() - diff);
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
+function canUseGrace(){ return !meta.graceUsed || meta.graceUsed !== weekMonday(); }
+function useGrace(){ meta.graceUsed = weekMonday(); }
+
 export function updateStreak(){
   const today = todayStr();
   if(meta.lastStudyDate && meta.lastStudyDate !== today){
     const diff = (new Date(today) - new Date(meta.lastStudyDate)) / 86400000;
-    if(diff > 1.5) meta.streak = 0;
+    if(diff > 1.5 && !(diff <= 2.5 && canUseGrace())) meta.streak = 0;
   }
   setStreakBadge();
 }
@@ -134,16 +143,18 @@ export function registerStudyActivity(){
   const today = todayStr();
   if(meta.lastStudyDate !== today){
     const gapDays = meta.lastStudyDate ? (new Date(today)-new Date(meta.lastStudyDate))/86400000 : 0;
-    meta.streak = (meta.lastStudyDate && gapDays <= 1.5) ? (meta.streak||0)+1 : 1;
+    let streakContinues = !!(meta.lastStudyDate && gapDays <= 1.5);
+    if(!streakContinues && meta.lastStudyDate && gapDays <= 2.5 && canUseGrace()){
+      streakContinues = true;
+      useGrace();
+    }
+    meta.streak = streakContinues ? (meta.streak||0)+1 : 1;
     meta.lastStudyDate = today; saveMeta();
     setStreakBadge();
-    // Import statique (en tête de fichier) plutôt que dynamique : un import() différé
-    // résolvait APRÈS des toasts synchrones déclenchés dans le même clic (ex: « file vidée »
-    // en Réviser), et l'écrasait par accident selon l'ordre de résolution des promesses.
-    // Retour après une coupure : jamais de ton punitif sur la série perdue, uniquement un
-    // accueil rassurant. Prioritaire sur le message de streak (streak repart à 1 ce jour-là).
-    if(gapDays > 1.5){
+    if(gapDays > 2.5){
       celebrate('welcomeBack', { emoji:'👋', title:'Contente de te revoir' });
+    } else if(gapDays > 1.5 && gapDays <= 2.5){
+      // jour de grâce utilisé — pas de punition, pas de toast
     } else if(meta.streak >= 2 && meta.streak < 7){
       // Les paliers 7 et 30 jours ont déjà leur propre badge (célébré ailleurs) ; entre les
       // deux, un petit mot rappelle que chaque jour compte, sans spammer le tout premier jour.

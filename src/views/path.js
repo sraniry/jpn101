@@ -40,23 +40,36 @@ export function renderPath(){
   const cur = steps.findIndex(s => s.done < s.total);
   const goal = GOALS[meta.goal] || null;
   const pct = s => Math.round((s.done / s.total) * 100);
-  let html = `<div class="hub-intro"><h2>Mon parcours</h2><p>${goal ? `Ton objectif : <b>${escapeHtml(goal)}</b>. ` : ''}Voici le chemin complet, dans l'ordre conseillé. Tu peux aussi avancer sur plusieurs étapes en même temps : le programme du jour s'en occupe.</p></div>`;
-  if(cur >= 0){
-    const s = steps[cur];
-    html += `<div class="path-here"><span class="path-tag">Tu es ici</span><b>${s.icon} ${escapeHtml(s.title)}</b><span>${escapeHtml(s.goal)}</span>
-      <div class="today-track"><div class="today-track-fill" style="width:${pct(s)}%"></div></div>
-      <span class="path-sub">${s.done} / ${s.total} · ${escapeHtml(s.min)}</span><button type="button" class="continue-btn" data-go="${s.view}">Continuer →</button></div>`;
-  } else html += `<div class="path-here"><b>🎉 Tu as fini tout le parcours !</b></div>`;
-  html += `<ol class="path-list">`;
+
+  let html = `<div class="hub-intro"><h2>Mon parcours</h2><p>${goal ? `Objectif : <b>${escapeHtml(goal)}</b>. ` : ''}Chemin dans l'ordre conseillé — rien n'est verrouillé.</p></div>`;
+
+  html += `<div class="path-map">`;
   steps.forEach((s, i) => {
     const state = s.done >= s.total ? 'done' : (i === cur ? 'now' : (s.done > 0 ? 'part' : 'next'));
-    html += `<li class="path-step ${state}"><button type="button" class="path-btn" data-go="${s.view}">
-      <span class="path-num">${state === 'done' ? '✓' : i + 1}</span>
-      <span class="path-body"><b>${s.icon} ${escapeHtml(s.title)}</b>${state === 'now' ? `<small>📍 Tu es ici : voir le cadre en haut · ${s.done}/${s.total}</small>` : `<small>${escapeHtml(s.goal)}</small>
-        <span class="path-bar"><span style="width:${pct(s)}%"></span></span><small>${escapeHtml(s.crit)} · ${s.done}/${s.total}</small>`}</span>
-    </button></li>`;
+    const p = pct(s);
+    const isLast = i === steps.length - 1;
+    html += `<div class="pm-row pm-${state}" data-go="${s.view}">
+      <div class="pm-left">
+        <div class="pm-circle" aria-hidden="true">${state === 'done' ? '✓' : s.icon}</div>
+        ${isLast ? '' : `<div class="pm-line"></div>`}
+      </div>
+      <div class="pm-info">
+        ${state === 'now' ? `<span class="pm-here-tag">📍 Tu es ici</span>` : ''}
+        <b class="pm-title">${escapeHtml(s.title)}</b>
+        <span class="pm-goal">${escapeHtml(s.goal)}</span>
+        ${state !== 'next' ? `<div class="pm-bar-wrap"><div class="pm-bar-fill" style="width:${p}%"></div></div>` : ''}
+        <span class="pm-sub">${state === 'done' ? '✓ Terminé' : `${s.done}/${s.total} · ${escapeHtml(s.min)}`}</span>
+        ${state === 'now' ? `<button type="button" class="pm-go-btn" data-go="${s.view}">Continuer →</button>` : ''}
+      </div>
+    </div>`;
   });
-  html += `</ol><p class="hub-foot">Rien n'est verrouillé. Si une étape te bloque, passe à la suivante et reviens plus tard : c'est normal.</p>`;
+  html += `</div>`;
+  html += `<p class="hub-foot">Si une étape te bloque, passe à la suivante : c'est normal.</p>`;
+
   area.innerHTML = html;
-  area.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => showView(b.dataset.go)));
+  area.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation();
+    showView(b.dataset.go);
+  }));
+  area.querySelectorAll('.pm-row').forEach(row => row.addEventListener('click', () => showView(row.dataset.go)));
 }

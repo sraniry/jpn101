@@ -1,4 +1,5 @@
 import { phrases, meta, saveMeta, todayStr, planToday, getConvDone, openMistakes, getQuizStats } from '../storage.js';
+import { sessionBilanHtml } from '../xp.js';
 import { LESSONS } from '../../data/lessons.js';
 import { CONVERSATIONS } from '../../data/phrases.js';
 import { KANA_LESSONS, kanaPathState } from './kana.js';
@@ -179,6 +180,11 @@ export function renderToday(){
   </div>`;
   });
   html += `</div>`;
+
+  if(doneCount === total){
+    const bilan = sessionBilanHtml();
+    if(bilan) html += bilan;
+  }
 
   const bonus = bonusOfTheDay();
   html += `<div class="today-bonus-step" data-view="${bonus.view}">
