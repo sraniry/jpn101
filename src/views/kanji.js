@@ -133,6 +133,39 @@ function futureKanji(word, d){
   if(!BY_K) return false;
   return [...word].some(c => { const x = BY_K.get(c); return x && x.n > d.n; });
 }
+
+// ---------- Mots d'exemple avec ce kanji, triés on / kun ----------
+function stripOkuri(r){ return r.replace(/\([^)]*\)/g, ''); }
+function wordsWithKanji(d){
+  if(!WORDS || !WORDS.length) return { on:[], kun:[], other:[] };
+  const pool = WORDS.filter(w => w.jp.includes(d.k));
+  const on = d.on ? d.on.map(stripOkuri) : [];
+  const kun = d.kun ? d.kun.map(stripOkuri) : [];
+  const oW = [], kW = [], xW = [];
+  for(const w of pool){
+    const wk = w.kana;
+    // On : la lecture est présente dans le kana ET le mot est un composé (que des kanji, pas d'okurigana)
+    const usesOn = on.some(r => r.length >= 2 && wk.includes(r));
+    // Kun : la lecture native est présente (souvent avec okurigana)
+    const usesKun = kun.some(r => r.length >= 2 && wk.includes(r));
+    if(usesOn && !usesKun) oW.push(w);
+    else if(usesKun) kW.push(w);
+    else xW.push(w);
+  }
+  return { on: oW.slice(0,3), kun: kW.slice(0,3), other: xW.slice(0,3) };
+}
+function wordExamplesHtml(d){
+  const { on, kun, other } = wordsWithKanji(d);
+  const total = on.length + kun.length + other.length;
+  if(!total) return '';
+  const chip = w => `<span class="kw-chip"><b>${escapeHtml(w.jp)}</b><span class="kw-sep">　</span><span class="kw-kana">${escapeHtml(w.kana)}</span><button type="button" class="kj-audio" data-say="${escapeHtml(w.kana)}" title="Écouter">🔊</button><span class="kw-fr">${escapeHtml(w.fr)}</span></span>`;
+  let h = `<div class="kj-word-ex"><span class="kj-slabel">📚 Ce kanji dans les mots</span>`;
+  if(on.length) h += `<div class="kw-group"><span class="kw-tag kw-on">ON</span>${on.map(chip).join('')}</div>`;
+  if(kun.length) h += `<div class="kw-group"><span class="kw-tag kw-kun">KUN</span>${kun.map(chip).join('')}</div>`;
+  if(other.length && (on.length + kun.length) < 3) h += `<div class="kw-group"><span class="kw-tag">mots</span>${other.slice(0, 3 - on.length - kun.length).map(chip).join('')}</div>`;
+  h += `</div>`;
+  return h;
+}
 function kanjiFront(d){ return `<div class="kj-glyph">${escapeHtml(d.k)}</div>`; }
 function kanjiBack(d, withAudio = true){
   const ex = d.ex || [];
@@ -142,6 +175,7 @@ function kanjiBack(d, withAudio = true){
     ${d.st ? `<div class="kj-story"><span class="kj-slabel">💡 Image pour retenir</span>${escapeHtml(d.st)}</div>` : ''}
     ${(meta.kanjiNotes || {})[d.k] ? `<div class="kj-story"><span class="kj-slabel">✏️ Ton image</span>${escapeHtml(meta.kanjiNotes[d.k])}</div>` : ''}
     ${ex.length ? `<div class="kj-ex"><span class="kj-slabel">Un mot pour l'ancrer${futureKanji(ex[0], d) ? ' <em class="kj-soon">(contient un kanji que tu verras plus tard)</em>' : ''}</span><b>${escapeHtml(ex[0])}</b> <span class="kj-exk">（${escapeHtml(ex[1])} / ${rj(ex[1])}）</span> — ${escapeHtml(ex[2])}${withAudio ? ` <button class="kj-audio" data-say="${escapeHtml(ex[1])}" title="Écouter">🔊</button>` : ''}</div>` : ''}
+    ${wordExamplesHtml(d)}
     <button type="button" class="kj-stroke-btn" data-k="${escapeHtml(d.k)}">✍️ Ordre des traits</button><div class="kj-stroke-box"></div>
     <div class="kj-meta">${d.s} trait${d.s>1?'s':''} · ${d.g <= 6 ? 'école primaire (année ' + d.g + ')' : 'collège / lycée'}${d.j ? ' · JLPT N' + d.j : ''} · n° ${d.n} / ${TOTAL}</div>`;
 }
