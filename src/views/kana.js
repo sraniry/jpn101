@@ -136,14 +136,13 @@ function renderQuizCard() {
     <div class="kana-quiz-card">
       <div class="kqc-progress">${quizState.idx + 1} / ${quizState.total}</div>
       <div class="kqc-question ${isKanaToRomaji ? 'is-kana' : 'is-romaji'}" data-jp="${card.kana}">${question}</div>
+      <button class="kqc-sound-btn" aria-label="Écouter ${card.kana}" title="Écouter">🔊</button>
       <div class="kqc-choices">
         ${choices.map(c => `<button class="kqc-btn" data-kana="${c.kana}" data-correct="${c.kana === card.kana}">${choiceDisplay(c)}</button>`).join('')}
       </div>
     </div>`;
 
-  // Click to pronounce
-  const qEl = area.querySelector('.kqc-question');
-  if (isKanaToRomaji) qEl.addEventListener('click', () => speak(card.kana, 0.8));
+  area.querySelector('.kqc-sound-btn').addEventListener('click', () => speak(card.kana, 0.8));
 
   area.querySelectorAll('.kqc-btn').forEach(btn => {
     btn.addEventListener('click', () => {
