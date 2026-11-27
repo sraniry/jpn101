@@ -47,7 +47,11 @@ export const todayChallenge = () => {
 };
 export function openMenuChallenge(id){
   const ch = ALL_CHALLENGES.find(c => c.id === id) || todayChallenge();
-  sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch };
+  if(ch.kind === 'menu'){
+    sub = 'menuPreview'; ui = { challenge: ch, menuId: ch.ref };
+  } else {
+    sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch };
+  }
   renderMenus();
 }
 
@@ -66,6 +70,7 @@ export async function renderMenus(){
   if(sub === 'phrases') return renderPhrases(area);
   if(sub === 'ask') return renderAsk(area);
   if(sub === 'quiz') return renderQuiz(area);
+  if(sub === 'menuPreview') return renderMenuPreview(area);
   if(sub === 'kit') return renderKit(area);
   if(sub === 'guess') return renderGuess(area);
   if(sub === 'photo') return renderPhoto(area);
@@ -108,6 +113,30 @@ function renderHome(area){
   area.querySelectorAll('[data-vocab]').forEach(b => b.addEventListener('click', () => go('vocab', { id: b.dataset.vocab, reveal: false })));
   area.querySelectorAll('[data-go="panneaux"]').forEach(b => b.addEventListener('click', () => go('quiz', { quiz: buildAskQuiz('panneau', 8), title: 'Panneaux', backTo: 'home', backUi: {} })));
   area.querySelectorAll('[data-go]:not([data-go="panneaux"])').forEach(b => b.addEventListener('click', () => go(b.dataset.go === 'guessPick' ? 'guess' : (b.dataset.go === 'kitphrases' ? 'phrases' : b.dataset.go), b.dataset.go === 'kitphrases' ? { kit: true } : {})));
+}
+
+// ---------- aperçu de la carte avant le quiz ----------
+function renderMenuPreview(area){
+  const ch = ui.challenge;
+  const m = MENUS.find(x => x.id === ui.menuId);
+  if(!m){ sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch }; renderMenus(); return; }
+  let html = `<div class="kj-top">${backBtn}<span>${ch.icon} ${escapeHtml(ch.title)}</span></div>
+    <div class="skills-intro"><b>Mémorise les prix avant le quiz !</b> Tu vas devoir répondre à « Combien coûte … ? » — voici la carte complète. Pas besoin de tout retenir, juste de t'y repérer.</div>
+    <div class="mn-board b-paper"><div class="mn-shop">${escapeHtml(m.shop)}</div>`;
+  m.sections.forEach(sec => {
+    html += `<div class="mn-sec"><span>${escapeHtml(sec.title)}</span><small>${escapeHtml(sec.titleFr || '')}</small></div>`;
+    sec.items.forEach(it => {
+      html += `<div class="mn-item" style="pointer-events:none">
+        <div class="mn-main"><span class="mn-jp">${escapeHtml(it.jp)}</span><span class="mn-price">${it.price ? yen(it.price) : '無料'}</span></div>
+        <div class="mn-sub"><span class="mn-kana">${escapeHtml(it.kana)} · ${rj(it.kana)}</span><button class="kj-audio" data-say="${escapeHtml(it.kana)}" style="pointer-events:auto">🔊</button></div>
+        <div class="mn-fr">${escapeHtml(it.fr)}</div>
+      </div>`;
+    });
+  });
+  html += `</div><div class="mn-actions"><span></span><button class="continue-btn" id="mnStartQuiz">C'est parti ! →</button></div>`;
+  area.innerHTML = html;
+  wireBack(); wireAudio(area);
+  document.getElementById('mnStartQuiz').addEventListener('click', () => { sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch }; renderMenus(); });
 }
 
 // ---------- une carte ----------

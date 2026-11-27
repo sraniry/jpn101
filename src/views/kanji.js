@@ -79,8 +79,14 @@ export function kanjiStepDone(){
   const p = planToday();
   if(p.kanjiOk) return true;
   const st = kanjiTodayStatus();
-  const target = Math.min(st.dueStart || 0, DUE_PAUSE);
-  if(st.lessonDone && (st.due === 0 || (Number(st.reviewed) || 0) >= target)){ p.kanjiOk = true; saveMeta(false); return true; }
+  let ok = false;
+  if(st.paused){
+    const target = Math.min(st.dueStart || 0, DUE_PAUSE);
+    ok = st.due === 0 || (Number(st.reviewed) || 0) >= target;
+  } else {
+    ok = !!st.lessonDone;
+  }
+  if(ok){ p.kanjiOk = true; saveMeta(false); return true; }
   return false;
 }
 
