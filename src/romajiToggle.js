@@ -19,15 +19,15 @@ const TAGGED = [
   '.romaji', '.b-romaji', '.sc-romaji', '.kvc-rom', '.kpc-rom', '.kcc-rom', '.jg-rom',
   '.jg-s-romaji', '.jq-q-romaji', '.kqc-btn-rom', '.gd-choice-rom', '.pi-romaji',
   '.drill-romaji', '.jp-big-romaji', '.romaji-sm', '.romaji-line', '.kj-sentence-rom',
-  '.rj-inline',
+  '.rj-inline', '.mn-ch-rj', '.mn-rom',
 ].join(',');
 
 // Éléments trop petits ou imbriqués dans des boutons/cellules pour porter un œil à eux seuls :
 // ils restent masquables via section/page/global, et révélables d'un tap.
-const NO_WORD_EYE = '.kcc-rom, .kpc-rom, .kqc-btn-rom, .gd-choice-rom, .rj-inline';
+const NO_WORD_EYE = '.kcc-rom, .kpc-rom, .kqc-btn-rom, .gd-choice-rom, .rj-inline, .mn-ch-rj, .mn-rom';
 
 const PEEK_MS = 5000;
-const PAGES = ['today','skills','review','conversation','listening','reading','kana','grammar','jlpt','add'];
+const PAGES = ['today','skills','review','conversation','listening','reading','kana','grammar','jlpt','add','menus','kanji','path'];
 
 function prefs(){
   if(!meta.romajiPrefs) meta.romajiPrefs = { global:true, pages:{}, sections:{}, words:{} };

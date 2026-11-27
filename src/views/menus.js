@@ -47,11 +47,8 @@ export const todayChallenge = () => {
 };
 export function openMenuChallenge(id){
   const ch = ALL_CHALLENGES.find(c => c.id === id) || todayChallenge();
-  if(ch.kind === 'menu'){
-    sub = 'menuPreview'; ui = { challenge: ch, menuId: ch.ref };
-  } else {
-    sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch };
-  }
+  const extra = ch.kind === 'menu' ? { menuRef: MENUS.find(m => m.id === ch.ref) } : {};
+  sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch, ...extra };
   renderMenus();
 }
 
@@ -70,7 +67,6 @@ export async function renderMenus(){
   if(sub === 'phrases') return renderPhrases(area);
   if(sub === 'ask') return renderAsk(area);
   if(sub === 'quiz') return renderQuiz(area);
-  if(sub === 'menuPreview') return renderMenuPreview(area);
   if(sub === 'kit') return renderKit(area);
   if(sub === 'guess') return renderGuess(area);
   if(sub === 'photo') return renderPhoto(area);
@@ -113,30 +109,6 @@ function renderHome(area){
   area.querySelectorAll('[data-vocab]').forEach(b => b.addEventListener('click', () => go('vocab', { id: b.dataset.vocab, reveal: false })));
   area.querySelectorAll('[data-go="panneaux"]').forEach(b => b.addEventListener('click', () => go('quiz', { quiz: buildAskQuiz('panneau', 8), title: 'Panneaux', backTo: 'home', backUi: {} })));
   area.querySelectorAll('[data-go]:not([data-go="panneaux"])').forEach(b => b.addEventListener('click', () => go(b.dataset.go === 'guessPick' ? 'guess' : (b.dataset.go === 'kitphrases' ? 'phrases' : b.dataset.go), b.dataset.go === 'kitphrases' ? { kit: true } : {})));
-}
-
-// ---------- aperçu de la carte avant le quiz ----------
-function renderMenuPreview(area){
-  const ch = ui.challenge;
-  const m = MENUS.find(x => x.id === ui.menuId);
-  if(!m){ sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch }; renderMenus(); return; }
-  let html = `<div class="kj-top">${backBtn}<span>${ch.icon} ${escapeHtml(ch.title)}</span></div>
-    <div class="skills-intro"><b>Mémorise les prix avant le quiz !</b> Tu vas devoir répondre à « Combien coûte … ? » — voici la carte complète. Pas besoin de tout retenir, juste de t'y repérer.</div>
-    <div class="mn-board b-paper"><div class="mn-shop">${escapeHtml(m.shop)}</div>`;
-  m.sections.forEach(sec => {
-    html += `<div class="mn-sec"><span>${escapeHtml(sec.title)}</span><small>${escapeHtml(sec.titleFr || '')}</small></div>`;
-    sec.items.forEach(it => {
-      html += `<div class="mn-item" style="pointer-events:none">
-        <div class="mn-main"><span class="mn-jp">${escapeHtml(it.jp)}</span><span class="mn-price">${it.price ? yen(it.price) : '無料'}</span></div>
-        <div class="mn-sub"><span class="mn-kana">${escapeHtml(it.kana)} · ${rj(it.kana)}</span><button class="kj-audio" data-say="${escapeHtml(it.kana)}" style="pointer-events:auto">🔊</button></div>
-        <div class="mn-fr">${escapeHtml(it.fr)}</div>
-      </div>`;
-    });
-  });
-  html += `</div><div class="mn-actions"><span></span><button class="continue-btn" id="mnStartQuiz">C'est parti ! →</button></div>`;
-  area.innerHTML = html;
-  wireBack(); wireAudio(area);
-  document.getElementById('mnStartQuiz').addEventListener('click', () => { sub = 'quiz'; ui = { quiz: buildChallengeQuiz(ch), challenge: ch }; renderMenus(); });
 }
 
 // ---------- une carte ----------
@@ -439,9 +411,19 @@ function renderQuiz(area){
     return;
   }
   const q = z[ui.i], choices = shuffle(q.choices);
+  const menuCardHtml = ui.menuRef ? (()=>{
+    const m = ui.menuRef;
+    let h = `<details class="mn-ref-card"><summary>📋 Voir la carte (${escapeHtml(m.shop)})</summary><div class="mn-board b-paper" style="margin:0;border-radius:8px;">`;
+    m.sections.forEach(sec => {
+      h += `<div class="mn-sec"><span>${escapeHtml(sec.title)}</span><small>${escapeHtml(sec.titleFr||'')}</small></div>`;
+      sec.items.forEach(it => { h += `<div class="mn-item-mini"><span class="mn-jp">${escapeHtml(it.jp)}</span><span class="mn-kana">${escapeHtml(it.kana)}</span><span class="mn-rom">${rj(it.kana)}</span><span class="mn-price">${it.price ? yen(it.price) : ''}</span><span class="mn-fr-sm">${escapeHtml(it.fr)}</span></div>`; });
+    });
+    h += `</div></details>`;
+    return h;
+  })() : '';
   area.innerHTML = `<div class="kj-top"><button class="conv-back" id="mnBack">← Quitter</button><span>${ui.challenge ? ui.challenge.icon + ' ' + escapeHtml(ui.challenge.title) : escapeHtml(ui.title || '')}</span><span>${ui.i + 1} / ${z.length}</span></div>
     <div class="today-track"><div class="today-track-fill" style="width:${(ui.i / z.length) * 100}%"></div></div>
-    <div class="kj-card">${ui.challenge && ui.i === 0 ? introHtml(ui.challenge) : ''}<p class="mn-q">${escapeHtml(q.q)}</p>
+    <div class="kj-card">${ui.challenge && ui.i === 0 ? introHtml(ui.challenge) : ''}${menuCardHtml}<p class="mn-q">${escapeHtml(q.q)}</p>
       ${questionHelp(q, choices)}<div class="kj-choices">${choices.map(c => `<button class="kj-choice mn-choice" data-c="${escapeHtml(c)}">${escapeHtml(c)}${choiceRj(c)}</button>`).join('')}</div><div id="mnFb"></div></div>`;
   if(ui.challenge && ui.i === 0) levelBoxAsync().then(h => { const e = document.getElementById('lvIntro'); if(e) e.innerHTML = h; });
   wireBack();
